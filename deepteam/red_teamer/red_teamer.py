@@ -340,7 +340,7 @@ class RedTeamer:
             input=simulated_attack.input,
             vulnerability=vulnerability,
             vulnerability_type=vulnerability_type,
-            attack_method=simulated_attack.attack_method,
+            attackMethod=simulated_attack.attack_method,
             riskCategory=getRiskCategory(vulnerability_type),
         )
 
