@@ -22,7 +22,7 @@
 
 <p align="center">
     <a href="https://github.com/confident-ai/deepteam/releases">
-        <img alt="GitHub release" src="https://img.shields.io/github/release/confident-ai/deepeval.svg?color=violet">
+        <img alt="GitHub release" src="https://img.shields.io/github/release/confident-ai/deepeval.svg?color=violent">
     </a>
     <a href="https://colab.research.google.com/drive/1PPxYEBa6eu__LquGoFFJZkhYgWVYE6kh?usp=sharing">
         <img alt="Try Quickstart in Colab" src="https://colab.research.google.com/assets/colab-badge.svg">
@@ -47,10 +47,10 @@ DeepTeam runs **locally on your machine**, and **uses LLMs** for both simulation
 
 - 40+ [vulnerabilities](https://www.trydeepteam.com/docs/red-teaming-vulnerabilities) available out-of-the-box, including:
   - Bias
-     - Gender
-     - Race
-     - Political
-     - Religion
+    - Gender
+    - Race
+    - Political
+    - Religion
   - PII Leakage
     - Direct leakage
     - Session leakage
@@ -105,6 +105,7 @@ def model_callback(input: str) -> str:
     # Replace this with your LLM application
     return f"I'm sorry but I can't answer this: {input}"
 ```
+
 You'll need to replace the implementation of this callback with your own LLM application.
 
 ## Detect Your First Vulnerability
@@ -125,6 +126,7 @@ prompt_injection = PromptInjection()
 
 risk_assessment = red_team(model_callback=model_callback, vulnerabilities=[bias], attacks=[prompt_injection])
 ```
+
 Don't forget to run the file:
 
 ```bash
@@ -145,7 +147,6 @@ Unlike `deepeval`, `deepteam`'s red teaming capabilities does not require a prep
 > You'll need to set your `OPENAI_API_KEY` as an enviornment variable before running the `red_team()` function, since `deepteam` uses LLMs to both generate adversarial attacks and evaluate LLM outputs. To use **ANY** custom LLM of your choice, [check out this part of the docs](https://docs.confident-ai.com/guides/guides-using-custom-llms).
 
 <br />
-
 
 # Roadmap
 
