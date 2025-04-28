@@ -10,8 +10,8 @@ from deepeval.metrics.utils import initialize_model
 from deepeval.dataset.golden import Golden
 from deepeval.test_case import LLMTestCase
 from deepeval.utils import get_or_create_event_loop
-from deepeval.telemetry import capture_red_teamer_run
 
+from deepteam.telemetry import capture_red_teamer_run
 from deepteam.attacks import BaseAttack
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.types import (
@@ -114,9 +114,8 @@ class RedTeamer:
                 model_callback
             ), "`model_callback` needs to be sync. `async_mode` has been set to False."
             with capture_red_teamer_run(
-                attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                vulnerabilities=vulnerabilities,
-                attack_enhancements=attacks,
+                vulnerabilities=[v.get_name() for v in vulnerabilities],
+                attacks=[a.get_name() for a in attacks],
             ):
                 # Initialize metric map
                 metrics_map = self.get_red_teaming_metrics_map()
@@ -232,9 +231,8 @@ class RedTeamer:
         reuse_simulated_attacks: bool = False,
     ):
         with capture_red_teamer_run(
-            attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-            vulnerabilities=vulnerabilities,
-            attack_enhancements=attacks,
+            vulnerabilities=[v.get_name() for v in vulnerabilities],
+            attacks=[a.get_name() for a in attacks],
         ):
             # Initialize metric map
             metrics_map = self.get_red_teaming_metrics_map()

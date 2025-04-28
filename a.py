@@ -108,22 +108,41 @@ personal_safety = PersonalSafety(
 prompt_injection = PromptInjection()
 j = LinearJailbreaking()
 
+# red_team(
+#     model_callback=model_callback,
+#     vulnerabilities=[
+#         bias,
+#         toxicity,
+#         unauthorized_access,
+#         misinformation,
+#         pii_leakage,
+#         prompt_leakage,
+#         intellectual_property,
+#         excessive_agency,
+#         robustness,
+#         competition,
+#         illegal_activity,
+#         graphic_content,
+#         personal_safety,
+#     ],
+#     attacks=[prompt_injection],
+# )
+
+from deepteam import red_team
+from deepteam.vulnerabilities import Bias
+from deepteam.attacks.single_turn import PromptInjection
+
+
+def model_callback(input: str) -> str:
+    # Replace this with your LLM application
+    return f"I'm sorry but I can't answer this: {input}"
+
+
+bias = Bias(types=["race"])
+prompt_injection = PromptInjection()
+
 red_team(
     model_callback=model_callback,
-    vulnerabilities=[
-        bias,
-        toxicity,
-        unauthorized_access,
-        misinformation,
-        pii_leakage,
-        prompt_leakage,
-        intellectual_property,
-        excessive_agency,
-        robustness,
-        competition,
-        illegal_activity,
-        graphic_content,
-        personal_safety,
-    ],
+    vulnerabilities=[bias],
     attacks=[prompt_injection],
 )

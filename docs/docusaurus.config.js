@@ -96,12 +96,12 @@ module.exports = {
             position: "left",
             label: "Blogs",
           },
-          {
-            href: "https://confident-ai.com/book-a-demo",
-            className: "header-confident-link",
-            position: "right",
-            label: 'Try DeepTeam Cloud',
-          },
+          // {
+          //   href: "https://confident-ai.com/book-a-demo",
+          //   className: "header-confident-link",
+          //   position: "right",
+          //   label: 'Try DeepTeam Cloud',
+          // },
           {
             href: "https://discord.gg/a3K9c8GRGt",
             className: "header-discord-link",
