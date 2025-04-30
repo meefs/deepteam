@@ -41,3 +41,10 @@ addopts = "-m 'not skip_test'"
 markers = [
     "skip_test: skip the test",
 ]
+
+[dependency-groups]
+# if you add new dependencies here, make sure to add them to [tool.uv] default-groups up above
+dev = [
+    "pytest == 8.3.0",
+    "pytest-asyncio == 0.24.0",
+]
