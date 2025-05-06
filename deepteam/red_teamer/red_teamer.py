@@ -70,10 +70,11 @@ class RedTeamer:
             Union[str, DeepEvalBaseLLM]
         ] = "gpt-3.5-turbo-0125",
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
+        target_purpose: Optional[str] = "",
         async_mode: bool = True,
         max_concurrent: int = 10,
     ):
-        self.target_purpose = ""
+        self.target_purpose = target_purpose
         self.simulator_model, _ = initialize_model(simulator_model)
         self.evaluation_model, _ = initialize_model(evaluation_model)
         self.async_mode = async_mode

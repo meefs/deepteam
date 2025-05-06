@@ -205,6 +205,7 @@ class AttackSimulator:
 
         for vulnerability_type in vulnerability.get_types():
             try:
+                print("@@")
                 remote_attacks = self.simulate_remote_attack(
                     self.purpose,
                     vulnerability_type,
@@ -221,6 +222,7 @@ class AttackSimulator:
                     ]
                 )
             except:
+                print("!!")
                 if ignore_errors:
                     for _ in range(attacks_per_vulnerability_type):
                         baseline_attacks.append(
@@ -394,6 +396,7 @@ class AttackSimulator:
             by_alias=True, exclude_none=True
         )
         api = Api(base_url=BASE_URL, api_key="NA")
+        print(body)
         try:
             # API request
             response = api.send_request(
@@ -401,7 +404,9 @@ class AttackSimulator:
                 endpoint=Endpoints.BASELINE_ATTACKS_ENDPOINT,
                 body=body,
             )
+            print(response)
         except Exception as e:
+            print(e)
             raise e
 
         return GenerateBaselineAttackResponseData(**response).baseline_attacks
