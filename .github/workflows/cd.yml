@@ -58,3 +58,6 @@ jobs:
 
       - name: Build package distribution
         run: uv build
+
+      - name: Check package distribution
+        run: uv run --frozen twine check dist/*
