@@ -9,13 +9,13 @@ license = "Apache-2.0"
 readme = "README.md"
 requires-python = ">=3.9,<3.14"
 dependencies = [
-    "deepeval",
+    "aiohttp>=3.11.18",
+    "deepeval>=2.8.5",
+    "grpcio>=1.67.1",
+    "openai>=1.76.2",
     "requests>=2.31.0",
-    "tqdm>=4.66.1",
     "tabulate>=0.9.0",
-    "openai",
-    "aiohttp",
-    "grpcio==1.67.1",
+    "tqdm>=4.66.1",
 ]
 
 [project.urls]
@@ -26,15 +26,12 @@ Issues = "https://github.com/confident-ai/deepteam/issues"
 [dependency-groups]
 dev = [
     "black>=25.1.0",
-    "pytest>=8.3.0",
     "pytest-asyncio>=0.24.0",
+    "pytest>=8.3.0",
 ]
 build = [
-    "twine>=5.1.1",
+    "twine>=6.1.0",
 ]
-
-[project.scripts]
-deepteam = 'deepteam.cli.main:app'
 
 [tool.black]
 line-length = 80
