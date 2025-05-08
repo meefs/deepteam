@@ -39,7 +39,7 @@ jobs:
       # - github.workflow: The name of the workflow (e.g. Workflow 1).
       # - github.event.pull_request.number: The number of the pull request (when the trigger event is a PR).
       # - github.ref: The branch name (when the trigger is not a PR but a push).
-      group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+      group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-${{ matrix.python }}
       cancel-in-progress: true
 
     steps:
@@ -63,4 +63,4 @@ jobs:
         run: uv sync --locked --group dev
 
       - name: Run unit tests with coverage
-        run: uv run --frozen pytest
+        run: uv run --frozen pytest -svv
