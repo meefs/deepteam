@@ -401,7 +401,6 @@ class AttackSimulator:
                 endpoint=Endpoints.BASELINE_ATTACKS_ENDPOINT,
                 body=body,
             )
-            print(response)
         except Exception as e:
             print(e)
             raise e

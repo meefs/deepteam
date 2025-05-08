@@ -12,7 +12,7 @@ def red_team(
     attacks: List[BaseAttack],
     attacks_per_vulnerability_type: int = 1,
     ignore_errors: bool = False,
-    run_async: bool = False,
+    run_async: bool = True,
     max_concurrent: int = 10,
 ):
     red_teamer = RedTeamer(
