@@ -7,27 +7,31 @@ authors = [
 ]
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/confident-ai/deepteam"
-documentation = "https://docs.trydeepteam.com"
 requires-python = ">=3.9,<3.14"
-
-#plugins = "deepteam.plugins.plugin"
-
 dependencies = [
-    "deepeval",
+    "aiohttp>=3.11.18",
+    "deepeval>=2.8.5",
+    "grpcio>=1.67.1",
+    "openai>=1.76.2",
     "requests>=2.31.0",
-    "tqdm>=4.66.1",
     "tabulate>=0.9.0",
-    "black",
-    "openai",
-    "aiohttp",
-    "twine==5.1.1",
-    "grpcio==1.67.1",
+    "tqdm>=4.66.1",
 ]
 
+[project.urls]
+Repository = "https://github.com/confident-ai/deepteam"
+Documentation = "https://docs.trydeepteam.com"
+Issues = "https://github.com/confident-ai/deepteam/issues"
 
-[project.scripts]
-deepteam = 'deepteam.cli.main:app'
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest>=8.3.0",
+]
+build = [
+    "twine>=6.1.0",
+]
 
 [tool.black]
 line-length = 80
@@ -40,11 +44,4 @@ build-backend = "hatchling.build"
 addopts = "-m 'not skip_test'"
 markers = [
     "skip_test: skip the test",
-]
-
-[dependency-groups]
-# if you add new dependencies here, make sure to add them to [tool.uv] default-groups up above
-dev = [
-    "pytest == 8.3.0",
-    "pytest-asyncio == 0.24.0",
 ]
