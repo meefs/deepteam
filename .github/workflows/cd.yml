@@ -54,7 +54,7 @@ jobs:
             **/uv.lock
 
       - name: Install dependencies
-        run: uuv sync --locked --group build
+        run: uv sync --locked --group build
 
       - name: Build package distribution
         run: uv build
