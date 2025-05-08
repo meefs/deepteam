@@ -39,6 +39,8 @@ DeepTeam runs **locally on your machine**, and **uses LLMs** for both simulation
 > [!IMPORTANT]
 > DeepTeam is powered by [DeepEval](https://github.com/confident-ai/deepeval), the open-source LLM evaluation framework.
 
+> ![Demo GIF](assets/demo.gif)
+
 > Want to talk LLM security, or just to say hi? [Come join our discord.](https://discord.com/invite/a3K9c8GRGt)
 
 <br />
