@@ -1,6 +1,6 @@
 [project]
 name = "deepteam"
-version = "0.1.0"
+version = "0.1.1"
 description = "The LLM Red Teaming Framework"
 authors = [
     { name = "Jeffrey Ip", email = "jeffreyip@confident-ai.com" },
@@ -20,7 +20,7 @@ dependencies = [
 
 [project.urls]
 Repository = "https://github.com/confident-ai/deepteam"
-Documentation = "https://docs.trydeepteam.com"
+Documentation = "https://trydeepteam.com"
 Issues = "https://github.com/confident-ai/deepteam/issues"
 
 [dependency-groups]
@@ -30,6 +30,7 @@ dev = [
     "pytest>=8.3.0",
 ]
 build = [
+    "build>=1.0.3",
     "twine>=6.1.0",
 ]
 
