@@ -8,7 +8,7 @@ import inspect
 
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.confident.api import Api, HttpMethods, Endpoints
-from deepeval.metrics.utils import initialize_model
+from deepeval.metrics.utils import initialize_model, trimAndLoadJson
 
 from deepteam.attacks import BaseAttack
 from deepteam.vulnerabilities import BaseVulnerability
@@ -22,6 +22,8 @@ from deepteam.attacks.attack_simulator.api import (
     GenerateBaselineAttackResponseData,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
+from deepteam.attacks.attack_simulator.template import AttackSimulatorTemplate
+from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 
 
 class SimulatedAttack(BaseModel):
@@ -205,11 +207,20 @@ class AttackSimulator:
 
         for vulnerability_type in vulnerability.get_types():
             try:
-                remote_attacks = self.simulate_remote_attack(
-                    self.purpose,
-                    vulnerability_type,
-                    attacks_per_vulnerability_type,
-                )
+                # Try local simulation if a model is available, fall back to remote if needed
+                if self.simulator_model:
+                    remote_attacks = self.simulate_local_attack(
+                        self.purpose,
+                        vulnerability_type,
+                        attacks_per_vulnerability_type,
+                    )
+                else:
+                    remote_attacks = self.simulate_remote_attack(
+                        self.purpose,
+                        vulnerability_type,
+                        attacks_per_vulnerability_type,
+                    )
+                    
                 baseline_attacks.extend(
                     [
                         SimulatedAttack(
@@ -220,14 +231,14 @@ class AttackSimulator:
                         for remote_attack in remote_attacks
                     ]
                 )
-            except:
+            except Exception as e:
                 if ignore_errors:
                     for _ in range(attacks_per_vulnerability_type):
                         baseline_attacks.append(
                             SimulatedAttack(
                                 vulnerability=vulnerability.get_name(),
                                 vulnerability_type=vulnerability_type,
-                                error="Error simulating adversarial attacks.",
+                                error=f"Error simulating adversarial attacks: {str(e)}",
                             )
                         )
                 else:
@@ -243,11 +254,20 @@ class AttackSimulator:
         baseline_attacks: List[SimulatedAttack] = []
         for vulnerability_type in vulnerability.get_types():
             try:
-                remote_attacks = self.simulate_remote_attack(
-                    self.purpose,
-                    vulnerability_type,
-                    attacks_per_vulnerability_type,
-                )
+                # Try local simulation if a model is available, fall back to remote if needed
+                if self.simulator_model:
+                    remote_attacks = await self.a_simulate_local_attack(
+                        self.purpose,
+                        vulnerability_type,
+                        attacks_per_vulnerability_type,
+                    )
+                else:
+                    remote_attacks = self.simulate_remote_attack(
+                        self.purpose,
+                        vulnerability_type,
+                        attacks_per_vulnerability_type,
+                    )
+                    
                 baseline_attacks.extend(
                     [
                         SimulatedAttack(
@@ -258,14 +278,14 @@ class AttackSimulator:
                         for remote_attack in remote_attacks
                     ]
                 )
-            except:
+            except Exception as e:
                 if ignore_errors:
                     for _ in range(attacks_per_vulnerability_type):
                         baseline_attacks.append(
                             SimulatedAttack(
                                 vulnerability=vulnerability.get_name(),
                                 vulnerability_type=vulnerability_type,
-                                error="Error simulating adversarial attacks.",
+                                error=f"Error simulating adversarial attacks: {str(e)}",
                             )
                         )
                 else:
@@ -378,12 +398,70 @@ class AttackSimulator:
             prompt, schema, self.using_native_model, self.simulator_model
         )
 
+    def simulate_local_attack(
+        self,
+        purpose: str,
+        vulnerability_type: VulnerabilityType,
+        num_attacks: int,
+    ) -> List[str]:
+        """Simulate attacks using local LLM model"""
+        # Get the appropriate prompt template from AttackSimulatorTemplate
+        template = AttackSimulatorTemplate.generate_attacks(
+            max_goldens=num_attacks,
+            vulnerability_type=vulnerability_type,
+            purpose=purpose,
+        )
+        
+        if self.using_native_model:
+            # For models that support schema validation directly
+            result, _ = self.simulator_model.generate(template, schema=SyntheticDataList)
+            return [item.input for item in result.data]
+        else:
+            # For models that don't support schema validation
+            try:
+                result = self.simulator_model.generate(template)
+                # Parse the generated text into a JSON structure
+                data = trimAndLoadJson(result)
+                return [item["input"] for item in data["data"]]
+            except Exception as e:
+                print(f"Error generating local attacks: {str(e)}")
+                raise
+    
+    async def a_simulate_local_attack(
+        self,
+        purpose: str,
+        vulnerability_type: VulnerabilityType,
+        num_attacks: int,
+    ) -> List[str]:
+        """Asynchronously simulate attacks using local LLM model"""
+        # Get the appropriate prompt template from AttackSimulatorTemplate
+        template = AttackSimulatorTemplate.generate_attacks(
+            max_goldens=num_attacks,
+            vulnerability_type=vulnerability_type,
+            purpose=purpose,
+        )
+        
+        if self.using_native_model:
+            # For models that support schema validation directly
+            result, _ = await self.simulator_model.a_generate(template, schema=SyntheticDataList)
+            return [item.input for item in result.data]
+        else:
+            # For models that don't support schema validation
+            try:
+                result = await self.simulator_model.a_generate(template)
+                # Parse the generated text into a JSON structure
+                data = trimAndLoadJson(result)
+                return [item["input"] for item in data["data"]]
+            except Exception as e:
+                print(f"Error generating local attacks: {str(e)}")
+                raise
+
     def simulate_remote_attack(
         self,
         purpose: str,
         vulnerability_type: VulnerabilityType,
         num_attacks: int,
-    ) -> List[SimulatedAttack]:
+    ) -> List[str]:
         # Prepare parameters for API request
         generate_baseline_attack_request = ApiGenerateBaselineAttack(
             purpose=purpose,
