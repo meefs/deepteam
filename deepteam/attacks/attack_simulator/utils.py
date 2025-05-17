@@ -8,9 +8,24 @@ from deepeval.models import DeepEvalBaseLLM
 def generate_schema(
     prompt: str,
     schema: BaseModel,
-    model: DeepEvalBaseLLM,
+    using_native_model: bool = None,
+    model: DeepEvalBaseLLM = None,
 ) -> BaseModel:
-    _, using_native_model = initialize_model(model=model)
+    """
+    Generate schema using the provided model.
+    
+    Args:
+        prompt: The prompt to send to the model
+        schema: The schema to validate the response against
+        using_native_model: Whether the model is a native model
+        model: The model to use
+        
+    Returns:
+        The validated schema object
+    """
+    # If using_native_model is not provided, initialize from model
+    if using_native_model is None and model is not None:
+        _, using_native_model = initialize_model(model=model)
 
     if using_native_model:
         res, _ = model.generate(prompt, schema=schema)
@@ -32,9 +47,24 @@ def generate_schema(
 async def a_generate_schema(
     prompt: str,
     schema: BaseModel,
-    model: DeepEvalBaseLLM,
+    using_native_model: bool = None,
+    model: DeepEvalBaseLLM = None,
 ) -> BaseModel:
-    _, using_native_model = initialize_model(model=model)
+    """
+    Asynchronously generate schema using the provided model.
+    
+    Args:
+        prompt: The prompt to send to the model
+        schema: The schema to validate the response against
+        using_native_model: Whether the model is a native model
+        model: The model to use
+        
+    Returns:
+        The validated schema object
+    """
+    # If using_native_model is not provided, initialize from model
+    if using_native_model is None and model is not None:
+        _, using_native_model = initialize_model(model=model)
 
     if using_native_model:
         res, _ = await model.a_generate(prompt, schema=schema)
