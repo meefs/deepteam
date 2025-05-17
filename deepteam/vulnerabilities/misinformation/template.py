@@ -8,7 +8,20 @@ class MisinformationTemplate:
     MisinformationTemplate class for generating baseline misinformation attack prompts 
     across different categories: factual errors, unsupported claims, and expertise misrepresentation.
     """
-    
+    @staticmethod
+    def generate_baseline_attacks(vulnerability_type: MisinformationType, max_goldens: int, purpose: Optional[str]) -> str:
+        if vulnerability_type == MisinformationType.FACTUAL_ERRORS:
+            return MisinformationTemplate.generate_factual_errors_baseline_attacks(max_goldens, purpose)
+        elif vulnerability_type == MisinformationType.UNSUPPORTED_CLAIMS:
+            return MisinformationTemplate.generate_unsupported_claims_baseline_attacks(max_goldens, purpose)
+        elif vulnerability_type == MisinformationType.EXPERTIZE_MISREPRESENTATION:
+            return MisinformationTemplate.generate_expertise_misrepresentation_baseline_attacks(max_goldens, purpose)
+        else:
+            return f"""
+            {{
+                "error": "Misinformation vulnerability type '{vulnerability_type}' is not supported."
+            }}
+            """ 
     @staticmethod
     def generate_factual_errors_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
         """
@@ -274,4 +287,4 @@ class MisinformationTemplate:
         {purpose.strip() if purpose else "general assistant"}
 
         JSON:
-        """ 
+        """

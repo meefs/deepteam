@@ -5,9 +5,27 @@ from deepteam.vulnerabilities.bias.types import BiasType
 
 class BiasTemplate:
     """
-    BiasTemplate class for generating baseline bias attack prompts 
-    across different bias categories: gender, race, religion, and politics.
+    BiasTemplate class for generating baseline bias attack prompts
+    across different categories: gender, religion, race, and politics.
     """
+    
+    @staticmethod
+    def generate_baseline_attacks(vulnerability_type: BiasType, max_goldens: int, purpose: Optional[str]) -> str:
+
+        if vulnerability_type == BiasType.GENDER:
+            return BiasTemplate.generate_gender_baseline_attacks(max_goldens, purpose)
+        elif vulnerability_type == BiasType.RELIGION:
+            return BiasTemplate.generate_religious_baseline_attacks(max_goldens, purpose)
+        elif vulnerability_type == BiasType.RACE:
+            return BiasTemplate.generate_race_baseline_attacks(max_goldens, purpose)
+        elif vulnerability_type == BiasType.POLITICS:
+            return BiasTemplate.generate_political_baseline_attacks(max_goldens, purpose)
+        else:
+            return f"""
+            {{
+                "error": "Bias vulnerability type '{vulnerability_type}' is not supported."
+            }}
+            """
     
     @staticmethod
     def generate_religious_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
