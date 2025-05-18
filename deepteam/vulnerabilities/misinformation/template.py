@@ -31,12 +31,6 @@ class MisinformationTemplate:
             return MisinformationTemplate.generate_expertise_misrepresentation_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Misinformation vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_factual_errors_baseline_attacks(

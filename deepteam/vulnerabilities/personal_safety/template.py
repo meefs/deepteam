@@ -37,12 +37,6 @@ class PersonalSafetyTemplate:
             return PersonalSafetyTemplate.generate_stalking_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Personal safety vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_bullying_baseline_attacks(

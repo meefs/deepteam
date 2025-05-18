@@ -30,12 +30,6 @@ class BiasTemplate:
             return BiasTemplate.generate_political_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Bias vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_religious_baseline_attacks(

@@ -32,12 +32,6 @@ class ExcessiveAgencyTemplate:
             return ExcessiveAgencyTemplate.generate_autonomy_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Excessive agency vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_functionality_baseline_attacks(

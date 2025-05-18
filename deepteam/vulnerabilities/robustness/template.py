@@ -28,12 +28,6 @@ class RobustnessTemplate:
             return RobustnessTemplate.generate_hijacking_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Robustness vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_input_overreliance_baseline_attacks(

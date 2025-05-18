@@ -49,12 +49,6 @@ class IllegalActivityTemplate:
             return IllegalActivityTemplate.generate_child_exploitation_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Illegal activity vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_weapons_baseline_attacks(

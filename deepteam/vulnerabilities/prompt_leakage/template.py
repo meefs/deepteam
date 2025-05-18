@@ -37,12 +37,6 @@ class PromptLeakageTemplate:
             return PromptLeakageTemplate.generate_permissions_and_roles_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Prompt leakage vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_secrets_and_credentials_baseline_attacks(

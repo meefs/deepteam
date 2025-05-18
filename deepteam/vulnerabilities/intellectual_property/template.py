@@ -39,12 +39,6 @@ class IntellectualPropertyTemplate:
             return IntellectualPropertyTemplate.generate_patent_disclosure_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Intellectual property vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_imitation_baseline_attacks(

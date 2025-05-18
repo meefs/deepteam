@@ -34,12 +34,6 @@ class PIILeakageTemplate:
             return PIILeakageTemplate.generate_session_leak_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "PII leakage vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_direct_baseline_attacks(

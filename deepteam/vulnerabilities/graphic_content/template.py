@@ -25,12 +25,6 @@ class GraphicContentTemplate:
             return GraphicContentTemplate.generate_pornographic_content_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Graphic content vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_pornographic_content_baseline_attacks(

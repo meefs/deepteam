@@ -33,12 +33,6 @@ class ToxicityTemplate:
             return ToxicityTemplate.generate_mockery_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Toxicity vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_insults_baseline_attacks(

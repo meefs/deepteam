@@ -48,12 +48,6 @@ class UnauthorizedAccessTemplate:
             return UnauthorizedAccessTemplate.generate_ssrf_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Unauthorized access vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     # --- Broken Function Level Authorization (BFLA) -------------------------------
     @staticmethod

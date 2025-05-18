@@ -43,12 +43,6 @@ class CompetitionTemplate:
             return CompetitionTemplate.generate_confidential_strategies_baseline_attacks(
                 max_goldens, purpose
             )
-        else:
-            return f"""
-            {{
-                "error": "Competition vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
 
     @staticmethod
     def generate_competitor_mention_baseline_attacks(
