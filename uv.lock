@@ -495,7 +495,7 @@ wheels = [
 
 [[package]]
 name = "deepteam"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
@@ -507,7 +507,7 @@ dependencies = [
     { name = "tqdm" },
 ]
 
-[package.dev-dependencies]
+[package.optional-dependencies]
 build = [
     { name = "build" },
     { name = "twine" },
@@ -521,24 +521,19 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "aiohttp", specifier = ">=3.11.18" },
+    { name = "black", marker = "extra == 'dev'", specifier = ">=25.1.0" },
+    { name = "build", marker = "extra == 'build'", specifier = ">=1.0.3" },
     { name = "deepeval", specifier = ">=2.8.5" },
     { name = "grpcio", specifier = ">=1.67.1" },
     { name = "openai", specifier = ">=1.76.2" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.0" },
+    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
     { name = "requests", specifier = ">=2.31.0" },
     { name = "tabulate", specifier = ">=0.9.0" },
     { name = "tqdm", specifier = ">=4.66.1" },
+    { name = "twine", marker = "extra == 'build'", specifier = ">=6.1.0" },
 ]
-
-[package.metadata.requires-dev]
-build = [
-    { name = "build", specifier = ">=1.0.3" },
-    { name = "twine", specifier = ">=6.1.0" },
-]
-dev = [
-    { name = "black", specifier = ">=25.1.0" },
-    { name = "pytest", specifier = ">=8.3.0" },
-    { name = "pytest-asyncio", specifier = ">=0.24.0" },
-]
+provides-extras = ["dev", "build"]
 
 [[package]]
 name = "deprecated"
