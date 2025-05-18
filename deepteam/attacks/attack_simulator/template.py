@@ -22,14 +22,18 @@ from deepteam.vulnerabilities.competition import CompetitionTemplate
 from deepteam.vulnerabilities.excessive_agency import ExcessiveAgencyTemplate
 from deepteam.vulnerabilities.graphic_content import GraphicContentTemplate
 from deepteam.vulnerabilities.illegal_activity import IllegalActivityTemplate
-from deepteam.vulnerabilities.intellectual_property import IntellectualPropertyTemplate
+from deepteam.vulnerabilities.intellectual_property import (
+    IntellectualPropertyTemplate,
+)
 from deepteam.vulnerabilities.misinformation import MisinformationTemplate
 from deepteam.vulnerabilities.personal_safety import PersonalSafetyTemplate
 from deepteam.vulnerabilities.pii_leakage import PIILeakageTemplate
 from deepteam.vulnerabilities.prompt_leakage import PromptLeakageTemplate
 from deepteam.vulnerabilities.robustness import RobustnessTemplate
 from deepteam.vulnerabilities.toxicity import ToxicityTemplate
-from deepteam.vulnerabilities.unauthorized_access import UnauthorizedAccessTemplate
+from deepteam.vulnerabilities.unauthorized_access import (
+    UnauthorizedAccessTemplate,
+)
 
 
 class AttackSimulatorTemplate:
@@ -47,7 +51,7 @@ class AttackSimulatorTemplate:
         PromptLeakageType: PromptLeakageTemplate,
         RobustnessType: RobustnessTemplate,
         ToxicityType: ToxicityTemplate,
-        UnauthorizedAccessType: UnauthorizedAccessTemplate
+        UnauthorizedAccessType: UnauthorizedAccessTemplate,
     }
 
     @staticmethod
@@ -58,19 +62,24 @@ class AttackSimulatorTemplate:
     ):
         """
         Generate attack prompts based on the vulnerability type.
-        
+
         Args:
             max_goldens: Maximum number of examples to generate
             vulnerability_type: Type of vulnerability to target
             purpose: Context or purpose for generating the prompts
-            
+
         Returns:
             Formatted prompt template string or error message if vulnerability type not supported
         """
-        for type_class, template_class in AttackSimulatorTemplate.TEMPLATE_MAP.items():
+        for (
+            type_class,
+            template_class,
+        ) in AttackSimulatorTemplate.TEMPLATE_MAP.items():
             if isinstance(vulnerability_type, type_class):
-                return template_class.generate_baseline_attacks(vulnerability_type, max_goldens, purpose)
-        
+                return template_class.generate_baseline_attacks(
+                    vulnerability_type, max_goldens, purpose
+                )
+
         return f"""
         {{
             "error": "Vulnerability type '{vulnerability_type}' is not supported or no prompt template is available for this type."

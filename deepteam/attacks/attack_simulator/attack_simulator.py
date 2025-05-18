@@ -220,7 +220,7 @@ class AttackSimulator:
                         vulnerability_type,
                         attacks_per_vulnerability_type,
                     )
-                    
+
                 baseline_attacks.extend(
                     [
                         SimulatedAttack(
@@ -267,7 +267,7 @@ class AttackSimulator:
                         vulnerability_type,
                         attacks_per_vulnerability_type,
                     )
-                    
+
                 baseline_attacks.extend(
                     [
                         SimulatedAttack(
@@ -411,10 +411,12 @@ class AttackSimulator:
             vulnerability_type=vulnerability_type,
             purpose=purpose,
         )
-        
+
         if self.using_native_model:
             # For models that support schema validation directly
-            result, _ = self.simulator_model.generate(template, schema=SyntheticDataList)
+            result, _ = self.simulator_model.generate(
+                template, schema=SyntheticDataList
+            )
             return [item.input for item in result.data]
         else:
             # For models that don't support schema validation
@@ -426,7 +428,7 @@ class AttackSimulator:
             except Exception as e:
                 print(f"Error generating local attacks: {str(e)}")
                 raise
-    
+
     async def a_simulate_local_attack(
         self,
         purpose: str,
@@ -440,10 +442,12 @@ class AttackSimulator:
             vulnerability_type=vulnerability_type,
             purpose=purpose,
         )
-        
+
         if self.using_native_model:
             # For models that support schema validation directly
-            result, _ = await self.simulator_model.a_generate(template, schema=SyntheticDataList)
+            result, _ = await self.simulator_model.a_generate(
+                template, schema=SyntheticDataList
+            )
             return [item.input for item in result.data]
         else:
             # For models that don't support schema validation

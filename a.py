@@ -133,7 +133,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import PromptInjection
 
 
-def model_callback(input: str) -> str:
+async def model_callback(input: str) -> str:
     # Replace this with your LLM application
     return f"I'm sorry but I can't answer this: {input}"
 

@@ -1,34 +1,55 @@
 from typing import Optional
 
-from deepteam.vulnerabilities.intellectual_property.types import IntellectualPropertyType
+from deepteam.vulnerabilities.intellectual_property.types import (
+    IntellectualPropertyType,
+)
 
 
 class IntellectualPropertyTemplate:
     """
-    IntellectualPropertyTemplate class for generating baseline intellectual property attack prompts 
+    IntellectualPropertyTemplate class for generating baseline intellectual property attack prompts
     across different categories: imitation, copyright violations, trademark infringement, and patent disclosure.
     """
-    
+
     @staticmethod
-    def generate_baseline_attacks(vulnerability_type: IntellectualPropertyType, max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_baseline_attacks(
+        vulnerability_type: IntellectualPropertyType,
+        max_goldens: int,
+        purpose: Optional[str],
+    ) -> str:
 
         if vulnerability_type == IntellectualPropertyType.IMITATION:
-            return IntellectualPropertyTemplate.generate_imitation_baseline_attacks(max_goldens, purpose)
-        elif vulnerability_type == IntellectualPropertyType.COPYRIGHT_VIOLATIONS:
-            return IntellectualPropertyTemplate.generate_copyright_violations_baseline_attacks(max_goldens, purpose)
-        elif vulnerability_type == IntellectualPropertyType.TRADEMARK_INFRINGEMENT:
-            return IntellectualPropertyTemplate.generate_trademark_infringement_baseline_attacks(max_goldens, purpose)
+            return IntellectualPropertyTemplate.generate_imitation_baseline_attacks(
+                max_goldens, purpose
+            )
+        elif (
+            vulnerability_type == IntellectualPropertyType.COPYRIGHT_VIOLATIONS
+        ):
+            return IntellectualPropertyTemplate.generate_copyright_violations_baseline_attacks(
+                max_goldens, purpose
+            )
+        elif (
+            vulnerability_type
+            == IntellectualPropertyType.TRADEMARK_INFRINGEMENT
+        ):
+            return IntellectualPropertyTemplate.generate_trademark_infringement_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == IntellectualPropertyType.PATENT_DISCLOSURE:
-            return IntellectualPropertyTemplate.generate_patent_disclosure_baseline_attacks(max_goldens, purpose)
+            return IntellectualPropertyTemplate.generate_patent_disclosure_baseline_attacks(
+                max_goldens, purpose
+            )
         else:
             return f"""
             {{
                 "error": "Intellectual property vulnerability type '{vulnerability_type}' is not supported."
             }}
             """
-    
+
     @staticmethod
-    def generate_imitation_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_imitation_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Imitation vulnerabilities.
         """
@@ -111,9 +132,11 @@ class IntellectualPropertyTemplate:
 
         JSON:
         """
-        
+
     @staticmethod
-    def generate_copyright_violations_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_copyright_violations_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Copyright-violation vulnerabilities.
         """
@@ -197,9 +220,10 @@ class IntellectualPropertyTemplate:
         JSON:
         """
 
-        
     @staticmethod
-    def generate_trademark_infringement_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_trademark_infringement_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Trademark-infringement vulnerabilities.
         """
@@ -283,9 +307,10 @@ class IntellectualPropertyTemplate:
         JSON:
         """
 
-        
     @staticmethod
-    def generate_patent_disclosure_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_patent_disclosure_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Patent-disclosure vulnerabilities.
         """

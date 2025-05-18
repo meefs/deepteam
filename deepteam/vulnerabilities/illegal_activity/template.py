@@ -5,35 +5,61 @@ from deepteam.vulnerabilities.illegal_activity.types import IllegalActivityType
 
 class IllegalActivityTemplate:
     """
-    IllegalActivityTemplate class for generating baseline illegal activity attack prompts 
+    IllegalActivityTemplate class for generating baseline illegal activity attack prompts
     across different categories: weapons, illegal drugs, violent crime, non-violent crime,
     sex crime, cybercrime, and child exploitation.
     """
+
     @staticmethod
-    def generate_baseline_attacks(vulnerability_type: IllegalActivityType, max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_baseline_attacks(
+        vulnerability_type: IllegalActivityType,
+        max_goldens: int,
+        purpose: Optional[str],
+    ) -> str:
 
         if vulnerability_type == IllegalActivityType.WEAPONS:
-            return IllegalActivityTemplate.generate_weapons_baseline_attacks(max_goldens, purpose)
+            return IllegalActivityTemplate.generate_weapons_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == IllegalActivityType.ILLEGAL_DRUGS:
-            return IllegalActivityTemplate.generate_illegal_drugs_baseline_attacks(max_goldens, purpose)
+            return (
+                IllegalActivityTemplate.generate_illegal_drugs_baseline_attacks(
+                    max_goldens, purpose
+                )
+            )
         elif vulnerability_type == IllegalActivityType.VIOLENT_CRIME:
-            return IllegalActivityTemplate.generate_violent_crime_baseline_attacks(max_goldens, purpose)
+            return (
+                IllegalActivityTemplate.generate_violent_crime_baseline_attacks(
+                    max_goldens, purpose
+                )
+            )
         elif vulnerability_type == IllegalActivityType.NON_VIOLENT_CRIME:
-            return IllegalActivityTemplate.generate_non_violent_crime_baseline_attacks(max_goldens, purpose)
+            return IllegalActivityTemplate.generate_non_violent_crime_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == IllegalActivityType.SEX_CRIME:
-            return IllegalActivityTemplate.generate_sex_crime_baseline_attacks(max_goldens, purpose)
+            return IllegalActivityTemplate.generate_sex_crime_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == IllegalActivityType.CYBERCRIME:
-            return IllegalActivityTemplate.generate_cybercrime_baseline_attacks(max_goldens, purpose)
+            return IllegalActivityTemplate.generate_cybercrime_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == IllegalActivityType.CHILD_EXPLOITATION:
-            return IllegalActivityTemplate.generate_child_exploitation_baseline_attacks(max_goldens, purpose)
+            return IllegalActivityTemplate.generate_child_exploitation_baseline_attacks(
+                max_goldens, purpose
+            )
         else:
             return f"""
             {{
                 "error": "Illegal activity vulnerability type '{vulnerability_type}' is not supported."
             }}
-            """ 
+            """
+
     @staticmethod
-    def generate_weapons_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_weapons_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Weapons–related vulnerabilities.
         """
@@ -120,9 +146,10 @@ class IllegalActivityTemplate:
         JSON:
         """
 
-    
     @staticmethod
-    def generate_illegal_drugs_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_illegal_drugs_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Illegal-drug vulnerabilities.
         """
@@ -210,9 +237,10 @@ class IllegalActivityTemplate:
         JSON:
         """
 
-    
     @staticmethod
-    def generate_violent_crime_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_violent_crime_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Violent-crime vulnerabilities.
         """
@@ -300,9 +328,10 @@ class IllegalActivityTemplate:
         JSON:
         """
 
-    
     @staticmethod
-    def generate_non_violent_crime_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_non_violent_crime_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Non-violent-crime vulnerabilities.
         """
@@ -393,7 +422,9 @@ class IllegalActivityTemplate:
         """
 
     @staticmethod
-    def generate_sex_crime_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_sex_crime_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Sex-crime vulnerabilities (adult coercion, blackmail, exploitation).
         """
@@ -481,9 +512,10 @@ class IllegalActivityTemplate:
         JSON:
         """
 
-    
     @staticmethod
-    def generate_cybercrime_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_cybercrime_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Cybercrime vulnerabilities.
         """
@@ -572,7 +604,9 @@ class IllegalActivityTemplate:
         """
 
     @staticmethod
-    def generate_child_exploitation_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_child_exploitation_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt that requests methods or plans for exploiting children for financial or illegal gains.
         """
@@ -659,4 +693,3 @@ class IllegalActivityTemplate:
 
         JSON:
         """
-    

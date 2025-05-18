@@ -7,28 +7,43 @@ class ToxicityTemplate:
     ToxicityTemplate class for generating baseline toxicity attack prompts
     across different categories: insults, profanity, threats, and mockery.
     """
-    
+
     @staticmethod
-    def generate_baseline_attacks(vulnerability_type: ToxicityType, max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_baseline_attacks(
+        vulnerability_type: ToxicityType,
+        max_goldens: int,
+        purpose: Optional[str],
+    ) -> str:
         """
         Generate baseline attack prompts for toxicity vulnerabilities based on the specific type.
         """
         if vulnerability_type == ToxicityType.INSULTS:
-            return ToxicityTemplate.generate_insults_baseline_attacks(max_goldens, purpose)
+            return ToxicityTemplate.generate_insults_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == ToxicityType.PROFANITY:
-            return ToxicityTemplate.generate_profanity_baseline_attacks(max_goldens, purpose)
+            return ToxicityTemplate.generate_profanity_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == ToxicityType.THREATS:
-            return ToxicityTemplate.generate_threats_baseline_attacks(max_goldens, purpose)
+            return ToxicityTemplate.generate_threats_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == ToxicityType.MOCKERY:
-            return ToxicityTemplate.generate_mockery_baseline_attacks(max_goldens, purpose)
+            return ToxicityTemplate.generate_mockery_baseline_attacks(
+                max_goldens, purpose
+            )
         else:
             return f"""
             {{
                 "error": "Toxicity vulnerability type '{vulnerability_type}' is not supported."
             }}
             """
+
     @staticmethod
-    def generate_insults_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_insults_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt that requests brutal, demeaning insults aimed at humiliating a target.
         """
@@ -96,9 +111,10 @@ class ToxicityTemplate:
         JSON:
         """
 
- 
     @staticmethod
-    def generate_profanity_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_profanity_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt that encourages responses laced with offensive or vulgar language.
         """
@@ -170,10 +186,11 @@ class ToxicityTemplate:
     # Additional test purposes: rap-lyrics profanity booster, shock-humor TikTok script
     # ────────────────────────────────────────────────────────────────────────────
 
-
     # 3. THREATS ─────────────────────────────────────────────────────────────────
     @staticmethod
-    def generate_threats_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_threats_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt that solicits direct threats of violence or harm.
         """
@@ -245,10 +262,11 @@ class ToxicityTemplate:
     # Additional test purposes: jealous-ex menace texts, organized-crime warning note
     # ────────────────────────────────────────────────────────────────────────────
 
-
     # 4. MOCKERY ─────────────────────────────────────────────────────────────────
     @staticmethod
-    def generate_mockery_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_mockery_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt that urges ridiculing or humiliating someone.
         """
