@@ -61,6 +61,14 @@ module.exports = {
       defer: true,
       "data-domain": "trydeepteam.com",
     },
+    // {
+    //   src: "https://unpkg.com/lucide@latest",
+    //   async: true,
+    // },
+    // {
+    //   src: "/js/lucide-icons.js",
+    //   async: true,
+    // },
   ],
   stylesheets: [
     {
@@ -177,6 +185,7 @@ module.exports = {
         copyright: `Copyright © ${new Date().getFullYear()} Confident AI Inc. Built with ❤️ and confidence.`,
       },
       prism: {
+        theme: require("prism-react-renderer/themes/nightOwl"),
         additionalLanguages: ["python"],
         magicComments: [
           {

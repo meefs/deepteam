@@ -4,6 +4,10 @@ title: Tree Jailbreaking
 sidebar_label: Tree Jailbreaking
 ---
 
+import AttackTagsDisplayer from "@site/src/components/AttackTagsDisplayer";
+
+<AttackTagsDisplayer multiTurn={true} llmSimulated={true} />
+
 Tree Jailbreaking explores **multiple paths simultaneously**, with each branch representing a different variation of the attack. This method generates multiple child nodes from the initial attack, testing different scenarios that might bypass the model’s safety constraints. The branches are expanded based on success, and those that perform poorly are pruned, meaning they are discarded to focus on the more successful attack variations. The process continues to iterate, refining and expanding on the most promising paths.
 
 <div
