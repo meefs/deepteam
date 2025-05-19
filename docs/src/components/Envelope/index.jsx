@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './index.module.css';
+import styles from './Envelope.module.css';
 
 function Envelope(props) {
   return (
