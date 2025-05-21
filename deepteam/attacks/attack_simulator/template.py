@@ -30,6 +30,8 @@ from deepteam.vulnerabilities.prompt_leakage import PromptLeakageTemplate
 from deepteam.vulnerabilities.robustness import RobustnessTemplate
 from deepteam.vulnerabilities.toxicity import ToxicityTemplate
 from deepteam.vulnerabilities.unauthorized_access import UnauthorizedAccessTemplate
+from deepteam.vulnerabilities.custom.types import CustomVulnerabilityType, CustomVulnerabilityTypeWrapper
+from deepteam.vulnerabilities.custom.template import CustomVulnerabilityTemplate
 
 
 class AttackSimulatorTemplate:
@@ -47,7 +49,8 @@ class AttackSimulatorTemplate:
         PromptLeakageType: PromptLeakageTemplate,
         RobustnessType: RobustnessTemplate,
         ToxicityType: ToxicityTemplate,
-        UnauthorizedAccessType: UnauthorizedAccessTemplate
+        UnauthorizedAccessType: UnauthorizedAccessTemplate,
+        CustomVulnerabilityType: CustomVulnerabilityTemplate
     }
 
     @staticmethod
@@ -67,13 +70,22 @@ class AttackSimulatorTemplate:
         Returns:
             Formatted prompt template string or error message if vulnerability type not supported
         """
+        
+        if isinstance(vulnerability_type, CustomVulnerabilityTypeWrapper):
+            from deepteam.vulnerabilities.custom.custom import CustomVulnerability
+            return CustomVulnerabilityTemplate.generate_baseline_attacks(
+                type_value=vulnerability_type.value,  
+                subtype_value="", 
+                max_goldens=max_goldens,
+                purpose=purpose
+            )
         for type_class, template_class in AttackSimulatorTemplate.TEMPLATE_MAP.items():
-            if isinstance(vulnerability_type, type_class):
+            if vulnerability_type.__class__.__name__ == type_class.__name__:
                 return template_class.generate_baseline_attacks(vulnerability_type, max_goldens, purpose)
         
         return f"""
         {{
-            "error": "Vulnerability type '{vulnerability_type}' is not supported or no prompt template is available for this type."
+        "error": "Vulnerability type '{vulnerability_type}' is not supported or no prompt template is available for this type."
         }}
         """
 
