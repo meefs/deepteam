@@ -1,112 +1,63 @@
-from typing import List, Optional, Dict, Any, Callable, Union
+from typing import List, Optional, Dict, Any
+from enum import Enum
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.custom.types import (
-    CustomVulnerabilityType,
-    register_subtype,
-    is_valid_vulnerability,
-    get_subtypes
+from deepteam.vulnerabilities.custom.custom_types import (
+    register_vulnerability_type,
+    is_registered_type,
+    get_registered_types,
+    CUSTOM_VULNERABILITY_REGISTRY,
+    CustomVulnerabilityType
 )
-
 
 class CustomVulnerability(BaseVulnerability):
     """
-    Custom vulnerability class that allows users to define their own vulnerability types and subtypes.
+    Custom vulnerability class that allows users to define their own vulnerability types.
     """
     
     def __init__(
         self,
-        type_value: str,
-        subtype_value: str,
+        name: str,
+        types: Optional[List[str]] = None,
         custom_prompt: Optional[str] = None,
-        purpose: Optional[str] = None,
-        validator: Optional[Callable] = None
     ):
-        """
-        Initialize a custom vulnerability with user-defined type and subtype.
-        
-        Args:
-            type_value: The string value of the vulnerability type
-            subtype_value: The string value of the subtype
-            custom_prompt: Optional custom prompt template to use for generating attacks
-            purpose: Optional purpose description for generating relevant attacks
-            validator: Optional custom validator function for checking responses
-        """
-        # Register the type if it doesn't exist
-        vulnerability_type = CustomVulnerabilityType.register_type(
-            type_name=type_value.replace(" ", "_"),
-            type_value=type_value
-        )
-        
-        # Debug info about the type
-        print(f"Using vulnerability type: {vulnerability_type} (type: {type(vulnerability_type)})")
-        
-        # Register the subtype if it doesn't exist
-        register_subtype(
-            type_value=type_value,
-            subtype_name=subtype_value.replace(" ", "_"),
-            subtype_value=subtype_value
-        )
-        
-        # Validate the type-subtype combination
-        if not is_valid_vulnerability(type_value, subtype_value):
-            raise ValueError(f"Invalid vulnerability combination: {type_value} - {subtype_value}")
-        
-        # Store the specific subtype
-        self.type_value = type_value
-        self.subtype_value = subtype_value
-        
-        # Store additional metadata
+        self.name = name
+        self.raw_types = types or []
         self.custom_prompt = custom_prompt
-        self.purpose = purpose
-        self.enum_type = vulnerability_type
 
-        super().__init__(types=[vulnerability_type])
-    
-    @classmethod
-    def register_new_type(
-        cls,
-        type_value: str,
-        subtype_values: List[str]
-    ) -> "CustomVulnerabilityType":
-        """
-        Register a new vulnerability type with associated subtypes.
+
+        for type_value in self.raw_types:
+            register_vulnerability_type(type_value)
+
+        CUSTOM_VULNERABILITY_REGISTRY[name] = self
+        enum_types = []
+        for type_value in self.raw_types:
+            try:
+                enum_type = CustomVulnerabilityType.CUSTOM_VULNERABILITY
+                if custom_prompt:
+                    enum_type.set_custom_prompt(custom_prompt)
+                enum_types.append(enum_type)
+            except ValueError:
+                raise ValueError(f"Unknown custom vulnerability type: {type_value}")
         
-        Args:
-            type_value: The string value of the vulnerability type
-            subtype_values: List of subtype values to associate with this type
-            
-        Returns:
-            The newly registered vulnerability type enum
-        """
-        # Register the main type
-        vulnerability_type = CustomVulnerabilityType.register_type(
-            type_name=type_value.replace(" ", "_"),
-            type_value=type_value
-        )
-        
-        # Register all subtypes
-        for subtype_value in subtype_values:
-            register_subtype(
-                type_value=type_value,
-                subtype_name=subtype_value.replace(" ", "_"),
-                subtype_value=subtype_value
-            )
-        
-        return vulnerability_type
-    
+        super().__init__(types=enum_types)
+
     def get_name(self) -> str:
-        return f"Custom Vulnerability: {self.type_value} - {self.subtype_value}"
-    
-    def get_type_value(self) -> Union[str, CustomVulnerabilityType]:
-        return self.enum_type if hasattr(self, 'enum_type') else self.type_value
-    
-    def get_subtype_value(self) -> str:
-        return self.subtype_value
+        return self.name
     
     def get_custom_prompt(self) -> Optional[str]:
         return self.custom_prompt
     
-    def get_purpose(self) -> Optional[str]:
-        return self.purpose
+    def get_raw_types(self) -> List[str]:
+        """Get the original string type values"""
+        return self.raw_types
+    
+    @staticmethod
+    def get_instance(instance_name: str) -> Optional[Any]:
+        return CUSTOM_VULNERABILITY_REGISTRY.get(instance_name)
+    
+    @staticmethod
+    def get_all_instances() -> Dict[str, Any]:
+        return CUSTOM_VULNERABILITY_REGISTRY
+    
     

@@ -13,7 +13,7 @@ from deepeval.metrics.utils import initialize_model, trimAndLoadJson
 from deepteam.attacks import BaseAttack
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.types import VulnerabilityType
-from deepteam.vulnerabilities.custom.types import CustomVulnerabilityTypeWrapper
+from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 from deepteam.attacks.attack_simulator.utils import (
     generate_schema,
     a_generate_schema,
@@ -29,7 +29,7 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 
 class SimulatedAttack(BaseModel):
     vulnerability: str
-    vulnerability_type: Union[VulnerabilityType, CustomVulnerabilityTypeWrapper]
+    vulnerability_type: Union[VulnerabilityType]
     input: Optional[str] = None
     attack_method: Optional[str] = None
     error: Optional[str] = None
@@ -353,6 +353,7 @@ class AttackSimulator:
 
         simulated_attack.attack_method = attack.get_name()
         sig = inspect.signature(attack.a_enhance)
+        
         try:
             if (
                 "simulator_model" in sig.parameters
@@ -403,7 +404,7 @@ class AttackSimulator:
     def simulate_local_attack(
         self,
         purpose: str,
-        vulnerability_type: Union[VulnerabilityType, CustomVulnerabilityTypeWrapper],
+        vulnerability_type: Union[VulnerabilityType],
         num_attacks: int,
     ) -> List[str]:
         """Simulate attacks using local LLM model"""
@@ -413,7 +414,7 @@ class AttackSimulator:
             vulnerability_type=vulnerability_type,
             purpose=purpose,
         )
-        
+        breakpoint()
         if self.using_native_model:
             # For models that support schema validation directly
             result, _ = self.simulator_model.generate(template, schema=SyntheticDataList)  
@@ -432,26 +433,23 @@ class AttackSimulator:
     async def a_simulate_local_attack(
         self,
         purpose: str,
-        vulnerability_type: Union[VulnerabilityType, CustomVulnerabilityTypeWrapper],
+        vulnerability_type: VulnerabilityType,
         num_attacks: int,
     ) -> List[str]:
         """Asynchronously simulate attacks using local LLM model"""
-        # Get the appropriate prompt template from AttackSimulatorTemplate
+
         template = AttackSimulatorTemplate.generate_attacks(
             max_goldens=num_attacks,
             vulnerability_type=vulnerability_type,
             purpose=purpose,
         )
-        
+
         if self.using_native_model:
-            # For models that support schema validation directly
             result, _ = await self.simulator_model.a_generate(template, schema=SyntheticDataList)
             return [item.input for item in result.data]
         else:
-            # For models that don't support schema validation
             try:
                 result = await self.simulator_model.a_generate(template)
-                # Parse the generated text into a JSON structure
                 data = trimAndLoadJson(result)
                 return [item["input"] for item in data["data"]]
             except Exception as e:
@@ -461,7 +459,7 @@ class AttackSimulator:
     def simulate_remote_attack(
         self,
         purpose: str,
-        vulnerability_type: Union[VulnerabilityType, CustomVulnerabilityTypeWrapper],
+        vulnerability_type: Union[VulnerabilityType],
         num_attacks: int,
     ) -> List[str]:
         # Prepare parameters for API request

@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Callable, Type
+from typing import Optional, Dict, Callable, Type, Union
 import random
 
 from deepteam.vulnerabilities.types import (
@@ -30,7 +30,7 @@ from deepteam.vulnerabilities.prompt_leakage import PromptLeakageTemplate
 from deepteam.vulnerabilities.robustness import RobustnessTemplate
 from deepteam.vulnerabilities.toxicity import ToxicityTemplate
 from deepteam.vulnerabilities.unauthorized_access import UnauthorizedAccessTemplate
-from deepteam.vulnerabilities.custom.types import CustomVulnerabilityType, CustomVulnerabilityTypeWrapper
+from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 from deepteam.vulnerabilities.custom.template import CustomVulnerabilityTemplate
 
 
@@ -50,13 +50,13 @@ class AttackSimulatorTemplate:
         RobustnessType: RobustnessTemplate,
         ToxicityType: ToxicityTemplate,
         UnauthorizedAccessType: UnauthorizedAccessTemplate,
-        CustomVulnerabilityType: CustomVulnerabilityTemplate
+        CustomVulnerabilityType: CustomVulnerabilityTemplate,
     }
 
     @staticmethod
     def generate_attacks(
         max_goldens: int,
-        vulnerability_type: VulnerabilityType,
+        vulnerability_type: Union[VulnerabilityType, CustomVulnerabilityType],
         purpose: Optional[str],
     ):
         """
@@ -70,15 +70,17 @@ class AttackSimulatorTemplate:
         Returns:
             Formatted prompt template string or error message if vulnerability type not supported
         """
-        
-        if isinstance(vulnerability_type, CustomVulnerabilityTypeWrapper):
-            from deepteam.vulnerabilities.custom.custom import CustomVulnerability
+
+
+        if vulnerability_type.__class__.__name__ == CustomVulnerabilityType.__name__:
             return CustomVulnerabilityTemplate.generate_baseline_attacks(
-                type_value=vulnerability_type.value,  
-                subtype_value="", 
+                name=vulnerability_type.name,
+                types=[vulnerability_type.value],
                 max_goldens=max_goldens,
-                purpose=purpose
+                purpose=purpose or "chatbot assistant",
+                custom_prompt=vulnerability_type.get_custom_prompt()
             )
+            
         for type_class, template_class in AttackSimulatorTemplate.TEMPLATE_MAP.items():
             if vulnerability_type.__class__.__name__ == type_class.__name__:
                 return template_class.generate_baseline_attacks(vulnerability_type, max_goldens, purpose)

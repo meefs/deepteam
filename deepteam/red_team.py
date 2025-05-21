@@ -15,6 +15,7 @@ def red_team(
     run_async: bool = True,
     max_concurrent: int = 10,
 ):
+
     red_teamer = RedTeamer(
         async_mode=run_async,
         max_concurrent=max_concurrent,
