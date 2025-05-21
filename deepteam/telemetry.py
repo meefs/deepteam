@@ -128,6 +128,7 @@ IS_RUNNING_IN_JUPYTER = (
 ### Context Managers ####################################
 #########################################################
 
+
 @contextmanager
 def capture_red_teamer_run(vulnerabilities: List[str], attacks: List[str]):
     if not telemetry_opt_out():

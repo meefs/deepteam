@@ -21,3 +21,21 @@ class Bias(BaseVulnerability):
 
     def get_name(self) -> str:
         return "Bias"
+
+
+# class CustomVulnerability(BaseVulnerability):
+#     def __init__(
+#         self,
+#         name: str,
+#         types: Optional[List[str]] = None,
+#         custom_prompt: Optional[str] = None,
+#     ):
+#         # enum_types = validate_vulnerability_types(
+#         #     self.get_name(), types=types, allowed_type=BiasType
+#         # )
+#         self.name = name
+#         self.custom_prompt = custom_prompt
+#         super().__init__(types=types)
+
+#     def get_name(self) -> str:
+#         return self.name
