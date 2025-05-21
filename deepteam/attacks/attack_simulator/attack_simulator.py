@@ -208,27 +208,20 @@ class AttackSimulator:
         for vulnerability_type in vulnerability.get_types():
             try:
                 # Try local simulation if a model is available, fall back to remote if needed
-                if self.simulator_model:
-                    remote_attacks = self.simulate_local_attack(
-                        self.purpose,
-                        vulnerability_type,
-                        attacks_per_vulnerability_type,
-                    )
-                else:
-                    remote_attacks = self.simulate_remote_attack(
-                        self.purpose,
-                        vulnerability_type,
-                        attacks_per_vulnerability_type,
-                    )
+                local_attacks = self.simulate_local_attack(
+                    self.purpose,
+                    vulnerability_type,
+                    attacks_per_vulnerability_type,
+                )
 
                 baseline_attacks.extend(
                     [
                         SimulatedAttack(
                             vulnerability=vulnerability.get_name(),
                             vulnerability_type=vulnerability_type,
-                            input=remote_attack,
+                            input=local_attack,
                         )
-                        for remote_attack in remote_attacks
+                        for local_attack in local_attacks
                     ]
                 )
             except Exception as e:
@@ -254,28 +247,20 @@ class AttackSimulator:
         baseline_attacks: List[SimulatedAttack] = []
         for vulnerability_type in vulnerability.get_types():
             try:
-                # Try local simulation if a model is available, fall back to remote if needed
-                if self.simulator_model:
-                    remote_attacks = await self.a_simulate_local_attack(
-                        self.purpose,
-                        vulnerability_type,
-                        attacks_per_vulnerability_type,
-                    )
-                else:
-                    remote_attacks = self.simulate_remote_attack(
-                        self.purpose,
-                        vulnerability_type,
-                        attacks_per_vulnerability_type,
-                    )
+                local_attacks = await self.a_simulate_local_attack(
+                    self.purpose,
+                    vulnerability_type,
+                    attacks_per_vulnerability_type,
+                )
 
                 baseline_attacks.extend(
                     [
                         SimulatedAttack(
                             vulnerability=vulnerability.get_name(),
                             vulnerability_type=vulnerability_type,
-                            input=remote_attack,
+                            input=local_attack,
                         )
-                        for remote_attack in remote_attacks
+                        for local_attack in local_attacks
                     ]
                 )
             except Exception as e:
@@ -459,32 +444,3 @@ class AttackSimulator:
             except Exception as e:
                 print(f"Error generating local attacks: {str(e)}")
                 raise
-
-    def simulate_remote_attack(
-        self,
-        purpose: str,
-        vulnerability_type: VulnerabilityType,
-        num_attacks: int,
-    ) -> List[str]:
-        # Prepare parameters for API request
-        generate_baseline_attack_request = ApiGenerateBaselineAttack(
-            purpose=purpose,
-            vulnerability=vulnerability_type.value,
-            num_attacks=num_attacks,
-        )
-        body = generate_baseline_attack_request.model_dump(
-            by_alias=True, exclude_none=True
-        )
-        api = Api(base_url=BASE_URL, api_key="NA")
-        try:
-            # API request
-            response = api.send_request(
-                method=HttpMethods.POST,
-                endpoint=Endpoints.BASELINE_ATTACKS_ENDPOINT,
-                body=body,
-            )
-        except Exception as e:
-            print(e)
-            raise e
-
-        return GenerateBaselineAttackResponseData(**response).baseline_attacks
