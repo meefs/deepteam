@@ -34,9 +34,6 @@ class SimulatedAttack(BaseModel):
     attack_method: Optional[str] = None
     error: Optional[str] = None
     
-    model_config = {
-        "arbitrary_types_allowed": True
-    }
 
 
 BASE_URL = "https://deepeval.confident-ai.com"
