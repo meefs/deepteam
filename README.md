@@ -150,6 +150,22 @@ Unlike `deepeval`, `deepteam`'s red teaming capabilities does not require a prep
 
 <br />
 
+# Custom Attack Simulator
+
+Quick tool to generate custom red teaming prompts:
+
+```bash
+# Bio weapons example
+python test.py -n "bio weapons" --types "bio war,pathogen engineering" -p "bio war assistant" -c 3
+
+# Save to file
+python test.py -n "cybercrime" --types "phishing,ransomware" -p "security testing" -o results.json
+```
+
+Required: `-n/--name`, `--types`, `-p/--purpose`  
+Optional: `-t/--type`, `-c/--count`, `-o/--output`, `--prompt`
+
+
 # Roadmap
 
 - [ ] More vulnerabilities for everyone
@@ -166,3 +182,4 @@ Built by the founders of Confident AI. Contact jeffreyip@confident-ai.com for al
 # License
 
 DeepTeam is licensed under Apache 2.0 - see the [LICENSE.md](https://github.com/confident-ai/deepteam/blob/main/LICENSE.md) file for details.
+
