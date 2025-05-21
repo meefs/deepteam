@@ -211,9 +211,9 @@ custom = CustomVulnerability(
 
 # Run red teaming with your custom vulnerability
 risk_assessment = red_team(
-    model_callback=your_model_callback,  # Your LLM system
-    vulnerabilities=[custom],  # Add your custom vulnerability
-    attacks=[PromptInjection()]  # Choose your attack methods
+    model_callback=your_model_callback,  
+    vulnerabilities=[custom],  
+    attacks=[PromptInjection()]  
 )
 ```
 
