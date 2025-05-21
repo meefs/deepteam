@@ -128,29 +128,6 @@ IS_RUNNING_IN_JUPYTER = (
 ### Context Managers ####################################
 #########################################################
 
-
-@contextmanager
-def capture_evaluation_run(type: str):
-    if not telemetry_opt_out():
-        with tracer.start_as_current_span(f"Ran {type}") as span:
-            if type in ["evaluate()", "deepeval test run"]:
-                posthog.capture(get_unique_id(), f"Ran {type}")
-            span.set_attribute("logged_in_with", get_logged_in_with())
-            span.set_attribute("environment", IS_RUNNING_IN_JUPYTER)
-            span.set_attribute("user.status", get_status())
-            span.set_attribute("user.unique_id", get_unique_id())
-            span.set_attribute(
-                "feature_status.evaluation",
-                get_feature_status(Feature.EVALUATION),
-            )
-            if anonymous_public_ip:
-                span.set_attribute("user.public_ip", anonymous_public_ip)
-            set_last_feature(Feature.EVALUATION)
-            yield span
-    else:
-        yield
-
-
 @contextmanager
 def capture_red_teamer_run(vulnerabilities: List[str], attacks: List[str]):
     if not telemetry_opt_out():
