@@ -7,7 +7,6 @@ import inspect
 
 
 from deepeval.models import DeepEvalBaseLLM
-from deepeval.confident.api import Api, HttpMethods, Endpoints
 from deepeval.metrics.utils import initialize_model, trimAndLoadJson
 
 from deepteam.attacks import BaseAttack
@@ -16,10 +15,6 @@ from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.attacks.attack_simulator.utils import (
     generate_schema,
     a_generate_schema,
-)
-from deepteam.attacks.attack_simulator.api import (
-    ApiGenerateBaselineAttack,
-    GenerateBaselineAttackResponseData,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.template import AttackSimulatorTemplate
