@@ -31,9 +31,6 @@ class SimulatedAttack(BaseModel):
     error: Optional[str] = None
 
 
-BASE_URL = "https://deepeval.confident-ai.com"
-
-
 class AttackSimulator:
     model_callback: Union[CallbackType, None] = None
 

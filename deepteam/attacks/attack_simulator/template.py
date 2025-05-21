@@ -1,5 +1,4 @@
-from typing import Optional, Dict, Callable, Type
-import random
+from typing import Optional
 
 from deepteam.vulnerabilities.types import (
     MisinformationType,
