@@ -211,7 +211,7 @@ class RedTeamer:
 
                 self.risk_assessment = RiskAssessment(
                     overview=construct_risk_assessment_overview(
-                        test_cases=red_teaming_test_cases
+                        red_teaming_test_cases=red_teaming_test_cases
                     ),
                     test_cases=red_teaming_test_cases,
                 )
@@ -316,7 +316,7 @@ class RedTeamer:
 
             self.risk_assessment = RiskAssessment(
                 overview=construct_risk_assessment_overview(
-                    test_cases=red_teaming_test_cases
+                    red_teaming_test_cases=red_teaming_test_cases
                 ),
                 test_cases=red_teaming_test_cases,
             )
