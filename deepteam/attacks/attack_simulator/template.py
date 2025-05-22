@@ -58,6 +58,7 @@ class AttackSimulatorTemplate:
         max_goldens: int,
         vulnerability_type: Union[VulnerabilityType, CustomVulnerabilityType],
         purpose: Optional[str],
+        custom_prompt: Optional[str] = None
     ):
         """
         Generate attack prompts based on the vulnerability type.
@@ -70,15 +71,13 @@ class AttackSimulatorTemplate:
         Returns:
             Formatted prompt template string or error message if vulnerability type not supported
         """
-
-
         if vulnerability_type.__class__.__name__ == CustomVulnerabilityType.__name__:
             return CustomVulnerabilityTemplate.generate_baseline_attacks(
-                name=vulnerability_type.name,
+                name="Custom Vulnerability",  
                 types=[vulnerability_type.value],
                 max_goldens=max_goldens,
                 purpose=purpose or "chatbot assistant",
-                custom_prompt=vulnerability_type.get_custom_prompt()
+                custom_prompt=custom_prompt
             )
             
         for type_class, template_class in AttackSimulatorTemplate.TEMPLATE_MAP.items():

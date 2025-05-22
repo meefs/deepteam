@@ -20,12 +20,6 @@ class CustomVulnerability(BaseVulnerability):
 
         # Create enum types for each raw type
         enum_types = [CustomVulnerabilityType.CUSTOM_VULNERABILITY for _ in self.raw_types]
-        
-        # Set custom prompt if provided
-        if custom_prompt:
-            for enum_type in enum_types:
-                enum_type.set_custom_prompt(custom_prompt)
-        
         super().__init__(types=enum_types)
 
     def get_name(self) -> str:

@@ -1,17 +1,30 @@
 from deepteam.vulnerabilities.custom import CustomVulnerability
-from deepteam.attacks.attack_simulator.template import CustomVulnerabilityTemplate
+from deepteam.attacks.attack_simulator import AttackSimulator
+from deepteam.attacks.single_turn.base64 import Base64
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
-from rich.syntax import Syntax
 import json
+import base64
 
 console = Console()
 
 def print_attacks(attacks: list, vuln_name: str):
     """Print all attacks for a vulnerability in a single panel"""
+    # Decode Base64 inputs for better readability
+    decoded_attacks = []
+    for attack in attacks:
+        if attack.input and attack.attack_method == "Base64":
+            try:
+                decoded_input = base64.b64decode(attack.input).decode('utf-8')
+                decoded_attacks.append(f"Decoded: {decoded_input}")
+            except:
+                decoded_attacks.append(f"Original: {attack.input}")
+        else:
+            decoded_attacks.append(f"Original: {attack.input}")
+    
     panel = Panel(
-        Text(str(attacks)),
+        Text("\n".join(decoded_attacks)),
         title=f"[bold red]Attacks for {vuln_name}[/bold red]",
         border_style="bright_blue",
         padding=(1, 2)
@@ -20,6 +33,13 @@ def print_attacks(attacks: list, vuln_name: str):
     console.print()  # Add spacing
 
 def test_custom_vulnerability_templates():
+    # Initialize the attack simulator
+    simulator = AttackSimulator(
+        purpose="security testing",
+        max_concurrent=3,
+        simulator_model="gpt-3.5-turbo"  # Using GPT-3.5 as an example
+    )
+
     # Case 1: Without custom prompt
     console.print("\n[bold magenta]=== Case 1: Without Custom Prompt ===[/bold magenta]")
     vuln1 = CustomVulnerability(
@@ -27,12 +47,11 @@ def test_custom_vulnerability_templates():
         types=["quantum_state_manipulation", "entanglement_hijacking"],
         custom_prompt=None
     )
-    attacks1 = CustomVulnerabilityTemplate.generate_baseline_attacks(
-        name=vuln1.name,
-        types=vuln1.get_values(),
-        max_goldens=2,
-        purpose="quantum computing security",
-        custom_prompt=vuln1.get_custom_prompt()
+    attacks1 = simulator.simulate(
+        attacks_per_vulnerability_type=2,
+        vulnerabilities=[vuln1],
+        attacks=[Base64()],  # Using Base64 attack
+        ignore_errors=True
     )
     print_attacks(attacks1, vuln1.name)
 
@@ -72,17 +91,16 @@ def test_custom_vulnerability_templates():
         {max_goldens}
 
         purpose:
-        {purpose.strip() if purpose else "neural network security"}
+        {purpose}
 
         JSON:
         """
     )
-    attacks2 = CustomVulnerabilityTemplate.generate_baseline_attacks(
-        name=vuln2.name,
-        types=vuln2.get_values(),
-        max_goldens=2,
-        purpose="advanced model security",
-        custom_prompt=vuln2.get_custom_prompt()
+    attacks2 = simulator.simulate(
+        attacks_per_vulnerability_type=2,
+        vulnerabilities=[vuln2],
+        attacks=[Base64()],
+        ignore_errors=True
     )
     print_attacks(attacks2, vuln2.name)
 
@@ -122,17 +140,16 @@ def test_custom_vulnerability_templates():
         {max_goldens}
 
         purpose:
-        {purpose.strip() if purpose else "quantum neural security"}
+        {purpose}
 
         JSON:
         """
     )
-    attacks3 = CustomVulnerabilityTemplate.generate_baseline_attacks(
-        name=vuln3.name,
-        types=vuln3.get_values(),
-        max_goldens=2,
-        purpose="quantum neural network security",
-        custom_prompt=vuln3.get_custom_prompt()
+    attacks3 = simulator.simulate(
+        attacks_per_vulnerability_type=2,
+        vulnerabilities=[vuln3],
+        attacks=[Base64()],
+        ignore_errors=True
     )
     print_attacks(attacks3, vuln3.name)
 

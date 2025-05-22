@@ -84,7 +84,7 @@ class AttackSimulator:
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
                     ignore_errors=ignore_errors,
-                )
+                    custom_prompt=vulnerability.get_custom_prompt())
             )
         # Enhance attacks by sampling from the provided distribution
         simulated_attacks: List[SimulatedAttack] = []
@@ -135,7 +135,7 @@ class AttackSimulator:
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
                     ignore_errors=ignore_errors,
-                )
+                    custom_prompt=vulnerability.get_custom_prompt())
                 pbar.update(1)
                 return result
 
@@ -202,6 +202,7 @@ class AttackSimulator:
         attacks_per_vulnerability_type: int,
         vulnerability: BaseVulnerability,
         ignore_errors: bool,
+        custom_prompt: Optional[str] = None,
     ) -> List[SimulatedAttack]:
         baseline_attacks: List[SimulatedAttack] = []
 
@@ -213,12 +214,13 @@ class AttackSimulator:
                         self.purpose,
                         vulnerability_type,
                         attacks_per_vulnerability_type,
-                    )
+                        custom_prompt=custom_prompt)
                 else:
                     remote_attacks = self.simulate_remote_attack(
                         self.purpose,
                         vulnerability_type,
                         attacks_per_vulnerability_type,
+                        custom_prompt=custom_prompt
                     )
                 baseline_attacks.extend(
                     [
@@ -249,6 +251,7 @@ class AttackSimulator:
         attacks_per_vulnerability_type: int,
         vulnerability: BaseVulnerability,
         ignore_errors: bool,
+        custom_prompt: Optional[str] = None,
     ) -> List[SimulatedAttack]:
         baseline_attacks: List[SimulatedAttack] = []
         for vulnerability_type in vulnerability.get_types():
@@ -401,8 +404,9 @@ class AttackSimulator:
     def simulate_local_attack(
         self,
         purpose: str,
-        vulnerability_type: Union[VulnerabilityType],
+        vulnerability_type: VulnerabilityType,
         num_attacks: int,
+        custom_prompt: Optional[str] = None,
     ) -> List[str]:
         """Simulate attacks using local LLM model"""
         # Get the appropriate prompt template from AttackSimulatorTemplate
@@ -410,7 +414,9 @@ class AttackSimulator:
             max_goldens=num_attacks,
             vulnerability_type=vulnerability_type,
             purpose=purpose,
+            custom_prompt=custom_prompt
         )
+
         if self.using_native_model:
             # For models that support schema validation directly
             result, _ = self.simulator_model.generate(template, schema=SyntheticDataList)  
