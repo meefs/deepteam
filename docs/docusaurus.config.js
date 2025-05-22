@@ -99,11 +99,7 @@ module.exports = {
             label: "Docs",
             activeBasePath: 'docs',
           },
-          {
-            href: "https://confident-ai.com/blog",
-            position: "left",
-            label: "Blogs",
-          },
+          {to: 'blog', label: 'Blog', position: 'left'},
           // {
           //   href: "https://confident-ai.com/book-a-demo",
           //   className: "header-confident-link",
