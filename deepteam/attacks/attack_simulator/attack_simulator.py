@@ -29,7 +29,7 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 
 class SimulatedAttack(BaseModel):
     vulnerability: str
-    vulnerability_type: Union[VulnerabilityType]
+    vulnerability_type: VulnerabilityType
     input: Optional[str] = None
     attack_method: Optional[str] = None
     error: Optional[str] = None
