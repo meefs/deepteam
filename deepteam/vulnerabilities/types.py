@@ -35,4 +35,5 @@ VulnerabilityType = Union[
     IntellectualPropertyType,
     IntellectualPropertyType,
     CustomVulnerabilityType,
+    
 ]

@@ -55,6 +55,7 @@ class CustomVulnerabilityTemplate:
 
         template = template.replace("{", "{{").replace("}", "}}")
         template = template.replace("{{name}}", "{name}").replace("{{types}}", "{types}").replace("{{max_goldens}}", "{max_goldens}").replace("{{purpose}}", purpose.strip() if purpose else "")
+        
         return template.format(
             name=name,
             types=", ".join(types),

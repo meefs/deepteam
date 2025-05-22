@@ -29,6 +29,7 @@ def print_attacks(attacks: list, vuln_name: str):
         border_style="bright_blue",
         padding=(1, 2)
     )
+    
     console.print(panel)
     console.print()  # Add spacing
 

@@ -71,6 +71,7 @@ class AttackSimulatorTemplate:
         Returns:
             Formatted prompt template string or error message if vulnerability type not supported
         """
+        
         if vulnerability_type.__class__.__name__ == CustomVulnerabilityType.__name__:
             return CustomVulnerabilityTemplate.generate_baseline_attacks(
                 name="Custom Vulnerability",  

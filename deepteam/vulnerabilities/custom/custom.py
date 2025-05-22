@@ -7,7 +7,6 @@ class CustomVulnerability(BaseVulnerability):
     """
     Custom vulnerability class that allows users to define their own vulnerability types.
     """
-    
     def __init__(
         self,
         name: str,

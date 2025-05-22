@@ -421,6 +421,7 @@ class AttackSimulator:
             # For models that support schema validation directly
             result, _ = self.simulator_model.generate(template, schema=SyntheticDataList)  
             return [item.input for item in result.data]
+        
         else:
             # For models that don't support schema validation
             try:
