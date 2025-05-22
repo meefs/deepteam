@@ -411,7 +411,6 @@ class AttackSimulator:
             vulnerability_type=vulnerability_type,
             purpose=purpose,
         )
-        breakpoint()
         if self.using_native_model:
             # For models that support schema validation directly
             result, _ = self.simulator_model.generate(template, schema=SyntheticDataList)  
