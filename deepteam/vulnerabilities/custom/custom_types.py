@@ -1,24 +1,5 @@
 from enum import Enum
-from typing import Dict, Optional, List, Set, Any, Type
-
-
-
-CUSTOM_VULNERABILITY_TYPES: Set[str] = set()
-CUSTOM_VULNERABILITY_REGISTRY: Dict[str, Any] = {}
-
-
-def register_vulnerability_type(type_value: str) -> None:
-    """Register a new vulnerability type"""
-    CUSTOM_VULNERABILITY_TYPES.add(type_value)
-
-
-def get_registered_types() -> Set[str]:
-    return CUSTOM_VULNERABILITY_TYPES
-
-
-def is_registered_type(type_value: str) -> bool:
-    return type_value in CUSTOM_VULNERABILITY_TYPES
-
+from typing import Optional
 
 class CustomVulnerabilityType(Enum):
     """Custom vulnerability type enum with prompt support"""

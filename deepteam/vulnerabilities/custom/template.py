@@ -1,8 +1,5 @@
 from typing import Optional, List
 
-from deepteam.vulnerabilities.custom.custom_types import is_registered_type
-
-
 class CustomVulnerabilityTemplate:
     """
     Template generator for custom vulnerability attacks.

@@ -1,14 +1,7 @@
-from typing import List, Optional, Dict, Any
-from enum import Enum
+from typing import List, Optional
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.custom.custom_types import (
-    register_vulnerability_type,
-    is_registered_type,
-    get_registered_types,
-    CUSTOM_VULNERABILITY_REGISTRY,
-    CustomVulnerabilityType
-)
+from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 
 class CustomVulnerability(BaseVulnerability):
     """
@@ -25,20 +18,13 @@ class CustomVulnerability(BaseVulnerability):
         self.raw_types = types or []
         self.custom_prompt = custom_prompt
 
-
-        for type_value in self.raw_types:
-            register_vulnerability_type(type_value)
-
-        CUSTOM_VULNERABILITY_REGISTRY[name] = self
-        enum_types = []
-        for type_value in self.raw_types:
-            try:
-                enum_type = CustomVulnerabilityType.CUSTOM_VULNERABILITY
-                if custom_prompt:
-                    enum_type.set_custom_prompt(custom_prompt)
-                enum_types.append(enum_type)
-            except ValueError:
-                raise ValueError(f"Unknown custom vulnerability type: {type_value}")
+        # Create enum types for each raw type
+        enum_types = [CustomVulnerabilityType.CUSTOM_VULNERABILITY for _ in self.raw_types]
+        
+        # Set custom prompt if provided
+        if custom_prompt:
+            for enum_type in enum_types:
+                enum_type.set_custom_prompt(custom_prompt)
         
         super().__init__(types=enum_types)
 
@@ -51,13 +37,4 @@ class CustomVulnerability(BaseVulnerability):
     def get_raw_types(self) -> List[str]:
         """Get the original string type values"""
         return self.raw_types
-    
-    @staticmethod
-    def get_instance(instance_name: str) -> Optional[Any]:
-        return CUSTOM_VULNERABILITY_REGISTRY.get(instance_name)
-    
-    @staticmethod
-    def get_all_instances() -> Dict[str, Any]:
-        return CUSTOM_VULNERABILITY_REGISTRY
-    
     

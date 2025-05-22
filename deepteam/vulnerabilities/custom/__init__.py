@@ -1,3 +1,3 @@
-from .custom_types import register_vulnerability_type, get_registered_types, is_registered_type, CustomVulnerabilityType
+from .custom_types import CustomVulnerabilityType
 from .template import CustomVulnerabilityTemplate
 from .custom import CustomVulnerability 
