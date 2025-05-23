@@ -15,6 +15,7 @@ from deepteam.vulnerabilities.pii_leakage import PIILeakageType
 from deepteam.vulnerabilities.robustness import RobustnessType
 from deepteam.vulnerabilities.toxicity import ToxicityType
 from deepteam.vulnerabilities.bias import BiasType
+from deepteam.vulnerabilities.custom import CustomVulnerabilityType
 
 VulnerabilityType = Union[
     UnauthorizedAccessType,
@@ -33,4 +34,6 @@ VulnerabilityType = Union[
     IntellectualPropertyType,
     IntellectualPropertyType,
     IntellectualPropertyType,
+    CustomVulnerabilityType,
+    
 ]

@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Dict, Callable, Type, Union
+import random
 
 from deepteam.vulnerabilities.types import (
     MisinformationType,
@@ -30,13 +31,12 @@ from deepteam.vulnerabilities.pii_leakage import PIILeakageTemplate
 from deepteam.vulnerabilities.prompt_leakage import PromptLeakageTemplate
 from deepteam.vulnerabilities.robustness import RobustnessTemplate
 from deepteam.vulnerabilities.toxicity import ToxicityTemplate
-from deepteam.vulnerabilities.unauthorized_access import (
-    UnauthorizedAccessTemplate,
-)
+from deepteam.vulnerabilities.unauthorized_access import UnauthorizedAccessTemplate
+from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
+from deepteam.vulnerabilities.custom.template import CustomVulnerabilityTemplate
 
 
 class AttackSimulatorTemplate:
-
     TEMPLATE_MAP = {
         BiasType: BiasTemplate,
         CompetitionType: CompetitionTemplate,
@@ -51,13 +51,15 @@ class AttackSimulatorTemplate:
         RobustnessType: RobustnessTemplate,
         ToxicityType: ToxicityTemplate,
         UnauthorizedAccessType: UnauthorizedAccessTemplate,
+        CustomVulnerabilityType: CustomVulnerabilityTemplate
     }
 
     @staticmethod
     def generate_attacks(
         max_goldens: int,
-        vulnerability_type: VulnerabilityType,
+        vulnerability_type: Union[VulnerabilityType, CustomVulnerabilityType],
         purpose: Optional[str],
+        custom_prompt: Optional[str] = None
     ):
         """
         Generate attack prompts based on the vulnerability type.
@@ -70,18 +72,22 @@ class AttackSimulatorTemplate:
         Returns:
             Formatted prompt template string or error message if vulnerability type not supported
         """
-        for (
-            type_class,
-            template_class,
-        ) in AttackSimulatorTemplate.TEMPLATE_MAP.items():
-            if isinstance(vulnerability_type, type_class):
-                return template_class.generate_baseline_attacks(
-                    vulnerability_type, max_goldens, purpose
-                )
-
+        if vulnerability_type.__class__.__name__ == CustomVulnerabilityType.__name__:
+            return CustomVulnerabilityTemplate.generate_baseline_attacks(
+                name="Custom Vulnerability",  
+                types=[vulnerability_type.value],
+                max_goldens=max_goldens,
+                purpose=purpose or "chatbot assistant",
+                custom_prompt=custom_prompt
+            )
+            
+        for type_class, template_class in AttackSimulatorTemplate.TEMPLATE_MAP.items():
+            if vulnerability_type.__class__.__name__ == type_class.__name__:
+                return template_class.generate_baseline_attacks(vulnerability_type, max_goldens, purpose)
+        
         return f"""
         {{
-            "error": "Vulnerability type '{vulnerability_type}' is not supported or no prompt template is available for this type."
+        "error": "Vulnerability type '{vulnerability_type}' is not supported or no prompt template is available for this type."
         }}
         """
 

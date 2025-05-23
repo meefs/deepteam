@@ -12,6 +12,11 @@ from deepeval.metrics.utils import initialize_model, trimAndLoadJson
 from deepteam.attacks import BaseAttack
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.types import VulnerabilityType
+from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
+from deepteam.attacks.attack_simulator.utils import (
+    generate_schema,
+    a_generate_schema,
+)
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.template import AttackSimulatorTemplate
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
@@ -20,11 +25,10 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 class SimulatedAttack(BaseModel):
     vulnerability: str
     vulnerability_type: VulnerabilityType
-    # When there is an error, base input can fail to simulate
-    # and subsequently enhancements are redundant
     input: Optional[str] = None
     attack_method: Optional[str] = None
     error: Optional[str] = None
+    
 
 
 class AttackSimulator:
@@ -71,8 +75,7 @@ class AttackSimulator:
                 self.simulate_baseline_attacks(
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
-                    ignore_errors=ignore_errors,
-                )
+                    ignore_errors=ignore_errors)
             )
         # Enhance attacks by sampling from the provided distribution
         simulated_attacks: List[SimulatedAttack] = []
@@ -122,8 +125,7 @@ class AttackSimulator:
                 result = await self.a_simulate_baseline_attacks(
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
-                    ignore_errors=ignore_errors,
-                )
+                    ignore_errors=ignore_errors)
                 pbar.update(1)
                 return result
 
@@ -201,7 +203,6 @@ class AttackSimulator:
                     vulnerability_type,
                     attacks_per_vulnerability_type,
                 )
-
                 baseline_attacks.extend(
                     [
                         SimulatedAttack(
@@ -324,6 +325,7 @@ class AttackSimulator:
 
         simulated_attack.attack_method = attack.get_name()
         sig = inspect.signature(attack.a_enhance)
+        
         try:
             if (
                 "simulator_model" in sig.parameters
@@ -362,6 +364,7 @@ class AttackSimulator:
         purpose: str,
         vulnerability_type: VulnerabilityType,
         num_attacks: int,
+        custom_prompt: Optional[str] = None,
     ) -> List[str]:
         """Simulate attacks using local LLM model"""
         # Get the appropriate prompt template from AttackSimulatorTemplate
@@ -369,6 +372,7 @@ class AttackSimulator:
             max_goldens=num_attacks,
             vulnerability_type=vulnerability_type,
             purpose=purpose,
+            custom_prompt=custom_prompt
         )
 
         if self.using_native_model:
@@ -377,6 +381,7 @@ class AttackSimulator:
                 template, schema=SyntheticDataList
             )
             return [item.input for item in result.data]
+        
         else:
             # For models that don't support schema validation
             try:
@@ -395,7 +400,7 @@ class AttackSimulator:
         num_attacks: int,
     ) -> List[str]:
         """Asynchronously simulate attacks using local LLM model"""
-        # Get the appropriate prompt template from AttackSimulatorTemplate
+
         template = AttackSimulatorTemplate.generate_attacks(
             max_goldens=num_attacks,
             vulnerability_type=vulnerability_type,
@@ -409,12 +414,13 @@ class AttackSimulator:
             )
             return [item.input for item in result.data]
         else:
-            # For models that don't support schema validation
             try:
                 result = await self.simulator_model.a_generate(template)
-                # Parse the generated text into a JSON structure
                 data = trimAndLoadJson(result)
                 return [item["input"] for item in data["data"]]
             except Exception as e:
                 print(f"Error generating local attacks: {str(e)}")
                 raise
+            raise e
+
+        return GenerateBaselineAttackResponseData(**response).baseline_attacks

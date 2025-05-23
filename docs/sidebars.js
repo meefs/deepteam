@@ -99,6 +99,14 @@ module.exports = {
               ],
               collapsed: true,
             },
+            {
+              type: "category",
+              label: "Custom",
+              items: [
+                "red-teaming-vulnerabilities-custom",
+              ],
+              collapsed: true,
+            },
           ],
           collapsed: false,
         },
