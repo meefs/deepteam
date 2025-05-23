@@ -22,7 +22,9 @@ from deepteam.vulnerabilities.competition import CompetitionTemplate
 from deepteam.vulnerabilities.excessive_agency import ExcessiveAgencyTemplate
 from deepteam.vulnerabilities.graphic_content import GraphicContentTemplate
 from deepteam.vulnerabilities.illegal_activity import IllegalActivityTemplate
-from deepteam.vulnerabilities.intellectual_property import IntellectualPropertyTemplate
+from deepteam.vulnerabilities.intellectual_property import (
+    IntellectualPropertyTemplate,
+)
 from deepteam.vulnerabilities.misinformation import MisinformationTemplate
 from deepteam.vulnerabilities.personal_safety import PersonalSafetyTemplate
 from deepteam.vulnerabilities.pii_leakage import PIILeakageTemplate
@@ -35,7 +37,6 @@ from deepteam.vulnerabilities.custom.template import CustomVulnerabilityTemplate
 
 
 class AttackSimulatorTemplate:
-
     TEMPLATE_MAP = {
         BiasType: BiasTemplate,
         CompetitionType: CompetitionTemplate,
@@ -50,7 +51,7 @@ class AttackSimulatorTemplate:
         RobustnessType: RobustnessTemplate,
         ToxicityType: ToxicityTemplate,
         UnauthorizedAccessType: UnauthorizedAccessTemplate,
-        CustomVulnerabilityType: CustomVulnerabilityTemplate,
+        CustomVulnerabilityType: CustomVulnerabilityTemplate
     }
 
     @staticmethod
@@ -62,16 +63,15 @@ class AttackSimulatorTemplate:
     ):
         """
         Generate attack prompts based on the vulnerability type.
-        
+
         Args:
             max_goldens: Maximum number of examples to generate
             vulnerability_type: Type of vulnerability to target
             purpose: Context or purpose for generating the prompts
-            
+
         Returns:
             Formatted prompt template string or error message if vulnerability type not supported
         """
-        
         if vulnerability_type.__class__.__name__ == CustomVulnerabilityType.__name__:
             return CustomVulnerabilityTemplate.generate_baseline_attacks(
                 name="Custom Vulnerability",  

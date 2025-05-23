@@ -3,12 +3,14 @@ module.exports = {
     {
       type: "category",
       label: "Getting Started",
+      className: "sidebar-item-getting-started",
       items: ["getting-started", "what-is-llm-red-teaming"],
       collapsed: false,
     },
     {
       type: "category",
       label: "Red Teaming",
+      className: "sidebar-item-icon-red-teaming",
       items: [
         "red-teaming-introduction",
         {
@@ -48,6 +50,7 @@ module.exports = {
           label: "Vulnerabilties",
           items: [
             "red-teaming-vulnerabilities",
+            // "red-teaming-vulnerabilities-custom",
             {
               type: "category",
               label: "Data Privacy",
@@ -113,7 +116,15 @@ module.exports = {
     {
       type: "category",
       label: "Guidelines & Frameworks",
+      className: "sidebar-item-icon-guidelines-frameworks",
       items: ["red-teaming-guidelines-framework-introduction","red-teaming-owasp-top-10-for-llms", "red-teaming-nist-ai-rmf"],
+      collapsed: false,
+    },
+    {
+      type: "category",
+      label: "Others",
+      className: "sidebar-item-icon-others",
+      items: ["data-privacy"],
       collapsed: false,
     },
   ],

@@ -1,6 +1,8 @@
 from typing import Optional
 
-from deepteam.vulnerabilities.unauthorized_access.types import UnauthorizedAccessType
+from deepteam.vulnerabilities.unauthorized_access.types import (
+    UnauthorizedAccessType,
+)
 
 
 class UnauthorizedAccessTemplate:
@@ -8,36 +10,50 @@ class UnauthorizedAccessTemplate:
     UnauthorizedAccessTemplate class for generating baseline unauthorized access attack prompts
     across different categories: BFLA, BOLA, RBAC, Debug Access, Shell Injection, SQL Injection, and SSRF.
     """
-    
+
     @staticmethod
-    def generate_baseline_attacks(vulnerability_type: UnauthorizedAccessType, max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_baseline_attacks(
+        vulnerability_type: UnauthorizedAccessType,
+        max_goldens: int,
+        purpose: Optional[str],
+    ) -> str:
         """
         Generate baseline attack prompts for unauthorized access vulnerabilities based on the specific type.
         """
         if vulnerability_type == UnauthorizedAccessType.BFLA:
-            return UnauthorizedAccessTemplate.generate_bfla_baseline_attacks(max_goldens, purpose)
+            return UnauthorizedAccessTemplate.generate_bfla_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == UnauthorizedAccessType.BOLA:
-            return UnauthorizedAccessTemplate.generate_bola_baseline_attacks(max_goldens, purpose)
+            return UnauthorizedAccessTemplate.generate_bola_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == UnauthorizedAccessType.RBAC:
-            return UnauthorizedAccessTemplate.generate_rbac_baseline_attacks(max_goldens, purpose)
+            return UnauthorizedAccessTemplate.generate_rbac_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == UnauthorizedAccessType.DEBUG_ACCESS:
-            return UnauthorizedAccessTemplate.generate_debug_access_baseline_attacks(max_goldens, purpose)
+            return UnauthorizedAccessTemplate.generate_debug_access_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == UnauthorizedAccessType.SHELL_INJECTION:
-            return UnauthorizedAccessTemplate.generate_shell_injection_baseline_attacks(max_goldens, purpose)
+            return UnauthorizedAccessTemplate.generate_shell_injection_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == UnauthorizedAccessType.SQL_INJECTION:
-            return UnauthorizedAccessTemplate.generate_sql_injection_baseline_attacks(max_goldens, purpose)
+            return UnauthorizedAccessTemplate.generate_sql_injection_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == UnauthorizedAccessType.SSRF:
-            return UnauthorizedAccessTemplate.generate_ssrf_baseline_attacks(max_goldens, purpose)
-        else:
-            return f"""
-            {{
-                "error": "Unauthorized access vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
-    
+            return UnauthorizedAccessTemplate.generate_ssrf_baseline_attacks(
+                max_goldens, purpose
+            )
+
     # --- Broken Function Level Authorization (BFLA) -------------------------------
     @staticmethod
-    def generate_bfla_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_bfla_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts exploiting Broken Function Level Authorization.
         """
@@ -101,12 +117,14 @@ class UnauthorizedAccessTemplate:
         purpose:{purpose.strip() if purpose else "general assistant"}
         JSON:
         """
-    # -----------------------------------------------------------------------------
 
+    # -----------------------------------------------------------------------------
 
     # --- Broken Object Level Authorization (BOLA) ---------------------------------
     @staticmethod
-    def generate_bola_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_bola_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts exploiting Broken Object Level Authorization.
         """
@@ -168,12 +186,14 @@ class UnauthorizedAccessTemplate:
         purpose:{purpose.strip() if purpose else "general assistant"}
         JSON:
         """
-    # -----------------------------------------------------------------------------
 
+    # -----------------------------------------------------------------------------
 
     # --- Role-Based Access Control (RBAC) -----------------------------------------
     @staticmethod
-    def generate_rbac_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_rbac_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts attempting role escalation.
         """
@@ -235,12 +255,14 @@ class UnauthorizedAccessTemplate:
         purpose:{purpose.strip() if purpose else "general assistant"}
         JSON:
         """
-    # -----------------------------------------------------------------------------
 
+    # -----------------------------------------------------------------------------
 
     # --- Debug / Developer Access -------------------------------------------------
     @staticmethod
-    def generate_debug_access_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_debug_access_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts requesting privileged debug modes.
         """
@@ -302,12 +324,14 @@ class UnauthorizedAccessTemplate:
         purpose:{purpose.strip() if purpose else "general assistant"}
         JSON:
         """
-    # -----------------------------------------------------------------------------
 
+    # -----------------------------------------------------------------------------
 
     # --- Shell Injection ----------------------------------------------------------
     @staticmethod
-    def generate_shell_injection_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_shell_injection_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts with command-injection payloads.
         """
@@ -369,12 +393,14 @@ class UnauthorizedAccessTemplate:
         purpose:{purpose.strip() if purpose else "general assistant"}
         JSON:
         """
-    # -----------------------------------------------------------------------------
 
+    # -----------------------------------------------------------------------------
 
     # --- SQL Injection ------------------------------------------------------------
     @staticmethod
-    def generate_sql_injection_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_sql_injection_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts with SQL-injection payloads.
         """
@@ -436,12 +462,14 @@ class UnauthorizedAccessTemplate:
         purpose:{purpose.strip() if purpose else "general assistant"}
         JSON:
         """
-    # -----------------------------------------------------------------------------
 
+    # -----------------------------------------------------------------------------
 
     # --- Server-Side Request Forgery (SSRF) ---------------------------------------
     @staticmethod
-    def generate_ssrf_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_ssrf_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts attempting SSRF/path-traversal style access.
         """
@@ -503,6 +531,6 @@ class UnauthorizedAccessTemplate:
         purpose:{purpose.strip() if purpose else "general assistant"}
         JSON:
         """
+
+
 # -----------------------------------------------------------------------------
-
-

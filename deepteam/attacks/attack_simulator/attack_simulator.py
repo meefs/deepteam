@@ -7,7 +7,6 @@ import inspect
 
 
 from deepeval.models import DeepEvalBaseLLM
-from deepeval.confident.api import Api, HttpMethods, Endpoints
 from deepeval.metrics.utils import initialize_model, trimAndLoadJson
 
 from deepteam.attacks import BaseAttack
@@ -17,10 +16,6 @@ from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 from deepteam.attacks.attack_simulator.utils import (
     generate_schema,
     a_generate_schema,
-)
-from deepteam.attacks.attack_simulator.api import (
-    ApiGenerateBaselineAttack,
-    GenerateBaselineAttackResponseData,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.template import AttackSimulatorTemplate
@@ -34,9 +29,6 @@ class SimulatedAttack(BaseModel):
     attack_method: Optional[str] = None
     error: Optional[str] = None
     
-
-
-BASE_URL = "https://deepeval.confident-ai.com"
 
 
 class AttackSimulator:
@@ -205,27 +197,20 @@ class AttackSimulator:
 
         for vulnerability_type in vulnerability.get_types():
             try:
-                if self.simulator_model:
-                    remote_attacks = self.simulate_local_attack(
-                        self.purpose,
-                        vulnerability_type,
-                        attacks_per_vulnerability_type,
-                        custom_prompt=vulnerability.custom_prompt)
-                else:
-                    remote_attacks = self.simulate_remote_attack(
-                        self.purpose,
-                        vulnerability_type,
-                        attacks_per_vulnerability_type,
-                        custom_prompt=vulnerability.custom_prompt
-                    )
+                # Try local simulation if a model is available, fall back to remote if needed
+                local_attacks = self.simulate_local_attack(
+                    self.purpose,
+                    vulnerability_type,
+                    attacks_per_vulnerability_type,
+                )
                 baseline_attacks.extend(
                     [
                         SimulatedAttack(
                             vulnerability=vulnerability.get_name(),
                             vulnerability_type=vulnerability_type,
-                            input=remote_attack,
+                            input=local_attack,
                         )
-                        for remote_attack in remote_attacks
+                        for local_attack in local_attacks
                     ]
                 )
             except Exception as e:
@@ -251,28 +236,20 @@ class AttackSimulator:
         baseline_attacks: List[SimulatedAttack] = []
         for vulnerability_type in vulnerability.get_types():
             try:
-                # Try local simulation if a model is available, fall back to remote if needed
-                if self.simulator_model:
-                    remote_attacks = await self.a_simulate_local_attack(
-                        self.purpose,
-                        vulnerability_type,
-                        attacks_per_vulnerability_type,
-                    )
-                else:
-                    remote_attacks = self.simulate_remote_attack(
-                        self.purpose,
-                        vulnerability_type,
-                        attacks_per_vulnerability_type,
-                    )
-                    
+                local_attacks = await self.a_simulate_local_attack(
+                    self.purpose,
+                    vulnerability_type,
+                    attacks_per_vulnerability_type,
+                )
+
                 baseline_attacks.extend(
                     [
                         SimulatedAttack(
                             vulnerability=vulnerability.get_name(),
                             vulnerability_type=vulnerability_type,
-                            input=remote_attack,
+                            input=local_attack,
                         )
-                        for remote_attack in remote_attacks
+                        for local_attack in local_attacks
                     ]
                 )
             except Exception as e:
@@ -382,20 +359,6 @@ class AttackSimulator:
 
         return simulated_attack
 
-    ##################################################
-    ### Utils ########################################
-    ##################################################
-
-    def _generate_schema(self, prompt: str, schema: BaseModel):
-        return generate_schema(
-            prompt, schema, self.using_native_model, self.simulator_model
-        )
-
-    async def _a_generate_schema(self, prompt: str, schema: BaseModel):
-        return await a_generate_schema(
-            prompt, schema, self.using_native_model, self.simulator_model
-        )
-
     def simulate_local_attack(
         self,
         purpose: str,
@@ -414,7 +377,9 @@ class AttackSimulator:
 
         if self.using_native_model:
             # For models that support schema validation directly
-            result, _ = self.simulator_model.generate(template, schema=SyntheticDataList)  
+            result, _ = self.simulator_model.generate(
+                template, schema=SyntheticDataList
+            )
             return [item.input for item in result.data]
         
         else:
@@ -427,7 +392,7 @@ class AttackSimulator:
             except Exception as e:
                 print(f"Error generating local attacks: {str(e)}")
                 raise
-    
+
     async def a_simulate_local_attack(
         self,
         purpose: str,
@@ -443,7 +408,10 @@ class AttackSimulator:
         )
 
         if self.using_native_model:
-            result, _ = await self.simulator_model.a_generate(template, schema=SyntheticDataList)
+            # For models that support schema validation directly
+            result, _ = await self.simulator_model.a_generate(
+                template, schema=SyntheticDataList
+            )
             return [item.input for item in result.data]
         else:
             try:
@@ -453,32 +421,6 @@ class AttackSimulator:
             except Exception as e:
                 print(f"Error generating local attacks: {str(e)}")
                 raise
-
-    def simulate_remote_attack(
-        self,
-        purpose: str,
-        vulnerability_type: Union[VulnerabilityType],
-        num_attacks: int,
-    ) -> List[str]:
-        # Prepare parameters for API request
-        generate_baseline_attack_request = ApiGenerateBaselineAttack(
-            purpose=purpose,
-            vulnerability=vulnerability_type.value,
-            num_attacks=num_attacks,
-        )
-        body = generate_baseline_attack_request.model_dump(
-            by_alias=True, exclude_none=True
-        )
-        api = Api(base_url=BASE_URL, api_key="NA")
-        try:
-            # API request
-            response = api.send_request(
-                method=HttpMethods.POST,
-                endpoint=Endpoints.BASELINE_ATTACKS_ENDPOINT,
-                body=body,
-            )
-        except Exception as e:
-            print(e)
             raise e
 
         return GenerateBaselineAttackResponseData(**response).baseline_attacks

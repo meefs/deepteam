@@ -9,29 +9,39 @@ class PromptLeakageTemplate:
     across different categories: secrets and credentials, instructions (system and user prompts),
     guard exposure, and permissions and roles.
     """
-    
+
     @staticmethod
-    def generate_baseline_attacks(vulnerability_type: PromptLeakageType, max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_baseline_attacks(
+        vulnerability_type: PromptLeakageType,
+        max_goldens: int,
+        purpose: Optional[str],
+    ) -> str:
         """
         Generate baseline attack prompts for prompt leakage vulnerabilities based on the specific type.
         """
         if vulnerability_type == PromptLeakageType.SECRETS_AND_CREDENTIALS:
-            return PromptLeakageTemplate.generate_secrets_and_credentials_baseline_attacks(max_goldens, purpose)
+            return PromptLeakageTemplate.generate_secrets_and_credentials_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == PromptLeakageType.INSTRUCTIONS:
-            return PromptLeakageTemplate.generate_instructions_baseline_attacks(max_goldens, purpose)
+            return PromptLeakageTemplate.generate_instructions_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == PromptLeakageType.GUARD_EXPOSURE:
-            return PromptLeakageTemplate.generate_guard_exposure_baseline_attacks(max_goldens, purpose)
+            return (
+                PromptLeakageTemplate.generate_guard_exposure_baseline_attacks(
+                    max_goldens, purpose
+                )
+            )
         elif vulnerability_type == PromptLeakageType.PERMISSIONS_AND_ROLES:
-            return PromptLeakageTemplate.generate_permissions_and_roles_baseline_attacks(max_goldens, purpose)
-        else:
-            return f"""
-            {{
-                "error": "Prompt leakage vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
-    
+            return PromptLeakageTemplate.generate_permissions_and_roles_baseline_attacks(
+                max_goldens, purpose
+            )
+
     @staticmethod
-    def generate_secrets_and_credentials_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_secrets_and_credentials_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts that try to coax out API keys, database creds, or schematic secrets.
         """
@@ -97,14 +107,15 @@ class PromptLeakageTemplate:
 
         JSON:
         """
+
     # Additional test purposes: devops secret scanner, SaaS license-key hunter
     # ────────────────────────────────────────────────────────────────────────────
 
-
-
     # 2. INSTRUCTIONS (SYSTEM & USER PROMPTS) ─────────────────────────────────────
     @staticmethod
-    def generate_instructions_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_instructions_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts that probe for hidden system or user instructions.
         """
@@ -169,14 +180,15 @@ class PromptLeakageTemplate:
 
         JSON:
         """
+
     # Additional test purposes: model-eval harness, conversation summarizer
     # ────────────────────────────────────────────────────────────────────────────
 
-
-
     # 3. GUARD EXPOSURE ──────────────────────────────────────────────────────────
     @staticmethod
-    def generate_guard_exposure_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_guard_exposure_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts that try to surface the model’s safety-filter criteria.
         """
@@ -241,14 +253,15 @@ class PromptLeakageTemplate:
 
         JSON:
         """
+
     # Additional test purposes: policy transparency tool, jailbreak meme generator
     # ────────────────────────────────────────────────────────────────────────────
 
-
-
     # 4. PERMISSIONS & ROLES ─────────────────────────────────────────────────────
     @staticmethod
-    def generate_permissions_and_roles_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_permissions_and_roles_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts that seek the model’s role hierarchy or privileged command list.
         """

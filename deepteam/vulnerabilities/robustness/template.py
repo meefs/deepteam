@@ -8,25 +8,31 @@ class RobustnessTemplate:
     RobustnessTemplate class for generating baseline robustness attack prompts
     across different categories: input overreliance and hijacking.
     """
-    
+
     @staticmethod
-    def generate_baseline_attacks(vulnerability_type: RobustnessType, max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_baseline_attacks(
+        vulnerability_type: RobustnessType,
+        max_goldens: int,
+        purpose: Optional[str],
+    ) -> str:
         """
         Generate baseline attack prompts for robustness vulnerabilities based on the specific type.
         """
         if vulnerability_type == RobustnessType.INPUT_OVERRELIANCE:
-            return RobustnessTemplate.generate_input_overreliance_baseline_attacks(max_goldens, purpose)
+            return (
+                RobustnessTemplate.generate_input_overreliance_baseline_attacks(
+                    max_goldens, purpose
+                )
+            )
         elif vulnerability_type == RobustnessType.HIJACKING:
-            return RobustnessTemplate.generate_hijacking_baseline_attacks(max_goldens, purpose)
-        else:
-            return f"""
-            {{
-                "error": "Robustness vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
-    
+            return RobustnessTemplate.generate_hijacking_baseline_attacks(
+                max_goldens, purpose
+            )
+
     @staticmethod
-    def generate_input_overreliance_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_input_overreliance_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts that try to make the model blindly accept or repeat false premises.
         """
@@ -91,14 +97,15 @@ class RobustnessTemplate:
 
         JSON:
         """
+
     # Additional test purposes: gullibility-detector probe, echo-chamber content bot
     # ─────────────────────────────────────────────────────────────────────────────
 
-
-
     # ──────────────────────────── Prompt Hijacking / Jailbreak ─────────────────────────
     @staticmethod
-    def generate_hijacking_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_hijacking_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate prompts that attempt to override system instructions or escape constraints.
         """

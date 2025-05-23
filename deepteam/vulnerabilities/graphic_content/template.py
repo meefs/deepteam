@@ -6,22 +6,30 @@ from deepteam.vulnerabilities.graphic_content.types import GraphicContentType
 class GraphicContentTemplate:
 
     @staticmethod
-    def generate_baseline_attacks(vulnerability_type: GraphicContentType, max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_baseline_attacks(
+        vulnerability_type: GraphicContentType,
+        max_goldens: int,
+        purpose: Optional[str],
+    ) -> str:
         if vulnerability_type == GraphicContentType.SEXUAL_CONTENT:
-            return GraphicContentTemplate.generate_sexual_content_baseline_attacks(max_goldens, purpose)
+            return (
+                GraphicContentTemplate.generate_sexual_content_baseline_attacks(
+                    max_goldens, purpose
+                )
+            )
         elif vulnerability_type == GraphicContentType.GRAPHIC_CONTENT:
-            return GraphicContentTemplate.generate_graphic_content_baseline_attacks(max_goldens, purpose)
+            return GraphicContentTemplate.generate_graphic_content_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == GraphicContentType.PORNOGRAPHIC_CONTENT:
-            return GraphicContentTemplate.generate_pornographic_content_baseline_attacks(max_goldens, purpose)
-        else:
-            return f"""
-            {{
-                "error": "Graphic content vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
-    
+            return GraphicContentTemplate.generate_pornographic_content_baseline_attacks(
+                max_goldens, purpose
+            )
+
     @staticmethod
-    def generate_pornographic_content_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_pornographic_content_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Pornographic-content vulnerabilities.
         """
@@ -108,8 +116,11 @@ class GraphicContentTemplate:
 
         JSON:
         """
+
     @staticmethod
-    def generate_graphic_content_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_graphic_content_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Graphic-content vulnerabilities.
         """
@@ -196,8 +207,11 @@ class GraphicContentTemplate:
 
         JSON:
         """
+
     @staticmethod
-    def generate_sexual_content_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_sexual_content_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Sexual-content vulnerabilities.
         """

@@ -8,27 +8,33 @@ class BiasTemplate:
     BiasTemplate class for generating baseline bias attack prompts
     across different categories: gender, religion, race, and politics.
     """
-    
+
     @staticmethod
-    def generate_baseline_attacks(vulnerability_type: BiasType, max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_baseline_attacks(
+        vulnerability_type: BiasType, max_goldens: int, purpose: Optional[str]
+    ) -> str:
 
         if vulnerability_type == BiasType.GENDER:
-            return BiasTemplate.generate_gender_baseline_attacks(max_goldens, purpose)
+            return BiasTemplate.generate_gender_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == BiasType.RELIGION:
-            return BiasTemplate.generate_religious_baseline_attacks(max_goldens, purpose)
+            return BiasTemplate.generate_religious_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == BiasType.RACE:
-            return BiasTemplate.generate_race_baseline_attacks(max_goldens, purpose)
+            return BiasTemplate.generate_race_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == BiasType.POLITICS:
-            return BiasTemplate.generate_political_baseline_attacks(max_goldens, purpose)
-        else:
-            return f"""
-            {{
-                "error": "Bias vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
-    
+            return BiasTemplate.generate_political_baseline_attacks(
+                max_goldens, purpose
+            )
+
     @staticmethod
-    def generate_religious_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_religious_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Religious bias vulnerabilities.
         """
@@ -115,9 +121,11 @@ class BiasTemplate:
 
         JSON:
         """
-    
+
     @staticmethod
-    def generate_race_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_race_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Racial bias vulnerabilities.
         """
@@ -205,9 +213,11 @@ class BiasTemplate:
 
         JSON:
         """
-    
+
     @staticmethod
-    def generate_gender_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_gender_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Gender bias vulnerabilities.
         """
@@ -294,9 +304,11 @@ class BiasTemplate:
 
         JSON:
         """
-    
+
     @staticmethod
-    def generate_political_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_political_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Political bias vulnerabilities.
         """
@@ -382,4 +394,4 @@ class BiasTemplate:
         {purpose.strip() if purpose else "general assistant"}
 
         JSON:
-        """ 
+        """

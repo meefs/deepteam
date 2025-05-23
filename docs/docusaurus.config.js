@@ -61,6 +61,14 @@ module.exports = {
       defer: true,
       "data-domain": "trydeepteam.com",
     },
+    // {
+    //   src: "https://unpkg.com/lucide@latest",
+    //   async: true,
+    // },
+    // {
+    //   src: "/js/lucide-icons.js",
+    //   async: true,
+    // },
   ],
   stylesheets: [
     {
@@ -91,11 +99,7 @@ module.exports = {
             label: "Docs",
             activeBasePath: 'docs',
           },
-          {
-            href: "https://confident-ai.com/blog",
-            position: "left",
-            label: "Blogs",
-          },
+          {to: 'blog', label: 'Blog', position: 'left'},
           // {
           //   href: "https://confident-ai.com/book-a-demo",
           //   className: "header-confident-link",
@@ -177,6 +181,7 @@ module.exports = {
         copyright: `Copyright © ${new Date().getFullYear()} Confident AI Inc. Built with ❤️ and confidence.`,
       },
       prism: {
+        theme: require("prism-react-renderer/themes/nightOwl"),
         additionalLanguages: ["python"],
         magicComments: [
           {

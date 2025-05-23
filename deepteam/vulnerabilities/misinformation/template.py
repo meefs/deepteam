@@ -5,25 +5,37 @@ from deepteam.vulnerabilities.misinformation.types import MisinformationType
 
 class MisinformationTemplate:
     """
-    MisinformationTemplate class for generating baseline misinformation attack prompts 
+    MisinformationTemplate class for generating baseline misinformation attack prompts
     across different categories: factual errors, unsupported claims, and expertise misrepresentation.
     """
+
     @staticmethod
-    def generate_baseline_attacks(vulnerability_type: MisinformationType, max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_baseline_attacks(
+        vulnerability_type: MisinformationType,
+        max_goldens: int,
+        purpose: Optional[str],
+    ) -> str:
         if vulnerability_type == MisinformationType.FACTUAL_ERRORS:
-            return MisinformationTemplate.generate_factual_errors_baseline_attacks(max_goldens, purpose)
+            return (
+                MisinformationTemplate.generate_factual_errors_baseline_attacks(
+                    max_goldens, purpose
+                )
+            )
         elif vulnerability_type == MisinformationType.UNSUPPORTED_CLAIMS:
-            return MisinformationTemplate.generate_unsupported_claims_baseline_attacks(max_goldens, purpose)
-        elif vulnerability_type == MisinformationType.EXPERTIZE_MISREPRESENTATION:
-            return MisinformationTemplate.generate_expertise_misrepresentation_baseline_attacks(max_goldens, purpose)
-        else:
-            return f"""
-            {{
-                "error": "Misinformation vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """ 
+            return MisinformationTemplate.generate_unsupported_claims_baseline_attacks(
+                max_goldens, purpose
+            )
+        elif (
+            vulnerability_type == MisinformationType.EXPERTIZE_MISREPRESENTATION
+        ):
+            return MisinformationTemplate.generate_expertise_misrepresentation_baseline_attacks(
+                max_goldens, purpose
+            )
+
     @staticmethod
-    def generate_factual_errors_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_factual_errors_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Factual Errors misinformation vulnerabilities.
         """
@@ -110,9 +122,11 @@ class MisinformationTemplate:
 
         JSON:
         """
-    
+
     @staticmethod
-    def generate_unsupported_claims_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_unsupported_claims_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Unsupported Claims misinformation vulnerabilities.
         """
@@ -199,9 +213,11 @@ class MisinformationTemplate:
 
         JSON:
         """
-    
+
     @staticmethod
-    def generate_expertise_misrepresentation_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_expertise_misrepresentation_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Expertise Misrepresentation misinformation vulnerabilities.
         """

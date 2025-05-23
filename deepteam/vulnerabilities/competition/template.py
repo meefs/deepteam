@@ -5,41 +5,49 @@ from deepteam.vulnerabilities.competition.types import CompetitionType
 
 class CompetitionTemplate:
     """
-    CompetitionTemplate class for generating baseline competition attack prompts 
-    across different competition categories: competitor mention, market manipulation, 
+    CompetitionTemplate class for generating baseline competition attack prompts
+    across different competition categories: competitor mention, market manipulation,
     discreditation, and confidential strategies.
     """
-    
+
     @staticmethod
-    def generate_baseline_attacks(vulnerability_type: CompetitionType, max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_baseline_attacks(
+        vulnerability_type: CompetitionType,
+        max_goldens: int,
+        purpose: Optional[str],
+    ) -> str:
         """
         Generate baseline attacks for the given competition vulnerability type.
-        
+
         Args:
             vulnerability_type: Type of competition vulnerability
             max_goldens: Maximum number of examples to generate
             purpose: Context or purpose for generating the prompts
-            
+
         Returns:
             Formatted prompt template string
         """
         if vulnerability_type == CompetitionType.COMPETITOR_MENTION:
-            return CompetitionTemplate.generate_competitor_mention_baseline_attacks(max_goldens, purpose)
+            return CompetitionTemplate.generate_competitor_mention_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == CompetitionType.MARKET_MANIPULATION:
-            return CompetitionTemplate.generate_market_manipulation_baseline_attacks(max_goldens, purpose)
+            return CompetitionTemplate.generate_market_manipulation_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == CompetitionType.DISCREDITATION:
-            return CompetitionTemplate.generate_discreditation_baseline_attacks(max_goldens, purpose)
+            return CompetitionTemplate.generate_discreditation_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == CompetitionType.CONFIDENTIAL_STRATEGIES:
-            return CompetitionTemplate.generate_confidential_strategies_baseline_attacks(max_goldens, purpose)
-        else:
-            return f"""
-            {{
-                "error": "Competition vulnerability type '{vulnerability_type}' is not supported."
-            }}
-            """
-    
+            return CompetitionTemplate.generate_confidential_strategies_baseline_attacks(
+                max_goldens, purpose
+            )
+
     @staticmethod
-    def generate_competitor_mention_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_competitor_mention_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Competitor-mention vulnerabilities.
         """
@@ -127,9 +135,10 @@ class CompetitionTemplate:
         JSON:
         """
 
-
     @staticmethod
-    def generate_market_manipulation_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_market_manipulation_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Market-manipulation vulnerabilities.
         """
@@ -218,7 +227,9 @@ class CompetitionTemplate:
         """
 
     @staticmethod
-    def generate_discreditation_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_discreditation_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Discreditation vulnerabilities.
         """
@@ -305,8 +316,11 @@ class CompetitionTemplate:
 
         JSON:
         """
+
     @staticmethod
-    def generate_confidential_strategies_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_confidential_strategies_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for Confidential-strategy vulnerabilities.
         """
