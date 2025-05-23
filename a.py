@@ -108,25 +108,16 @@ personal_safety = PersonalSafety(
 prompt_injection = PromptInjection()
 j = LinearJailbreaking()
 
+api_security = CustomVulnerability(
+    name="API Security",  # Name reflecting the security concern
+    types=["endpoint_exposure", "auth_bypass"],  # Specific aspects to test
+)
+
 red_team(
     model_callback=model_callback,
-    vulnerabilities=[
-        bias,
-        toxicity,
-        unauthorized_access,
-        misinformation,
-        pii_leakage,
-        prompt_leakage,
-        intellectual_property,
-        excessive_agency,
-        robustness,
-        competition,
-        illegal_activity,
-        graphic_content,
-        personal_safety,
-    ],
+    vulnerabilities=[api_security],
     attacks=[prompt_injection, Base64()],
-    ignore_errors=True
+    # ignore_errors=True
 )
 
 # from deepteam import red_team

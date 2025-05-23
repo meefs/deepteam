@@ -138,7 +138,9 @@ def construct_risk_assessment_overview(
     red_teaming_test_cases: List[RedTeamingTestCase],
 ) -> RedTeamingOverview:
     # Group test cases by vulnerability type
-    vulnerability_type_to_cases: Dict[VulnerabilityType, List[RedTeamingTestCase]] = {}
+    vulnerability_type_to_cases: Dict[
+        VulnerabilityType, List[RedTeamingTestCase]
+    ] = {}
     attack_method_to_cases: Dict[str, List[RedTeamingTestCase]] = {}
 
     errored = 0
