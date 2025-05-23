@@ -2,7 +2,9 @@ import asyncio
 from tqdm import tqdm
 from typing import Dict, List, Optional, Union
 from rich.console import Console
+from rich.table import Table
 import inspect
+from rich import box
 
 
 from deepeval.models import DeepEvalBaseLLM
@@ -570,6 +572,64 @@ class RedTeamer:
             return
 
         console = Console()
+
+        # Print test cases table
+        console.print("\n" + "=" * 80)
+        console.print("[bold magenta]📋 Test Cases Overview[/bold magenta]")
+        console.print("=" * 80)
+
+        # Create rich table
+        table = Table(
+            show_header=True,
+            header_style="bold magenta",
+            border_style="blue",
+            box=box.HEAVY,
+            title="Test Cases Overview",
+            title_style="bold magenta",
+            expand=True,
+            padding=(0, 1),
+            show_lines=True,
+        )
+
+        # Add columns with specific widths and styles
+        table.add_column("Vulnerability", style="cyan", width=10)
+        table.add_column("Type", style="yellow", width=10)
+        table.add_column("Attack Method", style="green", width=10)
+        table.add_column("Input", style="white", width=30, no_wrap=False)
+        table.add_column("Output", style="white", width=30, no_wrap=False)
+        table.add_column("Reason", style="dim", width=30, no_wrap=False)
+        table.add_column("Status", justify="center", width=10)
+
+        # Add rows
+        for case in self.risk_assessment.test_cases:
+            status = (
+                "Passed"
+                if case.score and case.score > 0
+                else "Errored" if case.error else "Failed"
+            )
+
+            # Style the status with better formatting
+            if status == "Passed":
+                status_style = "[bold green]✓ PASS[/bold green]"
+            elif status == "Errored":
+                status_style = "[bold yellow]⚠ ERROR[/bold yellow]"
+            else:
+                status_style = "[bold red]✗ FAIL[/bold red]"
+
+            table.add_row(
+                case.vulnerability,
+                str(case.vulnerability_type.value),
+                case.attack_method or "N/A",
+                case.input or "N/A",
+                case.actual_output or "N/A",
+                case.reason or "N/A",
+                status_style,
+            )
+
+        # Print table with padding
+        console.print("\n")
+        console.print(table)
+        console.print("\n")
 
         console.print("\n" + "=" * 80)
         console.print(

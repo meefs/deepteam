@@ -115,9 +115,23 @@ api_security = CustomVulnerability(
 
 red_team(
     model_callback=model_callback,
-    vulnerabilities=[api_security],
+    vulnerabilities=[
+        bias,
+        toxicity,
+        unauthorized_access,
+        # misinformation,
+        # pii_leakage,
+        # prompt_leakage,
+        # intellectual_property,
+        # excessive_agency,
+        # robustness,
+        # competition,
+        # illegal_activity,
+        # graphic_content,
+        # personal_safety,
+    ],
     attacks=[prompt_injection, Base64()],
-    # ignore_errors=True
+    ignore_errors=True,
 )
 
 # from deepteam import red_team
