@@ -128,7 +128,7 @@ red_team(
         # competition,
         # illegal_activity,
         # graphic_content,
-        # personal_safety,
+        # personal_safety
     ],
     attacks=[prompt_injection, Base64()],
     ignore_errors=True,
