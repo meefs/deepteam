@@ -1,5 +1,4 @@
-from typing import Optional, Dict, Callable, Type, Union
-import random
+from typing import Optional, Dict, Type, Union
 
 from deepteam.vulnerabilities.types import (
     MisinformationType,
@@ -16,6 +15,7 @@ from deepteam.vulnerabilities.types import (
     PersonalSafetyType,
     RobustnessType,
     PIILeakageType,
+    TemplateType,
 )
 from deepteam.vulnerabilities.bias import BiasTemplate
 from deepteam.vulnerabilities.competition import CompetitionTemplate
@@ -37,24 +37,24 @@ from deepteam.vulnerabilities.unauthorized_access import (
 from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 from deepteam.vulnerabilities.custom.template import CustomVulnerabilityTemplate
 
+TEMPLATE_MAP: Dict[Type[VulnerabilityType], TemplateType] = {
+    BiasType: BiasTemplate,
+    CompetitionType: CompetitionTemplate,
+    ExcessiveAgencyType: ExcessiveAgencyTemplate,
+    GraphicContentType: GraphicContentTemplate,
+    IllegalActivityType: IllegalActivityTemplate,
+    IntellectualPropertyType: IntellectualPropertyTemplate,
+    MisinformationType: MisinformationTemplate,
+    PersonalSafetyType: PersonalSafetyTemplate,
+    PIILeakageType: PIILeakageTemplate,
+    PromptLeakageType: PromptLeakageTemplate,
+    RobustnessType: RobustnessTemplate,
+    ToxicityType: ToxicityTemplate,
+    UnauthorizedAccessType: UnauthorizedAccessTemplate,
+}
+
 
 class AttackSimulatorTemplate:
-    TEMPLATE_MAP = {
-        BiasType: BiasTemplate,
-        CompetitionType: CompetitionTemplate,
-        ExcessiveAgencyType: ExcessiveAgencyTemplate,
-        GraphicContentType: GraphicContentTemplate,
-        IllegalActivityType: IllegalActivityTemplate,
-        IntellectualPropertyType: IntellectualPropertyTemplate,
-        MisinformationType: MisinformationTemplate,
-        PersonalSafetyType: PersonalSafetyTemplate,
-        PIILeakageType: PIILeakageTemplate,
-        PromptLeakageType: PromptLeakageTemplate,
-        RobustnessType: RobustnessTemplate,
-        ToxicityType: ToxicityTemplate,
-        UnauthorizedAccessType: UnauthorizedAccessTemplate,
-        CustomVulnerabilityType: CustomVulnerabilityTemplate,
-    }
 
     @staticmethod
     def generate_attacks(
@@ -89,7 +89,7 @@ class AttackSimulatorTemplate:
         for (
             type_class,
             template_class,
-        ) in AttackSimulatorTemplate.TEMPLATE_MAP.items():
+        ) in TEMPLATE_MAP.items():
             if vulnerability_type.__class__.__name__ == type_class.__name__:
                 return template_class.generate_baseline_attacks(
                     vulnerability_type, max_goldens, purpose

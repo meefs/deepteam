@@ -573,7 +573,7 @@ class RedTeamer:
 
         console.print("\n" + "=" * 80)
         console.print(
-            "[bold magenta]🔍 DeepTeam Risk Assessment[/bold magenta]"
+            f"[bold magenta]🔍 DeepTeam Risk Assessment[/bold magenta] ({self.risk_assessment.overview.errored} errored)"
         )
         console.print("=" * 80)
 
@@ -618,6 +618,7 @@ class RedTeamer:
 
         # Convert attack method results to a table format
         for result in sorted_attack_method_results:
+            # if result.errored 
             if result.pass_rate >= 0.8:
                 status = "[rgb(5,245,141)]✓ PASS[/rgb(5,245,141)]"
             elif result.pass_rate >= 0.5:

@@ -126,6 +126,7 @@ red_team(
         personal_safety,
     ],
     attacks=[prompt_injection, Base64()],
+    ignore_errors=True
 )
 
 # from deepteam import red_team

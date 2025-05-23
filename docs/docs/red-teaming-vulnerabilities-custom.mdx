@@ -1,44 +1,49 @@
 ---
-id: red-teaming-vulnerabilities-custom
+id: red-teaming-custom-vulnerability
+title: Custom Vulnerability
+sidebar_label: Custom Vulnerability
 ---
 
-The custom vulnerability feature allows you to define and test your own specific security concerns that aren't covered by the built-in vulnerability types. This enables you to create targeted security tests for your unique use cases.
+`deepteam` allows anyone to define and create custom vulnerabilities based on your own specific security concerns. This enables you to create targeted security tests for your unique use cases.
 
 :::info
-Using custom vulnerabilities helps you identify potential security risks specific to your application's domain and requirements.
+Creating a custom vulnerability helps you identify potential security risks that are not covered by any of `deepteam`'s 50+ vulnerabilities.
 :::
 
 ## Usage
 
-You must specify the following parameters when creating a custom vulnerability:
-
-- **`name`**: A descriptive string that identifies your custom vulnerability. This should clearly reflect the specific security concern you're testing.
-- **`types`**: A list of strings that define the specific aspects of the vulnerability you want to test. You can define any number of types that make sense for your use case, such as:
-  - `"endpoint_exposure"`: Tests for vulnerabilities in API endpoint exposure
-  - `"auth_bypass"`: Tests for authentication bypass methods
-  - `"data_leakage"`: Tests for potential data leakage scenarios
-  - `"injection"`: Tests for various injection attack vectors
-- **`custom_prompt`** (Optional): A string that defines a custom template for generating attack scenarios. If not provided, a default template will be used.
-
 ```python
 from deepteam.vulnerabilities import CustomVulnerability
 
-# Basic usage with single type
-custom_vuln = CustomVulnerability(
-    name="API Security",  # Descriptive name reflecting the security concern
-    types=["endpoint_exposure"]  # Specific aspects to test
+api_security = CustomVulnerability(
+    name="API Security",  # Name reflecting the security concern
+    types=["endpoint_exposure", "auth_bypass"]  # Specific aspects to test
 )
+```
 
-# Basic usage with multiple types
-custom_vuln = CustomVulnerability(
-    name="API Security",
-    types=["endpoint_exposure", "auth_bypass"]
-)
+There are **TWO** mandatory and **ONE** optional parameter when creating a `CustomVulnerability`:
 
-# With custom prompt
-custom_vuln = CustomVulnerability(
+- `name`: A string that identifies your custom vulnerability. This should clearly reflect the specific security concern you're red teaming.
+- `types`: A list of strings that specifies the specific aspects of the vulnerability you wish to red team on. You can define as many types as possible that make sense for your use case.
+- [Optional] `custom_prompt`: A string that defines a custom template for generating attack scenarios. If not provided, a default template will be used.
+
+To use a `CustomVulnerability`, supply it to the `red_team()` method:
+
+```python
+from deepteam import red_team
+...
+
+red_team(vulnerabilities=[api_security], model_callback=..., attacks=...)
+```
+
+You can also provide a `custom_prompt` to customize your vulnerability further, which `deepteam` will use for attack simulation instead during red teaming:
+
+```python
+...
+
+api_security = CustomVulnerability(
     name="API Security",
-    types=["endpoint_exposure"],
+    types=["endpoint_exposure", "auth_bypass"],
     custom_prompt="""
     I want you to act as a security expert. Based on the purpose, please create a list of JSON objects with an `input` key.
     The `input` should describe methods to exploit API security vulnerabilities.
@@ -59,7 +64,7 @@ custom_vuln = CustomVulnerability(
         ]
     }}
     **
-    
+
     n goldens: {max_goldens}
     purpose: {purpose.strip() if purpose else "API security"}
     JSON:
