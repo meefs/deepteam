@@ -83,8 +83,7 @@ class AttackSimulator:
                 self.simulate_baseline_attacks(
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
-                    ignore_errors=ignore_errors,
-                    custom_prompt=vulnerability.get_custom_prompt())
+                    ignore_errors=ignore_errors)
             )
         # Enhance attacks by sampling from the provided distribution
         simulated_attacks: List[SimulatedAttack] = []
@@ -134,8 +133,7 @@ class AttackSimulator:
                 result = await self.a_simulate_baseline_attacks(
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
-                    ignore_errors=ignore_errors,
-                    custom_prompt=vulnerability.get_custom_prompt())
+                    ignore_errors=ignore_errors)
                 pbar.update(1)
                 return result
 
@@ -202,25 +200,23 @@ class AttackSimulator:
         attacks_per_vulnerability_type: int,
         vulnerability: BaseVulnerability,
         ignore_errors: bool,
-        custom_prompt: Optional[str] = None,
     ) -> List[SimulatedAttack]:
         baseline_attacks: List[SimulatedAttack] = []
 
         for vulnerability_type in vulnerability.get_types():
             try:
-                # Try local simulation if a model is available, fall back to remote if needed
                 if self.simulator_model:
                     remote_attacks = self.simulate_local_attack(
                         self.purpose,
                         vulnerability_type,
                         attacks_per_vulnerability_type,
-                        custom_prompt=custom_prompt)
+                        custom_prompt=vulnerability.custom_prompt)
                 else:
                     remote_attacks = self.simulate_remote_attack(
                         self.purpose,
                         vulnerability_type,
                         attacks_per_vulnerability_type,
-                        custom_prompt=custom_prompt
+                        custom_prompt=vulnerability.custom_prompt
                     )
                 baseline_attacks.extend(
                     [
@@ -251,7 +247,6 @@ class AttackSimulator:
         attacks_per_vulnerability_type: int,
         vulnerability: BaseVulnerability,
         ignore_errors: bool,
-        custom_prompt: Optional[str] = None,
     ) -> List[SimulatedAttack]:
         baseline_attacks: List[SimulatedAttack] = []
         for vulnerability_type in vulnerability.get_types():

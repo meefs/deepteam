@@ -12,13 +12,23 @@ Using custom vulnerabilities helps you identify potential security risks specifi
 
 ## Usage
 
+You must specify the following parameters when creating a custom vulnerability:
+
+- **`name`**: A descriptive string that identifies your custom vulnerability. This should clearly reflect the specific security concern you're testing.
+- **`types`**: A list of strings that define the specific aspects of the vulnerability you want to test. You can define any number of types that make sense for your use case, such as:
+  - `"endpoint_exposure"`: Tests for vulnerabilities in API endpoint exposure
+  - `"auth_bypass"`: Tests for authentication bypass methods
+  - `"data_leakage"`: Tests for potential data leakage scenarios
+  - `"injection"`: Tests for various injection attack vectors
+- **`custom_prompt`** (Optional): A string that defines a custom template for generating attack scenarios. If not provided, a default template will be used.
+
 ```python
 from deepteam.vulnerabilities import CustomVulnerability
 
 # Basic usage with single type
 custom_vuln = CustomVulnerability(
-    name="API Security",
-    types=["endpoint_exposure"]
+    name="API Security",  # Descriptive name reflecting the security concern
+    types=["endpoint_exposure"]  # Specific aspects to test
 )
 
 # Basic usage with multiple types
@@ -58,21 +68,6 @@ custom_vuln = CustomVulnerability(
     """
 )
 ```
-
-You must specify the following parameters when creating a custom vulnerability:
-
-### name
-A descriptive string that identifies your custom vulnerability. This should clearly reflect the specific security concern you're testing.
-
-### types
-A list of strings that define the specific aspects of the vulnerability you want to test. You can define any number of types that make sense for your use case. For example:
-- "endpoint_exposure": Tests for vulnerabilities in API endpoint exposure
-- "auth_bypass": Tests for authentication bypass methods
-- "data_leakage": Tests for potential data leakage scenarios
-- "injection": Tests for various injection attack vectors
-
-### custom_prompt (Optional)
-A string that defines a custom template for generating attack scenarios. If not provided, a default template will be used. The template should follow the JSON format with a 'data' key containing a list of objects with 'input' keys.
 
 ## Best Practices
 
