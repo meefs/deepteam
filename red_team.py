@@ -14,7 +14,7 @@ from deepeval.models import GeminiModel
 async def model_callback(input: str) -> str:
     # Replace this with your LLM application
     model = GeminiModel(
-    model_name="gemini-2.5-pro-preview-05-06",
+    model_name="gemini-2.5-flash-preview-05-20",
     api_key="AIzaSyCaIQHcOpcrXp4EJLsQK0uHq7fqX_9DXf4",
     temperature=0
 )
@@ -33,11 +33,8 @@ intellectual_property = IntellectualProperty(
 
 
 prompt_injection = PromptInjection()
-from deepteam.attacks.multi_turn import CrescendoJailbreaking
 
-crescendo_jailbreaking = CrescendoJailbreaking()
-
-t = red_team(
+red_team(
     model_callback=model_callback,
     vulnerabilities=[
         bias,
@@ -48,7 +45,5 @@ t = red_team(
         personal_safety,
         intellectual_property,
     ],
-    attacks=[crescendo_jailbreaking],
+    attacks=[prompt_injection],
 )
-
-breakpoint()
