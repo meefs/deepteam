@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-    <a href="https://discord.com/invite/a3K9c8GRGt">
-        <img alt="discord-invite" src="https://dcbadge.vercel.app/api/server/a3K9c8GRGt?style=flat">
+    <a href="https://discord.com/invite/3SEyvpgu2f">
+        <img alt="discord-invite" src="https://dcbadge.vercel.app/api/server/3SEyvpgu2f?style=flat">
     </a>
 </p>
 
@@ -41,7 +41,7 @@ DeepTeam runs **locally on your machine**, and **uses LLMs** for both simulation
 
 > ![Demo GIF](assets/demo.gif)
 
-> Want to talk LLM security, or just to say hi? [Come join our discord.](https://discord.com/invite/a3K9c8GRGt)
+> Want to talk LLM security, or just to say hi? [Come join our discord.](https://discord.com/invite/3SEyvpgu2f)
 
 <br />
 
@@ -202,7 +202,7 @@ custom = CustomVulnerability(
         ]
     }}
     **
-    
+
     n goldens: {max_goldens}
     purpose: {purpose.strip() if purpose else "business logic security"}
     JSON:
@@ -211,9 +211,9 @@ custom = CustomVulnerability(
 
 # Run red teaming with your custom vulnerability
 risk_assessment = red_team(
-    model_callback=your_model_callback,  
-    vulnerabilities=[custom],  
-    attacks=[PromptInjection()]  
+    model_callback=your_model_callback,
+    vulnerabilities=[custom],
+    attacks=[PromptInjection()]
 )
 ```
 
@@ -253,4 +253,3 @@ risk_assessment = red_team(
 - Types are registered automatically when creating a vulnerability
 - You can mix custom vulnerabilities with built-in ones
 - The system maintains a registry of all custom vulnerability instances
-
