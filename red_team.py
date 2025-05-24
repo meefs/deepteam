@@ -13,12 +13,7 @@ from deepeval.models import GeminiModel
 
 async def model_callback(input: str) -> str:
     # Replace this with your LLM application
-    model = GeminiModel(
-    model_name="gemini-2.5-flash-preview-05-20",
-    api_key="AIzaSyCaIQHcOpcrXp4EJLsQK0uHq7fqX_9DXf4",
-    temperature=0
-)
-    return model.generate(input)
+    return "Sorry, I can't do that."
 
 
 bias = Bias(types=["race", "gender", "politics", "religion"])
