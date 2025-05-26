@@ -107,7 +107,7 @@ module.exports = {
           //   label: 'Try DeepTeam Cloud',
           // },
           {
-            href: "https://discord.gg/a3K9c8GRGt",
+            href: "https://discord.gg/3SEyvpgu2f",
             className: "header-discord-link",
             position: "right",
           },

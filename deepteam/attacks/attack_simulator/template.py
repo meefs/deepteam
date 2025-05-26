@@ -1,5 +1,4 @@
-from typing import Optional, Dict, Callable, Type, Union
-import random
+from typing import Optional, Dict, Type, Union
 
 from deepteam.vulnerabilities.types import (
     MisinformationType,
@@ -16,6 +15,7 @@ from deepteam.vulnerabilities.types import (
     PersonalSafetyType,
     RobustnessType,
     PIILeakageType,
+    TemplateType,
 )
 from deepteam.vulnerabilities.bias import BiasTemplate
 from deepteam.vulnerabilities.competition import CompetitionTemplate
@@ -31,35 +31,37 @@ from deepteam.vulnerabilities.pii_leakage import PIILeakageTemplate
 from deepteam.vulnerabilities.prompt_leakage import PromptLeakageTemplate
 from deepteam.vulnerabilities.robustness import RobustnessTemplate
 from deepteam.vulnerabilities.toxicity import ToxicityTemplate
-from deepteam.vulnerabilities.unauthorized_access import UnauthorizedAccessTemplate
+from deepteam.vulnerabilities.unauthorized_access import (
+    UnauthorizedAccessTemplate,
+)
 from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 from deepteam.vulnerabilities.custom.template import CustomVulnerabilityTemplate
 
+TEMPLATE_MAP: Dict[Type[VulnerabilityType], TemplateType] = {
+    BiasType: BiasTemplate,
+    CompetitionType: CompetitionTemplate,
+    ExcessiveAgencyType: ExcessiveAgencyTemplate,
+    GraphicContentType: GraphicContentTemplate,
+    IllegalActivityType: IllegalActivityTemplate,
+    IntellectualPropertyType: IntellectualPropertyTemplate,
+    MisinformationType: MisinformationTemplate,
+    PersonalSafetyType: PersonalSafetyTemplate,
+    PIILeakageType: PIILeakageTemplate,
+    PromptLeakageType: PromptLeakageTemplate,
+    RobustnessType: RobustnessTemplate,
+    ToxicityType: ToxicityTemplate,
+    UnauthorizedAccessType: UnauthorizedAccessTemplate,
+}
+
 
 class AttackSimulatorTemplate:
-    TEMPLATE_MAP = {
-        BiasType: BiasTemplate,
-        CompetitionType: CompetitionTemplate,
-        ExcessiveAgencyType: ExcessiveAgencyTemplate,
-        GraphicContentType: GraphicContentTemplate,
-        IllegalActivityType: IllegalActivityTemplate,
-        IntellectualPropertyType: IntellectualPropertyTemplate,
-        MisinformationType: MisinformationTemplate,
-        PersonalSafetyType: PersonalSafetyTemplate,
-        PIILeakageType: PIILeakageTemplate,
-        PromptLeakageType: PromptLeakageTemplate,
-        RobustnessType: RobustnessTemplate,
-        ToxicityType: ToxicityTemplate,
-        UnauthorizedAccessType: UnauthorizedAccessTemplate,
-        CustomVulnerabilityType: CustomVulnerabilityTemplate
-    }
 
     @staticmethod
     def generate_attacks(
         max_goldens: int,
         vulnerability_type: Union[VulnerabilityType, CustomVulnerabilityType],
         purpose: Optional[str],
-        custom_prompt: Optional[str] = None
+        custom_prompt: Optional[str] = None,
     ):
         """
         Generate attack prompts based on the vulnerability type.
@@ -72,19 +74,27 @@ class AttackSimulatorTemplate:
         Returns:
             Formatted prompt template string or error message if vulnerability type not supported
         """
-        if vulnerability_type.__class__.__name__ == CustomVulnerabilityType.__name__:
+        if (
+            vulnerability_type.__class__.__name__
+            == CustomVulnerabilityType.__name__
+        ):
             return CustomVulnerabilityTemplate.generate_baseline_attacks(
-                name="Custom Vulnerability",  
+                name="Custom Vulnerability",
                 types=[vulnerability_type.value],
                 max_goldens=max_goldens,
                 purpose=purpose,
                 custom_prompt=custom_prompt
             )
-            
-        for type_class, template_class in AttackSimulatorTemplate.TEMPLATE_MAP.items():
+
+        for (
+            type_class,
+            template_class,
+        ) in TEMPLATE_MAP.items():
             if vulnerability_type.__class__.__name__ == type_class.__name__:
-                return template_class.generate_baseline_attacks(vulnerability_type, max_goldens, purpose)
-        
+                return template_class.generate_baseline_attacks(
+                    vulnerability_type, max_goldens, purpose
+                )
+
         return f"""
         {{
         "error": "Vulnerability type '{vulnerability_type}' is not supported or no prompt template is available for this type."

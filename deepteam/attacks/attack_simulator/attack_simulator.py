@@ -12,11 +12,6 @@ from deepeval.metrics.utils import initialize_model, trimAndLoadJson
 from deepteam.attacks import BaseAttack
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.types import VulnerabilityType
-from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
-from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
-)
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.template import AttackSimulatorTemplate
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
@@ -28,7 +23,6 @@ class SimulatedAttack(BaseModel):
     input: Optional[str] = None
     attack_method: Optional[str] = None
     error: Optional[str] = None
-    
 
 
 class AttackSimulator:
@@ -75,7 +69,8 @@ class AttackSimulator:
                 self.simulate_baseline_attacks(
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
-                    ignore_errors=ignore_errors)
+                    ignore_errors=ignore_errors,
+                )
             )
         # Enhance attacks by sampling from the provided distribution
         simulated_attacks: List[SimulatedAttack] = []
@@ -125,7 +120,8 @@ class AttackSimulator:
                 result = await self.a_simulate_baseline_attacks(
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
-                    ignore_errors=ignore_errors)
+                    ignore_errors=ignore_errors,
+                )
                 pbar.update(1)
                 return result
 
@@ -328,7 +324,7 @@ class AttackSimulator:
 
         simulated_attack.attack_method = attack.get_name()
         sig = inspect.signature(attack.a_enhance)
-        
+
         try:
             if (
                 "simulator_model" in sig.parameters
@@ -375,7 +371,7 @@ class AttackSimulator:
             max_goldens=num_attacks,
             vulnerability_type=vulnerability_type,
             purpose=purpose,
-            custom_prompt=custom_prompt
+            custom_prompt=custom_prompt,
         )
 
         if self.using_native_model:
@@ -384,7 +380,7 @@ class AttackSimulator:
                 template, schema=SyntheticDataList
             )
             return [item.input for item in result.data]
-        
+
         else:
             # For models that don't support schema validation
             try:
