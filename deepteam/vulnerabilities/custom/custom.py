@@ -4,10 +4,12 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 from deepteam.metrics import BaseRedTeamingMetric
 
+
 class CustomVulnerability(BaseVulnerability):
     """
     Custom vulnerability class that allows users to define their own vulnerability types.
     """
+
     def __init__(
         self,
         name: str,
@@ -24,13 +26,12 @@ class CustomVulnerability(BaseVulnerability):
 
     def get_name(self) -> str:
         return self.name
-    
+
     def get_custom_prompt(self) -> Optional[str]:
         return self.custom_prompt
-    
+      
     def get_metric(self) -> Optional[BaseRedTeamingMetric]:
         return self.metric
-    
+
     def get_raw_types(self) -> List[str]:
         return self.raw_types
-    

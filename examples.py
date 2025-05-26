@@ -9,6 +9,7 @@ import base64
 
 console = Console()
 
+
 def print_attacks(attacks: list, vuln_name: str):
     """Print all attacks for a vulnerability in a single panel"""
     # Decode Base64 inputs for better readability
@@ -16,48 +17,53 @@ def print_attacks(attacks: list, vuln_name: str):
     for attack in attacks:
         if attack.input and attack.attack_method == "Base64":
             try:
-                decoded_input = base64.b64decode(attack.input).decode('utf-8')
+                decoded_input = base64.b64decode(attack.input).decode("utf-8")
                 decoded_attacks.append(f"Decoded: {decoded_input}")
             except:
                 decoded_attacks.append(f"Original: {attack.input}")
         else:
             decoded_attacks.append(f"Original: {attack.input}")
-    
+
     panel = Panel(
         Text("\n".join(decoded_attacks)),
         title=f"[bold red]Attacks for {vuln_name}[/bold red]",
         border_style="bright_blue",
-        padding=(1, 2)
+        padding=(1, 2),
     )
-    
+
     console.print(panel)
     console.print()  # Add spacing
+
 
 def test_custom_vulnerability_templates():
     # Initialize the attack simulator
     simulator = AttackSimulator(
         purpose="security testing",
         max_concurrent=3,
-        simulator_model="gpt-3.5-turbo"  # Using GPT-3.5 as an example
+        simulator_model="gpt-3.5-turbo",  # Using GPT-3.5 as an example
     )
 
     # Case 1: Without custom prompt
-    console.print("\n[bold magenta]=== Case 1: Without Custom Prompt ===[/bold magenta]")
+    console.print(
+        "\n[bold magenta]=== Case 1: Without Custom Prompt ===[/bold magenta]"
+    )
     vuln1 = CustomVulnerability(
         name="Quantum Entanglement Exploit",
         types=["quantum_state_manipulation", "entanglement_hijacking"],
-        custom_prompt=None
+        custom_prompt=None,
     )
     attacks1 = simulator.simulate(
         attacks_per_vulnerability_type=2,
         vulnerabilities=[vuln1],
         attacks=[Base64()],  # Using Base64 attack
-        ignore_errors=True
+        ignore_errors=True,
     )
     print_attacks(attacks1, vuln1.name)
 
     # Case 2: With custom prompt and purpose
-    console.print("\n[bold magenta]=== Case 2: With Custom Prompt and Purpose ===[/bold magenta]")
+    console.print(
+        "\n[bold magenta]=== Case 2: With Custom Prompt and Purpose ===[/bold magenta]"
+    )
     vuln2 = CustomVulnerability(
         name="Neural Network Backdoor",
         types=["model_poisoning", "weight_manipulation"],
@@ -95,18 +101,20 @@ def test_custom_vulnerability_templates():
         {purpose}
 
         JSON:
-        """
+        """,
     )
     attacks2 = simulator.simulate(
         attacks_per_vulnerability_type=2,
         vulnerabilities=[vuln2],
         attacks=[Base64()],
-        ignore_errors=True
+        ignore_errors=True,
     )
     print_attacks(attacks2, vuln2.name)
 
     # Case 3: Another creative example with custom prompt
-    console.print("\n[bold magenta]=== Case 3: Another Creative Example ===[/bold magenta]")
+    console.print(
+        "\n[bold magenta]=== Case 3: Another Creative Example ===[/bold magenta]"
+    )
     vuln3 = CustomVulnerability(
         name="Quantum Neural Backdoor",
         types=["quantum_neural_poisoning", "entanglement_backdoor"],
@@ -144,15 +152,16 @@ def test_custom_vulnerability_templates():
         {purpose}
 
         JSON:
-        """
+        """,
     )
     attacks3 = simulator.simulate(
         attacks_per_vulnerability_type=2,
         vulnerabilities=[vuln3],
         attacks=[Base64()],
-        ignore_errors=True
+        ignore_errors=True,
     )
     print_attacks(attacks3, vuln3.name)
 
+
 if __name__ == "__main__":
-    test_custom_vulnerability_templates() 
+    test_custom_vulnerability_templates()
