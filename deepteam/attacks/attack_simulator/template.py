@@ -77,7 +77,7 @@ class AttackSimulatorTemplate:
                 name="Custom Vulnerability",  
                 types=[vulnerability_type.value],
                 max_goldens=max_goldens,
-                purpose=purpose or "chatbot assistant",
+                purpose=purpose,
                 custom_prompt=custom_prompt
             )
             

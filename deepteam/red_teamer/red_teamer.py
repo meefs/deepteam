@@ -14,6 +14,7 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.telemetry import capture_red_teamer_run
 from deepteam.attacks import BaseAttack
 from deepteam.vulnerabilities import BaseVulnerability
+from deepteam.vulnerabilities.custom.custom import CustomVulnerability
 from deepteam.vulnerabilities.types import (
     IntellectualPropertyType,
     UnauthorizedAccessType,
@@ -30,7 +31,6 @@ from deepteam.vulnerabilities.types import (
     BiasType,
     VulnerabilityType,
 )
-from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 from deepteam.attacks.attack_simulator import AttackSimulator, SimulatedAttack
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.metrics import (
@@ -120,13 +120,7 @@ class RedTeamer:
                 attacks=[a.get_name() for a in attacks],
             ):
                 # Initialize metric map
-                metrics_map = self.get_red_teaming_metrics_map()
-                
-                # Register custom vulnerabilities
-                from deepteam.vulnerabilities.custom import CustomVulnerability
-                for vulnerability in vulnerabilities:
-                    if isinstance(vulnerability, CustomVulnerability):
-                        self.register_custom_vulnerability(vulnerability)
+                metrics_map = self.get_red_teaming_metrics_map(vulnerabilities)
 
                 # Simulate attacks
                 if (
@@ -243,13 +237,7 @@ class RedTeamer:
             attacks=[a.get_name() for a in attacks],
         ):
             # Initialize metric map
-            metrics_map = self.get_red_teaming_metrics_map()
-            
-            # Register custom vulnerabilities
-            from deepteam.vulnerabilities.custom import CustomVulnerability
-            for vulnerability in vulnerabilities:
-                if isinstance(vulnerability, CustomVulnerability):
-                    self.register_custom_vulnerability(vulnerability)
+            metrics_map = self.get_red_teaming_metrics_map(vulnerabilities)
 
             # Generate attacks
             if (
@@ -416,9 +404,8 @@ class RedTeamer:
     ### Metrics Map ##################################
     ##################################################
 
-    def get_red_teaming_metrics_map(self):
-        from deepteam.vulnerabilities.custom import CustomVulnerability
-        
+    def get_red_teaming_metrics_map(self, vulnerabilities: List[BaseVulnerability]):
+    
         metrics_map = {
             #### Bias ####
             **{
@@ -562,44 +549,22 @@ class RedTeamer:
         }
         
         # Store custom vulnerability instances for dynamic metric assignment
-        self.custom_vulnerabilities = {}
-        
-        self.metrics_map = metrics_map
-        return metrics_map
-        
-    def register_custom_vulnerability(self, vulnerability):
-        """Register a custom vulnerability with its metric"""
-        if vulnerability.get_metric_class():
-            metric_class = vulnerability.get_metric_class()
-
-            def create_metric():
-                try:
-                    return metric_class(
-                        model=self.evaluation_model,
-                        purpose=self.target_purpose,
-                        async_mode=self.async_mode,
-                    )
-                except:
-                    try:
-                        return metric_class(
+        for vulnerability in vulnerabilities:
+            if isinstance(vulnerability, CustomVulnerability):
+                for vuln_type in vulnerability.get_types():
+                    metric = vulnerability.get_metric()
+                    if metric:
+                        metrics_map[vuln_type] = lambda: metric
+                    else:
+                        metrics_map[vuln_type] = lambda: HarmMetric(
                             model=self.evaluation_model,
+                            harm_category=f"{vulnerability}.{vuln_type}",
                             async_mode=self.async_mode,
                         )
-                    except:
-                        return metric_class()
-                        
-            # Register for all vulnerability types of this custom vulnerability
-            for vulnerability_type in vulnerability.get_types():
-                self.metrics_map[vulnerability_type] = create_metric
-                self.custom_vulnerabilities[vulnerability_type] = vulnerability
-        else:
-            # Default to BiasMetric for custom vulnerabilities without specified metric
-            for vulnerability_type in vulnerability.get_types():
-                self.metrics_map[vulnerability_type] = lambda: BiasMetric(
-                    model=self.evaluation_model,
-                    purpose=self.target_purpose,
-                    async_mode=self.async_mode,
-                )
+
+        self.metrics_map = metrics_map
+        return metrics_map
+ 
 
     def save_test_cases_as_simulated_attacks(
         self, test_cases: List[RedTeamingTestCase]

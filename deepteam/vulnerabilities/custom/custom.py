@@ -1,7 +1,8 @@
-from typing import List, Optional, Type
+from typing import List, Optional
 
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
+from deepteam.metrics import BaseRedTeamingMetric
 
 class CustomVulnerability(BaseVulnerability):
     """
@@ -12,16 +13,14 @@ class CustomVulnerability(BaseVulnerability):
         name: str,
         types: Optional[List[str]] = None,
         custom_prompt: Optional[str] = None,
-        metric_class: Optional[Type] = None,
+        metric: Optional[BaseRedTeamingMetric] = None,
     ):
         self.name = name
+        self.types = [CustomVulnerabilityType.CUSTOM_VULNERABILITY for _ in types]
         self.raw_types = types or []
         self.custom_prompt = custom_prompt
-        self.metric_class = metric_class
-
-        # Create enum types for each raw type
-        enum_types = [CustomVulnerabilityType.CUSTOM_VULNERABILITY for _ in self.raw_types]
-        super().__init__(types=enum_types)
+        self.metric = metric
+        super().__init__(self.types)
 
     def get_name(self) -> str:
         return self.name
@@ -29,11 +28,9 @@ class CustomVulnerability(BaseVulnerability):
     def get_custom_prompt(self) -> Optional[str]:
         return self.custom_prompt
     
-    def get_raw_types(self) -> List[str]:
-        """Get the original string type values"""
-        return self.raw_types
+    def get_metric(self) -> Optional[BaseRedTeamingMetric]:
+        return self.metric
     
-    def get_metric_class(self) -> Optional[Type]:
-        """Get the metric class to use for evaluation"""
-        return self.metric_class
+    def get_raw_types(self) -> List[str]:
+        return self.raw_types
     
