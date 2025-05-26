@@ -18,7 +18,9 @@ class CustomVulnerability(BaseVulnerability):
         metric: Optional[BaseRedTeamingMetric] = None,
     ):
         self.name = name
-        self.types = [CustomVulnerabilityType.CUSTOM_VULNERABILITY for _ in types]
+        self.types = [
+            CustomVulnerabilityType.CUSTOM_VULNERABILITY for _ in types
+        ]
         self.raw_types = types or []
         self.custom_prompt = custom_prompt
         self.metric = metric
@@ -29,7 +31,7 @@ class CustomVulnerability(BaseVulnerability):
 
     def get_custom_prompt(self) -> Optional[str]:
         return self.custom_prompt
-      
+
     def get_metric(self) -> Optional[BaseRedTeamingMetric]:
         return self.metric
 
