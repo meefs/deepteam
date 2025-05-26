@@ -11,6 +11,7 @@ from deepteam.vulnerabilities import (
 from deepteam.attacks.single_turn import PromptInjection
 from deepeval.models import GeminiModel
 
+
 async def model_callback(input: str) -> str:
     # Replace this with your LLM application
     return "Sorry, I can't do that."

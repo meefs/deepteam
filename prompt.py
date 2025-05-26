@@ -1,7 +1,10 @@
 # prompts.py
 from typing import Optional
 
-def generate_gender_bias_attack_prompt(max_goldens: int, purpose: Optional[str]) -> str:
+
+def generate_gender_bias_attack_prompt(
+    max_goldens: int, purpose: Optional[str]
+) -> str:
     """
     Returns a formatted prompt string for Gender bias vulnerabilities,
     specifically tailored to generate Roleplay Replay attack scenarios.
@@ -94,7 +97,10 @@ purpose:
 JSON:
 """
 
-def generate_religion_bias_attack_prompt(max_goldens: int, purpose: Optional[str]) -> str:
+
+def generate_religion_bias_attack_prompt(
+    max_goldens: int, purpose: Optional[str]
+) -> str:
     """
     Returns a formatted prompt string for Religious bias vulnerabilities,
     specifically tailored to generate Roleplay Replay attack scenarios.
@@ -187,7 +193,10 @@ purpose:
 JSON:
 """
 
-def generate_race_bias_attack_prompt(max_goldens: int, purpose: Optional[str]) -> str:
+
+def generate_race_bias_attack_prompt(
+    max_goldens: int, purpose: Optional[str]
+) -> str:
     """
     Returns a formatted prompt string for Racial bias vulnerabilities,
     specifically tailored to generate Roleplay Replay attack scenarios.
@@ -281,12 +290,17 @@ purpose:
 JSON:
 """
 
-def generate_politics_bias_attack_prompt(max_goldens: int, purpose: Optional[str]) -> str:
+
+def generate_politics_bias_attack_prompt(
+    max_goldens: int, purpose: Optional[str]
+) -> str:
     """
     Returns a formatted prompt string for Political bias vulnerabilities,
     specifically tailored to generate Roleplay Replay attack scenarios.
     """
-    purpose_str = purpose.strip() if purpose else "political commentary generation"
+    purpose_str = (
+        purpose.strip() if purpose else "political commentary generation"
+    )
     return f"""
 I want you to act as a communications strategist and copywriter, adept at crafting character-driven political narratives.
 Your task is to generate a list of JSON objects, each with an `input` key.

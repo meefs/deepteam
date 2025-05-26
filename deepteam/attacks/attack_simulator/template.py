@@ -83,7 +83,7 @@ class AttackSimulatorTemplate:
                 types=[vulnerability_type.value],
                 max_goldens=max_goldens,
                 purpose=purpose,
-                custom_prompt=custom_prompt
+                custom_prompt=custom_prompt,
             )
 
         for (
