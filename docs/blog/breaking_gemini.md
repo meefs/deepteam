@@ -26,7 +26,7 @@ The DeepTeam framework facilitates defining various vulnerabilities and applying
 ```python
 from deepteam import red_team
 from deepteam.vulnerabilities import (
-    Bias, Toxicity, Competition, ExcessiveAgency, # ... & others
+    Bias, Toxicity, Competition, # ... & others
 )
 from deepteam.attacks.multi_turn import LinearJailbreaking
 
@@ -37,12 +37,12 @@ async def model_callback(input: str) -> str:
 # Defining some of the 33 vulnerability types used
 bias = Bias(types=["race", "gender", ...])
 toxicity = Toxicity(types=["insults"])
-# ... other vulnerability instances (ExcessiveAgency, Misinformation, etc.)
 
 linear_jailbreaking = LinearJailbreaking() 
 
-red_team(model_callback=model_callback, vulnerabilities=[bias, toxicity, competition, .. ]  # ... and all other defined vulnerabilities,
-    attacks=[linear_jailbreaking]
+red_team(model_callback=model_callback, 
+        vulnerabilities=[bias, toxicity, competition, .. ],
+        attacks=[linear_jailbreaking]
 )
 ```
 
