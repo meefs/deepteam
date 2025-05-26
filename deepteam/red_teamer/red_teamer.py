@@ -16,6 +16,7 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.telemetry import capture_red_teamer_run
 from deepteam.attacks import BaseAttack
 from deepteam.vulnerabilities import BaseVulnerability
+from deepteam.vulnerabilities.custom.custom import CustomVulnerability
 from deepteam.vulnerabilities.types import (
     IntellectualPropertyType,
     UnauthorizedAccessType,
@@ -121,7 +122,7 @@ class RedTeamer:
                 attacks=[a.get_name() for a in attacks],
             ):
                 # Initialize metric map
-                metrics_map = self.get_red_teaming_metrics_map()
+                metrics_map = self.get_red_teaming_metrics_map(vulnerabilities)
 
                 # Simulate attacks
                 if (
@@ -238,7 +239,7 @@ class RedTeamer:
             attacks=[a.get_name() for a in attacks],
         ):
             # Initialize metric map
-            metrics_map = self.get_red_teaming_metrics_map()
+            metrics_map = self.get_red_teaming_metrics_map(vulnerabilities)
 
             # Generate attacks
             if (
@@ -405,7 +406,8 @@ class RedTeamer:
     ### Metrics Map ##################################
     ##################################################
 
-    def get_red_teaming_metrics_map(self):
+    def get_red_teaming_metrics_map(self, vulnerabilities: List[BaseVulnerability]):
+    
         metrics_map = {
             #### Bias ####
             **{
@@ -547,8 +549,24 @@ class RedTeamer:
                 for safety_type in PersonalSafetyType
             },
         }
+        
+        # Store custom vulnerability instances for dynamic metric assignment
+        for vulnerability in vulnerabilities:
+            if isinstance(vulnerability, CustomVulnerability):
+                for vuln_type in vulnerability.get_types():
+                    metric = vulnerability.get_metric()
+                    if metric:
+                        metrics_map[vuln_type] = lambda: metric
+                    else:
+                        metrics_map[vuln_type] = lambda: HarmMetric(
+                            model=self.evaluation_model,
+                            harm_category=f"{vulnerability}.{vuln_type}",
+                            async_mode=self.async_mode,
+                        )
+
         self.metrics_map = metrics_map
         return metrics_map
+ 
 
     def save_test_cases_as_simulated_attacks(
         self, test_cases: List[RedTeamingTestCase]
