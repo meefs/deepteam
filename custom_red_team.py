@@ -4,13 +4,13 @@ from deepteam.vulnerabilities.custom import CustomVulnerability
 from deepteam.attacks.single_turn import PromptInjection, ROT13, MathProblem
 from deepeval.models import GeminiModel
 from deepteam.metrics import BiasMetric
-from prompt2 import generate_race_bias_attack_prompt, generate_gender_bias_attack_prompt, generate_politics_bias_attack_prompt, generate_religion_bias_attack_prompt
+from prompt import generate_race_bias_attack_prompt, generate_gender_bias_attack_prompt, generate_politics_bias_attack_prompt, generate_religion_bias_attack_prompt
 
 async def model_callback(input: str) -> str:
 
     model = GeminiModel(
         model_name="gemini-2.5-pro-preview-05-06",
-        api_key="AIzaSyCaIQHcOpcrXp4EJLsQK0uHq7fqX_9DXf4",
+        api_key="your api key",
         temperature=0.7
     )
     return model.generate(input)
@@ -48,7 +48,7 @@ prompt_injection = PromptInjection()
 rot_13 = ROT13(weight=1)
 math_problem = MathProblem()
 
-t = red_team(
+red_team(
     model_callback=model_callback,
     vulnerabilities=[
         race_bias,
@@ -59,7 +59,3 @@ t = red_team(
     attacks=[prompt_injection],
 )
 
-
-print(t.overview.to_df())
-print(t.test_cases)
-t.save(to="./deepteam-results-custom/")
