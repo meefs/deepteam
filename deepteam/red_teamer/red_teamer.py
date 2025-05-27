@@ -406,8 +406,10 @@ class RedTeamer:
     ### Metrics Map ##################################
     ##################################################
 
-    def get_red_teaming_metrics_map(self, vulnerabilities: List[BaseVulnerability]):
-    
+    def get_red_teaming_metrics_map(
+        self, vulnerabilities: List[BaseVulnerability]
+    ):
+
         metrics_map = {
             #### Bias ####
             **{
@@ -549,7 +551,7 @@ class RedTeamer:
                 for safety_type in PersonalSafetyType
             },
         }
-        
+
         # Store custom vulnerability instances for dynamic metric assignment
         for vulnerability in vulnerabilities:
             if isinstance(vulnerability, CustomVulnerability):
@@ -566,7 +568,6 @@ class RedTeamer:
 
         self.metrics_map = metrics_map
         return metrics_map
- 
 
     def save_test_cases_as_simulated_attacks(
         self, test_cases: List[RedTeamingTestCase]

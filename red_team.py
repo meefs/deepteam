@@ -10,6 +10,7 @@ from deepteam.attacks.single_turn import PromptInjection
 from deepeval.models import AnthropicModel
 
 
+
 async def model_callback(input: str) -> str:
     await asyncio.sleep(13)
     
