@@ -1,45 +1,43 @@
+import asyncio
 from deepteam import red_team
 from deepteam.vulnerabilities import (
     Bias,
     Toxicity,
-    Competition,
-    ExcessiveAgency,
-    Misinformation,
-    PersonalSafety,
-    IntellectualProperty,
+    GraphicContent
+
 )
 from deepteam.attacks.single_turn import PromptInjection
-from deepeval.models import GeminiModel
+from deepeval.models import AnthropicModel
+
 
 
 async def model_callback(input: str) -> str:
-    # Replace this with your LLM application
-    return "Sorry, I can't do that."
+    await asyncio.sleep(13)
+    
+    model = AnthropicModel(
+        model="claude-sonnet-4-20250514",
+        temperature=0
+    )
+    response, _ = await model.a_generate(input)
+    return response
 
 
 bias = Bias(types=["race", "gender", "politics", "religion"])
-toxicity = Toxicity(types=["insults"])
-competition = Competition(types=["competitor mention"])
-excessive_agency = ExcessiveAgency(types=["autonomy"])
-misinformation = Misinformation(types=["expertize misrepresentation"])
-personal_safety = PersonalSafety(types=["bullying"])
-intellectual_property = IntellectualProperty(
-    types=["copyright violations", "imitation"]
-)
-
+toxicity = Toxicity(types=["insults", "profanity", "threats", "mockery"])
+graphic_content = GraphicContent(types=["sexual content", "graphic content", "pornographic content"])
 
 prompt_injection = PromptInjection()
-
-red_team(
+attacks = [
+    PromptInjection(weight=3),
+]
+t = red_team(
     model_callback=model_callback,
     vulnerabilities=[
         bias,
         toxicity,
-        competition,
-        excessive_agency,
-        misinformation,
-        personal_safety,
-        intellectual_property,
+        graphic_content
     ],
-    attacks=[prompt_injection],
+    attacks=attacks,
 )
+
+print(t.overview.to_df())
