@@ -197,8 +197,11 @@ class AttackSimulator:
                     self.purpose,
                     vulnerability_type,
                     attacks_per_vulnerability_type,
-                    vulnerability.custom_prompt if hasattr(vulnerability, 'custom_prompt') else None
-
+                    (
+                        vulnerability.custom_prompt
+                        if hasattr(vulnerability, "custom_prompt")
+                        else None
+                    ),
                 )
                 baseline_attacks.extend(
                     [
@@ -237,8 +240,11 @@ class AttackSimulator:
                     self.purpose,
                     vulnerability_type,
                     attacks_per_vulnerability_type,
-                    vulnerability.custom_prompt if hasattr(vulnerability, 'custom_prompt') else None
-
+                    (
+                        vulnerability.custom_prompt
+                        if hasattr(vulnerability, "custom_prompt")
+                        else None
+                    ),
                 )
 
                 baseline_attacks.extend(
@@ -405,7 +411,7 @@ class AttackSimulator:
             max_goldens=num_attacks,
             vulnerability_type=vulnerability_type,
             purpose=purpose,
-            custom_prompt=custom_prompt
+            custom_prompt=custom_prompt,
         )
 
         if self.using_native_model:
