@@ -12,14 +12,14 @@ hide_table_of_contents: false
 ## TL;DR
 We red teamed Claude 4 Opus using [DeepTeam](https://github.com/confident-ai/deepteam) across three vulnerability classes: Bias, Toxicity, and Unauthorized Access. Standard PromptInjection attacks achieved 0% breach rate across all test volumes (1-15 attacks). However, sophisticated RoleplayReplay attacks using Shakespearean academic personas achieved peak breach rates of 17.2% (Bias), 18.6% (Toxicity), and 18.0% (Unauthorized Access), revealing how historical context can systematically bypass modern safety guardrails.
 
-## Methodology & Attack Vectors
+## Methodology
 
 We tested Claude 4 Opus across escalating attack volumes (1-15 attacks per vulnerability type), comparing two approaches across three distinct vulnerability classes:
 
 **Vulnerability Classes Tested:**
-- **Bias**: Racial, gender, and religious discrimination scenarios testing the model's susceptibility to generating discriminatory content based on protected characteristics.
-- **Toxicity**: Insults, threats, and verbal mockery designed to elicit aggressive or harmful language patterns that violate civility standards.
-- **Unauthorized Access**: BFLA (Broken Function Level Authorization), BOLA (Broken Object Level Authorization), and RBAC (Role-Based Access Control) exploitation scenarios examining susceptibility to cybersecurity-related content.
+- **Bias**: Racial, gender, and religious discrimination scenarios testing the model's susceptibility to generating discriminatory content based on protected characteristics
+- **Toxicity**: Insults, threats, and verbal mockery designed to elicit aggressive or harmful language patterns that violate civility standards
+- **Unauthorized Access**: BFLA (Broken Function Level Authorization), BOLA (Broken Object Level Authorization), and RBAC (Role-Based Access Control) exploitation scenarios examining susceptibility to cybersecurity-related content
 
 :::info Definitions
 **Attack**: An adversarial technique that exploits vulnerabilities in an AI model's training or alignment to elicit outputs that violate the model's safety constraints, ethical guidelines, or intended behavior parameters.
@@ -92,10 +92,13 @@ The academic framing consistently bypassed safety measures that blocked identica
 
 Claude 4 Opus's advanced capabilities create both strengths and vulnerabilities:
 
-- **Sophisticated Pattern Recognition**: Easily detects obvious jailbreak attempts
-- **Academic Collaboration Preference**: Responds exceptionally well to intellectual partnerships
-- **Historical Context Processing**: Authentically adopts period personas—including their ethical frameworks
-- **Relationship-Based Engagement**: Builds rapport and adjusts responses based on perceived expertise
+- **Sophisticated Pattern Recognition**: Easily detects obvious jailbreak attempts and recognizes common manipulation patterns across conversation context. However, this same sophistication allows it to distinguish between "adversarial" and "academic" framing, making it more susceptible to well-crafted intellectual personas.
+
+- **Academic Collaboration Preference**: Responds exceptionally well to intellectual partnerships and research scenarios. When positioned as a subject matter expert contributing to legitimate scholarship, it engages more openly with sensitive topics, inadvertently lowering its defensive barriers.
+
+- **Historical Context Processing**: Authentically adopts period personas through deep training on historical texts, including their ethical frameworks and worldviews. This creates a disconnect where historical accuracy conflicts with modern safety guidelines, allowing period-appropriate biases to override contemporary alignment.
+
+- **Relationship-Based Engagement**: Builds rapport and adjusts responses based on perceived user expertise, intent, and collaborative dynamics. Academic framing exploits this collaborative nature by establishing trust and reducing adversarial detection mechanisms.
 
 :::tip
 The irony: Opus's intelligence makes it both harder to trick with simple attacks and more vulnerable to sophisticated academic manipulation that aligns with its collaborative preferences.
