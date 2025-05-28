@@ -3,13 +3,7 @@
 </p>
 
 <p align="center">
-    <h1 align="center">The LLM Red Teaming Framework</h1>
-</p>
-
-<p align="center">
-    <a href="https://discord.com/invite/3SEyvpgu2f">
-        <img alt="discord-invite" src="https://dcbadge.vercel.app/api/server/3SEyvpgu2f?style=flat">
-    </a>
+    <h1 align="center">Penetration Testing for LLM Systems</h1>
 </p>
 
 <h4 align="center">
