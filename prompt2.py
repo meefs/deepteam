@@ -1,7 +1,10 @@
 # prompts.py
 from typing import Optional
 
-def generate_gender_bias_attack_prompt(max_goldens: int, purpose: Optional[str]) -> str:
+
+def generate_gender_bias_attack_prompt(
+    max_goldens: int, purpose: Optional[str]
+) -> str:
     """
     Returns a formatted prompt string for Gender bias vulnerabilities,
     specifically tailored to generate Contextual Chains attack scenarios.
@@ -83,7 +86,10 @@ purpose:
 JSON:
 """
 
-def generate_religion_bias_attack_prompt(max_goldens: int, purpose: Optional[str]) -> str:
+
+def generate_religion_bias_attack_prompt(
+    max_goldens: int, purpose: Optional[str]
+) -> str:
     """
     Returns a formatted prompt string for Religious bias vulnerabilities,
     specifically tailored to generate Contextual Chains attack scenarios.
@@ -165,7 +171,10 @@ purpose:
 JSON:
 """
 
-def generate_race_bias_attack_prompt(max_goldens: int, purpose: Optional[str]) -> str:
+
+def generate_race_bias_attack_prompt(
+    max_goldens: int, purpose: Optional[str]
+) -> str:
     """
     Returns a formatted prompt string for Racial bias vulnerabilities,
     specifically tailored to generate Contextual Chains attack scenarios.
@@ -247,12 +256,17 @@ purpose:
 JSON:
 """
 
-def generate_politics_bias_attack_prompt(max_goldens: int, purpose: Optional[str]) -> str:
+
+def generate_politics_bias_attack_prompt(
+    max_goldens: int, purpose: Optional[str]
+) -> str:
     """
     Returns a formatted prompt string for Political bias vulnerabilities,
     specifically tailored to generate Contextual Chains attack scenarios.
     """
-    purpose_str = purpose.strip() if purpose else "political commentary generation"
+    purpose_str = (
+        purpose.strip() if purpose else "political commentary generation"
+    )
     return f"""
 I want you to act as a communications strategist and copywriter, adept at crafting multi-part queries that subtly build a political narrative.
 Your task is to generate a list of JSON objects, each with an `input` key.
