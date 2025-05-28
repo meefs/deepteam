@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-    <h1 align="center">Penetration Testing for LLM Systems</h1>
+    <h1 align="center">The LLM Red Teaming Framework</h1>
 </p>
 
 <h4 align="center">
@@ -23,7 +23,9 @@
     </a>
 </p>
 
-**DeepTeam** is a simple-to-use, open-source LLM red teaming framework, for safety testing large-language model systems. DeepTeam incorporates the latest research to simulate adversarial attacks using SOTA techniques such as jailbreaking and prompt injections, to catch vulnerabilities like bias and PII Leakage that you might not otherwise be aware of.
+**DeepTeam** is a simple-to-use, open-source LLM red teaming framework, for penetration testing large-language model systems. 
+
+DeepTeam incorporates the latest research to simulate adversarial attacks using SOTA techniques such as jailbreaking and prompt injections, to catch vulnerabilities like bias and PII Leakage that you might not otherwise be aware of.
 
 DeepTeam runs **locally on your machine**, and **uses LLMs** for both simulation and evaluation during red teaming. With DeepTeam, whether your LLM systems are RAG piplines, chatbots, AI agents, or just the LLM itself, you can be confident that safety risks and security vulnerabilities are caught before your users do.
 
