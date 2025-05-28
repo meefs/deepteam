@@ -18,9 +18,6 @@
     <a href="https://github.com/confident-ai/deepteam/releases">
         <img alt="GitHub release" src="https://img.shields.io/github/v/release/confident-ai/deepteam">
     </a>
-    <a href="https://colab.research.google.com/drive/1PPxYEBa6eu__LquGoFFJZkhYgWVYE6kh?usp=sharing">
-        <img alt="Try Quickstart in Colab" src="https://colab.research.google.com/assets/colab-badge.svg">
-    </a>
     <a href="https://github.com/confident-ai/deepteam/blob/master/LICENSE.md">
         <img alt="License" src="https://img.shields.io/github/license/confident-ai/deepeval.svg?color=yellow">
     </a>
