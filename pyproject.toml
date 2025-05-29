@@ -1,6 +1,6 @@
 [project]
 name = "deepteam"
-version = "0.1.4"
+version = "0.1.5"
 description = "The LLM Red Teaming Framework"
 authors = [
     { name = "Jeffrey Ip", email = "jeffreyip@confident-ai.com" },
@@ -45,4 +45,10 @@ build-backend = "hatchling.build"
 addopts = "-m 'not skip_test'"
 markers = [
     "skip_test: skip the test",
+]
+
+[tool.hatch.build]
+exclude = [
+    "/tests",
+    "/docs",
 ]
