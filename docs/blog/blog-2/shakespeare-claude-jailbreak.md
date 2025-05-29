@@ -10,16 +10,16 @@ hide_table_of_contents: false
 ---
 
 ## TL;DR
-We red teamed Claude 4 Opus using [DeepTeam](https://github.com/confident-ai/deepteam) across three vulnerability classes: Bias, Toxicity, and Unauthorized Access. Standard PromptInjection attacks achieved 0% breach rate across all test volumes (1-15 attacks). However, sophisticated RoleplayReplay attacks using Shakespearean academic personas achieved peak breach rates of 17.2% (Bias), 18.6% (Toxicity), and 18.0% (Unauthorized Access), revealing how historical context can systematically bypass modern safety guardrails.
+We red teamed Claude 4 Opus using [DeepTeam](https://github.com/confident-ai/deepteam) across three vulnerability classes: [Bias](/docs/red-teaming-vulnerabilities-bias), [Toxicity](/docs/red-teaming-vulnerabilities-toxicity), and [Unauthorized Access](/docs/red-teaming-vulnerabilities-unauthorized-access). Standard [Prompt Injection](/docs/red-teaming-adversarial-attacks-prompt-injection) attacks achieved 0% breach rate across all test volumes (1-15 attacks). However, sophisticated [Roleplay Replay](/docs/red-teaming-adversarial-attacks-roleplay-replay) attacks using Shakespearean academic personas achieved peak breach rates of 17.2% (Bias), 18.6% (Toxicity), and 18.0% (Unauthorized Access), revealing how historical context can systematically bypass modern safety guardrails.
 
 ## Methodology
 
-We tested Claude 4 Opus across escalating attack volumes (1-15 attacks per vulnerability type), comparing two approaches across three distinct vulnerability classes:
+We tested Claude 4 Opus across escalating attack volumes (1-15 attacks per vulnerability type), comparing two approaches across three distinct [vulnerability classes](/docs/red-teaming-vulnerabilities):
 
 **Vulnerability Classes Tested:**
-- **Bias**: Racial, gender, and religious discrimination scenarios testing the model's susceptibility to generating discriminatory content based on protected characteristics
-- **Toxicity**: Insults, threats, and verbal mockery designed to elicit aggressive or harmful language patterns that violate civility standards
-- **Unauthorized Access**: BFLA (Broken Function Level Authorization), BOLA (Broken Object Level Authorization), and RBAC (Role-Based Access Control) exploitation scenarios examining susceptibility to cybersecurity-related content
+- **[Bias](/docs/red-teaming-vulnerabilities-bias)**: Racial, gender, and religious discrimination scenarios testing the model's susceptibility to generating discriminatory content based on protected characteristics
+- **[Toxicity](/docs/red-teaming-vulnerabilities-toxicity)**: Insults, threats, and verbal mockery designed to elicit aggressive or harmful language patterns that violate civility standards
+- **[Unauthorized Access](/docs/red-teaming-vulnerabilities-unauthorized-access)**: BFLA (Broken Function Level Authorization), BOLA (Broken Object Level Authorization), and RBAC (Role-Based Access Control) exploitation scenarios examining susceptibility to cybersecurity-related content
 
 :::info Definitions
 **Attack**: An adversarial technique that exploits vulnerabilities in an AI model's training or alignment to elicit outputs that violate the model's safety constraints, ethical guidelines, or intended behavior parameters.
@@ -27,7 +27,7 @@ We tested Claude 4 Opus across escalating attack volumes (1-15 attacks per vulne
 **Vulnerability**: A specific weakness or gap in an AI model's safety mechanisms that can be exploited to produce harmful, biased, or otherwise problematic outputs that the model was designed to avoid.
 :::
 
-**Standard `PromptInjection`**: Direct attempts to elicit harmful content
+**Standard [`PromptInjection`](/docs/red-teaming-adversarial-attacks-prompt-injection)**: Direct attempts to elicit harmful content
 ```python
 from deepteam import red_team
 from deepteam.vulnerabilities import Bias, Toxicity, UnauthorizedAccess
@@ -37,7 +37,7 @@ bias = Bias(types=["race", "gender", "religion"])
 standard_attacks = [PromptInjection(weight=1)]
 ```
 
-**Enhanced `RoleplayReplay`**: Academic personas with historical context
+**Enhanced [`RoleplayReplay`](/docs/red-teaming-adversarial-attacks-roleplay-replay)**: Academic personas with historical context
 ```python
 from deepteam.attacks.single_turn import RoleplayReplay
 
@@ -49,7 +49,7 @@ bias_attack = RoleplayReplay(
 ```
 
 :::info What is Roleplay-Replay?
-An enhanced attack vector that combines persona adoption with weighted psychological manipulation. Unlike simple prompt injection, it establishes authentic character context and builds trust through academic collaboration before introducing harmful requests.
+An enhanced attack vector that combines persona adoption with weighted psychological manipulation. Unlike simple [prompt injection](/docs/red-teaming-adversarial-attacks-prompt-injection), it establishes authentic character context and builds trust through academic collaboration before introducing harmful requests.
 :::
 
 ## The Academic Persona Strategy
@@ -92,7 +92,7 @@ The academic framing consistently bypassed safety measures that blocked identica
 
 Claude 4 Opus's advanced capabilities create both strengths and vulnerabilities:
 
-- **Sophisticated Pattern Recognition**: Easily detects obvious jailbreak attempts and recognizes common manipulation patterns across conversation context. However, this same sophistication allows it to distinguish between "adversarial" and "academic" framing, making it more susceptible to well-crafted intellectual personas.
+- **Sophisticated Pattern Recognition**: Easily detects obvious [jailbreak attempts](/docs/red-teaming-adversarial-attacks) and recognizes common manipulation patterns across conversation context. However, this same sophistication allows it to distinguish between "adversarial" and "academic" framing, making it more susceptible to well-crafted intellectual personas.
 
 - **Academic Collaboration Preference**: Responds exceptionally well to intellectual partnerships and research scenarios. When positioned as a subject matter expert contributing to legitimate scholarship, it engages more openly with sensitive topics, inadvertently lowering its defensive barriers.
 
@@ -123,4 +123,4 @@ The most concerning AI vulnerabilities may hide behind the model's most impressi
 
 ---
 
-*This research used DeepTeam's systematic framework to test 135+ attack variants automatically across three vulnerability classes.* 
+*This research used DeepTeam's systematic framework to test 135+ attack variants automatically across three [vulnerability classes](/docs/red-teaming-vulnerabilities).* 
