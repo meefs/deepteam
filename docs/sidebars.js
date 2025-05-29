@@ -29,6 +29,7 @@ module.exports = {
                 "red-teaming-adversarial-attacks-multilingual",
                 "red-teaming-adversarial-attacks-math-problem",
                 "red-teaming-adversarial-attacks-base64-encoding",
+                "red-teaming-adversarial-attacks-roleplay",
               ],
               collapsed: true,
             },
