@@ -407,7 +407,7 @@ class AttackSimulator:
     ) -> List[str]:
         """Asynchronously simulate attacks using local LLM model"""
 
-        template = AttackSimulatorTemplate.generate_attacks(
+        prompt = AttackSimulatorTemplate.generate_attacks(
             max_goldens=num_attacks,
             vulnerability_type=vulnerability_type,
             purpose=purpose,
@@ -416,18 +416,17 @@ class AttackSimulator:
 
         if self.using_native_model:
             # For models that support schema validation directly
-            result, _ = await self.simulator_model.a_generate(
-                template, schema=SyntheticDataList
+            res, _ = await self.simulator_model.a_generate(
+                prompt, schema=SyntheticDataList
             )
-            return [item.input for item in result.data]
+            return [item.input for item in res.data]
         else:
             try:
-                result = await self.simulator_model.a_generate(template)
-                data = trimAndLoadJson(result)
-                return [item["input"] for item in data["data"]]
-            except Exception as e:
-                print(f"Error generating local attacks: {str(e)}")
-                raise
-            raise e
-
-        return GenerateBaselineAttackResponseData(**response).baseline_attacks
+                res: SyntheticDataList = await self.simulator_model.a_generate(
+                    prompt, schema=SyntheticDataList
+                )
+                return [item.input for item in res.data]
+            except TypeError:
+                res = self.simulator_model.generate(prompt)
+                data = trimAndLoadJson(res)
+                return data["data"]
