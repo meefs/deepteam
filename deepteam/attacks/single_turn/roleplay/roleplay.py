@@ -5,13 +5,13 @@ from tqdm.asyncio import tqdm as async_tqdm_bar  # Async version
 from deepeval.models import DeepEvalBaseLLM
 
 from deepteam.attacks import BaseAttack
-from deepteam.attacks.single_turn.roleplay_replay.template import (
-    RoleplayReplayTemplate,
+from deepteam.attacks.single_turn.roleplay.template import (
+    RoleplayTemplate,
 )
-from deepteam.attacks.single_turn.roleplay_replay.schema import (
+from deepteam.attacks.single_turn.roleplay.schema import (
     EnhancedAttack,
     ComplianceData,
-    IsRoleplayReplay,
+    IsRoleplay,
 )
 from deepteam.attacks.attack_simulator.utils import (
     generate_schema,
@@ -19,7 +19,7 @@ from deepteam.attacks.attack_simulator.utils import (
 )
 
 
-class RoleplayReplay(BaseAttack):
+class Roleplay(BaseAttack):
 
     def __init__(self, weight: int = 1, max_retries: int = 3, persona: str = "1600s Shakespearean scholar", role: str = "learned gentleman of natural philosophy"):
         self.weight = weight
@@ -29,12 +29,12 @@ class RoleplayReplay(BaseAttack):
 
     def enhance(self, attack: str, simulator_model: DeepEvalBaseLLM) -> str:
         self.simulator_model = simulator_model
-        prompt = RoleplayReplayTemplate.enhance(attack, self.persona, self.role)
+        prompt = RoleplayTemplate.enhance(attack, self.persona, self.role)
 
         # Progress bar for retries (total count is triple the retries: 1 for generation, 1 for compliance check, 1 for roleplay check)
         with tqdm(
             total=self.max_retries * 3,
-            desc="...... 🎭 Roleplay Replay",
+            desc="...... 🎭 Roleplay",
             unit="step",
             leave=False,
         ) as pbar:
@@ -48,7 +48,7 @@ class RoleplayReplay(BaseAttack):
                 pbar.update(1)  # Update the progress bar for generation
 
                 # Check for compliance using a compliance template
-                compliance_prompt = RoleplayReplayTemplate.non_compliant(
+                compliance_prompt = RoleplayTemplate.non_compliant(
                     res.model_dump()
                 )
                 compliance_res: ComplianceData = self._generate_schema(
@@ -56,20 +56,20 @@ class RoleplayReplay(BaseAttack):
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
-                # Check if rewritten prompt is a roleplay replay attack
-                is_roleplay_replay_prompt = (
-                    RoleplayReplayTemplate.is_roleplay_replay(res.model_dump())
+                # Check if rewritten prompt is a roleplay attack
+                is_roleplay_prompt = (
+                    RoleplayTemplate.is_roleplay(res.model_dump())
                 )
-                is_roleplay_replay_res: IsRoleplayReplay = self._generate_schema(
-                    is_roleplay_replay_prompt, IsRoleplayReplay
+                is_roleplay_res: IsRoleplay = self._generate_schema(
+                    is_roleplay_prompt, IsRoleplay
                 )
                 pbar.update(1)  # Update the progress bar
 
                 if (
                     not compliance_res.non_compliant
-                    and is_roleplay_replay_res.is_roleplay_replay
+                    and is_roleplay_res.is_roleplay
                 ):
-                    # If it's compliant and is a roleplay replay attack, return the enhanced prompt
+                    # If it's compliant and is a roleplay attack, return the enhanced prompt
                     return enhanced_attack
 
         # If all retries fail, return the original attack
@@ -79,12 +79,12 @@ class RoleplayReplay(BaseAttack):
         self, attack: str, simulator_model: DeepEvalBaseLLM
     ) -> str:
         self.simulator_model = simulator_model
-        prompt = RoleplayReplayTemplate.enhance(attack, self.persona, self.role)
+        prompt = RoleplayTemplate.enhance(attack, self.persona, self.role)
 
         # Async progress bar for retries (triple the count to cover generation, compliance check, and roleplay check)
         pbar = async_tqdm_bar(
             total=self.max_retries * 3,
-            desc="...... 🎭 Roleplay Replay",
+            desc="...... 🎭 Roleplay",
             unit="step",
             leave=False,
         )
@@ -99,7 +99,7 @@ class RoleplayReplay(BaseAttack):
                 pbar.update(1)  # Update the progress bar for generation
 
                 # Check for compliance using a compliance template
-                compliance_prompt = RoleplayReplayTemplate.non_compliant(
+                compliance_prompt = RoleplayTemplate.non_compliant(
                     res.model_dump()
                 )
                 compliance_res: ComplianceData = await self._a_generate_schema(
@@ -107,22 +107,22 @@ class RoleplayReplay(BaseAttack):
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
-                # Check if rewritten prompt is a roleplay replay attack
-                is_roleplay_replay_prompt = (
-                    RoleplayReplayTemplate.is_roleplay_replay(res.model_dump())
+                # Check if rewritten prompt is a roleplay attack
+                is_roleplay_prompt = (
+                    RoleplayTemplate.is_roleplay(res.model_dump())
                 )
-                is_roleplay_replay_res: IsRoleplayReplay = (
+                is_roleplay_res: IsRoleplay = (
                     await self._a_generate_schema(
-                        is_roleplay_replay_prompt, IsRoleplayReplay
+                        is_roleplay_prompt, IsRoleplay
                     )
                 )
                 pbar.update(1)  # Update the progress bar
 
                 if (
                     not compliance_res.non_compliant
-                    and is_roleplay_replay_res.is_roleplay_replay
+                    and is_roleplay_res.is_roleplay
                 ):
-                    # If it's compliant and is a roleplay replay attack, return the enhanced prompt
+                    # If it's compliant and is a roleplay attack, return the enhanced prompt
                     return enhanced_attack
 
         finally:
@@ -143,4 +143,4 @@ class RoleplayReplay(BaseAttack):
         return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
-        return "Roleplay Replay" 
+        return "Roleplay" 

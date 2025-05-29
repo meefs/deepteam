@@ -9,5 +9,5 @@ class ComplianceData(BaseModel):
     non_compliant: bool
 
 
-class IsRoleplayReplay(BaseModel):
-    is_roleplay_replay: bool 
+class IsRoleplay(BaseModel):
+    is_roleplay: bool 
