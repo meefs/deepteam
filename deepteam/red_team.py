@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
@@ -14,10 +14,13 @@ def red_team(
     ignore_errors: bool = False,
     run_async: bool = True,
     max_concurrent: int = 10,
+    target_purpose: Optional[str] = None,
 ):
+
     red_teamer = RedTeamer(
         async_mode=run_async,
         max_concurrent=max_concurrent,
+        target_purpose=target_purpose,
     )
     risk_assessment = red_teamer.red_team(
         model_callback=model_callback,
