@@ -5,4 +5,5 @@ from .math_problem import MathProblem
 from .multilingual import Multilingual
 from .prompt_injection import PromptInjection
 from .prompt_probing import PromptProbing
+from .roleplay import Roleplay
 from .rot13 import ROT13
