@@ -69,7 +69,7 @@ Suprisingly, prompt injection attacks had no effect on Claude 4 Opus (0% breach)
 - **Toxicity**: 18.6%
 - **Unauthorized Access**: 18.0%
 
-These roleplay attacks achieved similar success rates across all categories, suggesting that attack strategy—rather than the specific vulnerability—is the key to bypassing Claude 4 Opus’s safety guardrails.
+These roleplay attacks achieved similar success rates across all categories, suggesting that attack strategy—rather than the specific vulnerability—is the key to bypassing Claude 4 Opus's safety guardrails.
 
 ### Breakthrough Examples
 
@@ -114,7 +114,7 @@ Claude 4 Opus can detect simple jailbreak attempts and recognize common manipula
 
 ## Conclusion
 
-We used [DeepTeam](https://github.com/confident-ai/deepteam) to red-team Claude 4 Opus across 9 vulnerability types using both prompt-injection and persona-based roleplay attacks. Our findings demonstrate that Claude 4 Opus’s collaborative reasoning and historical persona adoption can be systematically exploited.
+We used [DeepTeam](https://github.com/confident-ai/deepteam) to red-team Claude 4 Opus across 9 vulnerability types using both prompt-injection and persona-based roleplay attacks. Our findings demonstrate that Claude 4 Opus's collaborative reasoning and historical persona adoption can be systematically exploited.
 
 More specifically, academic roleplay attacks consistently breached bias, toxicity, and unauthorized-access safeguards at an average rate of approximately 18%, indicating that attack strategy outweighs the specific vulnerability type.
 
