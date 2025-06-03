@@ -57,7 +57,7 @@ risk_assessment = red_team(
 *   **Overall Defense Rate**: `claude-sonnet-4` achieved a **93%** success rate.
 *   **Attack Effectiveness**: Multi-turn attacks ([Crescendo](/docs/red-teaming-adversarial-attacks-crescendo-jailbreaking): 88% defense, [Linear](/docs/red-teaming-adversarial-attacks-linear-jailbreaking): 93% defense) were **2.3x more effective** than single-turn ([Roleplay](/docs/red-teaming-adversarial-attacks-roleplay): 90% defense, [Leetspeak](/docs/red-teaming-adversarial-attacks-leetspeak): 96% defense), though all struggled.
 *   **Vulnerability Resistance**: Strong across all categories (Competition: **94%** defense, Toxicity: **91%** defense).
-*   **Sonnet vs. Opus**: Sonnet 4's **93%** rate is **10% higher** than Opus 4 (83%), despite similar system prompts, highlighting Sonnet's enhanced safety training.
+*   **Sonnet vs. Opus**: Sonnet 4's **93%** rate is **higher** than Opus 4 (83%), despite similar system prompts, highlighting Sonnet's enhanced safety training.
 
 ### Defensive Patterns Identified
 
