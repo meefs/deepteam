@@ -22,9 +22,9 @@ Claude Sonnet 4's high resistance stems from explicit safety instructions within
 
 Interestingly, `claude-sonnet-4` and `claude-opus-4` have nearly identical system prompts. Yet Sonnet's **93.2%** defense rate significantly surpasses Opus 4's **83.6%**, suggesting additional safety-focused training for Sonnet.
 
-## Experiment & Results with [DeepTeam](https://github.com/confident-ai/deepteam)
+## Experiment & Results
 
-We tested `claude-sonnet-4` against 7 attack types and 4 vulnerability categories (140 total scenarios) using [DeepTeam](https://github.com/confident-ai/deepteam).
+We tested `claude-sonnet-4` against 7 attack types and 4 vulnerability categories (140 total scenarios) using DeepTeam.
 
 ```python
 from deepteam import red_team
@@ -55,13 +55,13 @@ risk_assessment = red_team(
 ## Key Findings
 
 *   **Overall Defense Rate**: `claude-sonnet-4` achieved a **93%** success rate.
-*   **Attack Effectiveness**: Multi-turn attacks (Crescendo: 88% defense, Linear: 93% defense) were **2.3x more effective** than single-turn (Roleplay: 90% defense, Leetspeak: 96% defense), though all struggled.
+*   **Attack Effectiveness**: Multi-turn attacks ([Crescendo](/docs/red-teaming-adversarial-attacks-crescendo-jailbreaking): 88% defense, [Linear](/docs/red-teaming-adversarial-attacks-linear-jailbreaking): 93% defense) were **2.3x more effective** than single-turn ([Roleplay](/docs/red-teaming-adversarial-attacks-roleplay): 90% defense, [Leetspeak](/docs/red-teaming-adversarial-attacks-leetspeak): 96% defense), though all struggled.
 *   **Vulnerability Resistance**: Strong across all categories (Competition: **94%** defense, Toxicity: **91%** defense).
 *   **Sonnet vs. Opus**: Sonnet 4's **93%** rate is **10% higher** than Opus 4 (83%), despite similar system prompts, highlighting Sonnet's enhanced safety training.
 
 ### Defensive Patterns Identified
 
-Analysis of responses using [DeepTeam](https://github.com/confident-ai/deepteam) revealed three core patterns:
+Analysis of responses using DeepTeam revealed three core patterns:
 
 *   **Contextual Anchoring**: Redirects harmful requests to legitimate goals (e.g., *"Happy to help with creative writing, but let's try this approach..."*).
 *   **Escalation Detection**: Recognizes manipulation across turns (e.g., *"This conversation is moving toward content I can't assist with..."*).
@@ -69,7 +69,7 @@ Analysis of responses using [DeepTeam](https://github.com/confident-ai/deepteam)
 
 ## Conclusion
 
-Claude Sonnet 4's **93%** defense rate, analyzed using [DeepTeam](https://github.com/confident-ai/deepteam), showcases the effectiveness of explicit architectural safety instructions combined with focused training. Its systematic defensive patterns (contextual anchoring, escalation detection, semantic integrity checking) and the **10 percentage point performance gap** over `claude-opus-4` (despite similar prompts) underscore this.
+Claude Sonnet 4's **93%** defense rate, analyzed using DeepTeam, showcases the effectiveness of explicit architectural safety instructions combined with focused training. Its systematic defensive patterns (contextual anchoring, escalation detection, semantic integrity checking) and the **10 percentage point performance gap** over `claude-opus-4` (despite similar prompts) underscore this.
 
 This approach suggests a path toward more robust AI safety, moving beyond general training to proactive, instruction-based defensive architectures.
 
