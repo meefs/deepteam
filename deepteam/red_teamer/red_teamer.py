@@ -54,6 +54,11 @@ from deepteam.metrics import (
     OverrelianceMetric,
     CompetitorsMetric,
 )
+from deepteam.metrics.toxicity.toxicity import ToxicityMetric
+from deepteam.metrics.misinformation.misinformation import MisinformationMetric
+from deepteam.metrics.illegal_activity.illegal_activity import IllegalMetric
+from deepteam.metrics.graphic_content.graphic_content import GraphicMetric
+from deepteam.metrics.personal_safety.personal_safety import SafetyMetric
 from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 from deepteam.red_teamer.risk_assessment import (
     construct_risk_assessment_overview,
@@ -422,27 +427,27 @@ class RedTeamer:
             },
             #### Toxicity ####
             **{
-                toxicity_type: lambda tt=toxicity_type: HarmMetric(
+                toxicity_type: lambda tt=toxicity_type: ToxicityMetric(
                     model=self.evaluation_model,
-                    harm_category=tt.value,
+                    toxicity_category=tt.value,
                     async_mode=self.async_mode,
                 )
                 for toxicity_type in ToxicityType
             },
             #### Misinformation ####
             **{
-                misinformation_type: lambda mt=misinformation_type: HarmMetric(
+                misinformation_type: lambda mt=misinformation_type: MisinformationMetric(
                     model=self.evaluation_model,
-                    harm_category=mt.value,
+                    misinformation_category=mt.value,
                     async_mode=self.async_mode,
                 )
                 for misinformation_type in MisinformationType
             },
             #### Illegal ####
             **{
-                illegal_activity_type: lambda iat=illegal_activity_type: HarmMetric(
+                illegal_activity_type: lambda iat=illegal_activity_type: IllegalMetric(
                     model=self.evaluation_model,
-                    harm_category=iat.value,
+                    illegal_category=iat.value,
                     async_mode=self.async_mode,
                 )
                 for illegal_activity_type in IllegalActivityType
@@ -534,18 +539,18 @@ class RedTeamer:
             },
             #### Graphic Content ####
             **{
-                content_type: lambda ct=content_type: HarmMetric(
+                content_type: lambda ct=content_type: GraphicMetric(
                     model=self.evaluation_model,
-                    harm_category=ct.value,
+                    graphic_category=ct.value,
                     async_mode=self.async_mode,
                 )
                 for content_type in GraphicContentType
             },
             #### Personal Safety ####
             **{
-                safety_type: lambda st=safety_type: HarmMetric(
+                safety_type: lambda st=safety_type: SafetyMetric(
                     model=self.evaluation_model,
-                    harm_category=st.value,
+                    safety_category=st.value,
                     async_mode=self.async_mode,
                 )
                 for safety_type in PersonalSafetyType
