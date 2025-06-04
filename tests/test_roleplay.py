@@ -111,6 +111,7 @@ for attack_count in range(14, 16):
                 attacks_per_vulnerability_type=attack_count,
                 run_async=False
             )
+            breakpoint()
             
             # Get results dataframe
             df = t.overview.to_df()
