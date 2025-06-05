@@ -114,12 +114,9 @@ for attack_count in range(14, 16):
                 attacks_per_vulnerability_type=attack_count,
                 run_async=False,
             )
-<<<<<<< HEAD:test_roleplay.py
 
-=======
             breakpoint()
             
->>>>>>> pr/43:tests/test_roleplay.py
             # Get results dataframe
             df = t.overview.to_df()
             print(f"Results for {vuln_name} - {attack_count} attacks:")
