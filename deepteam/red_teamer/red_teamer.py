@@ -56,7 +56,8 @@ from deepteam.metrics import (
     ToxicityMetric,
     MisinformationMetric,
     GraphicMetric,
-    SafetyMetric
+    SafetyMetric,
+    IllegalMetric
 )
 from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 from deepteam.red_teamer.risk_assessment import (
