@@ -53,12 +53,11 @@ from deepteam.metrics import (
     IntellectualPropertyMetric,
     OverrelianceMetric,
     CompetitorsMetric,
+    ToxicityMetric,
+    MisinformationMetric,
+    GraphicMetric,
+    SafetyMetric
 )
-from deepteam.metrics.toxicity.toxicity import ToxicityMetric
-from deepteam.metrics.misinformation.misinformation import MisinformationMetric
-from deepteam.metrics.illegal_activity.illegal_activity import IllegalMetric
-from deepteam.metrics.graphic_content.graphic_content import GraphicMetric
-from deepteam.metrics.personal_safety.personal_safety import SafetyMetric
 from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 from deepteam.red_teamer.risk_assessment import (
     construct_risk_assessment_overview,
