@@ -41,6 +41,7 @@ module.exports = {
                 "red-teaming-adversarial-attacks-tree-jailbreaking",
                 "red-teaming-adversarial-attacks-sequential-jailbreaking",
                 "red-teaming-adversarial-attacks-crescendo-jailbreaking",
+                "red-teaming-adversarial-attacks-bad-likert-judge",
               ],
               collapsed: true,
             },
