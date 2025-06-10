@@ -202,6 +202,19 @@ attacks:
   - name: "Prompt Injection"
 ```
 
+**Available Providers:** `openai`, `anthropic`, `gemini`, `azure`, `local`, `ollama`
+
+**Model Format:**
+```yaml
+# Simple format
+model: gpt-4o
+
+# With provider
+model:
+  provider: anthropic
+  model: claude-3-5-sonnet-20241022
+```
+
 <br />
 
 # Roadmap
