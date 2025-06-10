@@ -123,7 +123,11 @@ def _load_config(path: str):
 
 
 @app.command()
-def run(config_file: str):
+def run(
+    config_file: str,
+    max_concurrent: int = typer.Option(None, "-c", "--max-concurrent", help="Maximum concurrent operations (overrides config)"),
+    attacks_per_vuln: int = typer.Option(None, "-a", "--attacks-per-vuln", help="Number of attacks per vulnerability type (overrides config)")
+):
     """Run a red teaming execution based on a YAML configuration"""
     cfg = _load_config(config_file)
     config.apply_env()
@@ -137,12 +141,16 @@ def run(config_file: str):
     simulator_model = load_model(simulator_model_spec)
     evaluation_model = load_model(evaluation_model_spec)
 
+    # Use CLI options to override config values
+    final_max_concurrent = max_concurrent if max_concurrent is not None else cfg.get("options", {}).get("max_concurrent", 10)
+    final_attacks_per_vuln = attacks_per_vuln if attacks_per_vuln is not None else cfg.get("options", {}).get("attacks_per_vulnerability_type", 1)
+
     red_teamer = RedTeamer(
         simulator_model=simulator_model,
         evaluation_model=evaluation_model,
         target_purpose=target.get("purpose", ""),
         async_mode=cfg.get("options", {}).get("run_async", True),
-        max_concurrent=cfg.get("options", {}).get("max_concurrent", 10),
+        max_concurrent=final_max_concurrent,
     )
 
     vulnerabilities_cfg = cfg.get("default_vulnerabilities", [])
@@ -171,9 +179,7 @@ def run(config_file: str):
         model_callback=model_callback,
         vulnerabilities=vulnerabilities,
         attacks=attacks,
-        attacks_per_vulnerability_type=cfg.get("options", {}).get(
-            "attacks_per_vulnerability_type", 1
-        ),
+        attacks_per_vulnerability_type=final_attacks_per_vuln,
         ignore_errors=cfg.get("options", {}).get("ignore_errors", False),
     )
 
@@ -182,10 +188,22 @@ def run(config_file: str):
 
 
 @app.command()
-def login(api_key: str = typer.Argument(..., help="OpenAI API Key")):
-    """Store API key for later runs."""
-    config.set_key("OPENAI_API_KEY", api_key)
-    typer.echo("API key saved.")
+def login(api_key: str = typer.Argument(..., help="API Key (auto-detects provider based on prefix)")):
+    """Store API key for later runs. Auto-detects provider from key prefix."""
+    # Auto-detect provider based on key prefix
+    if api_key.startswith("sk-proj"):
+        config.set_key("OPENAI_API_KEY", api_key)
+        typer.echo("OpenAI API key saved.")
+    elif api_key.startswith("sk-ant-"):
+        config.set_key("ANTHROPIC_API_KEY", api_key)
+        typer.echo("Anthropic API key saved.")
+    elif api_key.startswith("AIza"):
+        config.set_key("GOOGLE_API_KEY", api_key)
+        typer.echo("Google/Gemini API key saved.")
+    else:
+        # Default to OpenAI for backwards compatibility
+        config.set_key("OPENAI_API_KEY", api_key)
+        typer.echo("API key saved as OpenAI (unrecognized prefix).")
 
 
 @app.command()
