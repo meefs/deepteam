@@ -223,12 +223,6 @@ default_vulnerabilities:
 attacks:
   - name: "Prompt Injection"
 ```
-
-**Key Changes:**
-- **`models`**: Simulator and evaluation models moved out of target (they're not part of the target system)
-- **`target`**: Now supports both simple `model` specs and flexible custom DeepEval model specifications for custom LLM applications
-- **`system_config`**: System configuration for red teaming execution
-
 **CLI Overrides:**
 The `-c` and `-a` CLI options override YAML config values:
 ```bash
