@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from typing import Any, Dict, Union, Optional
+import importlib.util
+import sys
+import os
 
 from deepeval.models import (
     GPTModel,
@@ -13,6 +16,29 @@ from deepeval.models import (
     DeepEvalBaseLLM,
 )
 from deepeval.metrics.utils import initialize_model
+
+
+def _load_custom_model_from_file(file_path: str, class_name: str) -> DeepEvalBaseLLM:
+    """Load a custom DeepEval model class from a Python file."""
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Custom model file not found: {file_path}")
+    
+    spec = importlib.util.spec_from_file_location("custom_model_module", file_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Could not load module from {file_path}")
+    
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["custom_model_module"] = module
+    spec.loader.exec_module(module)
+    
+    if not hasattr(module, class_name):
+        raise AttributeError(f"Class '{class_name}' not found in {file_path}")
+    
+    model_class = getattr(module, class_name)
+    if not issubclass(model_class, DeepEvalBaseLLM):
+        raise TypeError(f"'{class_name}' in {file_path} must inherit from DeepEvalBaseLLM")
+    
+    return model_class()
 
 
 def load_model(spec: Union[str, Dict[str, Any], None]) -> DeepEvalBaseLLM:
@@ -79,5 +105,12 @@ def load_model(spec: Union[str, Dict[str, Any], None]) -> DeepEvalBaseLLM:
             aws_secret_access_key=spec.get("aws_secret_access_key"),
             temperature=temperature,
         )
+
+    if provider == "custom":
+        file_path = spec.get("file")
+        class_name = spec.get("class")
+        if not file_path or not class_name:
+            raise ValueError("Custom provider requires 'file' and 'class' fields")
+        return _load_custom_model_from_file(file_path, class_name)
 
     raise ValueError(f"Unknown provider: {provider}")

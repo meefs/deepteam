@@ -1,5 +1,9 @@
 import yaml
 import typer
+import importlib.util
+import sys
+import os
+from typing import Callable, Awaitable
 
 from . import config
 from .model_callback import load_model
@@ -117,6 +121,29 @@ def _build_attack(cfg: dict):
     return cls(**kwargs)
 
 
+def _load_callback_from_file(file_path: str, function_name: str) -> Callable[[str], Awaitable[str]]:
+    """Load a callback function from a Python file."""
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Target callback file not found: {file_path}")
+    
+    spec = importlib.util.spec_from_file_location("target_module", file_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Could not load module from {file_path}")
+    
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["target_module"] = module
+    spec.loader.exec_module(module)
+    
+    if not hasattr(module, function_name):
+        raise AttributeError(f"Function '{function_name}' not found in {file_path}")
+    
+    callback = getattr(module, function_name)
+    if not callable(callback):
+        raise TypeError(f"'{function_name}' in {file_path} is not callable")
+    
+    return callback
+
+
 def _load_config(path: str):
     with open(path, "r") as f:
         return yaml.safe_load(f)
@@ -132,24 +159,28 @@ def run(
     cfg = _load_config(config_file)
     config.apply_env()
 
-    target = cfg.get("target", {})
-
-    # Load simulator and evaluation models using load_model
-    simulator_model_spec = target.get("simulator_model", "gpt-3.5-turbo-0125")
-    evaluation_model_spec = target.get("evaluation_model", "gpt-4o")
+    # Parse red teaming models (moved out of target section)
+    models_cfg = cfg.get("models", {})
+    simulator_model_spec = models_cfg.get("simulator", "gpt-3.5-turbo-0125")
+    evaluation_model_spec = models_cfg.get("evaluation", "gpt-4o")
     
     simulator_model = load_model(simulator_model_spec)
     evaluation_model = load_model(evaluation_model_spec)
 
-    # Use CLI options to override config values
-    final_max_concurrent = max_concurrent if max_concurrent is not None else cfg.get("options", {}).get("max_concurrent", 10)
-    final_attacks_per_vuln = attacks_per_vuln if attacks_per_vuln is not None else cfg.get("options", {}).get("attacks_per_vulnerability_type", 1)
+    # Parse system configuration (renamed from options)
+    system_config = cfg.get("system_config", {})
+    final_max_concurrent = max_concurrent if max_concurrent is not None else system_config.get("max_concurrent", 10)
+    final_attacks_per_vuln = attacks_per_vuln if attacks_per_vuln is not None else system_config.get("attacks_per_vulnerability_type", 1)
+
+    # Parse target configuration
+    target_cfg = cfg.get("target", {})
+    target_purpose = target_cfg.get("purpose", "")
 
     red_teamer = RedTeamer(
         simulator_model=simulator_model,
         evaluation_model=evaluation_model,
-        target_purpose=target.get("purpose", ""),
-        async_mode=cfg.get("options", {}).get("run_async", True),
+        target_purpose=target_purpose,
+        async_mode=system_config.get("run_async", True),
         max_concurrent=final_max_concurrent,
     )
 
@@ -159,28 +190,40 @@ def run(
 
     attacks = [_build_attack(a) for a in cfg.get("attacks", [])]
 
-    # Load the target model for the model callback
-    target_model_spec = target.get("model")
-    if not target_model_spec:
-        # Fallback to a simple model specification if not provided
-        target_model_spec = "gpt-3.5-turbo"
+    # Load target model callback - support both model specs and custom callbacks
+    model_callback = None
     
-    target_model = load_model(target_model_spec)
-
-    # Create the async model callback
-    async def model_callback(input: str) -> str:
-        response = await target_model.a_generate(input)
-        # Ensure we return a string, handle different response types
-        if isinstance(response, tuple):
-            return str(response[0]) if response else "Empty response"
-        return str(response)
+    if "callback" in target_cfg:
+        # Load custom callback from file
+        callback_cfg = target_cfg["callback"]
+        file_path = callback_cfg.get("file")
+        function_name = callback_cfg.get("function", "model_callback")
+        
+        if not file_path:
+            raise ValueError("Target callback configuration missing 'file' field")
+        
+        model_callback = _load_callback_from_file(file_path, function_name)
+        
+    elif "model" in target_cfg:
+        # Use model specification for simple cases
+        target_model_spec = target_cfg["model"]
+        target_model = load_model(target_model_spec)
+        
+        async def model_callback(input: str) -> str:
+            response = await target_model.a_generate(input)
+            # Ensure we return a string, handle different response types
+            if isinstance(response, tuple):
+                return str(response[0]) if response else "Empty response"
+            return str(response)
+    else:
+        raise ValueError("Target configuration must specify either 'model' or 'callback'")
 
     risk = red_teamer.red_team(
         model_callback=model_callback,
         vulnerabilities=vulnerabilities,
         attacks=attacks,
         attacks_per_vulnerability_type=final_attacks_per_vuln,
-        ignore_errors=cfg.get("options", {}).get("ignore_errors", False),
+        ignore_errors=system_config.get("ignore_errors", False),
     )
 
     red_teamer._print_risk_assessment()
