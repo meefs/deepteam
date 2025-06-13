@@ -1,0 +1,156 @@
+---
+id: red-teaming-agentic-attacks
+title: Agentic Adversarial Attacks
+sidebar_label: Agentic Attacks
+---
+
+Agentic adversarial attacks in `deepteam` are specialized attack methods designed to exploit vulnerabilities specific to **autonomous AI agents**. Unlike traditional single-turn attacks, these methods target the unique characteristics of agentic systems including persistent memory, goal-oriented behavior, multi-step reasoning, and autonomous decision-making capabilities.
+
+:::info
+Agentic attacks simulate sophisticated adversarial scenarios that exploit the complex behavioral patterns and extended operational contexts of autonomous AI systems.
+:::
+
+## What Makes Agentic Attacks Different?
+
+Agentic attacks differ from standard adversarial attacks in several key ways:
+
+- **Multi-Step Manipulation** - Attacks that unfold across multiple interactions to gradually compromise agent behavior
+- **Goal-Oriented Exploitation** - Targeting the agent's objective-setting and goal-pursuit mechanisms
+- **Context Persistence** - Exploiting the agent's memory and contextual understanding across sessions
+- **Autonomous Decision Targeting** - Attacks specifically designed to corrupt autonomous decision-making processes
+- **Behavioral Pattern Analysis** - Sophisticated attacks that adapt based on observed agent behavior patterns
+
+## Available Agentic Attacks
+
+`deepteam` provides **3 core agentic attack methods** that comprehensively test agent-specific vulnerabilities:
+
+### Agent Goal Hijacking
+
+**Agent Goal Hijacking** attempts to redirect or corrupt an agent's core objectives through sophisticated manipulation techniques. This attack method tests whether agents can maintain their intended goals when faced with:
+
+- Gradual objective redefinition attempts
+- Priority hierarchy manipulation
+- Mission scope expansion attacks
+- Goal semantic corruption
+
+```python
+from deepteam.attacks.agentic import AgentGoalHijacking
+
+agent_goal_hijacking = AgentGoalHijacking(weight=2)
+```
+
+### Agent Context Manipulation
+
+**Agent Context Manipulation** targets an agent's contextual understanding and memory systems to corrupt its decision-making process. This attack evaluates agent resilience against:
+
+- Context poisoning attempts
+- Memory corruption techniques
+- Temporal context manipulation
+- Contextual amnesia induction
+
+```python
+from deepteam.attacks.agentic import AgentContextManipulation
+
+agent_context_manipulation = AgentContextManipulation(weight=1)
+```
+
+### Agentic Simulation
+
+**Agentic Simulation** creates complex, multi-step attack scenarios that simulate real-world adversarial interactions with autonomous agents. This comprehensive attack method tests:
+
+- Multi-turn manipulation sequences
+- Adaptive attack strategies
+- Behavioral pattern exploitation
+- Complex scenario-based attacks
+
+```python
+from deepteam.attacks.agentic import AgenticSimulation
+
+agentic_simulation = AgenticSimulation(weight=3)
+```
+
+## Attack Sophistication Levels
+
+Agentic attacks operate at different sophistication levels to comprehensively test agent resilience:
+
+### Level 1: Direct Manipulation
+- Straightforward attempts to override agent behavior
+- Direct command injection or goal redefinition
+- Immediate privilege escalation attempts
+
+### Level 2: Gradual Subversion
+- Multi-step attacks that gradually corrupt agent behavior
+- Subtle manipulation of agent understanding over time
+- Progressive degradation of agent security boundaries
+
+### Level 3: Adaptive Exploitation
+- Dynamic attacks that adapt based on agent responses
+- Sophisticated behavioral pattern analysis
+- Context-aware manipulation strategies
+
+## Detection and Assessment
+
+Each agentic attack includes sophisticated assessment mechanisms that evaluate:
+
+- **Attack Success Rate** - Percentage of successful agent compromises
+- **Behavioral Impact** - Degree of agent behavior modification achieved
+- **Persistence Duration** - How long attack effects remain in agent memory
+- **Detection Difficulty** - How easily the attack can be identified by monitoring systems
+
+## Usage in Red Teaming
+
+To use agentic attacks in your red teaming workflow:
+
+```python
+from deepteam import red_team
+from deepteam.vulnerabilities.agentic import (
+    DirectControlHijacking, 
+    GoalInterpretationDrift,
+    MemoryPoisoning
+)
+from deepteam.attacks.agentic import (
+    AgentGoalHijacking, 
+    AgentContextManipulation, 
+    AgenticSimulation
+)
+
+async def agent_callback(input: str) -> str:
+    # Your AI agent implementation
+    return agent_response
+
+# Define agentic vulnerabilities to test
+vulnerabilities = [
+    DirectControlHijacking(types=["command_injection", "privilege_escalation"]),
+    GoalInterpretationDrift(types=["objective_redefinition", "priority_inversion"]),
+    MemoryPoisoning(types=["context_corruption", "memory_injection"])
+]
+
+# Define agentic attacks to simulate
+attacks = [
+    AgentGoalHijacking(weight=2),
+    AgentContextManipulation(weight=2),
+    AgenticSimulation(weight=1)
+]
+
+# Execute agentic red teaming
+risk_assessment = red_team(
+    model_callback=agent_callback,
+    vulnerabilities=vulnerabilities,
+    attacks=attacks,
+    attacks_per_vulnerability_type=3
+)
+```
+
+## Best Practices for Agentic Attack Testing
+
+When testing agents with agentic attacks:
+
+1. **Test Across Multiple Sessions** - Many agentic vulnerabilities manifest across extended interactions
+2. **Monitor Behavioral Changes** - Look for subtle shifts in agent behavior patterns
+3. **Assess Memory Persistence** - Evaluate how long attack effects persist in agent memory
+4. **Test Goal Stability** - Verify that agents maintain consistent objectives under pressure
+5. **Evaluate Context Integrity** - Ensure agents handle context corruption appropriately
+
+:::tip
+Agentic attacks are most effective when combined with comprehensive monitoring of agent behavior over time. Consider implementing logging and behavioral analysis to detect subtle signs of compromise.
+::: 

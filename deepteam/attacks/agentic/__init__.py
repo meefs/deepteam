@@ -1,0 +1,4 @@
+from .authority_spoofing.authority_spoofing import AuthoritySpoofing
+from .privilege_chaining.privilege_chaining import PrivilegeChaining
+from .role_manipulation.role_manipulation import RoleManipulation
+from .goal_redirection.goal_redirection import GoalRedirection 

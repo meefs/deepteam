@@ -37,6 +37,40 @@ from deepteam.vulnerabilities.unauthorized_access import (
 from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 from deepteam.vulnerabilities.custom.template import CustomVulnerabilityTemplate
 
+# Import agentic vulnerability types and templates
+from deepteam.vulnerabilities.agentic.direct_control_hijacking.types import DirectControlHijackingType
+from deepteam.vulnerabilities.agentic.direct_control_hijacking.template import DirectControlHijackingTemplate
+from deepteam.vulnerabilities.agentic.permission_escalation.types import PermissionEscalationType
+from deepteam.vulnerabilities.agentic.permission_escalation.template import PermissionEscalationTemplate
+from deepteam.vulnerabilities.agentic.role_inheritance.types import RoleInheritanceType
+from deepteam.vulnerabilities.agentic.role_inheritance.template import RoleInheritanceTemplate
+from deepteam.vulnerabilities.agentic.goal_interpretation.types import GoalInterpretationType
+from deepteam.vulnerabilities.agentic.goal_interpretation.template import GoalInterpretationTemplate
+from deepteam.vulnerabilities.agentic.semantic_manipulation.types import SemanticManipulationType
+from deepteam.vulnerabilities.agentic.semantic_manipulation.template import SemanticManipulationTemplate
+from deepteam.vulnerabilities.agentic.recursive_goal_subversion.types import RecursiveGoalSubversionType
+from deepteam.vulnerabilities.agentic.recursive_goal_subversion.template import RecursiveGoalSubversionTemplate
+from deepteam.vulnerabilities.agentic.hierarchical_goal.types import HierarchicalGoalType
+from deepteam.vulnerabilities.agentic.hierarchical_goal.template import HierarchicalGoalTemplate
+from deepteam.vulnerabilities.agentic.data_exfiltration.types import DataExfiltrationTypes
+from deepteam.vulnerabilities.agentic.data_exfiltration.template import DataExfiltrationTemplate
+from deepteam.vulnerabilities.agentic.goal_extraction.types import GoalExtractionType
+from deepteam.vulnerabilities.agentic.goal_extraction.template import GoalExtractionTemplate
+from deepteam.vulnerabilities.agentic.induced_hallucination.types import InducedHallucinationType
+from deepteam.vulnerabilities.agentic.induced_hallucination.template import InducedHallucinationTemplate
+from deepteam.vulnerabilities.agentic.decision_manipulation.types import DecisionManipulationType
+from deepteam.vulnerabilities.agentic.decision_manipulation.template import DecisionManipulationTemplate
+from deepteam.vulnerabilities.agentic.output_verification.types import OutputVerificationType
+from deepteam.vulnerabilities.agentic.output_verification.template import OutputVerificationTemplate
+from deepteam.vulnerabilities.agentic.context_hallucination.types import ContextHallucinationType
+from deepteam.vulnerabilities.agentic.context_hallucination.template import ContextHallucinationTemplate
+from deepteam.vulnerabilities.agentic.context_amnesia.types import ContextAmnesiaType
+from deepteam.vulnerabilities.agentic.context_amnesia.template import ContextAmnesiaTemplate
+from deepteam.vulnerabilities.agentic.memory_poisoning.types import MemoryPoisoningType
+from deepteam.vulnerabilities.agentic.memory_poisoning.template import MemoryPoisoningTemplate
+from deepteam.vulnerabilities.agentic.temporal_attack.types import TemporalAttackType
+from deepteam.vulnerabilities.agentic.temporal_attack.template import TemporalAttackTemplate
+
 TEMPLATE_MAP: Dict[Type[VulnerabilityType], TemplateType] = {
     BiasType: BiasTemplate,
     CompetitionType: CompetitionTemplate,
@@ -51,6 +85,23 @@ TEMPLATE_MAP: Dict[Type[VulnerabilityType], TemplateType] = {
     RobustnessType: RobustnessTemplate,
     ToxicityType: ToxicityTemplate,
     UnauthorizedAccessType: UnauthorizedAccessTemplate,
+    # Agentic vulnerability types
+    DirectControlHijackingType: DirectControlHijackingTemplate,
+    PermissionEscalationType: PermissionEscalationTemplate,
+    RoleInheritanceType: RoleInheritanceTemplate,
+    GoalInterpretationType: GoalInterpretationTemplate,
+    SemanticManipulationType: SemanticManipulationTemplate,
+    RecursiveGoalSubversionType: RecursiveGoalSubversionTemplate,
+    HierarchicalGoalType: HierarchicalGoalTemplate,
+    DataExfiltrationTypes: DataExfiltrationTemplate,
+    GoalExtractionType: GoalExtractionTemplate,
+    InducedHallucinationType: InducedHallucinationTemplate,
+    DecisionManipulationType: DecisionManipulationTemplate,
+    OutputVerificationType: OutputVerificationTemplate,
+    ContextHallucinationType: ContextHallucinationTemplate,
+    ContextAmnesiaType: ContextAmnesiaTemplate,
+    MemoryPoisoningType: MemoryPoisoningTemplate,
+    TemporalAttackType: TemporalAttackTemplate,
 }
 
 

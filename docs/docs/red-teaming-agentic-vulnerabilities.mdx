@@ -1,0 +1,175 @@
+---
+id: red-teaming-agentic-vulnerabilities
+title: Agentic Vulnerabilities
+sidebar_label: Agentic Vulnerabilities
+---
+
+Agentic vulnerabilities in `deepteam` are specialized weaknesses that target the unique characteristics of **autonomous AI agents**. Unlike traditional LLM vulnerabilities, these focus on exploiting agent-specific behaviors such as goal pursuit, persistent memory, autonomous decision-making, and multi-step reasoning capabilities.
+
+:::info
+Agentic vulnerabilities test whether AI agents can maintain their intended behavior, goals, and security boundaries when faced with sophisticated manipulation attempts designed to exploit their autonomous nature.
+:::
+
+## Comprehensive Agentic Vulnerability Overview
+
+`deepteam` provides **16 specialized agentic vulnerabilities** organized into **5 key categories**. Each vulnerability includes multiple subtypes and specific detection intents to comprehensively test agent security.
+
+| **Category** | **Vulnerability** | **Subtypes** | **Detection Intent** | **Description** |
+|--------------|-------------------|--------------|---------------------|-----------------|
+| **🔐 Authority & Permission** | [Direct Control Hijacking](/docs/red-teaming-agentic-vulnerabilities-direct-control-hijacking) | command_injection, privilege_escalation, execution_override, boundary_violation | Unauthorized execution detection | Tests resistance to direct override of control mechanisms and unauthorized command execution |
+| | [Permission Escalation](/docs/red-teaming-agentic-vulnerabilities-permission-escalation) | role_elevation, access_expansion, privilege_abuse, authorization_bypass | Escalation success measurement | Evaluates prevention of unauthorized elevation of permissions or access rights |
+| | [Role Inheritance Confusion](/docs/red-teaming-agentic-vulnerabilities-role-inheritance-confusion) | hierarchy_manipulation, role_impersonation, authority_confusion, delegation_abuse | Boundary violation assessment | Assesses role-based access control integrity and hierarchical authority preservation |
+| **🎯 Goal & Mission** | [Goal Interpretation Drift](/docs/red-teaming-agentic-vulnerabilities-goal-interpretation-drift) | objective_redefinition, priority_inversion, scope_expansion, semantic_drift | Goal drift detection | Tests whether agents maintain consistent interpretation of core objectives under manipulation |
+| | [Semantic Goal Manipulation](/docs/red-teaming-agentic-vulnerabilities-semantic-goal-manipulation) | meaning_corruption, context_shifting, definition_poisoning, interpretation_bias | Misinterpretation assessment | Evaluates resistance to subtle manipulation of goal-related terminology and meaning |
+| | [Recursive Goal Subversion](/docs/red-teaming-agentic-vulnerabilities-recursive-goal-subversion) | nested_corruption, recursive_redefinition, layered_manipulation, goal_inception | Subversion success measurement | Tests resilience against nested and recursive manipulation of goal structures |
+| | [Hierarchical Goal Corruption](/docs/red-teaming-agentic-vulnerabilities-hierarchical-goal-corruption) | priority_inversion, level_confusion, cascade_corruption, hierarchy_disruption | Hierarchy consistency evaluation | Assesses maintenance of goal hierarchy and priority structures under attack |
+| **📊 Information & Data** | [Sensitive Data Exfiltration](/docs/red-teaming-agentic-vulnerabilities-sensitive-data-exfiltration) | context_extraction, memory_harvesting, goal_revelation, state_disclosure | Leakage rate measurement | Tests resistance to unauthorized extraction of sensitive contextual or operational data |
+| | [Goal Extraction](/docs/red-teaming-agentic-vulnerabilities-goal-extraction) | objective_disclosure, mission_revelation, purpose_extraction, intent_leakage | Extraction success assessment | Evaluates protection of confidential objectives and mission parameters |
+| **🧠 Reasoning & Decision** | [Context-Specific Hallucination Exploitation](/docs/red-teaming-agentic-vulnerabilities-context-specific-hallucination-exploitation) | reasoning_corruption, logic_manipulation, inference_poisoning, decision_distortion | Hallucination detection | Tests manipulation of context-dependent reasoning and decision-making processes |
+| | [Autonomous Decision Manipulation](/docs/red-teaming-agentic-vulnerabilities-autonomous-decision-manipulation) | choice_corruption, preference_manipulation, criteria_poisoning, judgment_bias | Manipulation assessment | Evaluates integrity of autonomous decision-making under adversarial influence |
+| | [Output Verification Bypass](/docs/red-teaming-agentic-vulnerabilities-output-verification-bypass) | validation_circumvention, check_evasion, verification_corruption, quality_degradation | Verification assessment | Assesses circumvention of output validation and quality control mechanisms |
+| **🧭 Context & Memory** | [Context-Specific Hallucination Exploitation](/docs/red-teaming-agentic-vulnerabilities-context-specific-hallucination-exploitation) | context_corruption, situational_manipulation, environmental_poisoning, state_confusion | Domain validation | Tests resistance to context-specific manipulation and environmental confusion |
+| | [Context Amnesia Exploitation](/docs/red-teaming-agentic-vulnerabilities-context-amnesia-exploitation) | memory_erasure, context_loss, state_corruption, continuity_disruption | Amnesia assessment | Evaluates handling of induced memory loss and context discontinuity |
+| | [Memory Poisoning](/docs/red-teaming-agentic-vulnerabilities-memory-poisoning) | context_injection, memory_corruption, state_manipulation, persistent_bias | Poisoning assessment | Tests resistance to corruption of persistent memory and contextual state |
+| | [Temporal Context Attack](/docs/red-teaming-agentic-vulnerabilities-temporal-context-attack) | time_manipulation, sequence_corruption, temporal_confusion, chronology_disruption | Temporal assessment | Assesses handling of time-based context manipulation and temporal reasoning attacks |
+
+## Vulnerability Categories Deep Dive
+
+### 🔐 Authority & Permission Vulnerabilities
+
+These vulnerabilities test how agents handle authorization, privilege boundaries, and access control mechanisms. They are critical for agents that operate with elevated permissions or have the ability to take consequential actions.
+
+**Key Testing Areas:**
+- Command execution authorization
+- Privilege boundary enforcement  
+- Role-based access control integrity
+- Authority delegation mechanisms
+
+### 🎯 Goal & Mission Vulnerabilities
+
+These vulnerabilities target the agent's fundamental purpose and objective systems. They test whether agents can maintain their intended goals when faced with sophisticated manipulation attempts.
+
+**Key Testing Areas:**
+- Objective consistency and stability
+- Goal hierarchy preservation
+- Mission parameter integrity
+- Purpose alignment verification
+
+### 📊 Information & Data Vulnerabilities
+
+These vulnerabilities assess how agents protect sensitive information and resist data extraction attempts. They are crucial for agents handling confidential data or operating with sensitive contextual information.
+
+**Key Testing Areas:**
+- Confidential data protection
+- Contextual information security
+- Objective confidentiality
+- Operational data integrity
+
+### 🧠 Reasoning & Decision Vulnerabilities
+
+These vulnerabilities target the agent's cognitive processes and decision-making mechanisms. They test whether agents can maintain sound reasoning under adversarial manipulation.
+
+**Key Testing Areas:**
+- Reasoning process integrity
+- Decision-making consistency
+- Validation mechanism robustness
+- Cognitive manipulation resistance
+
+### 🧭 Context & Memory Vulnerabilities
+
+These vulnerabilities focus on how agents manage contextual information and persistent memory. They test resistance to context poisoning and memory corruption attacks.
+
+**Key Testing Areas:**
+- Contextual integrity preservation
+- Memory corruption resistance
+- Temporal reasoning consistency
+- State management security
+
+## Detection Intent Framework
+
+Each agentic vulnerability employs a specific **detection intent** that defines:
+
+- **Primary Security Concern** - The main threat being evaluated
+- **Success Metrics** - Quantitative measures of vulnerability exploitation
+- **Behavioral Indicators** - Observable signs of compromise
+- **Severity Assessment** - Impact evaluation of successful attacks
+
+## Usage Patterns
+
+### Testing Individual Vulnerabilities
+
+```python
+from deepteam.vulnerabilities.agentic import DirectControlHijacking
+
+# Test specific vulnerability types
+direct_control = DirectControlHijacking(types=["command_injection", "privilege_escalation"])
+```
+
+### Testing Vulnerability Categories
+
+```python
+from deepteam.vulnerabilities.agentic import (
+    DirectControlHijacking,
+    PermissionEscalation, 
+    RoleInheritanceConfusion
+)
+
+# Test entire Authority & Permission category
+authority_vulnerabilities = [
+    DirectControlHijacking(types=["command_injection", "boundary_violation"]),
+    PermissionEscalation(types=["role_elevation", "access_expansion"]),
+    RoleInheritanceConfusion(types=["hierarchy_manipulation", "authority_confusion"])
+]
+```
+
+### Comprehensive Agentic Testing
+
+```python
+from deepteam import red_team
+from deepteam.vulnerabilities.agentic import *
+from deepteam.attacks.agentic import *
+
+# Test all agentic vulnerability categories
+vulnerabilities = [
+    # Authority & Permission
+    DirectControlHijacking(types=["command_injection", "privilege_escalation"]),
+    PermissionEscalation(types=["role_elevation", "authorization_bypass"]),
+    
+    # Goal & Mission  
+    GoalInterpretationDrift(types=["objective_redefinition", "priority_inversion"]),
+    SemanticGoalManipulation(types=["meaning_corruption", "context_shifting"]),
+    
+    # Information & Data
+    SensitiveDataExfiltration(types=["context_extraction", "memory_harvesting"]),
+    
+    # Reasoning & Decision
+    ContextSpecificHallucinationExploitation(types=["reasoning_corruption"]),
+    
+    # Context & Memory
+    MemoryPoisoning(types=["context_injection", "state_manipulation"])
+]
+
+attacks = [
+    AgentGoalHijacking(weight=2),
+    AgentContextManipulation(weight=2),
+    AgenticSimulation(weight=1)
+]
+
+risk_assessment = red_team(
+    model_callback=agent_callback,
+    vulnerabilities=vulnerabilities,
+    attacks=attacks
+)
+```
+
+:::tip
+Start with vulnerabilities most relevant to your agent's capabilities and operational context. For example, prioritize Authority & Permission vulnerabilities for agents with elevated permissions, or Goal & Mission vulnerabilities for agents with complex objectives.
+:::
+
+## Best Practices
+
+1. **Prioritize by Risk** - Focus on vulnerabilities most relevant to your agent's operational context
+2. **Test Systematically** - Cover all categories to ensure comprehensive security assessment  
+3. **Monitor Behavioral Changes** - Look for subtle shifts that indicate successful manipulation
+4. **Assess Persistence** - Evaluate how long attack effects remain in agent memory
+5. **Validate Detection** - Ensure your monitoring systems can identify these attack patterns 

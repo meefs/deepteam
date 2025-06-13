@@ -379,6 +379,7 @@ class AttackSimulator:
             purpose=purpose,
             custom_prompt=custom_prompt,
         )
+
         if self.using_native_model:
             # For models that support schema validation directly
             result, _ = self.simulator_model.generate(

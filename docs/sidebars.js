@@ -13,6 +13,7 @@ module.exports = {
       className: "sidebar-item-icon-red-teaming",
       items: [
         "red-teaming-introduction",
+        "red-teaming-agentic-introduction",
         {
           type: "category",
           label: "Adversarial Attacks",
@@ -42,6 +43,15 @@ module.exports = {
                 "red-teaming-adversarial-attacks-sequential-jailbreaking",
                 "red-teaming-adversarial-attacks-crescendo-jailbreaking",
                 "red-teaming-adversarial-attacks-bad-likert-judge",
+              ],
+              collapsed: true,
+            },
+            {
+              type: "category",
+              label: "Agentic",
+              items: [
+                "red-teaming-agentic-attacks",
+                "red-teaming-agentic-attacks-agent-goal-hijacking",
               ],
               collapsed: true,
             },
@@ -98,6 +108,16 @@ module.exports = {
                 "red-teaming-vulnerabilities-illegal-activity",
                 "red-teaming-vulnerabilities-graphic-content",
                 "red-teaming-vulnerabilities-personal-safety",
+              ],
+              collapsed: true,
+            },
+            {
+              type: "category",
+              label: "Agentic",
+              items: [
+                "red-teaming-agentic-vulnerabilities",
+                "red-teaming-agentic-vulnerabilities-direct-control-hijacking",
+                "red-teaming-agentic-vulnerabilities-goal-interpretation-drift",
               ],
               collapsed: true,
             },

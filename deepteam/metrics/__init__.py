@@ -21,3 +21,7 @@ from .hijacking.hijacking import HijackingMetric
 from .intellectual_property.intellectual_property import (
     IntellectualPropertyMetric,
 )
+
+# Agentic metrics
+from .agentic.unauthorized_execution.unauthorized_execution import UnauthorizedExecutionMetric
+from .agentic.escalation_success.escalation_success import EscalationSuccessMetric

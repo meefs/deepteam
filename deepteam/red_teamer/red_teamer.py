@@ -33,6 +33,25 @@ from deepteam.vulnerabilities.types import (
     BiasType,
     VulnerabilityType,
 )
+
+# Import agentic vulnerability types
+from deepteam.vulnerabilities.agentic.direct_control_hijacking.types import DirectControlHijackingType
+from deepteam.vulnerabilities.agentic.permission_escalation.types import PermissionEscalationType
+from deepteam.vulnerabilities.agentic.role_inheritance.types import RoleInheritanceType
+from deepteam.vulnerabilities.agentic.goal_interpretation.types import GoalInterpretationType
+from deepteam.vulnerabilities.agentic.semantic_manipulation.types import SemanticManipulationType
+from deepteam.vulnerabilities.agentic.recursive_goal_subversion.types import RecursiveGoalSubversionType
+from deepteam.vulnerabilities.agentic.hierarchical_goal.types import HierarchicalGoalType
+from deepteam.vulnerabilities.agentic.data_exfiltration.types import DataExfiltrationTypes
+from deepteam.vulnerabilities.agentic.goal_extraction.types import GoalExtractionType
+from deepteam.vulnerabilities.agentic.induced_hallucination.types import InducedHallucinationType
+from deepteam.vulnerabilities.agentic.decision_manipulation.types import DecisionManipulationType
+from deepteam.vulnerabilities.agentic.output_verification.types import OutputVerificationType
+from deepteam.vulnerabilities.agentic.context_hallucination.types import ContextHallucinationType
+from deepteam.vulnerabilities.agentic.context_amnesia.types import ContextAmnesiaType
+from deepteam.vulnerabilities.agentic.memory_poisoning.types import MemoryPoisoningType
+from deepteam.vulnerabilities.agentic.temporal_attack.types import TemporalAttackType
+
 from deepteam.attacks.attack_simulator import AttackSimulator, SimulatedAttack
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.metrics import (
@@ -59,6 +78,25 @@ from deepteam.metrics.misinformation.misinformation import MisinformationMetric
 from deepteam.metrics.illegal_activity.illegal_activity import IllegalMetric
 from deepteam.metrics.graphic_content.graphic_content import GraphicMetric
 from deepteam.metrics.personal_safety.personal_safety import SafetyMetric
+
+# Import agentic metrics
+from deepteam.metrics.agentic.unauthorized_execution.unauthorized_execution import UnauthorizedExecutionMetric
+from deepteam.metrics.agentic.escalation_success.escalation_success import EscalationSuccessMetric
+from deepteam.metrics.agentic.boundary_violation.boundary_violation import BoundaryViolationMetric
+from deepteam.metrics.agentic.goal_drift.goal_drift import GoalDriftMetric
+from deepteam.metrics.agentic.misinterpretation.misinterpretation import MisinterpretationMetric
+from deepteam.metrics.agentic.subversion_success.subversion_success import SubversionSuccessMetric
+from deepteam.metrics.agentic.hierarchy_consistency.hierarchy_consistency import HierarchyConsistencyMetric
+from deepteam.metrics.agentic.leakage_rate.leakage_rate import LeakageRateMetric
+from deepteam.metrics.agentic.extraction_success.extraction_success import ExtractionSuccessMetric
+from deepteam.metrics.agentic.hallucination_detection.hallucination_detection import HallucinationDetectionMetric
+from deepteam.metrics.agentic.manipulation_assessment.manipulation_assessment import ManipulationAssessmentMetric
+from deepteam.metrics.agentic.verification_assessment.verification_assessment import VerificationAssessmentMetric
+from deepteam.metrics.agentic.domain_validation.domain_validation import DomainValidationMetric
+from deepteam.metrics.agentic.amnesia_assessment.amnesia_assessment import AmnesiaAssessmentMetric
+from deepteam.metrics.agentic.poisoning_assessment.poisoning_assessment import PoisoningAssessmentMetric
+from deepteam.metrics.agentic.temporal_assessment.temporal_assessment import TemporalAssessmentMetric
+
 from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 from deepteam.red_teamer.risk_assessment import (
     construct_risk_assessment_overview,
@@ -552,6 +590,135 @@ class RedTeamer:
                     async_mode=self.async_mode,
                 )
                 for safety_type in PersonalSafetyType
+            },
+            #### Agentic Vulnerabilities ####
+            **{
+                direct_control_type: lambda: UnauthorizedExecutionMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for direct_control_type in DirectControlHijackingType
+            },
+            **{
+                permission_type: lambda: EscalationSuccessMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for permission_type in PermissionEscalationType
+            },
+            **{
+                role_type: lambda: BoundaryViolationMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for role_type in RoleInheritanceType
+            },
+            **{
+                goal_type: lambda: GoalDriftMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for goal_type in GoalInterpretationType
+            },
+            **{
+                semantic_type: lambda: MisinterpretationMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for semantic_type in SemanticManipulationType
+            },
+            **{
+                subversion_type: lambda: SubversionSuccessMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for subversion_type in RecursiveGoalSubversionType
+            },
+            **{
+                hierarchy_type: lambda: HierarchyConsistencyMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for hierarchy_type in HierarchicalGoalType
+            },
+            **{
+                exfiltration_type: lambda: LeakageRateMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for exfiltration_type in DataExfiltrationTypes
+            },
+            **{
+                extraction_type: lambda: ExtractionSuccessMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for extraction_type in GoalExtractionType
+            },
+            **{
+                hallucination_type: lambda: HallucinationDetectionMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for hallucination_type in InducedHallucinationType
+            },
+            **{
+                decision_type: lambda: ManipulationAssessmentMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for decision_type in DecisionManipulationType
+            },
+            **{
+                verification_type: lambda: VerificationAssessmentMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for verification_type in OutputVerificationType
+            },
+            **{
+                context_hallucination_type: lambda: DomainValidationMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for context_hallucination_type in ContextHallucinationType
+            },
+            **{
+                amnesia_type: lambda: AmnesiaAssessmentMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for amnesia_type in ContextAmnesiaType
+            },
+            **{
+                poisoning_type: lambda: PoisoningAssessmentMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for poisoning_type in MemoryPoisoningType
+            },
+            **{
+                temporal_type: lambda: TemporalAssessmentMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for temporal_type in TemporalAttackType
             },
         }
 

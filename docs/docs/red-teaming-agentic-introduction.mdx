@@ -1,0 +1,91 @@
+---
+id: red-teaming-agentic-introduction
+title: Introduction to Agentic Red Teaming
+sidebar_label: Introduction to Agentic Red Teaming
+---
+
+`deepteam` offers comprehensive **agentic red teaming capabilities** that test AI agents for vulnerabilities specific to autonomous decision-making, goal-oriented behavior, and multi-step reasoning. These specialized tests go beyond traditional LLM evaluations to assess how well your AI agents resist manipulation and maintain secure, intended behavior patterns.
+
+## What Makes Agentic Testing Different?
+
+Unlike standard LLM red teaming which focuses on single-turn responses, agentic red teaming evaluates how AI systems behave when they operate with autonomy and persistence. Traditional red teaming asks: *"What harmful content can I make the LLM generate?"* Agentic red teaming asks: *"How can I manipulate an autonomous agent to deviate from its intended behavior and goals?"*
+
+Key differences include:
+
+- **Persistent Memory** - Agents maintain context and information across multiple interactions
+- **Goal-Oriented Behavior** - Agents work toward specific objectives and can be manipulated to change these goals
+- **Autonomous Decision Making** - Agents make independent choices that can be corrupted through sophisticated attacks
+- **Multi-Step Reasoning** - Agents perform complex reasoning chains that can be gradually subverted
+- **Action Capabilities** - Agents can take real-world actions, making security failures more consequential
+
+## Agentic Red Teaming Overview
+
+`deepteam` provides 16 specialized agentic vulnerabilities organized into 5 categories, along with 3 specialized attack methods designed specifically for testing autonomous AI systems. Each vulnerability includes specific subtypes and detection intents to comprehensively test agent security.
+
+| **VULNERABILITIES** | **ATTACKS** | **DESCRIPTION** |
+|---------------------|-------------|-----------------|
+| **Authority & Permission** | | |
+| Direct Control Hijacking | Agent Goal Hijacking | Tests resistance to unauthorized command execution and control mechanism override |
+| Permission Escalation | Agent Context Manipulation | Evaluates prevention of unauthorized privilege elevation and access expansion |
+| Role Inheritance Confusion | Agentic Simulation | Assesses role-based access control integrity and authority preservation |
+| **Goal & Mission** | | |
+| Goal Interpretation Drift | Agent Goal Hijacking | Tests whether agents maintain consistent interpretation of core objectives |
+| Semantic Goal Manipulation | Agent Context Manipulation | Evaluates resistance to subtle manipulation of goal-related terminology |
+| Recursive Goal Subversion | Agentic Simulation | Tests resilience against nested and recursive goal structure manipulation |
+| Hierarchical Goal Corruption | Agent Goal Hijacking | Assesses maintenance of goal hierarchy and priority structures |
+| **Information & Data** | | |
+| Sensitive Data Exfiltration | Agent Context Manipulation | Tests resistance to unauthorized extraction of sensitive operational data |
+| Goal Extraction | Agentic Simulation | Evaluates protection of confidential objectives and mission parameters |
+| **Reasoning & Decision** | | |
+| Context-Specific Hallucination Exploitation | Agent Context Manipulation | Tests manipulation of context-dependent reasoning and decision-making |
+| Autonomous Decision Manipulation | Agentic Simulation | Evaluates integrity of autonomous decision-making under adversarial influence |
+| Output Verification Bypass | Agent Goal Hijacking | Assesses circumvention of output validation and quality control mechanisms |
+| **Context & Memory** | | |
+| Context-Specific Hallucination Exploitation | Agent Context Manipulation | Tests resistance to context-specific manipulation and environmental confusion |
+| Context Amnesia Exploitation | Agent Context Manipulation | Evaluates handling of induced memory loss and context discontinuity |
+| Memory Poisoning | Agentic Simulation | Tests resistance to corruption of persistent memory and contextual state |
+| Temporal Context Attack | Agent Context Manipulation | Assesses handling of time-based context manipulation and temporal reasoning |
+
+## Usage Example
+
+```python
+from deepteam import red_team
+from deepteam.vulnerabilities.agentic import DirectControlHijacking, GoalInterpretationDrift
+from deepteam.attacks.agentic import AgentGoalHijacking, AgentContextManipulation
+
+async def agent_callback(input: str) -> str:
+    # Replace this with your AI agent system
+    return f"Agent response: {input}"
+
+# Test authority and goal vulnerabilities
+vulnerabilities = [
+    DirectControlHijacking(types=["command_injection", "privilege_escalation"]),
+    GoalInterpretationDrift(types=["objective_redefinition", "priority_inversion"])
+]
+
+# Use specialized agentic attacks
+attacks = [
+    AgentGoalHijacking(weight=2),
+    AgentContextManipulation(weight=1)
+]
+
+risk_assessment = red_team(
+    model_callback=agent_callback,
+    vulnerabilities=vulnerabilities,
+    attacks=attacks
+)
+```
+
+## When to Use Agentic Red Teaming
+
+Agentic red teaming is essential for any AI system that exhibits:
+
+- **Autonomous Behavior** - Makes independent decisions without human oversight
+- **Persistent Memory** - Maintains context or state across multiple interactions
+- **Goal-Oriented Operations** - Works toward specific objectives or missions
+- **Action Capabilities** - Can take actions in external systems or environments
+- **Multi-Step Reasoning** - Performs complex reasoning chains to achieve objectives
+
+:::tip
+Start with agentic red teaming if your AI system goes beyond simple question-answering to actually "do things" in the world or maintain ongoing relationships with users.
+::: 
