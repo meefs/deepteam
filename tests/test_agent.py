@@ -24,24 +24,14 @@ from deepteam.vulnerabilities import (
     TemporalAttack
 )
 
-# Import all agentic attacks
+# Import the 6 remaining generalized attacks
 from deepteam.attacks import (
     AuthoritySpoofing,
-    PrivilegeChaining,
     RoleManipulation,
     GoalRedirection,
     LinguisticConfusion,
-    GoalChaining,
-    HierarchyManipulation,
-    DataSmuggling,
-    ProbingEscalation,
-    ConfabulationTriggers,
-    DecisionInfluence,
     ValidationBypass,
-    DomainExploitation,
-    ContextReset,
-    ContextInjection,
-    SessionSplitting
+    ContextInjection
 )
 
 
@@ -107,12 +97,14 @@ async def model_callback(input: str):
 def test_agentic_red_teaming():
     """
     Comprehensive test of all agentic vulnerability-attack combinations.
-    Tests all 16 vulnerabilities with their corresponding attacks.
+    Tests all 16 vulnerabilities with the 6 remaining generalized attacks.
+    Note: Specific attack techniques are now embedded within vulnerabilities.
     """
     print("Starting comprehensive agentic red teaming test...")
     print("=" * 60)
     
-    # Define all vulnerability-attack pairs based on CSA Agentic AI Red Teaming Guide
+    # Define all vulnerability-attack pairs using the 6 generalized attacks
+    # The specific attack techniques are now embedded within the vulnerabilities
     test_configurations = [
         # 4.1.1 Direct Control Hijacking
         {
@@ -124,7 +116,7 @@ def test_agentic_red_teaming():
         # 4.1.2 Permission Escalation
         {
             "vulnerability": PermissionEscalation(),
-            "attack": PrivilegeChaining(),
+            "attack": AuthoritySpoofing(),  # Using generalized attack
             "purpose": "System Administration Agent"
         },
         
@@ -152,42 +144,42 @@ def test_agentic_red_teaming():
         # 4.4.4 Recursive Goal Subversion
         {
             "vulnerability": RecursiveGoalSubversion(),
-            "attack": GoalChaining(),
+            "attack": GoalRedirection(),  # Using generalized attack
             "purpose": "Goal-Oriented Planning Agent"
         },
         
         # 4.4.5 Hierarchical Goal
         {
             "vulnerability": HierarchicalGoal(),
-            "attack": HierarchyManipulation(),
+            "attack": RoleManipulation(),  # Using generalized attack
             "purpose": "Hierarchical Decision Agent"
         },
         
         # 4.4.8 Data Exfiltration
         {
             "vulnerability": DataExfiltration(),
-            "attack": DataSmuggling(),
+            "attack": ContextInjection(),  # Using generalized attack
             "purpose": "Data Management Agent"
         },
         
         # 4.4.9 Goal Extraction
         {
             "vulnerability": GoalExtraction(),
-            "attack": ProbingEscalation(),
+            "attack": ValidationBypass(),  # Using generalized attack
             "purpose": "Strategic Planning Agent"
         },
         
         # 4.5.1 Induced Hallucination
         {
             "vulnerability": InducedHallucination(),
-            "attack": ConfabulationTriggers(),
+            "attack": LinguisticConfusion(),  # Using generalized attack
             "purpose": "Information Verification Agent"
         },
         
         # 4.5.3 Decision Manipulation
         {
             "vulnerability": DecisionManipulation(),
-            "attack": DecisionInfluence(),
+            "attack": ContextInjection(),  # Using generalized attack
             "purpose": "Decision Support Agent"
         },
         
@@ -201,14 +193,14 @@ def test_agentic_red_teaming():
         # 4.5.7 Context-Specific Hallucination
         {
             "vulnerability": ContextHallucination(),
-            "attack": DomainExploitation(),
+            "attack": ContextInjection(),  # Using generalized attack
             "purpose": "Domain Expert Agent"
         },
         
         # 4.8.1 Context Amnesia
         {
             "vulnerability": ContextAmnesia(),
-            "attack": ContextReset(),
+            "attack": ContextInjection(),  # Using generalized attack
             "purpose": "Conversational Agent"
         },
         
@@ -222,7 +214,7 @@ def test_agentic_red_teaming():
         # 4.8.4 Temporal Attack
         {
             "vulnerability": TemporalAttack(),
-            "attack": SessionSplitting(),
+            "attack": ContextInjection(),  # Using generalized attack
             "purpose": "Session Management Agent"
         }
     ]
@@ -308,6 +300,7 @@ def test_agentic_red_teaming():
     
     print("\n" + "=" * 60)
     print("All agentic vulnerability-attack combinations tested!")
+    print("Note: Specific attack techniques are now embedded within vulnerabilities.")
     print("=" * 60)
     
     return results
