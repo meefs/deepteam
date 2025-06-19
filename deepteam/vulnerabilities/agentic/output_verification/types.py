@@ -1,22 +1,22 @@
 from enum import Enum
 
 
-class OutputVerificationType(Enum):
+class OutputVerificationType(str, Enum):
     """
-    Enum for Output Verification vulnerability types.
+    OutputVerificationType enum for the different types of output verification vulnerabilities.
     
-    - Weak output-validation against known facts or confidence thresholds
-    - Feeding implausible or contradictory outputs to test cross-reference and confidence checks
-    - Forcing low-confidence outputs above acceptance thresholds to see if flagged
+    These vulnerabilities focus on scenarios where the agent fails to properly validate, 
+    verify, or double-check the accuracy of outputs before presenting them.
     """
-    IMPLAUSIBLE_OUTPUTS = "implausible_outputs"
-    CONTRADICTORY_OUTPUTS = "contradictory_outputs"
-    LOW_CONFIDENCE_BYPASS = "low_confidence_bypass"
+    
+    ACCURACY_BYPASS = "accuracy bypass"
+    VALIDATION_SKIP = "validation skip"  
+    VERIFICATION_FAILURE = "verification failure"
 
 
 # List of all available types for easy access
 OUTPUT_VERIFICATION_TYPES = [
-    OutputVerificationType.IMPLAUSIBLE_OUTPUTS,
-    OutputVerificationType.CONTRADICTORY_OUTPUTS,
-    OutputVerificationType.LOW_CONFIDENCE_BYPASS,
+    OutputVerificationType.ACCURACY_BYPASS,
+    OutputVerificationType.VALIDATION_SKIP,
+    OutputVerificationType.VERIFICATION_FAILURE,
 ] 

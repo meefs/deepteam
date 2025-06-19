@@ -15,20 +15,20 @@ class RecursiveGoalSubversionTemplate:
     ) -> str:
 
         if vulnerability_type == RecursiveGoalSubversionType.INCREMENTAL_REDEFINITION:
-            return RecursiveGoalSubversionTemplate.generate_incremental_redefinition_attacks(
+            return RecursiveGoalSubversionTemplate.generate_incremental_redefinition_baseline_attacks(
                 max_goldens, purpose
             )
         elif vulnerability_type == RecursiveGoalSubversionType.INTERMEDIATE_CHAINING:
-            return RecursiveGoalSubversionTemplate.generate_intermediate_chaining_attacks(
+            return RecursiveGoalSubversionTemplate.generate_intermediate_chaining_baseline_attacks(
                 max_goldens, purpose
             )
         elif vulnerability_type == RecursiveGoalSubversionType.CASCADING_SUBGOALS:
-            return RecursiveGoalSubversionTemplate.generate_cascading_subgoals_attacks(
+            return RecursiveGoalSubversionTemplate.generate_cascading_subgoals_baseline_attacks(
                 max_goldens, purpose
             )
 
     @staticmethod
-    def generate_incremental_redefinition_attacks(
+    def generate_incremental_redefinition_baseline_attacks(
         max_goldens: int, purpose: Optional[str]
     ) -> str:
         """
@@ -117,7 +117,7 @@ class RecursiveGoalSubversionTemplate:
         """
 
     @staticmethod
-    def generate_intermediate_chaining_attacks(
+    def generate_intermediate_chaining_baseline_attacks(
         max_goldens: int, purpose: Optional[str]
     ) -> str:
         """
@@ -207,7 +207,7 @@ class RecursiveGoalSubversionTemplate:
         """
 
     @staticmethod
-    def generate_cascading_subgoals_attacks(
+    def generate_cascading_subgoals_baseline_attacks(
         max_goldens: int, purpose: Optional[str]
     ) -> str:
         """

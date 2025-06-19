@@ -1,7 +1,7 @@
 from typing import List, Literal, Optional
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.robustness import RobustnessType
+from deepteam.vulnerabilities.agentic.robustness import RobustnessType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 
 RobustnessLiteral = Literal["input overreliance", "hijacking"]

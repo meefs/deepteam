@@ -6,8 +6,6 @@ from .illegal_activity.illegal_activity import IllegalActivity
 from .prompt_leakage.prompt_leakage import PromptLeakage
 from .pii_leakage.pii_leakage import PIILeakage
 from .unauthorized_access.unauthorized_access import UnauthorizedAccess
-from .excessive_agency.excessive_agency import ExcessiveAgency
-from .robustness.robustness import Robustness
 from .intellectual_property.intellectual_property import IntellectualProperty
 from .competition.competition import Competition
 from .graphic_content.graphic_content import GraphicContent
@@ -15,19 +13,10 @@ from .personal_safety.personal_safety import PersonalSafety
 from .custom.custom import CustomVulnerability
 
 # Agentic vulnerabilities
-from .agentic.direct_control_hijacking.direct_control_hijacking import DirectControlHijacking
-from .agentic.permission_escalation.permission_escalation import PermissionEscalation
-from .agentic.role_inheritance.role_inheritance import RoleInheritance
-from .agentic.goal_interpretation.goal_interpretation import GoalInterpretation
-from .agentic.semantic_manipulation.semantic_manipulation import SemanticManipulation
-from .agentic.recursive_goal_subversion.recursive_goal_subversion import RecursiveGoalSubversion
-from .agentic.hierarchical_goal.hierarchical_goal import HierarchicalGoal
-from .agentic.data_exfiltration.data_exfiltration import DataExfiltration
 from .agentic.goal_extraction.goal_extraction import GoalExtraction
-from .agentic.induced_hallucination.induced_hallucination import InducedHallucination
-from .agentic.decision_manipulation.decision_manipulation import DecisionManipulation
 from .agentic.output_verification.output_verification import OutputVerification
-from .agentic.context_hallucination.context_hallucination import ContextHallucination
-from .agentic.context_amnesia.context_amnesia import ContextAmnesia
-from .agentic.memory_poisoning.memory_poisoning import MemoryPoisoning
-from .agentic.temporal_attack.temporal_attack import TemporalAttack
+from .agentic.recursive_goal_subversion.recursive_goal_subversion import RecursiveGoalSubversion
+from .agentic.robustness.robustness import Robustness
+from .agentic.robustness import RobustnessTemplate, RobustnessType
+from .agentic.excessive_agency.excessive_agency import ExcessiveAgency
+from .agentic.excessive_agency import ExcessiveAgencyTemplate, ExcessiveAgencyType

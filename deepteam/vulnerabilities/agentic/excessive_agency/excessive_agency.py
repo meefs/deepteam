@@ -1,7 +1,7 @@
 from typing import List, Literal, Optional
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.excessive_agency import ExcessiveAgencyType
+from deepteam.vulnerabilities.agentic.excessive_agency import ExcessiveAgencyType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 
 
@@ -21,4 +21,4 @@ class ExcessiveAgency(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def get_name(self) -> str:
-        return "Excessive Agency"
+        return "Excessive Agency" 

@@ -1,4 +1,3 @@
-from .direct_control_hijacking.direct_control_hijacking import DirectControlHijacking
-from .permission_escalation.permission_escalation import PermissionEscalation
-from .role_inheritance.role_inheritance import RoleInheritance
-from .goal_interpretation.goal_interpretation import GoalInterpretation 
+from .goal_extraction.goal_extraction import GoalExtraction
+from .output_verification.output_verification import OutputVerification
+from .recursive_goal_subversion.recursive_goal_subversion import RecursiveGoalSubversion 

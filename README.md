@@ -139,7 +139,7 @@ python red_team_llm.py
 Unlike `deepeval`, `deepteam`'s red teaming capabilities does not require a prepared dataset. This is because adversarial attacks to your LLM application is dynamically simulated at red teaming time based on the list of `vulnerabilities` you wish to red team for.
 
 > [!NOTE]
-> You'll need to set your `OPENAI_API_KEY` as an enviornment variable before running the `red_team()` function, since `deepteam` uses LLMs to both generate adversarial attacks and evaluate LLM outputs. To use **ANY** custom LLM of your choice, [check out this part of the docs](https://docs.confident-ai.com/guides/guides-using-custom-llms).
+> You'll need to set your `OPENAI_API_KEY` as an environment variable or use `deepteam set-api-key sk-proj-...` before running the `red_team()` function, since `deepteam` uses LLMs to both generate adversarial attacks and evaluate LLM outputs. To use **ANY** custom LLM of your choice, [check out this part of the docs](https://docs.confident-ai.com/guides/guides-using-custom-llms).
 
 <br />
 
@@ -165,11 +165,11 @@ Use `deepteam --help` to see all available commands and options.
 
 ```bash
 # Auto-detects provider from prefix
-deepteam login sk-proj-abc123...  # OpenAI
-deepteam login sk-ant-abc123...   # Anthropic  
-deepteam login AIzabc123...       # Google
+deepteam set-api-key sk-proj-abc123...  # OpenAI
+deepteam set-api-key sk-ant-abc123...   # Anthropic  
+deepteam set-api-key AIzabc123...       # Google
 
-deepteam logout
+deepteam remove-api-key
 ```
 
 ## Provider Setup

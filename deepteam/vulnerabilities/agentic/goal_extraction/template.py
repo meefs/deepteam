@@ -15,20 +15,20 @@ class GoalExtractionTemplate:
     ) -> str:
 
         if vulnerability_type == GoalExtractionType.ESCALATING_PROBING:
-            return GoalExtractionTemplate.generate_escalating_probing_attacks(
+            return GoalExtractionTemplate.generate_escalating_probing_baseline_attacks(
                 max_goldens, purpose
             )
         elif vulnerability_type == GoalExtractionType.COOPERATIVE_DIALOGUE:
-            return GoalExtractionTemplate.generate_cooperative_dialogue_attacks(
+            return GoalExtractionTemplate.generate_cooperative_dialogue_baseline_attacks(
                 max_goldens, purpose
             )
         elif vulnerability_type == GoalExtractionType.SOCIAL_ENGINEERING:
-            return GoalExtractionTemplate.generate_social_engineering_attacks(
+            return GoalExtractionTemplate.generate_social_engineering_baseline_attacks(
                 max_goldens, purpose
             )
 
     @staticmethod
-    def generate_escalating_probing_attacks(
+    def generate_escalating_probing_baseline_attacks(
         max_goldens: int, purpose: Optional[str]
     ) -> str:
         """
@@ -117,7 +117,7 @@ class GoalExtractionTemplate:
         """
 
     @staticmethod
-    def generate_cooperative_dialogue_attacks(
+    def generate_cooperative_dialogue_baseline_attacks(
         max_goldens: int, purpose: Optional[str]
     ) -> str:
         """
@@ -207,7 +207,7 @@ class GoalExtractionTemplate:
         """
 
     @staticmethod
-    def generate_social_engineering_attacks(
+    def generate_social_engineering_baseline_attacks(
         max_goldens: int, purpose: Optional[str]
     ) -> str:
         """

@@ -230,8 +230,8 @@ def run(
     return risk
 
 
-@app.command()
-def login(api_key: str = typer.Argument(..., help="API Key (auto-detects provider based on prefix)")):
+@app.command("set-api-key")
+def set_api_key(api_key: str = typer.Argument(..., help="API Key (auto-detects provider based on prefix)")):
     """Store API key for later runs. Auto-detects provider from key prefix."""
     # Auto-detect provider based on key prefix
     if api_key.startswith("sk-proj"):
@@ -249,11 +249,11 @@ def login(api_key: str = typer.Argument(..., help="API Key (auto-detects provide
         typer.echo("API key saved as OpenAI (unrecognized prefix).")
 
 
-@app.command()
-def logout():
+@app.command("remove-api-key")
+def remove_api_key():
     """Remove stored API key."""
     config.remove_key("OPENAI_API_KEY")
-    typer.echo("Logged out.")
+    typer.echo("API key removed.")
 
 
 @app.command("set-azure-openai")

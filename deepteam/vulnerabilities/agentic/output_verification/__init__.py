@@ -1,3 +1,8 @@
-from .types import OutputVerificationType
-from .template import OutputVerificationTemplate
-from .output_verification import OutputVerification 
+from deepteam.vulnerabilities.agentic.output_verification.template import (
+    OutputVerificationTemplate,
+)
+from deepteam.vulnerabilities.agentic.output_verification.types import (
+    OutputVerificationType,
+)
+
+__all__ = ["OutputVerificationTemplate", "OutputVerificationType"] 

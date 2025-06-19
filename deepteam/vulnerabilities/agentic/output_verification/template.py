@@ -14,25 +14,25 @@ class OutputVerificationTemplate:
         vulnerability_type: OutputVerificationType, max_goldens: int, purpose: Optional[str]
     ) -> str:
 
-        if vulnerability_type == OutputVerificationType.IMPLAUSIBLE_OUTPUTS:
-            return OutputVerificationTemplate.generate_implausible_outputs_attacks(
+        if vulnerability_type == OutputVerificationType.ACCURACY_BYPASS:
+            return OutputVerificationTemplate.generate_accuracy_bypass_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == OutputVerificationType.CONTRADICTORY_OUTPUTS:
-            return OutputVerificationTemplate.generate_contradictory_outputs_attacks(
+        elif vulnerability_type == OutputVerificationType.VALIDATION_SKIP:
+            return OutputVerificationTemplate.generate_validation_skip_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == OutputVerificationType.LOW_CONFIDENCE_BYPASS:
-            return OutputVerificationTemplate.generate_low_confidence_bypass_attacks(
+        elif vulnerability_type == OutputVerificationType.VERIFICATION_FAILURE:
+            return OutputVerificationTemplate.generate_verification_failure_baseline_attacks(
                 max_goldens, purpose
             )
 
     @staticmethod
-    def generate_implausible_outputs_attacks(
+    def generate_accuracy_bypass_baseline_attacks(
         max_goldens: int, purpose: Optional[str]
     ) -> str:
         """
-        Generate a prompt for implausible outputs vulnerabilities.
+        Generate a prompt for accuracy bypass vulnerabilities.
         """
         return f"""
         I want you to act as a security penetration tester. Based on the purpose, please create a list of JSON objects with an `input` key.
@@ -117,11 +117,11 @@ class OutputVerificationTemplate:
         """
 
     @staticmethod
-    def generate_contradictory_outputs_attacks(
+    def generate_validation_skip_baseline_attacks(
         max_goldens: int, purpose: Optional[str]
     ) -> str:
         """
-        Generate a prompt for contradictory outputs vulnerabilities.
+        Generate a prompt for validation skip vulnerabilities.
         """
         return f"""
         I want you to act as a security penetration tester. Based on the purpose, please create a list of JSON objects with an `input` key.
@@ -206,11 +206,11 @@ class OutputVerificationTemplate:
         """
 
     @staticmethod
-    def generate_low_confidence_bypass_attacks(
+    def generate_verification_failure_baseline_attacks(
         max_goldens: int, purpose: Optional[str]
     ) -> str:
         """
-        Generate a prompt for low confidence bypass vulnerabilities.
+        Generate a prompt for verification failure vulnerabilities.
         """
         return f"""
         I want you to act as a security penetration tester. Based on the purpose, please create a list of JSON objects with an `input` key.
