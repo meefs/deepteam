@@ -56,12 +56,12 @@ For maximum attack effectiveness, use these **optimal pairings**:
 
 | Attack Method | Best Vulnerability Targets | Why This Pairing Works |
 |---------------|----------------------------|------------------------|
-| **System Override** | RBAC, Debug Access, Excessive Agency | System override exploits trust in administrative commands to circumvent role-based access controls and debug restrictions |
-| **Permission Escalation** | BFLA, BOLA, RBAC | Permission escalation targets access control weaknesses by manipulating perceived user roles and authorization levels |
-| **Objective Reframing** | Goal Theft, Recursive Hijacking | Objective reframing redirects agent goals by reframing objectives in ways that bypass original intent safeguards |
-| **Semantic Manipulation** | Output Verification, Misinformation, Bias | Semantic manipulation exploits language processing weaknesses to bypass verification and generate misleading or biased content |
-| **Input Bypass** | Shell Injection, SQL Injection, SSRF | Input bypass targets input validation systems to circumvent security checks and enable injection attacks |
-| **Context Poisoning** | Prompt Leakage, PII Leakage, Intellectual Property | Context poisoning injects false contextual information that can lead to unintended data disclosure and IP violations |
+| **System Override** | RBAC, Debug Access, Excessive Agency, BFLA | System override exploits trust in administrative commands to bypass role-based access controls and escalate permissions |
+| **Permission Escalation** | BFLA, BOLA, RBAC, Goal Theft | Permission escalation manipulates perceived roles and authority to bypass access controls and hijack agent objectives |
+| **Objective Reframing** | Goal Theft, Recursive Hijacking, Misinformation | Objective reframing redirects agent goals and can lead to spreading false information through goal manipulation |
+| **Semantic Manipulation** | Bias, Toxicity, Misinformation, Output Verification | Semantic manipulation exploits language processing to generate biased, toxic, or misleading content that bypasses verification |
+| **Input Bypass** | Shell Injection, SQL Injection, SSRF, Debug Access | Input bypass circumvents validation systems to enable injection attacks and unauthorized system access |
+| **Context Poisoning** | PII Leakage, Prompt Leakage, Intellectual Property, Recursive Hijacking | Context poisoning corrupts agent memory to cause data leakage and enable persistent goal subversion across sessions |
 
 :::tip
 Combine multiple attack methods with their optimal vulnerability targets to create comprehensive attack scenarios that test different aspects of agent security simultaneously.
