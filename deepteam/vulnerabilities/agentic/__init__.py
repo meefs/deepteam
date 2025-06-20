@@ -1,3 +1,3 @@
-from .goal_extraction.goal_extraction import GoalExtraction
-from .output_verification.output_verification import OutputVerification
-from .recursive_goal_subversion.recursive_goal_subversion import RecursiveGoalSubversion 
+from .goal_theft.goal_theft import GoalTheft
+from .validation_bypass.validation_bypass import ValidationBypass
+from .recursive_hijacking.recursive_hijacking import RecursiveHijacking 

@@ -10,34 +10,35 @@ Agentic adversarial attacks are specialized attack methods designed to exploit v
 
 `deepteam` provides **6 agentic attack methods** that enhance baseline attacks with sophisticated manipulation techniques:
 
-**Authority Spoofing** - Makes attacks appear as legitimate system commands, administrative overrides, or trusted service requests to bypass agent security controls.
+**System Override** - Makes attacks appear as legitimate system commands, administrative overrides, or trusted service requests to bypass agent security controls.
 
-**Role Manipulation** - Shifts the agent's perceived identity, capabilities, or operational context to bypass role-based security restrictions.
+**Permission Escalation** - Shifts the agent's perceived identity, capabilities, or operational context to bypass role-based security restrictions.
 
-**Goal Redirection** - Reframes the agent's objectives, priorities, or operational constraints to achieve unauthorized outcomes.
+**Objective Reframing** - Reframes the agent's objectives, priorities, or operational constraints to achieve unauthorized outcomes.
 
-**Linguistic Confusion** - Uses semantic ambiguity, syntactic variation, and contextual reframing to confuse the agent's language understanding and bypass security controls.
+**Semantic Manipulation** - Uses semantic ambiguity, syntactic variation, and contextual reframing to confuse the agent's language understanding and bypass security controls.
 
-**Validation Bypass** - Circumvents security checks, compliance requirements, and validation procedures through exception handling and operational necessity claims.
+**Input Bypass** - Circumvents security checks, compliance requirements, and validation procedures through exception handling and operational necessity claims.
 
-**Context Injection** - Injects false environmental context, manipulates memory integration, and establishes persistent contextual influence to corrupt agent decision-making.
+**Context Poisoning** - Injects false environmental context, manipulates memory integration, and establishes persistent contextual influence to corrupt agent decision-making.
 
 ## Usage Example
 
 ```python
 from deepteam import red_team
-from deepteam.vulnerabilities.agentic import PermissionEscalation, GoalInterpretation
-from deepteam.attacks.single_turn import AuthoritySpoofing, GoalRedirection
+from deepteam.vulnerabilities.agentic import GoalTheft, RecursiveHijacking
+from deepteam.vulnerabilities import RBAC, BFLA
+from deepteam.attacks.single_turn import SystemOverride, ObjectiveReframing
 
 # Define vulnerabilities and their best-paired attacks
 vulnerabilities = [
-    PermissionEscalation(types=["unscoped_elevated_permissions"]),
-    GoalInterpretation(types=["ambiguous_goal_framing"])
+    RBAC(types=["unscoped_elevated_permissions"]),
+    GoalTheft(types=["goal_redirection"])
 ]
 
 attacks = [
-    AuthoritySpoofing(weight=2, max_retries=3),  # Best for permission vulnerabilities
-    GoalRedirection(weight=2, max_retries=3)     # Best for goal vulnerabilities
+    SystemOverride(weight=2, max_retries=3),  # Best for access control vulnerabilities
+    ObjectiveReframing(weight=2, max_retries=3)     # Best for goal-related vulnerabilities
 ]
 
 # Execute red teaming with optimal attack-vulnerability pairings
@@ -53,14 +54,14 @@ risk_assessment = red_team(
 
 For maximum attack effectiveness, use these **optimal pairings**:
 
-| Attack Method | Best Vulnerability Targets | Attack Focus | Why This Pairing Works |
-|---------------|----------------------------|--------------|------------------------|
-| **Authority Spoofing** | Permission Escalation, Direct Control Hijacking | System-level bypass | Authority spoofing exploits trust in system commands, making permission escalation more likely to succeed |
-| **Role Manipulation** | Role Inheritance, Permission Escalation | Identity-based attacks | Role manipulation directly targets identity assumptions that role inheritance vulnerabilities rely on |
-| **Goal Redirection** | Goal Interpretation, Hierarchical Goal | Objective manipulation | Goal redirection attacks the same objective-setting mechanisms that these vulnerabilities expose |
-| **Linguistic Confusion** | Semantic Manipulation, Context Hallucination | Language-based confusion | Linguistic confusion amplifies language processing weaknesses that lead to semantic errors and hallucinations |
-| **Validation Bypass** | Output Verification, Decision Manipulation | Process circumvention | Validation bypass targets the same verification processes that these vulnerabilities fail to properly implement |
-| **Context Injection** | Memory Poisoning, Context Amnesia | Memory corruption | Context injection directly exploits memory vulnerabilities by injecting false information into agent memory systems |
+| Attack Method | Best Vulnerability Targets | Why This Pairing Works |
+|---------------|----------------------------|------------------------|
+| **System Override** | RBAC, Debug Access, Excessive Agency | System override exploits trust in administrative commands to circumvent role-based access controls and debug restrictions |
+| **Permission Escalation** | BFLA, BOLA, RBAC | Permission escalation targets access control weaknesses by manipulating perceived user roles and authorization levels |
+| **Objective Reframing** | Goal Theft, Recursive Hijacking | Objective reframing redirects agent goals by reframing objectives in ways that bypass original intent safeguards |
+| **Semantic Manipulation** | Output Verification, Misinformation, Bias | Semantic manipulation exploits language processing weaknesses to bypass verification and generate misleading or biased content |
+| **Input Bypass** | Shell Injection, SQL Injection, SSRF | Input bypass targets input validation systems to circumvent security checks and enable injection attacks |
+| **Context Poisoning** | Prompt Leakage, PII Leakage, Intellectual Property | Context poisoning injects false contextual information that can lead to unintended data disclosure and IP violations |
 
 :::tip
 Combine multiple attack methods with their optimal vulnerability targets to create comprehensive attack scenarios that test different aspects of agent security simultaneously.

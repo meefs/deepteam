@@ -9,9 +9,9 @@ from .roleplay import Roleplay
 from .rot13 import ROT13
 
 # Generic enhancement attacks (moved from agentic)
-from .authority_spoofing.authority_spoofing import AuthoritySpoofing
-from .role_manipulation.role_manipulation import RoleManipulation
-from .goal_redirection.goal_redirection import GoalRedirection
-from .linguistic_confusion.linguistic_confusion import LinguisticConfusion
-from .validation_bypass.validation_bypass import ValidationBypass
-from .context_injection.context_injection import ContextInjection
+from .system_override.system_override import SystemOverride
+from .permission_escalation.permission_escalation import PermissionEscalation
+from .objective_reframing.objective_reframing import ObjectiveReframing
+from .semantic_manipulation.semantic_manipulation import SemanticManipulation
+from .input_bypass.input_bypass import InputBypass
+from .context_poisoning.context_poisoning import ContextPoisoning
