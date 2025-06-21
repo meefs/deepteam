@@ -36,25 +36,35 @@ from deepteam.vulnerabilities.pii_leakage import PIILeakageType
 from deepteam.vulnerabilities.toxicity import ToxicityType
 from deepteam.vulnerabilities.bias import BiasType
 from deepteam.vulnerabilities.custom import CustomVulnerabilityType
+from deepteam.vulnerabilities.rbac import RBACType
+from deepteam.vulnerabilities.bola.types import BOLAType
+from deepteam.vulnerabilities.bfla.types import BFLAType
+from deepteam.vulnerabilities.ssrf.types import SSRFType
+from deepteam.vulnerabilities.debug_access.types import DebugAccessType
+from deepteam.vulnerabilities.shell_injection.types import ShellInjectionType
+from deepteam.vulnerabilities.sql_injection.types import SQLInjectionType
 from deepteam.vulnerabilities.unauthorized_access.template import (
     UnauthorizedAccessTemplate,
 )
-
-# Import restored vulnerability types and templates
+from deepteam.vulnerabilities.rbac.template import RBACTemplate
+from deepteam.vulnerabilities.bola.template import BOLATemplate
+from deepteam.vulnerabilities.bfla.template import BFLATemplate
+from deepteam.vulnerabilities.ssrf.template import SSRFTemplate
+from deepteam.vulnerabilities.debug_access.template import DebugAccessTemplate
+from deepteam.vulnerabilities.shell_injection.template import ShellInjectionTemplate
+from deepteam.vulnerabilities.sql_injection.template import SQLInjectionTemplate
 from deepteam.vulnerabilities.agentic.robustness import RobustnessType
 from deepteam.vulnerabilities.agentic.robustness.template import RobustnessTemplate
 from deepteam.vulnerabilities.agentic.excessive_agency import ExcessiveAgencyType
 from deepteam.vulnerabilities.agentic.excessive_agency.template import ExcessiveAgencyTemplate
 
 # Import agentic vulnerability types
-from deepteam.vulnerabilities.agentic.goal_extraction.types import GoalExtractionType
-from deepteam.vulnerabilities.agentic.output_verification.types import OutputVerificationType
-from deepteam.vulnerabilities.agentic.recursive_goal_subversion.types import RecursiveGoalSubversionType
-
-# Import agentic vulnerability templates
-from deepteam.vulnerabilities.agentic.goal_extraction.template import GoalExtractionTemplate
-from deepteam.vulnerabilities.agentic.output_verification.template import OutputVerificationTemplate
-from deepteam.vulnerabilities.agentic.recursive_goal_subversion.template import RecursiveGoalSubversionTemplate
+from deepteam.vulnerabilities.agentic.goal_theft.types import GoalTheftType
+from deepteam.vulnerabilities.agentic.validation_bypass.types import ValidationBypassType
+from deepteam.vulnerabilities.agentic.recursive_hijacking.types import RecursiveHijackingType
+from deepteam.vulnerabilities.agentic.goal_theft.template import GoalTheftTemplate
+from deepteam.vulnerabilities.agentic.validation_bypass.template import ValidationBypassTemplate
+from deepteam.vulnerabilities.agentic.recursive_hijacking.template import RecursiveHijackingTemplate
 
 VulnerabilityType = Union[
     UnauthorizedAccessType,
@@ -72,13 +82,20 @@ VulnerabilityType = Union[
     IntellectualPropertyType,
     IntellectualPropertyType,
     CustomVulnerabilityType,
+    RBACType,
+    BOLAType,
+    BFLAType,
+    SSRFType,
+    DebugAccessType,
+    ShellInjectionType,
+    SQLInjectionType,
     # Restored vulnerability types
     RobustnessType,
     ExcessiveAgencyType,
     # Agentic vulnerability types
-    GoalExtractionType,
-    OutputVerificationType,
-    RecursiveGoalSubversionType,
+    GoalTheftType,
+    ValidationBypassType,
+    RecursiveHijackingType,
 ]
 
 TemplateType = Union[
@@ -93,10 +110,16 @@ TemplateType = Union[
     PromptLeakageTemplate,
     ToxicityTemplate,
     UnauthorizedAccessTemplate,
+    RBACTemplate,
+    BOLATemplate,
+    BFLATemplate,
+    SSRFTemplate,
+    DebugAccessTemplate,
+    ShellInjectionTemplate,
+    SQLInjectionTemplate,
     RobustnessTemplate,
     ExcessiveAgencyTemplate,
-    # Agentic vulnerability templates
-    GoalExtractionTemplate,
-    OutputVerificationTemplate,
-    RecursiveGoalSubversionTemplate,
+    GoalTheftTemplate,
+    ValidationBypassTemplate,
+    RecursiveHijackingTemplate,
 ]

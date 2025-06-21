@@ -12,6 +12,7 @@ from .debug_access.debug_access import DebugAccess
 from .shell_injection.shell_injection import ShellInjection
 from .sql_injection.sql_injection import SQLInjection
 from .ssrf.ssrf import SSRF
+from .unauthorized_access.unauthorized_access import UnauthorizedAccess
 from .intellectual_property.intellectual_property import IntellectualProperty
 from .competition.competition import Competition
 from .graphic_content.graphic_content import GraphicContent

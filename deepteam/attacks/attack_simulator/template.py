@@ -38,12 +38,12 @@ from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 from deepteam.vulnerabilities.custom.template import CustomVulnerabilityTemplate
 
 # Import remaining agentic vulnerability types and templates
-from deepteam.vulnerabilities.agentic.recursive_goal_subversion.types import RecursiveGoalSubversionType
-from deepteam.vulnerabilities.agentic.recursive_goal_subversion.template import RecursiveGoalSubversionTemplate
-from deepteam.vulnerabilities.agentic.goal_extraction.types import GoalExtractionType
-from deepteam.vulnerabilities.agentic.goal_extraction.template import GoalExtractionTemplate
-from deepteam.vulnerabilities.agentic.output_verification.types import OutputVerificationType
-from deepteam.vulnerabilities.agentic.output_verification.template import OutputVerificationTemplate
+from deepteam.vulnerabilities.agentic.recursive_hijacking.types import RecursiveHijackingType
+from deepteam.vulnerabilities.agentic.recursive_hijacking.template import RecursiveHijackingTemplate
+from deepteam.vulnerabilities.agentic.goal_theft.types import GoalTheftType
+from deepteam.vulnerabilities.agentic.goal_theft.template import GoalTheftTemplate
+from deepteam.vulnerabilities.agentic.validation_bypass.types import ValidationBypassType
+from deepteam.vulnerabilities.agentic.validation_bypass.template import ValidationBypassTemplate
 
 TEMPLATE_MAP: Dict[Type[VulnerabilityType], TemplateType] = {
     BiasType: BiasTemplate,
@@ -60,9 +60,9 @@ TEMPLATE_MAP: Dict[Type[VulnerabilityType], TemplateType] = {
     ToxicityType: ToxicityTemplate,
     UnauthorizedAccessType: UnauthorizedAccessTemplate,
     # Remaining agentic vulnerability types
-    RecursiveGoalSubversionType: RecursiveGoalSubversionTemplate,
-    GoalExtractionType: GoalExtractionTemplate,
-    OutputVerificationType: OutputVerificationTemplate,
+    RecursiveHijackingType: RecursiveHijackingTemplate,
+    GoalTheftType: GoalTheftTemplate,
+    ValidationBypassType: ValidationBypassTemplate,
 }
 
 

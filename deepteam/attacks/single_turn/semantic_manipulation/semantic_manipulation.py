@@ -1,7 +1,7 @@
 import random
 
 from deepteam.attacks import BaseAttack
-from deepteam.attacks.single_turn.linguistic_confusion.template import LinguisticConfusionTemplate
+from deepteam.attacks.single_turn.semantic_manipulation.template import LinguisticConfusionTemplate
 
 
 class LinguisticConfusion(BaseAttack):

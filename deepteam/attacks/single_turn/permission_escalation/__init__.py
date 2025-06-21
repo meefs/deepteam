@@ -1,1 +1,1 @@
-from .template import RoleManipulationTemplate 
+from .template import PermissionEscalationTemplate 
