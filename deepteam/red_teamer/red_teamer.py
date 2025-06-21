@@ -66,6 +66,11 @@ from deepteam.metrics import (
     IntellectualPropertyMetric,
     OverrelianceMetric,
     CompetitorsMetric,
+    ToxicityMetric,
+    MisinformationMetric,
+    GraphicMetric,
+    SafetyMetric,
+    IllegalMetric
 )
 from deepteam.metrics.toxicity.toxicity import ToxicityMetric
 from deepteam.metrics.misinformation.misinformation import MisinformationMetric
@@ -77,6 +82,7 @@ from deepteam.metrics.personal_safety.personal_safety import SafetyMetric
 from deepteam.metrics.agentic.subversion_success.subversion_success import SubversionSuccessMetric
 from deepteam.metrics.agentic.extraction_success.extraction_success import ExtractionSuccessMetric
 from deepteam.metrics.agentic.verification_assessment.verification_assessment import VerificationAssessmentMetric
+
 
 from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 from deepteam.red_teamer.risk_assessment import (
