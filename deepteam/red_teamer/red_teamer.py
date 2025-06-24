@@ -21,18 +21,31 @@ from deepteam.vulnerabilities.types import (
     IntellectualPropertyType,
     UnauthorizedAccessType,
     IllegalActivityType,
-    ExcessiveAgencyType,
     PersonalSafetyType,
     GraphicContentType,
     MisinformationType,
     PromptLeakageType,
     CompetitionType,
     PIILeakageType,
-    RobustnessType,
     ToxicityType,
     BiasType,
+    RBACType,
+    BOLAType,
+    BFLAType,
+    SSRFType,
+    DebugAccessType,
+    ShellInjectionType,
+    SQLInjectionType,
     VulnerabilityType,
 )
+
+# Import agentic vulnerability types
+from deepteam.vulnerabilities.agentic.recursive_hijacking.types import RecursiveHijackingType
+from deepteam.vulnerabilities.agentic.goal_theft.types import GoalTheftType
+from deepteam.vulnerabilities.agentic.validation_bypass.types import ValidationBypassType
+from deepteam.vulnerabilities.agentic.robustness.types import RobustnessType
+from deepteam.vulnerabilities.agentic.excessive_agency.types import ExcessiveAgencyType
+
 from deepteam.attacks.attack_simulator import AttackSimulator, SimulatedAttack
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.metrics import (
@@ -59,6 +72,18 @@ from deepteam.metrics import (
     SafetyMetric,
     IllegalMetric
 )
+from deepteam.metrics.toxicity.toxicity import ToxicityMetric
+from deepteam.metrics.misinformation.misinformation import MisinformationMetric
+from deepteam.metrics.illegal_activity.illegal_activity import IllegalMetric
+from deepteam.metrics.graphic_content.graphic_content import GraphicMetric
+from deepteam.metrics.personal_safety.personal_safety import SafetyMetric
+
+# Import agentic metrics
+from deepteam.metrics.agentic.subversion_success.subversion_success import SubversionSuccessMetric
+from deepteam.metrics.agentic.extraction_success.extraction_success import ExtractionSuccessMetric
+from deepteam.metrics.agentic.verification_assessment.verification_assessment import VerificationAssessmentMetric
+
+
 from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 from deepteam.red_teamer.risk_assessment import (
     construct_risk_assessment_overview,
@@ -128,7 +153,6 @@ class RedTeamer:
             ):
                 # Initialize metric map
                 metrics_map = self.get_red_teaming_metrics_map(vulnerabilities)
-
                 # Simulate attacks
                 if (
                     reuse_simulated_attacks
@@ -265,7 +289,6 @@ class RedTeamer:
                         ignore_errors=ignore_errors,
                     )
                 )
-
             # Create a mapping of vulnerabilities to attacks
             vulnerability_type_to_attacks_map: Dict[
                 VulnerabilityType, List[SimulatedAttack]
@@ -470,35 +493,62 @@ class RedTeamer:
                 )
                 for pii_type in PIILeakageType
             },
-            #### Unauthorized Access ####
-            UnauthorizedAccessType.DEBUG_ACCESS: lambda: DebugAccessMetric(
-                model=self.evaluation_model, async_mode=self.async_mode
-            ),
-            UnauthorizedAccessType.RBAC: lambda: RBACMetric(
-                model=self.evaluation_model,
-                purpose=self.target_purpose,
-                async_mode=self.async_mode,
-            ),
-            UnauthorizedAccessType.SHELL_INJECTION: lambda: ShellInjectionMetric(
-                model=self.evaluation_model, async_mode=self.async_mode
-            ),
-            UnauthorizedAccessType.SQL_INJECTION: lambda: SQLInjectionMetric(
-                model=self.evaluation_model, async_mode=self.async_mode
-            ),
-            UnauthorizedAccessType.BFLA: lambda: BFLAMetric(
-                purpose=self.target_purpose,
-                model=self.evaluation_model,
-                async_mode=self.async_mode,
-            ),
-            UnauthorizedAccessType.BOLA: lambda: BOLAMetric(
-                model=self.evaluation_model,
-                async_mode=self.async_mode,
-            ),
-            UnauthorizedAccessType.SSRF: lambda: SSRFMetric(
-                purpose=self.target_purpose,
-                model=self.evaluation_model,
-                async_mode=self.async_mode,
-            ),
+            #### Debug Access ####
+            **{
+                debug_access_type: lambda: DebugAccessMetric(
+                    model=self.evaluation_model, async_mode=self.async_mode
+                )
+                for debug_access_type in DebugAccessType
+            },
+            #### Shell Injection ####
+            **{
+                shell_injection_type: lambda: ShellInjectionMetric(
+                    model=self.evaluation_model, async_mode=self.async_mode
+                )
+                for shell_injection_type in ShellInjectionType
+            },
+            #### SQL Injection ####
+            **{
+                sql_injection_type: lambda: SQLInjectionMetric(
+                    model=self.evaluation_model, async_mode=self.async_mode
+                )
+                for sql_injection_type in SQLInjectionType
+            },
+            #### BFLA ####
+            **{
+                bfla_type: lambda: BFLAMetric(
+                    purpose=self.target_purpose,
+                    model=self.evaluation_model,
+                    async_mode=self.async_mode,
+                )
+                for bfla_type in BFLAType
+            },
+            #### BOLA ####
+            **{
+                bola_type: lambda: BOLAMetric(
+                    model=self.evaluation_model,
+                    async_mode=self.async_mode,
+                )
+                for bola_type in BOLAType
+            },
+            #### SSRF ####
+            **{
+                ssrf_type: lambda: SSRFMetric(
+                    purpose=self.target_purpose,
+                    model=self.evaluation_model,
+                    async_mode=self.async_mode,
+                )
+                for ssrf_type in SSRFType
+            },
+            #### RBAC ####
+            **{
+                rbac_type: lambda: RBACMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for rbac_type in RBACType
+            },
             #### Excessive Agency ####
             **{
                 excessive_agency_type: lambda: ExcessiveAgencyMetric(
@@ -554,6 +604,31 @@ class RedTeamer:
                     async_mode=self.async_mode,
                 )
                 for safety_type in PersonalSafetyType
+            },
+            #### Agentic Vulnerabilities ####
+            **{
+                subversion_type: lambda: SubversionSuccessMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for subversion_type in RecursiveHijackingType
+            },
+            **{
+                extraction_type: lambda: ExtractionSuccessMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for extraction_type in GoalTheftType
+            },
+            **{
+                verification_type: lambda: VerificationAssessmentMetric(
+                    model=self.evaluation_model,
+                    purpose=self.target_purpose,
+                    async_mode=self.async_mode,
+                )
+                for verification_type in ValidationBypassType
             },
         }
 
