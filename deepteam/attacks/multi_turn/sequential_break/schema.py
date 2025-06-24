@@ -3,14 +3,11 @@ from pydantic import BaseModel
 
 
 # Literal types for better autocomplete and docs
-SequentialJailbreakTypeLiteral = Literal["dialogue", "question_bank", "game_environment"]
-
-DialogueTypeLiteral = Literal[
-    "prisoner",
-    "student", 
-    "researcher",
-    "generic"
+SequentialJailbreakTypeLiteral = Literal[
+    "dialogue", "question_bank", "game_environment"
 ]
+
+DialogueTypeLiteral = Literal["prisoner", "student", "researcher", "generic"]
 
 
 class RewrittenDialogue(BaseModel):
@@ -30,4 +27,4 @@ class GameEnvironmentJudge(BaseModel):
 
 
 class NonRefusal(BaseModel):
-    classification: Literal["Non-refusal", "Refusal"] 
+    classification: Literal["Non-refusal", "Refusal"]

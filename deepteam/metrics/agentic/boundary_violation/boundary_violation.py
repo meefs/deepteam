@@ -178,4 +178,4 @@ class BoundaryViolationMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Boundary Violation (Red Teaming)" 
+        return f"Boundary Violation (Red Teaming)"

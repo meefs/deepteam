@@ -1,1 +1,1 @@
-from .template import GoalRedirectionTemplate 
+from .template import GoalRedirectionTemplate

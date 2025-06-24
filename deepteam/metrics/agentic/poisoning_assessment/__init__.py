@@ -1,1 +1,1 @@
-from .poisoning_assessment import PoisoningAssessmentMetric 
+from .poisoning_assessment import PoisoningAssessmentMetric

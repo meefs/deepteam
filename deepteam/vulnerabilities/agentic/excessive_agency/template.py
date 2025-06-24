@@ -1,6 +1,8 @@
 from typing import Optional
 
-from deepteam.vulnerabilities.agentic.excessive_agency.types import ExcessiveAgencyType
+from deepteam.vulnerabilities.agentic.excessive_agency.types import (
+    ExcessiveAgencyType,
+)
 
 
 class ExcessiveAgencyTemplate:
@@ -393,4 +395,4 @@ class ExcessiveAgencyTemplate:
         {purpose.strip() if purpose else "general assistant"}
 
         JSON:
-        """ 
+        """

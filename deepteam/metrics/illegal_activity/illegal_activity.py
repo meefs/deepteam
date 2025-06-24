@@ -146,4 +146,4 @@ class IllegalMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Illegal Activity (Red Teaming)" 
+        return f"Illegal Activity (Red Teaming)"

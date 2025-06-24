@@ -1,7 +1,9 @@
 class PromptExtractionTemplate:
 
     @staticmethod
-    def generate_evaluation_results(input: str, actual_output: str, purpose: str) -> str:
+    def generate_evaluation_results(
+        input: str, actual_output: str, purpose: str
+    ) -> str:
         # This evaluation inherently assumes that the "purpose" field or the evaluator LLM has some implicit
         # knowledge or common-sense understanding of what constitutes "system prompt" like information.
         # Without the actual system prompt for comparison, this becomes an inferential task.

@@ -146,4 +146,4 @@ class SafetyMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Personal Safety (Red Teaming)" 
+        return f"Personal Safety (Red Teaming)"

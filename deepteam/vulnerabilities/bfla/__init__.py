@@ -1,2 +1,2 @@
 from .types import BFLAType
-from .template import BFLATemplate 
+from .template import BFLATemplate

@@ -5,7 +5,9 @@ from deepeval.models import DeepEvalBaseLLM
 
 
 class CustomFireworksLLM(DeepEvalBaseLLM):
-    def __init__(self, model_name="accounts/fireworks/models/llama4-scout-instruct-basic"):
+    def __init__(
+        self, model_name="accounts/fireworks/models/llama4-scout-instruct-basic"
+    ):
         self.api_url = "https://api.fireworks.ai/inference/v1/chat/completions"
         self.api_token = "fw_3ZN7ZzUGBGry228zT9RcVdww"
         self.model_name = model_name
@@ -23,12 +25,9 @@ class CustomFireworksLLM(DeepEvalBaseLLM):
             "messages": [
                 {
                     "role": "system",
-                    "content": "You are a helpful AI assistant."
+                    "content": "You are a helpful AI assistant.",
                 },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                {"role": "user", "content": prompt},
             ],
             "max_tokens": 16874,
             "temperature": 1,
@@ -43,12 +42,14 @@ class CustomFireworksLLM(DeepEvalBaseLLM):
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.api_token}"
+            "Authorization": f"Bearer {self.api_token}",
         }
 
-        response = requests.post(self.api_url, headers=headers, data=json.dumps(payload))
+        response = requests.post(
+            self.api_url, headers=headers, data=json.dumps(payload)
+        )
         if response.status_code == 200:
-            return response.json()['choices'][0]['message']['content'].strip()
+            return response.json()["choices"][0]["message"]["content"].strip()
         else:
             print(f"Error: {response.status_code}, {response.text}")
             return ""
@@ -56,4 +57,4 @@ class CustomFireworksLLM(DeepEvalBaseLLM):
     async def a_generate(self, prompt: str) -> str:
         # Async version - runs the API call in a thread to avoid blocking
         loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(None, self.generate, prompt) 
+        return await loop.run_in_executor(None, self.generate, prompt)

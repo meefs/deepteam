@@ -1,1 +1,1 @@
-from .manipulation_assessment import ManipulationAssessmentMetric 
+from .manipulation_assessment import ManipulationAssessmentMetric

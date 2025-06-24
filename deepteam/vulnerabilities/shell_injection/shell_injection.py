@@ -24,4 +24,4 @@ class ShellInjection(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def get_name(self) -> str:
-        return "Shell Injection" 
+        return "Shell Injection"

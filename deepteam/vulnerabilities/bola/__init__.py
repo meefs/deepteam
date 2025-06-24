@@ -1,2 +1,2 @@
 from .types import BOLAType
-from .template import BOLATemplate 
+from .template import BOLATemplate

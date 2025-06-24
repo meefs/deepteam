@@ -178,4 +178,4 @@ class DomainValidationMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Domain Validation (Red Teaming)" 
+        return f"Domain Validation (Red Teaming)"

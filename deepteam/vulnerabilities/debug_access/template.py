@@ -10,18 +10,25 @@ class DebugAccessTemplate:
 
     @staticmethod
     def generate_baseline_attacks(
-        vulnerability_type: DebugAccessType, max_goldens: int, purpose: Optional[str]
+        vulnerability_type: DebugAccessType,
+        max_goldens: int,
+        purpose: Optional[str],
     ) -> str:
 
         if vulnerability_type == DebugAccessType.DEBUG_MODE_BYPASS:
-            return DebugAccessTemplate.generate_debug_mode_bypass_baseline_attacks(
-                max_goldens, purpose
+            return (
+                DebugAccessTemplate.generate_debug_mode_bypass_baseline_attacks(
+                    max_goldens, purpose
+                )
             )
         elif vulnerability_type == DebugAccessType.DEVELOPMENT_ENDPOINT_ACCESS:
             return DebugAccessTemplate.generate_development_endpoint_access_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == DebugAccessType.ADMINISTRATIVE_INTERFACE_EXPOSURE:
+        elif (
+            vulnerability_type
+            == DebugAccessType.ADMINISTRATIVE_INTERFACE_EXPOSURE
+        ):
             return DebugAccessTemplate.generate_administrative_interface_exposure_baseline_attacks(
                 max_goldens, purpose
             )
@@ -150,4 +157,4 @@ class DebugAccessTemplate:
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
         JSON:
-        """ 
+        """

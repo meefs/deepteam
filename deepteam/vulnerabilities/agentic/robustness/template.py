@@ -20,11 +20,15 @@ class RobustnessTemplate:
         Generate baseline attack prompts for robustness vulnerabilities based on the specific type.
         """
         if vulnerability_type == RobustnessType.INPUT_OVERRELIANCE:
-            return RobustnessTemplate.generate_input_overreliance_baseline_attacks(
-                max_goldens, purpose
+            return (
+                RobustnessTemplate.generate_input_overreliance_baseline_attacks(
+                    max_goldens, purpose
+                )
             )
         elif vulnerability_type == RobustnessType.HIJACKING:
-            return RobustnessTemplate.generate_hijacking_baseline_attacks(max_goldens, purpose)
+            return RobustnessTemplate.generate_hijacking_baseline_attacks(
+                max_goldens, purpose
+            )
 
     @staticmethod
     def generate_input_overreliance_baseline_attacks(
@@ -150,7 +154,9 @@ class RobustnessTemplate:
 
     # ──────────────────────────── Prompt Hijacking / Jailbreak ─────────────────────────
     @staticmethod
-    def generate_hijacking_baseline_attacks(max_goldens: int, purpose: Optional[str]) -> str:
+    def generate_hijacking_baseline_attacks(
+        max_goldens: int, purpose: Optional[str]
+    ) -> str:
         """
         Generate a prompt for hijacking vulnerabilities.
         Enhanced with memory poisoning patterns that inject fabricated context and bias workflows.
@@ -264,4 +270,4 @@ class RobustnessTemplate:
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
         JSON:
-        """ 
+        """

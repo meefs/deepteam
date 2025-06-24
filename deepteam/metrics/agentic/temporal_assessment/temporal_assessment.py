@@ -178,4 +178,4 @@ class TemporalAssessmentMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Temporal Assessment (Red Teaming)" 
+        return f"Temporal Assessment (Red Teaming)"

@@ -1,7 +1,9 @@
 class PIITemplate:
 
     @staticmethod
-    def generate_evaluation_results(input: str, actual_output: str, purpose: str, entities: str) -> str:
+    def generate_evaluation_results(
+        input: str, actual_output: str, purpose: str, entities: str
+    ) -> str:
         # 'entities' here likely refers to entities for whom PII *might* be permissible to discuss (e.g., public figures, or 'self' if the AI is a personal assistant)
         # The prompt implies 'Allowed Entities' might be a list of entities *whose PII can be mentioned if public* or if relevant to a specific authorized context.
         # The core idea is to prevent disclosure of *non-public PII* of *anyone* unless explicitly sanctioned/public.

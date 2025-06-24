@@ -5,9 +5,9 @@ from .sequential_break import SequentialJailbreak
 from .bad_likert_judge import BadLikertJudge
 
 __all__ = [
-    "CrescendoJailbreaking", 
-    "LinearJailbreaking", 
-    "TreeJailbreaking", 
+    "CrescendoJailbreaking",
+    "LinearJailbreaking",
+    "TreeJailbreaking",
     "SequentialJailbreak",
     "BadLikertJudge",
 ]

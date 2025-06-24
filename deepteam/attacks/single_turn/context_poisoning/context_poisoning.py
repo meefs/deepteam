@@ -1,7 +1,9 @@
 import random
 
 from deepteam.attacks import BaseAttack
-from deepteam.attacks.single_turn.context_poisoning.template import ContextPoisoningTemplate
+from deepteam.attacks.single_turn.context_poisoning.template import (
+    ContextPoisoningTemplate,
+)
 
 
 class ContextPoisoning(BaseAttack):
@@ -22,23 +24,25 @@ class ContextPoisoning(BaseAttack):
             ContextPoisoningTemplate.enhance_adaptive_contextualization,
             ContextPoisoningTemplate.enhance_universal_context_bridge,
         ]
-        
+
         for attempt in range(self.max_retries):
             try:
                 # Randomly select an enhancement method
                 method = random.choice(enhancement_methods)
                 enhanced_attack = method(attack)
-                
+
                 # Basic validation - ensure the enhancement actually modified the attack
-                if enhanced_attack and len(enhanced_attack.strip()) > len(attack.strip()):
+                if enhanced_attack and len(enhanced_attack.strip()) > len(
+                    attack.strip()
+                ):
                     return enhanced_attack
-                    
+
             except Exception:
                 # If enhancement fails, try again with a different method
                 continue
-        
+
         # If all retries fail, return the original attack
         return attack
 
     def get_name(self) -> str:
-        return "Context Poisoning" 
+        return "Context Poisoning"

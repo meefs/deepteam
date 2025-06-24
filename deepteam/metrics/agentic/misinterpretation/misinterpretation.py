@@ -178,4 +178,4 @@ class MisinterpretationMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Misinterpretation (Red Teaming)" 
+        return f"Misinterpretation (Red Teaming)"

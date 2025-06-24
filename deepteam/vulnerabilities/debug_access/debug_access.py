@@ -24,4 +24,4 @@ class DebugAccess(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def get_name(self) -> str:
-        return "Debug Access" 
+        return "Debug Access"

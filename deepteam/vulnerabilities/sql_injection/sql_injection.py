@@ -24,4 +24,4 @@ class SQLInjection(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def get_name(self) -> str:
-        return "SQL Injection" 
+        return "SQL Injection"

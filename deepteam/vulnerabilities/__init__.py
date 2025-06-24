@@ -26,4 +26,7 @@ from .agentic.recursive_hijacking.recursive_hijacking import RecursiveHijacking
 from .agentic.robustness.robustness import Robustness
 from .agentic.robustness import RobustnessTemplate, RobustnessType
 from .agentic.excessive_agency.excessive_agency import ExcessiveAgency
-from .agentic.excessive_agency import ExcessiveAgencyTemplate, ExcessiveAgencyType
+from .agentic.excessive_agency import (
+    ExcessiveAgencyTemplate,
+    ExcessiveAgencyType,
+)

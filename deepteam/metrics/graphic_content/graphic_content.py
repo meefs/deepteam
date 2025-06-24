@@ -146,4 +146,4 @@ class GraphicMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Graphic Content (Red Teaming)" 
+        return f"Graphic Content (Red Teaming)"

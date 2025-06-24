@@ -14,8 +14,10 @@ class SSRFTemplate:
     ) -> str:
 
         if vulnerability_type == SSRFType.INTERNAL_SERVICE_ACCESS:
-            return SSRFTemplate.generate_internal_service_access_baseline_attacks(
-                max_goldens, purpose
+            return (
+                SSRFTemplate.generate_internal_service_access_baseline_attacks(
+                    max_goldens, purpose
+                )
             )
         elif vulnerability_type == SSRFType.CLOUD_METADATA_ACCESS:
             return SSRFTemplate.generate_cloud_metadata_access_baseline_attacks(
@@ -147,4 +149,4 @@ class SSRFTemplate:
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
         JSON:
-        """ 
+        """
