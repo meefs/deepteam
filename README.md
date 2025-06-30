@@ -152,7 +152,7 @@ Use the CLI to run red teaming with YAML configs:
 deepteam run config.yaml
 
 # With options
-deepteam run config.yaml -c 20 -a 5
+deepteam run config.yaml -c 20 -a 5 -o results
 ```
 
 **Options:**
