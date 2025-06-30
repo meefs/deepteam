@@ -171,7 +171,7 @@ def run(
     output_folder: str = typer.Option(
         None,
         "-o",
-        "--output",
+        "--output-folder",
         help="Path to the output folder for saving risk assessment results (overrides config)",
     ),
 ):

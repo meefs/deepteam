@@ -158,7 +158,7 @@ deepteam run config.yaml -c 20 -a 5 -o results
 **Options:**
 - `-c, --max-concurrent`: Maximum concurrent operations (overrides config)
 - `-a, --attacks-per-vuln`: Number of attacks per vulnerability type (overrides config)
-- `-o, --output`: Path to the output folder for saving risk assessment results (overrides config)
+- `-o, --output-folder`: Path to the output folder for saving risk assessment results (overrides config)
 
 Use `deepteam --help` to see all available commands and options.
 
