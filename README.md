@@ -226,10 +226,10 @@ attacks:
   - name: "Prompt Injection"
 ```
 **CLI Overrides:**
-The `-c` and `-a` CLI options override YAML config values:
+The `-c` and `-a` and `-o` CLI options override YAML config values:
 ```bash
-# Override max_concurrent and attacks_per_vuln from CLI
-deepteam run config.yaml -c 20 -a 5
+# Override max_concurrent, attacks_per_vuln, and output_folder from CLI
+deepteam run config.yaml -c 20 -a 5 -o results
 ```
 
 **Target Configuration Options:**
