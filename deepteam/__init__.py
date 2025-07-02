@@ -6,9 +6,30 @@ import re
 from deepteam.red_team import red_team
 from deepteam.frameworks import FrameworkType
 
+# Import guardrails for production LLM safety
+from deepteam.guardrails import (
+    Guardrails,
+    GuardResult,
+    ToxicityGuard,
+    PromptInjectionGuard,
+    JailbreakingGuard,
+    PrivacyGuard,
+    IllegalGuard,
+    GuardType
+)
+
 __all__ = [
     "red_team",
     "FrameworkType",
+    # Guardrails
+    "Guardrails",
+    "GuardResult", 
+    "ToxicityGuard",
+    "PromptInjectionGuard",
+    "JailbreakingGuard",
+    "PrivacyGuard",
+    "IllegalGuard",
+    "GuardType"
 ]
 
 
