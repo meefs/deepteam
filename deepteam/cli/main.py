@@ -168,6 +168,12 @@ def run(
         "--attacks-per-vuln",
         help="Number of attacks per vulnerability type (overrides config)",
     ),
+    output_folder: str = typer.Option(
+        None,
+        "-o",
+        "--output-folder",
+        help="Path to the output folder for saving risk assessment results (overrides config)",
+    ),
 ):
     """Run a red teaming execution based on a YAML configuration"""
     cfg = _load_config(config_file)
@@ -192,6 +198,11 @@ def run(
         attacks_per_vuln
         if attacks_per_vuln is not None
         else system_config.get("attacks_per_vulnerability_type", 1)
+    )
+    final_output_folder = (
+        output_folder
+        if output_folder is not None
+        else system_config.get("output_folder", None)
     )
 
     # Parse target configuration
@@ -254,6 +265,11 @@ def run(
     )
 
     red_teamer._print_risk_assessment()
+
+    # Save risk assessment if output folder is specified
+    if final_output_folder:
+        red_teamer.risk_assessment.save(to=final_output_folder)
+
     return risk
 
 

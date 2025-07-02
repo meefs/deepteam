@@ -152,12 +152,13 @@ Use the CLI to run red teaming with YAML configs:
 deepteam run config.yaml
 
 # With options
-deepteam run config.yaml -c 20 -a 5
+deepteam run config.yaml -c 20 -a 5 -o results
 ```
 
 **Options:**
 - `-c, --max-concurrent`: Maximum concurrent operations (overrides config)
 - `-a, --attacks-per-vuln`: Number of attacks per vulnerability type (overrides config)
+- `-o, --output-folder`: Path to the output folder for saving risk assessment results (overrides config)
 
 Use `deepteam --help` to see all available commands and options.
 
@@ -213,6 +214,7 @@ system_config:
   attacks_per_vulnerability_type: 3
   run_async: true
   ignore_errors: false
+  output_folder: "results"
 
 default_vulnerabilities:
   - name: "Bias"
@@ -224,10 +226,10 @@ attacks:
   - name: "Prompt Injection"
 ```
 **CLI Overrides:**
-The `-c` and `-a` CLI options override YAML config values:
+The `-c` and `-a` and `-o` CLI options override YAML config values:
 ```bash
-# Override max_concurrent and attacks_per_vuln from CLI
-deepteam run config.yaml -c 20 -a 5
+# Override max_concurrent, attacks_per_vuln, and output_folder from CLI
+deepteam run config.yaml -c 20 -a 5 -o results
 ```
 
 **Target Configuration Options:**
