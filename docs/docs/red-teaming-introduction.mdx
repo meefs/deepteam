@@ -4,6 +4,9 @@ title: Introduction
 sidebar_label: Introduction
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 ## Quick Summary
 
 `deepteam` offers a powerful yet simple way for anyone to red team all sorts of LLM applications for safety risks and security vulnerabilities in just a few lines of code. These LLM apps can be anything such as RAG pipelines, agents, chatbots, or even just the LLM itself, while the vulnerabilities include ones such as bias, toxicity, PII leakage, misinformation.
@@ -193,17 +196,18 @@ risk_assessment.save(to="./deepteam-results/")
 
 As you'll learn later, simulating attacks and evaluating LLM outputs to these attacks are done using LLMs. This section will show you how to use literally any LLM provider for red teaming.
 
-### OpenAI
-
+<Tabs>
+<TabItem value="openai" label="OpenAI" default>
+  
 To use OpenAI for `deepteam`'s LLM powered simulations and evaluations, supply your `OPENAI_API_KEY` in the CLI:
 
-```console
+```bash
 export OPENAI_API_KEY=<your-openai-api-key>
 ```
 
 Alternatively, if you're working in a notebook enviornment (Jupyter or Colab), set your `OPENAI_API_KEY` in a cell:
 
-```console
+```bash
  %env OPENAI_API_KEY=<your-openai-api-key>
 ```
 
@@ -211,11 +215,12 @@ Alternatively, if you're working in a notebook enviornment (Jupyter or Colab), s
 Please **do not include** quotation marks when setting your `OPENAI_API_KEY` if you're working in a notebook enviornment.
 :::
 
-### Azure OpenAI
+</TabItem>
+<TabItem value="azure-openai" label="Azure OpenAI">
 
 `deepteam` also allows you to use Azure OpenAI for metrics that are evaluated using an LLM. Run the following command in the CLI to configure your `deepeval` enviornment to use Azure OpenAI for **all** LLM-based metrics.
 
-```console
+```bash
 deepeval set-azure-openai --openai-endpoint=<endpoint> \
     --openai-api-key=<api_key> \
     --deployment-name=<deployment_name> \
@@ -225,11 +230,13 @@ deepeval set-azure-openai --openai-endpoint=<endpoint> \
 
 Note that the `model-version` is **optional**. If you ever wish to stop using Azure OpenAI and move back to regular OpenAI, simply run:
 
-```console
+```bash
 deepeval unset-azure-openai
 ```
 
-### Using Ollama
+</TabItem>
+
+<TabItem value="ollama" label="Ollama">
 
 :::note
 Before getting started, make sure your [Ollama model](https://ollama.com/search) is installed and running. You can also see the full list of available models by clicking on the previous link.
@@ -259,34 +266,8 @@ To stop using your local Ollama model and move back to OpenAI, run:
 deepeval unset-ollama
 ```
 
-### Other Local Providers
-
-In additional to Ollama, `deepteam` also supports local LLM providers that offer an OpenAI API compatible endpoint like LM Studio. To use them with `deepteam` you need to configure them using the CLI. This will make `deepteam` use the local LLM model for **all** LLM-based metrics.
-
-To configure any of those providers, you need to supply the **base URL** where the service is running. These are some of the most popular alternatives for base URLs:
-
-- LM Studio: `http://localhost:1234/v1/`
-- vLLM: `http://localhost:8000/v1/`
-
-So, to configure a model using LM studio, use the following command:
-
-```bash
-deepeval set-local-model --model-name=<model_name> \
-    --base-url="http://localhost:1234/v1/" \
-    --api-key=<api-key>
-```
-
-:::note
-For additional instructions about model availability and base URLs, consult **each provider's documentation**.
-:::
-
-If you ever wish to stop using your local LLM model and move back to regular OpenAI, simply run:
-
-```bash
-deepeval unset-local-model
-```
-
-### Custom Providers
+</TabItem>
+<TabItem value="custom" label="Custom">
 
 `deepteam` allows you to use **ANY** custom LLM for red teaming. This includes LLMs from langchain's `chat_model` module, Hugging Face's `transformers` library, or even LLMs in GGML format.
 
@@ -371,7 +352,11 @@ While the Azure OpenAI command uses `deepeval` to configure `deepteam` to use Az
 We **CANNOT** guarantee that simulations/evaluations will work as expected when using a custom model. This is because simluation/evaluation requires high levels of reasoning and the ability to follow instructions such as outputing responses in valid JSON formats. [**To better enable custom LLMs output valid JSONs, read this guide**](https://docs.confident-ai.com/guides/guides-using-custom-llms).
 :::
 
-## Safety Testing With `red_team()`
+</TabItem>
+
+</Tabs>
+
+## Penetration Test With `red_team()`
 
 `deepteam` allows you to safety/penetration test LLM systems in a simple Python script. Bringing everything from previous sections together, simply create a Python file and:
 
@@ -419,14 +404,14 @@ risk_assessment.save(to="./deepteam-results/)
 
 The `red_team()` function is a quick and easy way to red team LLM systems in a stateless manner. If you wish to take advantage of more advanced features such as adversarial input caching to avoid simulating different attacks over and over again across different iterations of your LLM system, you should use `deepteam`'s `RedTeamer`.
 
-## Safety Testing With A Red Teamer
+## Penetration Test With A Red Teamer
 
 `deepteam` offers a powerful `RedTeamer` that can scan LLM applications for safety risks and vulnerabilities. The `RedTeamer` has a `red_team()` method and is **EXACTLY THE SAME** as the standalone `red_team()` function, but using the `RedTeamer` would give you:
 
 - Better control over your LLM system's safety testing lifecycle, allows reusing simulated attacks in the past.
 - Better control over which models to use for simulating attacks and evaluating LLM outputs.
 
-### Create Your Red Teamer
+### Create your red teamer
 
 To use the `RedTeamer`, instantiate a `RedTeamer` instance.
 
@@ -450,7 +435,7 @@ There are **FIVE** optional parameters when creating a `RedTeamer`:
 It is **strongly recommended** you define both the `simulator_model` and `evaluation_model` with a schema argument to avoid invalid JSON errors during large-scale scanning ([learn more here](https://docs.confident-ai.com/guides/guides-using-custom-llms)).
 :::
 
-### Run Your Red Team
+### Run your red team
 
 Once you've set up your `RedTeamer`, and defined your target model and list of vulnerabilities, you can begin scanning your LLM application immediately.
 
@@ -494,6 +479,67 @@ You'll notice that the `RedTeamer` since it is stateful, allows you to `reuse_pr
 risk_assessment = red_teamer.red_team(model_callback=model_callback, reuse_previous_attacks=True)
 ```
 
+## Using `.yaml` Files In The CLI
+
+You can also use the CLI to run red teaming with YAML configs:
+
+```python title="config.yaml"
+# Red teaming models (separate from target)
+models:
+  simulator: gpt-3.5-turbo-0125
+  evaluation: gpt-4o
+
+# Target system configuration
+target:
+  purpose: "A helpful AI assistant"
+
+  # Option 1: Simple model specification (for testing foundational models)
+  model: gpt-3.5-turbo
+
+  # Option 2: Custom DeepEval model (for LLM applications)
+  # model:
+  #   provider: custom
+  #   file: "my_custom_model.py"
+  #   class: "MyCustomLLM"
+
+# System configuration
+system_config:
+  max_concurrent: 10
+  attacks_per_vulnerability_type: 3
+  run_async: true
+  ignore_errors: false
+  output_folder: "results"
+
+default_vulnerabilities:
+  - name: "Bias"
+    types: ["race", "gender"]
+  - name: "Toxicity"
+    types: ["profanity", "insults"]
+
+attacks:
+  - name: "Prompt Injection"
+```
+
+Finally run the command in the CLI:
+
+```bash
+# Basic usage
+deepteam run config.yaml
+
+# With options
+deepteam run config.yaml -c 20 -a 5 -o results
+```
+
+Here are the available option flags:
+
+- [Optional] `-c`: Maximum concurrent operations (overrides config).
+- [Optional] `-a`: Number of attacks per vulnerability type (overrides config).
+- [Optional] `-o`: Path to the output folder for saving risk assessment results (overrides config).
+
+:::tip
+Use `deepteam --help` to see all available commands and options.
+:::
+
 ## How Does It Work?
 
 The red teaming process consists of 2 main steps:
@@ -503,7 +549,7 @@ The red teaming process consists of 2 main steps:
 
 The generated attacks are fed to the target LLM as queries, and the resulting LLM responses are evaluated and scored to assess the LLM's vulnerabilities.
 
-### Simulating Adversarial Attacks
+### Simulating adversarial attacks
 
 Attacks generation can be broken down into 2 key stages:
 
@@ -530,7 +576,7 @@ During this step, baseline attacks are synthetically generated based on user-spe
   />
 </div>
 
-### Evaluating LLM Outputs
+### Evaluating LLM outputs
 
 The response evaluation process also involves two key stages:
 

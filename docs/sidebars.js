@@ -68,6 +68,7 @@ module.exports = {
           label: "Vulnerabilties",
           items: [
             "red-teaming-vulnerabilities",
+            "red-teaming-custom-vulnerability",
             {
               type: "category",
               label: "Data Privacy",
@@ -132,7 +133,6 @@ module.exports = {
               ],
               collapsed: true,
             },
-            "red-teaming-custom-vulnerability",
           ],
           collapsed: false,
         },
