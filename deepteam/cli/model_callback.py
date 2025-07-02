@@ -73,7 +73,7 @@ def load_model(spec: Union[str, Dict[str, Any], None]) -> DeepEvalBaseLLM:
 
     if provider == "ollama":
         return OllamaModel(
-            model_name=model_name,
+            model=model_name,
             base_url=spec.get("base_url", "http://localhost:11434"),
             temperature=temperature,
         )
