@@ -1,13 +1,3 @@
-"""
-🛡️ DEEPEVAL DOCUMENT CODE SNIPPETS VALIDATION
-============================================
-
-This script validates all code snippets from the LLM Guardrails document
-against our DeepTeam implementation. Tests functionality and API compatibility.
-
-Document reference: LLM Guardrails comprehensive guide
-"""
-
 import os
 from typing import Dict, Any
 

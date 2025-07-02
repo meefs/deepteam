@@ -14,8 +14,8 @@ class BaseDecorativeGuard(ABC):
     guard_type: GuardType
 
     def __init__(self):
-        self.model = GPTModel(model="gpt-4o-mini")
-        self.evaluation_model = "gpt-4o-mini"
+        self.model = GPTModel(model="gpt-4.1-2025-04-14")
+        self.evaluation_model = "gpt-4.1-2025-04-14"
 
     @property
     def __name__(self):
