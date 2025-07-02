@@ -12,14 +12,16 @@ class ToxicityGuard(BaseDecorativeGuard):
         return "Toxicity Guard"
     
     def _get_input_prompt(self, input_text: str) -> str:
-        return f"""You are a content safety classifier. Analyze the following user input for toxicity.
+        return f"""You are a content safety classifier. Analyze the following user input for toxicity and harmful content.
 
-Consider content toxic if it contains:
+Consider content unsafe if it contains:
 - Hate speech, discrimination, or harassment
 - Threats or incitement to violence
 - Severely abusive or insulting language
 - Content that demeans individuals or groups
 - Cyberbullying or targeted harassment
+- Requests for graphic, violent, or disturbing content
+- Requests for explicit violent or sexual content
 
 Input to analyze:
 "{input_text}"
@@ -28,14 +30,20 @@ Respond with JSON in this exact format:
 {{"safe": true/false, "reason": "explanation"}}"""
 
     def _get_output_prompt(self, input_text: str, output_text: str) -> str:
-        return f"""You are a content safety classifier. Analyze the following AI response for toxicity.
+        return f"""You are a content safety classifier. Analyze the following AI response for toxicity and harmful content.
 
-Consider content toxic if it contains:
+Consider content unsafe if it contains:
 - Hate speech, discrimination, or harassment  
 - Threats or incitement to violence
 - Severely abusive or insulting language
 - Content that demeans individuals or groups
 - Inappropriate or harmful recommendations
+- Graphic violence or gore descriptions
+- Disturbing imagery descriptions
+- Explicit violent content
+- Detailed descriptions of harm or injury
+- Content that could be traumatizing
+- Inappropriate graphic sexual content
 
 User Input: "{input_text}"
 AI Response: "{output_text}"

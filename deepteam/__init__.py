@@ -12,9 +12,11 @@ from deepteam.guardrails import (
     GuardResult,
     ToxicityGuard,
     PromptInjectionGuard,
-    JailbreakingGuard,
     PrivacyGuard,
     IllegalGuard,
+    HallucinationGuard,
+    TopicalGuard,
+    CybersecurityGuard,
     GuardType
 )
 
@@ -26,9 +28,11 @@ __all__ = [
     "GuardResult", 
     "ToxicityGuard",
     "PromptInjectionGuard",
-    "JailbreakingGuard",
     "PrivacyGuard",
     "IllegalGuard",
+    "HallucinationGuard",
+    "TopicalGuard",
+    "CybersecurityGuard",
     "GuardType"
 ]
 
