@@ -21,6 +21,18 @@ class CybersecurityGuard(BaseGuard):
     def __name__(self):
         return "Cybersecurity Guard"
 
+    def guard_input(self, input: str) -> float:
+        return self.guard(input=input)
+
+    def guard_output(self, input: str, output: str) -> float:
+        return self.guard(input=input, output=output)
+
+    async def a_guard_input(self, input: str) -> float:
+        return await self.a_guard(input=input)
+
+    async def a_guard_output(self, input: str, output: str) -> float:
+        return await self.a_guard(input=input, output=output)
+
     def _get_input_prompt(self, input_text: str) -> str:
         categories_text = ", ".join([cat.value for cat in self.categories])
         purpose_line = f"Application purpose: {self.purpose}\n" if self.purpose else ""

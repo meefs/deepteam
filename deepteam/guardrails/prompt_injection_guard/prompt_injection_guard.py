@@ -1,8 +1,8 @@
-from deepteam.guardrails.base_guard import BaseDecorativeGuard
+from deepteam.guardrails.base_guard import BaseGuard
 from deepteam.guardrails.types import GuardType
 
 
-class PromptInjectionGuard(BaseDecorativeGuard):
+class PromptInjectionGuard(BaseGuard):
     def __init__(self):
         super().__init__()
         self.guard_type = GuardType.INPUT
@@ -52,3 +52,15 @@ AI Response: "{output_text}"
 
 Respond with JSON in this exact format:
 {{"safe": true/false, "reason": "explanation"}}"""
+
+    def guard_input(self, input: str) -> float:
+        return self.guard(input=input)
+
+    def guard_output(self, input: str, output: str) -> float:
+        return self.guard(input=input, output=output)
+
+    async def a_guard_input(self, input: str) -> float:
+        return await self.a_guard(input=input)
+
+    async def a_guard_output(self, input: str, output: str) -> float:
+        return await self.a_guard(input=input, output=output)

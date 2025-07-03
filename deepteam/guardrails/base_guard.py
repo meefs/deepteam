@@ -14,7 +14,7 @@ class BaseGuard(ABC):
     guard_type: GuardType
 
     def __init__(self):
-        self.model = GPTModel(model="gpt-4.1-2025-04-14")
+        self.model = GPTModel(model="gpt-4.1")
         self.evaluation_model = self.model.get_model_name()
 
     @property

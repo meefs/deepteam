@@ -81,7 +81,7 @@ async def test_all_guards():
             if guard_type == GuardType.INPUT:
                 score = await guard.a_guard(input=test_case["safe"])
             else:
-                score = await guard.a_guard(response=test_case["safe"])
+                score = await guard.a_guard(output=test_case["safe"])
             
             expected_safe = True
             actual_safe = guard.score == 1.0
@@ -100,7 +100,7 @@ async def test_all_guards():
             if guard_type == GuardType.INPUT:
                 score = await guard.a_guard(input=test_case["unsafe"])
             else:
-                score = await guard.a_guard(response=test_case["unsafe"])
+                score = await guard.a_guard(output=test_case["unsafe"])
             
             expected_safe = False
             actual_safe = guard.score == 1.0
