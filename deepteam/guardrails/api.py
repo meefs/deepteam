@@ -15,7 +15,7 @@ class GuardData(BaseModel):
     guard: str
     score: float
     reason: str
-    safe: bool = True
+    safe: bool
 
 
 class GuardResult(BaseModel):
@@ -23,4 +23,4 @@ class GuardResult(BaseModel):
     Result from guardrails evaluation.
     """
     breached: bool
-    guard_results: Dict[str, GuardData]
+    guard_verdicts: Dict[str, GuardData]

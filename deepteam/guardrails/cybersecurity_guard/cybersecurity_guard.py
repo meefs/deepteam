@@ -1,18 +1,19 @@
-from typing import List
+from typing import List, Optional
 
 from .category import CyberattackCategory
-from ..base_guard import BaseDecorativeGuard
+from ..base_guard import BaseGuard
 from ..types import GuardType
 
 
-class CybersecurityGuard(BaseDecorativeGuard):
+class CybersecurityGuard(BaseGuard):
     def __init__(
         self,
-        purpose: str = "general application security",
+        purpose: Optional[str] = None,
         categories: List[CyberattackCategory] = None,
+        guard_type: GuardType = GuardType.INPUT,
     ):
         super().__init__()
-        self.guard_type = GuardType.INPUT
+        self.guard_type = guard_type
         self.purpose = purpose
         self.categories = categories or [attack for attack in CyberattackCategory]
 
@@ -22,10 +23,11 @@ class CybersecurityGuard(BaseDecorativeGuard):
 
     def _get_input_prompt(self, input_text: str) -> str:
         categories_text = ", ".join([cat.value for cat in self.categories])
+        purpose_line = f"Application purpose: {self.purpose}\n" if self.purpose else ""
+        
         return f"""You are a cybersecurity expert. Determine if the input contains potential cybersecurity attacks or malicious content.
 
-Application purpose: {self.purpose}
-Categories to check: {categories_text}
+{purpose_line}Categories to check: {categories_text}
 
 Analyze the input for:
 1. BFLA (Broken Function Level Authorization) attempts
@@ -45,10 +47,11 @@ Input to analyze: {input_text}"""
 
     def _get_output_prompt(self, input_text: str, output_text: str) -> str:
         categories_text = ", ".join([cat.value for cat in self.categories])
+        purpose_line = f"Application purpose: {self.purpose}\n" if self.purpose else ""
+        
         return f"""You are a cybersecurity expert. Analyze if this output contains security vulnerabilities.
 
-Application purpose: {self.purpose}
-Categories to check: {categories_text}
+{purpose_line}Categories to check: {categories_text}
 
 Respond in JSON format: {{"safe": true/false, "reason": "explanation"}}
 

@@ -7,9 +7,13 @@ from deepteam.guardrails.types import GuardType
 
 
 class GuardResult:
-    def __init__(self, breached: bool, guard_results: Dict[str, Any]):
-        self.breached = breached
+    def __init__(self, guard_results: Dict[str, Any]):
         self.guard_results = guard_results
+        # Calculate breached automatically from guard results
+        self.breached = any(
+            not result.get("safe", False) 
+            for result in guard_results.values()
+        )
 
 
 class Guardrails:
@@ -32,7 +36,6 @@ class Guardrails:
             )
 
         guard_results = {}
-        any_breached = False
         
         for guard in self.guards:
             start_time = time.time()
@@ -46,9 +49,6 @@ class Guardrails:
                     "reason": getattr(guard, "reason", None),
                     "score": getattr(guard, "score", None)
                 }
-                
-                if not is_safe:
-                    any_breached = True
                     
             except Exception as e:
                 guard_results[guard.__name__] = {
@@ -56,9 +56,8 @@ class Guardrails:
                     "latency": time.time() - start_time,
                     "error": str(e)
                 }
-                any_breached = True
 
-        return GuardResult(breached=any_breached, guard_results=guard_results)
+        return GuardResult(guard_results=guard_results)
 
     def guard_output(self, input: str, output: str) -> GuardResult:
         """
@@ -71,7 +70,6 @@ class Guardrails:
             )
 
         guard_results = {}
-        any_breached = False
         
         for guard in self.guards:
             start_time = time.time()
@@ -85,9 +83,6 @@ class Guardrails:
                     "reason": getattr(guard, "reason", None),
                     "score": getattr(guard, "score", None)
                 }
-                
-                if not is_safe:
-                    any_breached = True
                     
             except Exception as e:
                 guard_results[guard.__name__] = {
@@ -95,9 +90,8 @@ class Guardrails:
                     "latency": time.time() - start_time,
                     "error": str(e)
                 }
-                any_breached = True
 
-        return GuardResult(breached=any_breached, guard_results=guard_results)
+        return GuardResult(guard_results=guard_results)
 
     async def a_guard_input(self, input: str) -> GuardResult:
         """
@@ -114,22 +108,18 @@ class Guardrails:
             tasks.append((guard, task))
 
         guard_results = {}
-        any_breached = False
 
         for guard, task in tasks:
             try:
                 result = await task
                 guard_results[guard.__name__] = result
-                if not result["safe"]:
-                    any_breached = True
             except Exception as e:
                 guard_results[guard.__name__] = {
                     "safe": False,
                     "error": str(e)
                 }
-                any_breached = True
 
-        return GuardResult(breached=any_breached, guard_results=guard_results)
+        return GuardResult(guard_results=guard_results)
 
     async def a_guard_output(self, input: str, output: str) -> GuardResult:
         """
@@ -146,22 +136,18 @@ class Guardrails:
             tasks.append((guard, task))
 
         guard_results = {}
-        any_breached = False
 
         for guard, task in tasks:
             try:
                 result = await task
                 guard_results[guard.__name__] = result
-                if not result["safe"]:
-                    any_breached = True
             except Exception as e:
                 guard_results[guard.__name__] = {
                     "safe": False,
                     "error": str(e)
                 }
-                any_breached = True
 
-        return GuardResult(breached=any_breached, guard_results=guard_results)
+        return GuardResult(guard_results=guard_results)
 
     async def _async_guard_input_single(self, guard: BaseGuard, input: str):
         """Helper method for async input guarding."""
