@@ -1,6 +1,4 @@
-<p align="center">
-    <img src="https://github.com/confident-ai/deepteam/blob/main/docs/static/img/deepteam.png" alt="DeepTeam Logo" width="100%">
-</p>
+![Demo GIF](assets/demo.gif)
 
 <p align="center">
     <h1 align="center">The LLM Red Teaming Framework</h1>
@@ -9,7 +7,7 @@
 <h4 align="center">
     <p>
         <a href="https://www.trydeepteam.com?utm_source=GitHub">Documentation</a> |
-        <a href="#-vulnerabilities--attacks--and-features-">Vulnerabilities, Attacks, and Features</a> |
+        <a href="#-vulnerabilities--attacks--and-features-">Vulnerabilities, Attacks, and Guardrails</a> |
         <a href="#-quickstart">Getting Started</a> 
     <p>
 </h4>
@@ -23,16 +21,14 @@
     </a>
 </p>
 
-**DeepTeam** is a simple-to-use, open-source LLM red teaming framework, for penetration testing large-language model systems. 
+**DeepTeam** is a simple-to-use, open-source LLM red teaming framework, for penetration testing and safe guarding large-language model systems. 
 
-DeepTeam incorporates the latest research to simulate adversarial attacks using SOTA techniques such as jailbreaking and prompt injections, to catch vulnerabilities like bias and PII Leakage that you might not otherwise be aware of.
+DeepTeam incorporates the latest research to simulate adversarial attacks using SOTA techniques such as jailbreaking and prompt injections, to catch vulnerabilities like bias and PII Leakage that you might not otherwise be aware of. Once you've uncovered your vulnerabilities, DeepTeam offer **guardrails** to prevent issues in production.
 
-DeepTeam runs **locally on your machine**, and **uses LLMs** for both simulation and evaluation during red teaming. With DeepTeam, whether your LLM systems are RAG piplines, chatbots, AI agents, or just the LLM itself, you can be confident that safety risks and security vulnerabilities are caught before your users do.
+DeepTeam runs **locally on your machine**, and **uses LLMs** for both simulation and evaluation during red teaming. With DeepTeam, whether your LLM systems are RAG piplines, chatbots, AI agents, or just the LLM itself, you can be confident that it is secure, safe, risk-free, with security vulnerabilities caught before it reaches your users.
 
 > [!IMPORTANT]
 > DeepTeam is powered by [DeepEval](https://github.com/confident-ai/deepeval), the open-source LLM evaluation framework.
-
-> ![Demo GIF](assets/demo.gif)
 
 > Want to talk LLM security, or just to say hi? [Come join our discord.](https://discord.com/invite/3SEyvpgu2f)
 
