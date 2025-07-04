@@ -42,7 +42,7 @@ DeepTeam incorporates the latest research to simulate adversarial attacks using 
 DeepTeam runs **locally on your machine**, and **uses LLMs** for both simulation and evaluation during red teaming. With DeepTeam, whether your LLM systems are RAG piplines, chatbots, AI agents, or just the LLM itself, you can be confident that it is secure, safe, risk-free, with security vulnerabilities caught before it reaches your users.
 
 <p align="center">
-    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/features-banner.png" alt="DeepEval Logo" width="80%">
+    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/deepteam-banner.png" alt="DeepTeam Features" width="80%">
 </p>
 
 > [!IMPORTANT]
