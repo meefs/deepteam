@@ -21,6 +21,18 @@
     </a>
 </p>
 
+<p align="center">
+    <!-- Keep these links. Translations will automatically update with the README. -->
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=de">Deutsch</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=es">Español</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=fr">français</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=ja">日本語</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=ko">한국어</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=pt">Português</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=ru">Русский</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=zh">中文</a>
+</p>
+
 **DeepTeam** is a simple-to-use, open-source LLM red teaming framework, for penetration testing and safe guarding large-language model systems. 
 
 DeepTeam incorporates the latest research to simulate adversarial attacks using SOTA techniques such as jailbreaking and prompt injections, to catch vulnerabilities like bias and PII Leakage that you might not otherwise be aware of. Once you've uncovered your vulnerabilities, DeepTeam offer **guardrails** to prevent issues in production.
