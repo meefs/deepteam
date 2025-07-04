@@ -1,4 +1,6 @@
-![Demo GIF](assets/demo.gif)
+<p align="center">
+    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/demo.gif" alt="DeepEval Logo" width="100%">
+</p>
 
 <p align="center">
     <h1 align="center">The LLM Red Teaming Framework</h1>
@@ -41,6 +43,10 @@ DeepTeam runs **locally on your machine**, and **uses LLMs** for both simulation
 
 > [!IMPORTANT]
 > DeepTeam is powered by [DeepEval](https://github.com/confident-ai/deepeval), the open-source LLM evaluation framework.
+
+<p align="center">
+    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/deepteam-banner.png" alt="DeepEval Logo" width="70%">
+</p>
 
 > Want to talk LLM security, or just to say hi? [Come join our discord.](https://discord.com/invite/3SEyvpgu2f)
 
