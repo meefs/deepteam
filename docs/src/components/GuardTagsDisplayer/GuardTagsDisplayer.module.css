@@ -1,4 +1,4 @@
-.tagsDisplayer {
+.guardTagsDisplayer {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -12,16 +12,16 @@
   border-radius: 0.5rem;
 }
 
-.encodingBased {
-    background-color: white;
-    border: 1px solid rgb(218, 221, 227);
-    color: black;
-}
-
-.llmSimulated {
+.usesLLM {
   background-color: #fefceb;
   border: 1px solid #eeda83;
   color: #4a3900;
+}
+
+.custom {
+  background-color: #f8f2ff;
+  border: 1px solid #d597fe;
+  color: #c234ff;
 }
 
 .singleTurn {
@@ -36,15 +36,14 @@
   color: black;
 }
 
-.custom {
-  background-color: #e9f5fe;
-  border: 1px solid #badbff;
-  color: #002a70;
+.input {
+  background-color: white;
+  border: 1px solid rgb(218, 221, 227);
+  color: black;
 }
 
-.custom {
-  background-color: #f8f2ff;
-  border: 1px solid #d597fe;
-  color: #c234ff;
+.output {
+  background-color: white;
+  border: 1px solid rgb(218, 221, 227);
+  color: black;
 }
-

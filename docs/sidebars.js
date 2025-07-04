@@ -141,7 +141,18 @@ module.exports = {
     },
     {
       type: "category",
-      label: "Guidelines & Frameworks",
+      label: "Guardrails",
+      items: ["guardrails-introduction", {
+        type: "category",
+        label: "Guards",
+        items: [ "guardrails-prompt-injection-guard", "guardrails-toxicity-guard"],
+        collapsed: false,
+      }],
+      collapsed: false,
+    },
+    {
+      type: "category",
+      label: "Frameworks & Guidelines",
       className: "sidebar-item-icon-guidelines-frameworks",
       items: ["red-teaming-guidelines-framework-introduction","red-teaming-owasp-top-10-for-llms", "red-teaming-nist-ai-rmf"],
       collapsed: false,
