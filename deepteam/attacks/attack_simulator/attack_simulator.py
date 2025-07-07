@@ -395,7 +395,7 @@ class AttackSimulator:
             except TypeError:
                 res = self.simulator_model.generate(prompt)
                 data = trimAndLoadJson(res)
-                return data["data"]
+                return [item["input"] for item in data["data"]]
 
     async def a_simulate_local_attack(
         self,
@@ -426,6 +426,6 @@ class AttackSimulator:
                 )
                 return [item.input for item in res.data]
             except TypeError:
-                res = self.simulator_model.generate(prompt)
+                res = await self.simulator_model.a_generate(prompt)
                 data = trimAndLoadJson(res)
-                return data["data"]
+                return [item["input"] for item in data["data"]]
