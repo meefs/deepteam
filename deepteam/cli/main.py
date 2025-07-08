@@ -87,11 +87,14 @@ def _build_vulnerability(cfg: dict):
     if not name:
         raise ValueError("Vulnerability entry missing 'name'")
     if name == "CustomVulnerability":
+        criterion = cfg.get("criterion")
+        if not criterion:
+            raise ValueError("CustomVulnerability configuration must include a 'criterion' field that defines what should be evaluated.")
         return CustomVulnerability(
             name=cfg.get("custom_name", "Custom"),
+            criterion=criterion,
             types=cfg.get("types"),
             custom_prompt=cfg.get("prompt"),
-            criterion=cfg.get("criterion"),
         )
     cls = VULN_MAP.get(name)
     if not cls:
