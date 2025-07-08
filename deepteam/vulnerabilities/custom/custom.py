@@ -16,6 +16,7 @@ class CustomVulnerability(BaseVulnerability):
         types: Optional[List[str]] = None,
         custom_prompt: Optional[str] = None,
         metric: Optional[BaseRedTeamingMetric] = None,
+        criterion: Optional[str] = None,
     ):
         self.name = name
         self.types = [
@@ -24,6 +25,7 @@ class CustomVulnerability(BaseVulnerability):
         self.raw_types = types or []
         self.custom_prompt = custom_prompt
         self.metric = metric
+        self.criterion = criterion
         super().__init__(self.types)
 
     def get_name(self) -> str:
@@ -37,3 +39,6 @@ class CustomVulnerability(BaseVulnerability):
 
     def get_raw_types(self) -> List[str]:
         return self.raw_types
+    
+    def get_criterion(self) -> Optional[str]:
+        return self.criterion

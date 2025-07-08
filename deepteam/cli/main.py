@@ -91,6 +91,7 @@ def _build_vulnerability(cfg: dict):
             name=cfg.get("custom_name", "Custom"),
             types=cfg.get("types"),
             custom_prompt=cfg.get("prompt"),
+            criterion=cfg.get("criterion"),
         )
     cls = VULN_MAP.get(name)
     if not cls:
