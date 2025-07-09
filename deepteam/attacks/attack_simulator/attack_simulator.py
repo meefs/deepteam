@@ -23,6 +23,8 @@ class SimulatedAttack(BaseModel):
     input: Optional[str] = None
     attack_method: Optional[str] = None
     error: Optional[str] = None
+    metadata: Optional[dict] = None
+
 
 class NoAttack:
     def get_name(self):
