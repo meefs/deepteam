@@ -4,7 +4,7 @@ import datetime
 import os
 import json
 from enum import Enum
-
+import pandas as pd
 from deepteam.vulnerabilities.types import VulnerabilityType
 
 
@@ -26,8 +26,8 @@ class RedTeamingTestCase(BaseModel):
 
 
 class TestCasesList(list):
-    def to_df(self):
-        import pandas as pd
+    def to_df(self) -> pd.DataFrame:
+
 
         data = []
         for case in self:
@@ -107,7 +107,7 @@ class RiskAssessment(BaseModel):
 
     def __init__(self, **data):
         super().__init__(**data)
-        self.test_cases = TestCasesList[RedTeamingTestCase](self.test_cases)
+        self.test_cases : TestCasesList = TestCasesList[RedTeamingTestCase](self.test_cases)
 
     def save(self, to: str) -> str:
         try:
