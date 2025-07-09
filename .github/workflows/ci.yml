@@ -26,10 +26,10 @@ jobs:
 
       matrix:
         python:
-          - '3.10'
-          - '3.11'
-          - '3.12'
-          - '3.13'
+          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
 
     concurrency:
       # Cancel any currently running job or workflow in the same concurrency group.
@@ -60,7 +60,7 @@ jobs:
             **/uv.lock
 
       - name: Install dependencies
-        run: uv sync --locked --group dev
+        run: uv sync --locked --extra dev
 
       - name: Run unit tests with coverage
         run: uv run --frozen pytest -svv
