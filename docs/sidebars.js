@@ -139,17 +139,17 @@ module.exports = {
       ],
       collapsed: false,
     },
-    {
-      type: "category",
-      label: "Guardrails",
-      items: ["guardrails-introduction", {
-        type: "category",
-        label: "Guards",
-        items: [ "guardrails-prompt-injection-guard", "guardrails-toxicity-guard"],
-        collapsed: false,
-      }],
-      collapsed: false,
-    },
+    // {
+    //   type: "category",
+    //   label: "Guardrails",
+    //   items: ["guardrails-introduction", {
+    //     type: "category",
+    //     label: "Guards",
+    //     items: [ "guardrails-prompt-injection-guard", "guardrails-toxicity-guard"],
+    //     collapsed: false,
+    //   }],
+    //   collapsed: false,
+    // },
     {
       type: "category",
       label: "Frameworks & Guidelines",
