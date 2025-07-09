@@ -62,6 +62,8 @@ class AttackSimulator:
         vulnerabilities: List[BaseVulnerability],
         attacks: List[BaseAttack],
         ignore_errors: bool,
+        metadata: Optional[dict] = None,
+
     ) -> List[SimulatedAttack]:
         # Simulate unenhanced attacks for each vulnerability
         baseline_attacks: List[SimulatedAttack] = []
@@ -78,6 +80,8 @@ class AttackSimulator:
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
                     ignore_errors=ignore_errors,
+                    metadata=metadata,
+
                 )
             )
         # Enhance attacks by sampling from the provided distribution
@@ -197,6 +201,8 @@ class AttackSimulator:
         attacks_per_vulnerability_type: int,
         vulnerability: BaseVulnerability,
         ignore_errors: bool,
+        metadata: Optional[dict] = None,
+
     ) -> List[SimulatedAttack]:
         baseline_attacks: List[SimulatedAttack] = []
 
@@ -218,6 +224,8 @@ class AttackSimulator:
                             vulnerability=vulnerability.get_name(),
                             vulnerability_type=vulnerability_type,
                             input=local_attack,
+                            metadata=metadata,
+
                         )
                         for local_attack in local_attacks
                     ]
@@ -230,6 +238,8 @@ class AttackSimulator:
                                 vulnerability=vulnerability.get_name(),
                                 vulnerability_type=vulnerability_type,
                                 error=f"Error simulating adversarial attacks: {str(e)}",
+                                metadata=metadata,
+
                             )
                         )
                 else:
@@ -241,6 +251,7 @@ class AttackSimulator:
         attacks_per_vulnerability_type: int,
         vulnerability: BaseVulnerability,
         ignore_errors: bool,
+        metadata: Optional[dict] = None,
     ) -> List[SimulatedAttack]:
         baseline_attacks: List[SimulatedAttack] = []
         for vulnerability_type in vulnerability.get_types():
@@ -262,6 +273,8 @@ class AttackSimulator:
                             vulnerability=vulnerability.get_name(),
                             vulnerability_type=vulnerability_type,
                             input=local_attack,
+                            metadata=metadata,
+
                         )
                         for local_attack in local_attacks
                     ]
@@ -274,6 +287,8 @@ class AttackSimulator:
                                 vulnerability=vulnerability.get_name(),
                                 vulnerability_type=vulnerability_type,
                                 error=f"Error simulating adversarial attacks: {str(e)}",
+                                metadata=metadata,
+
                             )
                         )
                 else:
