@@ -652,9 +652,13 @@ class RedTeamer:
                     if metric:
                         metrics_map[vuln_type] = lambda: metric
                     else:
-                        metrics_map[vuln_type] = lambda: HarmMetric(
+                        criterion = vulnerability.get_criterion()
+                        if not criterion:
+                            raise ValueError(f"CustomVulnerability '{vulnerability.get_name()}' must provide a 'criterion' parameter that defines what should be evaluated.")
+                        
+                        metrics_map[vuln_type] = lambda hc=criterion: HarmMetric(
                             model=self.evaluation_model,
-                            harm_category=f"{vulnerability}.{vuln_type}",
+                            harm_category=hc,
                             async_mode=self.async_mode,
                         )
 
