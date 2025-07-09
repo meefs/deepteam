@@ -113,6 +113,8 @@ class AttackSimulator:
         vulnerabilities: List[BaseVulnerability],
         attacks: List[BaseAttack],
         ignore_errors: bool,
+        metadata: Optional[dict] = None,
+
     ) -> List[SimulatedAttack]:
         # Create a semaphore to control the number of concurrent tasks
         semaphore = asyncio.Semaphore(self.max_concurrent)
@@ -133,6 +135,7 @@ class AttackSimulator:
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
                     ignore_errors=ignore_errors,
+                    metadata=metadata,
                 )
                 pbar.update(1)
                 return result
