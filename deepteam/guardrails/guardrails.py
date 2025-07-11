@@ -1,7 +1,6 @@
 from typing import List, Dict, Any
 import time
 import asyncio
-import random
 
 from deepteam.guardrails.base_guard import BaseGuard
 from deepteam.guardrails.types import GuardType
@@ -39,12 +38,13 @@ class Guardrails:
             evaluation_model: OpenAI model to use for guard evaluation (default: gpt-4.1)
             sample_rate: Fraction of requests to actually guard (0.0 to 1.0, default: 1.0)
         """
-        # Validate sample_rate
+        # Validate sample_rate 
         if not (0.0 <= sample_rate <= 1.0):
             raise ValueError(f"sample_rate must be between 0.0 and 1.0, got {sample_rate}")
         
         self.sample_rate = sample_rate
         self.evaluation_model = evaluation_model
+        self._request_count = 0  # Deterministic counter
         
         # Update all guards to use the specified evaluation model
         self.input_guards = self._update_guards_model(input_guards, evaluation_model)
@@ -60,6 +60,18 @@ class Guardrails:
             updated_guards.append(new_guard)
         return updated_guards
 
+    def _should_process(self) -> bool:
+        """Deterministic sampling: exactly sample_rate fraction of requests"""
+        self._request_count += 1
+        if self.sample_rate == 0.0:
+            return False
+        if self.sample_rate == 1.0:
+            return True
+        
+        # Simple deterministic approach: process every nth request
+        interval = int(1 / self.sample_rate)
+        return self._request_count % interval == 0
+
     def guard_input(self, input: str) -> GuardResult:
         """
         Guard an input string using all configured input guards.
@@ -70,8 +82,8 @@ class Guardrails:
                 "Guardrails cannot guard inputs when no input_guards are provided."
             )
 
-        # Simple sampling check
-        if random.random() >= self.sample_rate:
+        # Deterministic sampling
+        if not self._should_process():
             return GuardResult(guard_results={})
 
         guard_results = {}
@@ -108,8 +120,8 @@ class Guardrails:
                 "Guardrails cannot guard outputs when no output_guards are provided."
             )
 
-        # Simple sampling check
-        if random.random() >= self.sample_rate:
+        # Deterministic sampling
+        if not self._should_process():
             return GuardResult(guard_results={})
 
         guard_results = {}
@@ -145,8 +157,8 @@ class Guardrails:
                 "Guardrails cannot guard inputs when no input_guards are provided."
             )
 
-        # Simple sampling check
-        if random.random() >= self.sample_rate:
+        # Deterministic sampling
+        if not self._should_process():
             return GuardResult(guard_results={})
 
         tasks = []
@@ -177,8 +189,8 @@ class Guardrails:
                 "Guardrails cannot guard outputs when no output_guards are provided."
             )
 
-        # Simple sampling check
-        if random.random() >= self.sample_rate:
+        # Deterministic sampling
+        if not self._should_process():
             return GuardResult(guard_results={})
 
         tasks = []
