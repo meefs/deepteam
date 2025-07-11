@@ -60,10 +60,6 @@ class Guardrails:
             updated_guards.append(new_guard)
         return updated_guards
 
-    def _should_sample(self) -> bool:
-        """Determine if this request should be sampled based on sample_rate"""
-        return random.random() < self.sample_rate
-
     def guard_input(self, input: str) -> GuardResult:
         """
         Guard an input string using all configured input guards.
@@ -74,9 +70,8 @@ class Guardrails:
                 "Guardrails cannot guard inputs when no input_guards are provided."
             )
 
-        # Check if we should sample this request
-        if not self._should_sample():
-            # Return empty result when not sampling
+        # Simple sampling check
+        if random.random() >= self.sample_rate:
             return GuardResult(guard_results={})
 
         guard_results = {}
@@ -113,9 +108,8 @@ class Guardrails:
                 "Guardrails cannot guard outputs when no output_guards are provided."
             )
 
-        # Check if we should sample this request
-        if not self._should_sample():
-            # Return empty result when not sampling
+        # Simple sampling check
+        if random.random() >= self.sample_rate:
             return GuardResult(guard_results={})
 
         guard_results = {}
@@ -151,9 +145,8 @@ class Guardrails:
                 "Guardrails cannot guard inputs when no input_guards are provided."
             )
 
-        # Check if we should sample this request
-        if not self._should_sample():
-            # Return empty result when not sampling
+        # Simple sampling check
+        if random.random() >= self.sample_rate:
             return GuardResult(guard_results={})
 
         tasks = []
@@ -184,9 +177,8 @@ class Guardrails:
                 "Guardrails cannot guard outputs when no output_guards are provided."
             )
 
-        # Check if we should sample this request
-        if not self._should_sample():
-            # Return empty result when not sampling
+        # Simple sampling check
+        if random.random() >= self.sample_rate:
             return GuardResult(guard_results={})
 
         tasks = []
