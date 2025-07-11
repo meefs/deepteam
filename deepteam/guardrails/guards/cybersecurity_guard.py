@@ -11,6 +11,7 @@ class CybersecurityGuard(BaseGuard):
         purpose: Optional[str] = None,
         categories: List[CyberattackCategory] = None,
         guard_type: GuardType = GuardType.INPUT,
+        evaluation_model: Optional[str] = None,
     ):
         super().__init__(evaluation_model=evaluation_model)
         self.guard_type = guard_type

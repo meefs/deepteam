@@ -44,7 +44,7 @@ class Guardrails:
         
         self.sample_rate = sample_rate
         self.evaluation_model = evaluation_model
-        self._request_count = 0  # Deterministic counter
+        self._request_count = 0  
         
         # Update all guards to use the specified evaluation model
         self.input_guards = self._update_guards_model(input_guards, evaluation_model)
