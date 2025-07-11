@@ -1,10 +1,9 @@
 from ..base_guard import BaseGuard
 from ..types import GuardType
-from typing import Optional
 
 
 class PromptInjectionGuard(BaseGuard):
-    def __init__(self, evaluation_model: Optional[str] = None):
+    def __init__(self, evaluation_model: str = "gpt-4.1"):
         super().__init__(evaluation_model=evaluation_model)
         self.guard_type = GuardType.INPUT
 

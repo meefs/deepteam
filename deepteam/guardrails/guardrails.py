@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 import time
 import asyncio
 import random
@@ -27,8 +27,8 @@ class Guardrails:
         self, 
         input_guards: List[BaseGuard],
         output_guards: List[BaseGuard],
-        default_evaluation_model: Optional[str] = None,
-        sample_rate: Optional[float] = None
+        evaluation_model: str = "gpt-4.1",
+        sample_rate: float = 1.0
     ):
         """
         Initialize Guardrails with separate input and output guards.
@@ -36,35 +36,32 @@ class Guardrails:
         Args:
             input_guards: List of guards to check inputs before they reach your LLM
             output_guards: List of guards to check outputs before they reach your users
-            default_evaluation_model: Default OpenAI model for guards without explicit model
-            sample_rate: Fraction of requests to process (0.0 to 1.0). If None, processes all requests
+            evaluation_model: OpenAI model to use for guard evaluation (default: gpt-4.1)
+            sample_rate: Fraction of requests to actually guard (0.0 to 1.0, default: 1.0)
         """
-        self.input_guards = input_guards
-        self.output_guards = output_guards
-        self.default_evaluation_model = default_evaluation_model
+        # Validate sample_rate
+        if not (0.0 <= sample_rate <= 1.0):
+            raise ValueError(f"sample_rate must be between 0.0 and 1.0, got {sample_rate}")
         
-        # Validate and set sample rate
-        if sample_rate is not None:
-            if not 0.0 <= sample_rate <= 1.0:
-                raise ValueError("sample_rate must be between 0.0 and 1.0")
         self.sample_rate = sample_rate
+        self.evaluation_model = evaluation_model
         
-        # Apply default model to guards that don't have explicit models
-        if default_evaluation_model:
-            self._apply_default_model_to_guards()
+        # Update all guards to use the specified evaluation model
+        self.input_guards = self._update_guards_model(input_guards, evaluation_model)
+        self.output_guards = self._update_guards_model(output_guards, evaluation_model)
 
-    def _apply_default_model_to_guards(self):
-        """Apply default evaluation model to guards that don't have explicit models"""
-        all_guards = self.input_guards + self.output_guards
-        for guard in all_guards:
-            # Only update if guard doesn't already have a specific model configured
-            if guard.evaluation_model == "gpt-4o":  # Default from BaseGuard
-                guard.__init__(evaluation_model=self.default_evaluation_model)
+    def _update_guards_model(self, guards: List[BaseGuard], evaluation_model: str) -> List[BaseGuard]:
+        """Update all guards to use the specified evaluation model"""
+        updated_guards = []
+        for guard in guards:
+            # Create new instance with updated model
+            guard_class = guard.__class__
+            new_guard = guard_class(evaluation_model=evaluation_model)
+            updated_guards.append(new_guard)
+        return updated_guards
 
-    def _should_process_request(self) -> bool:
-        """Determine if request should be processed based on sample rate"""
-        if self.sample_rate is None:
-            return True
+    def _should_sample(self) -> bool:
+        """Determine if this request should be sampled based on sample_rate"""
         return random.random() < self.sample_rate
 
     def guard_input(self, input: str) -> GuardResult:
@@ -77,9 +74,9 @@ class Guardrails:
                 "Guardrails cannot guard inputs when no input_guards are provided."
             )
 
-        # Check sample rate
-        if not self._should_process_request():
-            # Return safe result without processing
+        # Check if we should sample this request
+        if not self._should_sample():
+            # Return empty result when not sampling
             return GuardResult(guard_results={})
 
         guard_results = {}
@@ -116,9 +113,9 @@ class Guardrails:
                 "Guardrails cannot guard outputs when no output_guards are provided."
             )
 
-        # Check sample rate
-        if not self._should_process_request():
-            # Return safe result without processing
+        # Check if we should sample this request
+        if not self._should_sample():
+            # Return empty result when not sampling
             return GuardResult(guard_results={})
 
         guard_results = {}
@@ -154,9 +151,9 @@ class Guardrails:
                 "Guardrails cannot guard inputs when no input_guards are provided."
             )
 
-        # Check sample rate
-        if not self._should_process_request():
-            # Return safe result without processing
+        # Check if we should sample this request
+        if not self._should_sample():
+            # Return empty result when not sampling
             return GuardResult(guard_results={})
 
         tasks = []
@@ -187,9 +184,9 @@ class Guardrails:
                 "Guardrails cannot guard outputs when no output_guards are provided."
             )
 
-        # Check sample rate
-        if not self._should_process_request():
-            # Return safe result without processing
+        # Check if we should sample this request
+        if not self._should_sample():
+            # Return empty result when not sampling
             return GuardResult(guard_results={})
 
         tasks = []

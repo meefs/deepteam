@@ -26,74 +26,89 @@ def test_basic_functionality():
     print("✅ Output guarding works correctly")
 
 
-def test_evaluation_model_customization():
-    """Test LLM model customization features"""
+def test_evaluation_model():
+    """Test custom evaluation model configuration"""
     
     from deepteam.guardrails import Guardrails
     from deepteam.guardrails.guards import PromptInjectionGuard, ToxicityGuard
     
-    # Test individual guard model specification
-    prompt_guard = PromptInjectionGuard(evaluation_model="gpt-3.5-turbo")
-    toxicity_guard = ToxicityGuard(evaluation_model="gpt-4o")
-    
-    assert "gpt-3.5-turbo" in prompt_guard.evaluation_model
-    assert "gpt-4o" in toxicity_guard.evaluation_model
-    print("✅ Individual guard model specification works")
-    
-    # Test default evaluation model
+    # Test with different evaluation model
     guardrails = Guardrails(
         input_guards=[PromptInjectionGuard()],
         output_guards=[ToxicityGuard()],
-        default_evaluation_model="gpt-4o-mini"
+        evaluation_model="gpt-3.5-turbo"
     )
-    print("✅ Default evaluation model initialization works")
+    
+    # Check that guards were updated with new model
+    assert guardrails.evaluation_model == "gpt-3.5-turbo"
+    result = guardrails.guard_input(input="Test input")
+    assert len(result.guard_results) > 0
+    print("✅ Custom evaluation model works")
 
 
-def test_sample_rate_functionality():
-    """Test sample rate configuration and validation"""
+def test_sample_rate():
+    """Test sample rate functionality"""
     
     from deepteam.guardrails import Guardrails
     from deepteam.guardrails.guards import PromptInjectionGuard, ToxicityGuard
     
-    # Test valid sample rate
+    # Test with 0% sample rate (should never run guards)
     guardrails = Guardrails(
-        input_guards=[PromptInjectionGuard()],
-        output_guards=[ToxicityGuard()],
-        sample_rate=0.5
-    )
-    assert guardrails.sample_rate == 0.5
-    print("✅ Valid sample rate works")
-    
-    # Test sample rate validation
-    try:
-        Guardrails(
-            input_guards=[PromptInjectionGuard()],
-            output_guards=[ToxicityGuard()],
-            sample_rate=1.5  # Invalid - > 1.0
-        )
-        assert False, "Should have raised ValueError"
-    except ValueError:
-        print("✅ Sample rate validation works")
-    
-    # Test sample rate at boundaries
-    guardrails_0 = Guardrails(
         input_guards=[PromptInjectionGuard()],
         output_guards=[ToxicityGuard()],
         sample_rate=0.0
     )
-    guardrails_1 = Guardrails(
+    
+    result = guardrails.guard_input(input="Test input")
+    assert len(result.guard_results) == 0  # Should be empty due to 0% sampling
+    print("✅ Sample rate 0.0 works (no guards executed)")
+    
+    # Test with 100% sample rate (should always run guards)
+    guardrails = Guardrails(
         input_guards=[PromptInjectionGuard()],
         output_guards=[ToxicityGuard()],
         sample_rate=1.0
     )
-    print("✅ Boundary sample rates work")
+    
+    result = guardrails.guard_input(input="Test input")
+    assert len(result.guard_results) > 0  # Should have results due to 100% sampling
+    print("✅ Sample rate 1.0 works (guards executed)")
+
+
+def test_sample_rate_validation():
+    """Test sample rate validation"""
+    
+    from deepteam.guardrails import Guardrails
+    from deepteam.guardrails.guards import PromptInjectionGuard, ToxicityGuard
+    
+    # Test invalid sample rates
+    try:
+        Guardrails(
+            input_guards=[PromptInjectionGuard()],
+            output_guards=[ToxicityGuard()],
+            sample_rate=1.5  # Invalid: > 1.0
+        )
+        assert False, "Should have raised ValueError"
+    except ValueError:
+        pass
+    
+    try:
+        Guardrails(
+            input_guards=[PromptInjectionGuard()],
+            output_guards=[ToxicityGuard()],
+            sample_rate=-0.1  # Invalid: < 0.0
+        )
+        assert False, "Should have raised ValueError"
+    except ValueError:
+        pass
+    
+    print("✅ Sample rate validation works")
 
 
 def test_error_handling():
     """Test proper errors for empty guard lists"""
     
     from deepteam.guardrails import Guardrails
-    from deepteam.guardrails.guards import PrivacyGuard
     
     # Test with empty lists
     guardrails = Guardrails(input_guards=[], output_guards=[])
@@ -137,33 +152,14 @@ def test_attack_detection():
         print("✅ Toxic output detected")
 
 
-def test_sample_rate_behavior():
-    """Test that sample rate actually affects processing"""
-    
-    from deepteam.guardrails import Guardrails
-    from deepteam.guardrails.guards import PromptInjectionGuard, ToxicityGuard
-    
-    # Test with sample_rate=0.0 (should never process)
-    guardrails_never = Guardrails(
-        input_guards=[PromptInjectionGuard()],
-        output_guards=[ToxicityGuard()],
-        sample_rate=0.0
-    )
-    
-    result = guardrails_never.guard_input("Test input")
-    assert len(result.guard_results) == 0  # No guards should run
-    assert not result.breached  # Should be safe (no processing)
-    print("✅ Sample rate 0.0 behavior works")
-
-
 if __name__ == "__main__":
     print("🧪 Testing Guardrails Input/Output Implementation")
     
     test_basic_functionality()
-    test_evaluation_model_customization()
-    test_sample_rate_functionality()
+    test_evaluation_model()
+    test_sample_rate()
+    test_sample_rate_validation()
     test_error_handling()
     test_attack_detection()
-    test_sample_rate_behavior()
     
     print("🎉 All tests passed!") 

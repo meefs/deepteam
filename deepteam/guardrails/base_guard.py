@@ -13,16 +13,8 @@ class BaseGuard(ABC):
     latency: Optional[float] = None
     guard_type: GuardType
 
-    def __init__(self, evaluation_model: Optional[str] = None):
-        """
-        Initialize BaseGuard with configurable evaluation model.
-        
-        Args:
-            evaluation_model: OpenAI model to use for evaluation (e.g., "gpt-4o", "gpt-3.5-turbo")
-                            Defaults to "gpt-4o" if not specified
-        """
-        model_name = evaluation_model or "gpt-4.1"
-        self.model = GPTModel(model=model_name)
+    def __init__(self, evaluation_model: str = "gpt-4.1"):
+        self.model = GPTModel(model=evaluation_model)
         self.evaluation_model = self.model.get_model_name()
 
     @property
