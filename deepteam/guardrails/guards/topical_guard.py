@@ -1,11 +1,11 @@
 from ..base_guard import BaseGuard
 from ..types import GuardType
+from typing import Optional
 
 
 class TopicalGuard(BaseGuard):
-
-    def __init__(self, allowed_topics=None):
-        super().__init__()
+    def __init__(self, allowed_topics=None, evaluation_model: Optional[str] = None):
+        super().__init__(evaluation_model=evaluation_model)
         self.guard_type = GuardType.INPUT
         self.allowed_topics = allowed_topics or []
 
