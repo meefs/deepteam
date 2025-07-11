@@ -9,9 +9,11 @@ from deepteam.guardrails.types import GuardType
 class GuardResult:
     def __init__(self, guard_results: Dict[str, Any]):
         self.guard_results = guard_results
-        # Calculate breached automatically from guard results
+        # Calculate breached based on 3-tier system
+        # Only 0.0 (unsafe) is considered breached
+        # 0.5 (uncertain) and 1.0 (safe) are not breached
         self.breached = any(
-            not result.get("safe", False) 
+            result.get("score", 1.0) == 0.0 
             for result in guard_results.values()
         )
 
@@ -96,6 +98,7 @@ class Guardrails:
                 
                 guard_results[guard.__name__] = {
                     "safe": is_safe,
+                    "safety_level": getattr(guard, "safety_level", "unsafe"),
                     "latency": latency,
                     "reason": getattr(guard, "reason", None),
                     "score": getattr(guard, "score", None)
@@ -104,6 +107,7 @@ class Guardrails:
             except Exception as e:
                 guard_results[guard.__name__] = {
                     "safe": False,
+                    "safety_level": "unsafe",
                     "latency": time.time() - start_time,
                     "error": str(e)
                 }
@@ -134,6 +138,7 @@ class Guardrails:
                 
                 guard_results[guard.__name__] = {
                     "safe": is_safe,
+                    "safety_level": getattr(guard, "safety_level", "unsafe"),
                     "latency": latency,
                     "reason": getattr(guard, "reason", None),
                     "score": getattr(guard, "score", None)
@@ -142,6 +147,7 @@ class Guardrails:
             except Exception as e:
                 guard_results[guard.__name__] = {
                     "safe": False,
+                    "safety_level": "unsafe",
                     "latency": time.time() - start_time,
                     "error": str(e)
                 }
@@ -175,6 +181,7 @@ class Guardrails:
             except Exception as e:
                 guard_results[guard.__name__] = {
                     "safe": False,
+                    "safety_level": "unsafe",
                     "error": str(e)
                 }
 
@@ -207,6 +214,7 @@ class Guardrails:
             except Exception as e:
                 guard_results[guard.__name__] = {
                     "safe": False,
+                    "safety_level": "unsafe",
                     "error": str(e)
                 }
 
@@ -220,6 +228,7 @@ class Guardrails:
         
         return {
             "safe": is_safe,
+            "safety_level": getattr(guard, "safety_level", "unsafe"),
             "latency": latency,
             "reason": getattr(guard, "reason", None),
             "score": getattr(guard, "score", None)
@@ -233,6 +242,7 @@ class Guardrails:
         
         return {
             "safe": is_safe,
+            "safety_level": getattr(guard, "safety_level", "unsafe"),
             "latency": latency,
             "reason": getattr(guard, "reason", None),
             "score": getattr(guard, "score", None)

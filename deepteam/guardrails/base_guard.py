@@ -23,7 +23,7 @@ class BaseGuard(ABC):
     
     def guard(self, input: str = None, output: str = None, **kwargs) -> float:
         """
-        Guard method - returns score between 0.0 (unsafe) and 1.0 (safe)
+        Guard method - returns score: 1.0 (safe), 0.5 (uncertain), 0.0 (unsafe)
         """
         try:
             if output is not None:
@@ -46,7 +46,7 @@ class BaseGuard(ABC):
     
     async def a_guard(self, input: str = None, output: str = None, **kwargs) -> float:
         """
-        Async guard method - returns score between 0.0 (unsafe) and 1.0 (safe)
+        Async guard method - returns score: 1.0 (safe), 0.5 (uncertain), 0.0 (unsafe)
         """
         try:
             if output is not None:
@@ -69,17 +69,29 @@ class BaseGuard(ABC):
     
     def _parse_json_response(self, response: str) -> float:
         """
-        Parse JSON response from LLM to determine safety score
-        Returns 1.0 if safe, 0.0 if unsafe
+        Parse JSON response from LLM to determine safety level
+        Returns 1.0 (safe), 0.5 (uncertain), or 0.0 (unsafe) for internal use
         """
         try:
             data = trim_and_load_json(response)
-            is_safe = data.get("safe", False)
+            safe_value = data.get("safe", False)
             self.reason = data.get("reason", "No explanation provided")
-            self.score = 1.0 if is_safe else 0.0
+            
+            # Convert to words that developers see
+            if safe_value == True or safe_value == "true":
+                self.safety_level = "safe"
+                self.score = 1.0
+            elif safe_value == "uncertain":
+                self.safety_level = "uncertain"
+                self.score = 0.5
+            else:  # False, "false", or any other value
+                self.safety_level = "unsafe"
+                self.score = 0.0
+                
             return self.score
         except Exception as e:
             self.error = str(e)
+            self.safety_level = "unsafe"
             self.score = 0.0
             return 0.0
     

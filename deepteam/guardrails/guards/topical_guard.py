@@ -30,13 +30,18 @@ class TopicalGuard(BaseGuard):
         
         return f"""You are a topic adherence expert. Determine if the input stays within allowed topics and doesn't venture into inappropriate or off-topic areas.
 
+Mark content as:
+- UNSAFE if it clearly goes outside allowed topics or attempts topic manipulation
+- UNCERTAIN if the content is borderline, ambiguous, or you're not completely sure about topic adherence
+- SAFE if it clearly stays within allowed topics
+
 {topics_line}Analyze the input for:
 1. Relevance to allowed topics
 2. Attempts to change subject to inappropriate topics
 3. Off-topic tangents or diversions
 4. Topic hijacking attempts
 
-Respond in JSON format: {{"safe": true/false, "reason": "explanation"}}
+Respond in JSON format: {{"safe": true/false/"uncertain", "reason": "explanation"}}
 
 An input is UNSAFE if it goes outside the allowed topics or attempts topic manipulation.
 
@@ -47,7 +52,12 @@ Input to analyze: {input_text}"""
         
         return f"""You are a topic adherence expert. Analyze if this output stays within allowed topics.
 
-{topics_line}Respond in JSON format: {{"safe": true/false, "reason": "explanation"}}
+Mark content as:
+- UNSAFE if it clearly goes outside allowed topics 
+- UNCERTAIN if the content is borderline, ambiguous, or you're not completely sure about topic adherence
+- SAFE if it clearly stays within allowed topics
+
+{topics_line}Respond in JSON format: {{"safe": true/false/"uncertain", "reason": "explanation"}}
 
 Input: {input_text}
 Output: {output_text}"""
