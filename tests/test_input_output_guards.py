@@ -26,23 +26,13 @@ def test_basic_functionality():
     print("✅ Output guarding works correctly")
 
 
-def test_backward_compatibility():
-    """Test old 'guards' parameter still works"""
-    
-    from deepteam.guardrails import Guardrails
-    from deepteam.guardrails.guards import PrivacyGuard
-    
-    guardrails = Guardrails(guards=[PrivacyGuard()])
-    result = guardrails.guard_input("Test input")
-    assert "Privacy Guard" in result.guard_results
-    print("✅ Backward compatibility works")
-
-
 def test_error_handling():
     """Test proper errors for empty guard lists"""
     
     from deepteam.guardrails import Guardrails
+    from deepteam.guardrails.guards import PrivacyGuard
     
+    # Test with empty lists
     guardrails = Guardrails(input_guards=[], output_guards=[])
     
     # Should raise error for empty input_guards
@@ -88,7 +78,6 @@ if __name__ == "__main__":
     print("🧪 Testing Guardrails Input/Output Implementation")
     
     test_basic_functionality()
-    test_backward_compatibility() 
     test_error_handling()
     test_attack_detection()
     

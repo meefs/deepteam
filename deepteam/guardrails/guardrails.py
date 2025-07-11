@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 import time
 import asyncio
 
@@ -24,9 +24,8 @@ class Guardrails:
     
     def __init__(
         self, 
-        input_guards: Optional[List[BaseGuard]] = None,
-        output_guards: Optional[List[BaseGuard]] = None,
-        guards: Optional[List[BaseGuard]] = None  
+        input_guards: List[BaseGuard],
+        output_guards: List[BaseGuard]
     ):
         """
         Initialize Guardrails with separate input and output guards.
@@ -34,14 +33,9 @@ class Guardrails:
         Args:
             input_guards: List of guards to check inputs before they reach your LLM
             output_guards: List of guards to check outputs before they reach your users
-            guards: Legacy parameter for backward compatibility
         """
-        if guards is not None:
-            self.input_guards = guards
-            self.output_guards = guards
-        else:
-            self.input_guards = input_guards or []
-            self.output_guards = output_guards or []
+        self.input_guards = input_guards
+        self.output_guards = output_guards
 
     def guard_input(self, input: str) -> GuardResult:
         """
