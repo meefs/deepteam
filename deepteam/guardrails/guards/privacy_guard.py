@@ -1,5 +1,5 @@
-from deepteam.guardrails.base_guard import BaseGuard
-from deepteam.guardrails.types import GuardType
+from ..base_guard import BaseGuard
+from ..types import GuardType
 
 
 class PrivacyGuard(BaseGuard):

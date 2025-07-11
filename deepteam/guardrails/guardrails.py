@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import time
 import asyncio
 
@@ -22,22 +22,40 @@ class Guardrails:
     Fast binary classification to guard inputs and outputs.
     """
     
-    def __init__(self, guards: List[BaseGuard]):
-        self.guards: List[BaseGuard] = guards
+    def __init__(
+        self, 
+        input_guards: Optional[List[BaseGuard]] = None,
+        output_guards: Optional[List[BaseGuard]] = None,
+        guards: Optional[List[BaseGuard]] = None  
+    ):
+        """
+        Initialize Guardrails with separate input and output guards.
+        
+        Args:
+            input_guards: List of guards to check inputs before they reach your LLM
+            output_guards: List of guards to check outputs before they reach your users
+            guards: Legacy parameter for backward compatibility
+        """
+        if guards is not None:
+            self.input_guards = guards
+            self.output_guards = guards
+        else:
+            self.input_guards = input_guards or []
+            self.output_guards = output_guards or []
 
     def guard_input(self, input: str) -> GuardResult:
         """
-        Guard an input string using all configured guards.
+        Guard an input string using all configured input guards.
         Returns GuardResult with binary safe/unsafe classification.
         """
-        if len(self.guards) == 0:
+        if len(self.input_guards) == 0:
             raise TypeError(
-                "Guardrails cannot guard inputs when no guards are provided."
+                "Guardrails cannot guard inputs when no input_guards are provided."
             )
 
         guard_results = {}
         
-        for guard in self.guards:
+        for guard in self.input_guards:
             start_time = time.time()
             try:
                 is_safe = guard.guard_input(input)
@@ -61,17 +79,17 @@ class Guardrails:
 
     def guard_output(self, input: str, output: str) -> GuardResult:
         """
-        Guard an output string using all configured guards.
+        Guard an output string using all configured output guards.
         Returns GuardResult with binary safe/unsafe classification.
         """
-        if len(self.guards) == 0:
+        if len(self.output_guards) == 0:
             raise TypeError(
-                "Guardrails cannot guard outputs when no guards are provided."
+                "Guardrails cannot guard outputs when no output_guards are provided."
             )
 
         guard_results = {}
         
-        for guard in self.guards:
+        for guard in self.output_guards:
             start_time = time.time()
             try:
                 is_safe = guard.guard_output(input, output)
@@ -97,13 +115,13 @@ class Guardrails:
         """
         Async version of guard_input for better performance.
         """
-        if len(self.guards) == 0:
+        if len(self.input_guards) == 0:
             raise TypeError(
-                "Guardrails cannot guard inputs when no guards are provided."
+                "Guardrails cannot guard inputs when no input_guards are provided."
             )
 
         tasks = []
-        for guard in self.guards:
+        for guard in self.input_guards:
             task = asyncio.create_task(self._async_guard_input_single(guard, input))
             tasks.append((guard, task))
 
@@ -125,13 +143,13 @@ class Guardrails:
         """
         Async version of guard_output for better performance.
         """
-        if len(self.guards) == 0:
+        if len(self.output_guards) == 0:
             raise TypeError(
-                "Guardrails cannot guard outputs when no guards are provided."
+                "Guardrails cannot guard outputs when no output_guards are provided."
             )
 
         tasks = []
-        for guard in self.guards:
+        for guard in self.output_guards:
             task = asyncio.create_task(self._async_guard_output_single(guard, input, output))
             tasks.append((guard, task))
 
