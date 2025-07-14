@@ -178,4 +178,4 @@ class ExtractionSuccessMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Extraction Success (Red Teaming)" 
+        return f"Extraction Success (Red Teaming)"

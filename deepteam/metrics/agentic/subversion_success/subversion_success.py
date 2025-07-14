@@ -178,4 +178,4 @@ class SubversionSuccessMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Subversion Success (Red Teaming)" 
+        return f"Subversion Success (Red Teaming)"

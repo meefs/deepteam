@@ -1,1 +1,1 @@
-from .extraction_success import ExtractionSuccessMetric 
+from .extraction_success import ExtractionSuccessMetric

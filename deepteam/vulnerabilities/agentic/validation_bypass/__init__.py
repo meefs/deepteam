@@ -5,4 +5,4 @@ from deepteam.vulnerabilities.agentic.validation_bypass.types import (
     ValidationBypassType,
 )
 
-__all__ = ["ValidationBypassTemplate", "ValidationBypassType"] 
+__all__ = ["ValidationBypassTemplate", "ValidationBypassType"]

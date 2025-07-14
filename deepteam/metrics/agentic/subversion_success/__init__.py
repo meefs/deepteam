@@ -1,1 +1,1 @@
-from .subversion_success import SubversionSuccessMetric 
+from .subversion_success import SubversionSuccessMetric

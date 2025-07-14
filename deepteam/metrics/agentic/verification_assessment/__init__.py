@@ -1,1 +1,1 @@
-from .verification_assessment import VerificationAssessmentMetric 
+from .verification_assessment import VerificationAssessmentMetric

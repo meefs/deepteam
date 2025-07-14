@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://github.com/confident-ai/deepteam/blob/main/docs/static/img/deepteam.png" alt="DeepTeam Logo" width="100%">
+    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/demo.gif" alt="DeepEval Logo" width="100%">
 </p>
 
 <p align="center">
@@ -9,7 +9,7 @@
 <h4 align="center">
     <p>
         <a href="https://www.trydeepteam.com?utm_source=GitHub">Documentation</a> |
-        <a href="#-vulnerabilities--attacks--and-features-">Vulnerabilities, Attacks, and Features</a> |
+        <a href="#-vulnerabilities--attacks--and-features-">Vulnerabilities, Attacks, and Guardrails</a> |
         <a href="#-quickstart">Getting Started</a> 
     <p>
 </h4>
@@ -23,17 +23,30 @@
     </a>
 </p>
 
-**DeepTeam** is a simple-to-use, open-source LLM red teaming framework, for penetration testing large-language model systems. 
+<p align="center">
+    <!-- Keep these links. Translations will automatically update with the README. -->
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=de">Deutsch</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=es">Español</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=fr">français</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=ja">日本語</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=ko">한국어</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=pt">Português</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=ru">Русский</a> | 
+    <a href="https://www.readme-i18n.com/confident-ai/deepeval?lang=zh">中文</a>
+</p>
 
-DeepTeam incorporates the latest research to simulate adversarial attacks using SOTA techniques such as jailbreaking and prompt injections, to catch vulnerabilities like bias and PII Leakage that you might not otherwise be aware of.
+**DeepTeam** is a simple-to-use, open-source LLM red teaming framework, for penetration testing and safe guarding large-language model systems. 
 
-DeepTeam runs **locally on your machine**, and **uses LLMs** for both simulation and evaluation during red teaming. With DeepTeam, whether your LLM systems are RAG piplines, chatbots, AI agents, or just the LLM itself, you can be confident that safety risks and security vulnerabilities are caught before your users do.
+DeepTeam incorporates the latest research to simulate adversarial attacks using SOTA techniques such as jailbreaking and prompt injections, to catch vulnerabilities like bias and PII Leakage that you might not otherwise be aware of. Once you've uncovered your vulnerabilities, DeepTeam offer **guardrails** to prevent issues in production.
+
+DeepTeam runs **locally on your machine**, and **uses LLMs** for both simulation and evaluation during red teaming. With DeepTeam, whether your LLM systems are RAG piplines, chatbots, AI agents, or just the LLM itself, you can be confident that it is secure, safe, risk-free, with security vulnerabilities caught before it reaches your users.
+
+<p align="center">
+    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/deepteam-banner.png" alt="DeepTeam Features" width="80%">
+</p>
 
 > [!IMPORTANT]
 > DeepTeam is powered by [DeepEval](https://github.com/confident-ai/deepeval), the open-source LLM evaluation framework.
-
-> ![Demo GIF](assets/demo.gif)
-
 > Want to talk LLM security, or just to say hi? [Come join our discord.](https://discord.com/invite/3SEyvpgu2f)
 
 <br />
@@ -152,12 +165,13 @@ Use the CLI to run red teaming with YAML configs:
 deepteam run config.yaml
 
 # With options
-deepteam run config.yaml -c 20 -a 5
+deepteam run config.yaml -c 20 -a 5 -o results
 ```
 
 **Options:**
 - `-c, --max-concurrent`: Maximum concurrent operations (overrides config)
 - `-a, --attacks-per-vuln`: Number of attacks per vulnerability type (overrides config)
+- `-o, --output-folder`: Path to the output folder for saving risk assessment results (overrides config)
 
 Use `deepteam --help` to see all available commands and options.
 
@@ -213,6 +227,7 @@ system_config:
   attacks_per_vulnerability_type: 3
   run_async: true
   ignore_errors: false
+  output_folder: "results"
 
 default_vulnerabilities:
   - name: "Bias"
@@ -224,10 +239,10 @@ attacks:
   - name: "Prompt Injection"
 ```
 **CLI Overrides:**
-The `-c` and `-a` CLI options override YAML config values:
+The `-c` and `-a` and `-o` CLI options override YAML config values:
 ```bash
-# Override max_concurrent and attacks_per_vuln from CLI
-deepteam run config.yaml -c 20 -a 5
+# Override max_concurrent, attacks_per_vuln, and output_folder from CLI
+deepteam run config.yaml -c 20 -a 5 -o results
 ```
 
 **Target Configuration Options:**

@@ -178,4 +178,4 @@ class LeakageRateMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Leakage Rate (Red Teaming)" 
+        return f"Leakage Rate (Red Teaming)"

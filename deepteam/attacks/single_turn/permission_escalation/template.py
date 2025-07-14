@@ -1,9 +1,9 @@
 class PermissionEscalationTemplate:
     """
     RoleManipulationTemplate class for enhancing attacks with role manipulation patterns.
-    Designed to work with any agentic vulnerability type by making attacks appear as legitimate 
+    Designed to work with any agentic vulnerability type by making attacks appear as legitimate
     role adjustments, identity shifts, or operational mode changes.
-    
+
     Universal Enhancement Approach:
     - Compatible with all vulnerability types (permission escalation, data access, behavioral control, etc.)
     - Adapts role framing to different operational contexts
@@ -214,4 +214,4 @@ class PermissionEscalationTemplate:
         
         This request optimizes role boundaries for operational efficiency.
         Flexible scope and inclusive access model required for comprehensive task execution.
-        """ 
+        """

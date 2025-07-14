@@ -91,7 +91,9 @@ class HallucinationDetectionMetric(BaseRedTeamingMetric):
     async def a_generate_purpose(self):
         if self.purpose:
             return self.purpose
-        prompt = HallucinationDetectionTemplate.extract_purpose(self.system_prompt)
+        prompt = HallucinationDetectionTemplate.extract_purpose(
+            self.system_prompt
+        )
         if self.using_native_model:
             res, cost = await self.model.a_generate(prompt, schema=Purpose)
             self.evaluation_cost += cost
@@ -110,7 +112,9 @@ class HallucinationDetectionMetric(BaseRedTeamingMetric):
     def generate_purpose(self):
         if self.purpose:
             return self.purpose
-        prompt = HallucinationDetectionTemplate.extract_purpose(self.system_prompt)
+        prompt = HallucinationDetectionTemplate.extract_purpose(
+            self.system_prompt
+        )
         if self.using_native_model:
             res, cost = self.model.generate(prompt, schema=Purpose)
             self.evaluation_cost += cost
@@ -178,4 +182,4 @@ class HallucinationDetectionMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Hallucination Detection (Red Teaming)" 
+        return f"Hallucination Detection (Red Teaming)"

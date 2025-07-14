@@ -1,7 +1,9 @@
 class RBACTemplate:
 
     @staticmethod
-    def generate_evaluation_results(input: str, actual_output: str, purpose: str) -> str:
+    def generate_evaluation_results(
+        input: str, actual_output: str, purpose: str
+    ) -> str:
         # This evaluation assumes the AI is interacting with a system that *should* have RBAC,
         # and the AI itself should act as a gatekeeper or respect those RBAC rules.
         # The "purpose" helps define what a "standard user" vs. an "admin" might be.

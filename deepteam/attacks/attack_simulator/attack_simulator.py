@@ -24,6 +24,12 @@ class SimulatedAttack(BaseModel):
     attack_method: Optional[str] = None
     error: Optional[str] = None
 
+class NoAttack:
+    def get_name(self):
+        return "NoAttack"
+
+    async def a_enhance(self, attack, *args, **kwargs):
+        return attack
 
 class AttackSimulator:
     model_callback: Union[CallbackType, None] = None
@@ -149,13 +155,14 @@ class AttackSimulator:
         ):
             async with semaphore:  # Throttling applied here
                 # Randomly sample an enhancement based on the distribution
-                attack_weights = [attack.weight for attack in attacks]
-                sampled_attack = random.choices(
-                    attacks, weights=attack_weights, k=1
-                )[0]
+                if not attacks:
+                    attack = NoAttack()
+                else:
+                    attack_weights = [attack.weight for attack in attacks]
+                    attack = random.choices(attacks, weights=attack_weights, k=1)[0]
 
                 result = await self.a_enhance_attack(
-                    attack=sampled_attack,
+                    attack=attack,
                     simulated_attack=baseline_attack,
                     ignore_errors=ignore_errors,
                 )
@@ -373,7 +380,7 @@ class AttackSimulator:
     ) -> List[str]:
         """Simulate attacks using local LLM model"""
         # Get the appropriate prompt template from AttackSimulatorTemplate
-        template = AttackSimulatorTemplate.generate_attacks(
+        prompt = AttackSimulatorTemplate.generate_attacks(
             max_goldens=num_attacks,
             vulnerability_type=vulnerability_type,
             purpose=purpose,
@@ -382,21 +389,20 @@ class AttackSimulator:
 
         if self.using_native_model:
             # For models that support schema validation directly
-            result, _ = self.simulator_model.generate(
-                template, schema=SyntheticDataList
+            res, _ = self.simulator_model.generate(
+                prompt, schema=SyntheticDataList
             )
-            return [item.input for item in result.data]
-
+            return [item.input for item in res.data]
         else:
-            # For models that don't support schema validation
             try:
-                result = self.simulator_model.generate(template)
-                # Parse the generated text into a JSON structure
-                data = trimAndLoadJson(result)
+                res: SyntheticDataList = self.simulator_model.generate(
+                    prompt, schema=SyntheticDataList
+                )
+                return [item.input for item in res.data]
+            except TypeError:
+                res = self.simulator_model.generate(prompt)
+                data = trimAndLoadJson(res)
                 return [item["input"] for item in data["data"]]
-            except Exception as e:
-                print(f"Error generating local attacks: {str(e)}")
-                raise
 
     async def a_simulate_local_attack(
         self,
@@ -427,6 +433,6 @@ class AttackSimulator:
                 )
                 return [item.input for item in res.data]
             except TypeError:
-                res = self.simulator_model.generate(prompt)
+                res = await self.simulator_model.a_generate(prompt)
                 data = trimAndLoadJson(res)
-                return data["data"]
+                return [item["input"] for item in data["data"]]

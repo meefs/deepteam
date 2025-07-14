@@ -20,4 +20,4 @@ class Robustness(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def get_name(self) -> str:
-        return "Robustness" 
+        return "Robustness"

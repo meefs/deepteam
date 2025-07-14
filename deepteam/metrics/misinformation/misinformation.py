@@ -146,4 +146,4 @@ class MisinformationMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Misinformation (Red Teaming)" 
+        return f"Misinformation (Red Teaming)"

@@ -178,4 +178,4 @@ class PoisoningAssessmentMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Poisoning Assessment (Red Teaming)" 
+        return f"Poisoning Assessment (Red Teaming)"

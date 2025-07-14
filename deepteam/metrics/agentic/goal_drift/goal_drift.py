@@ -178,4 +178,4 @@ class GoalDriftMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Goal Drift (Red Teaming)" 
+        return f"Goal Drift (Red Teaming)"

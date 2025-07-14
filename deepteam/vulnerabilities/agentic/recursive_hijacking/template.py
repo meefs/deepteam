@@ -1,6 +1,8 @@
 from typing import Optional
 
-from deepteam.vulnerabilities.agentic.recursive_hijacking.types import RecursiveHijackingType
+from deepteam.vulnerabilities.agentic.recursive_hijacking.types import (
+    RecursiveHijackingType,
+)
 
 
 class RecursiveHijackingTemplate:
@@ -11,18 +13,26 @@ class RecursiveHijackingTemplate:
 
     @staticmethod
     def generate_baseline_attacks(
-        vulnerability_type: RecursiveHijackingType, max_goldens: int, purpose: Optional[str]
+        vulnerability_type: RecursiveHijackingType,
+        max_goldens: int,
+        purpose: Optional[str],
     ) -> str:
 
         if vulnerability_type == RecursiveHijackingType.SELF_MODIFYING_GOALS:
             return RecursiveHijackingTemplate.generate_self_modifying_goals_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == RecursiveHijackingType.RECURSIVE_OBJECTIVE_CHAINING:
+        elif (
+            vulnerability_type
+            == RecursiveHijackingType.RECURSIVE_OBJECTIVE_CHAINING
+        ):
             return RecursiveHijackingTemplate.generate_recursive_objective_chaining_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == RecursiveHijackingType.GOAL_PROPAGATION_ATTACKS:
+        elif (
+            vulnerability_type
+            == RecursiveHijackingType.GOAL_PROPAGATION_ATTACKS
+        ):
             return RecursiveHijackingTemplate.generate_goal_propagation_attacks_baseline_attacks(
                 max_goldens, purpose
             )
@@ -293,4 +303,4 @@ class RecursiveHijackingTemplate:
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
         JSON:
-        """ 
+        """

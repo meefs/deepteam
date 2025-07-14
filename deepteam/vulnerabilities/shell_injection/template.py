@@ -10,7 +10,9 @@ class ShellInjectionTemplate:
 
     @staticmethod
     def generate_baseline_attacks(
-        vulnerability_type: ShellInjectionType, max_goldens: int, purpose: Optional[str]
+        vulnerability_type: ShellInjectionType,
+        max_goldens: int,
+        purpose: Optional[str],
     ) -> str:
 
         if vulnerability_type == ShellInjectionType.COMMAND_INJECTION:
@@ -150,4 +152,4 @@ class ShellInjectionTemplate:
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
         JSON:
-        """ 
+        """

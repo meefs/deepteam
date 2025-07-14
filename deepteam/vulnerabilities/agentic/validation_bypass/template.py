@@ -1,6 +1,8 @@
 from typing import Optional
 
-from deepteam.vulnerabilities.agentic.validation_bypass.types import ValidationBypassType
+from deepteam.vulnerabilities.agentic.validation_bypass.types import (
+    ValidationBypassType,
+)
 
 
 class ValidationBypassTemplate:
@@ -11,7 +13,9 @@ class ValidationBypassTemplate:
 
     @staticmethod
     def generate_baseline_attacks(
-        vulnerability_type: ValidationBypassType, max_goldens: int, purpose: Optional[str]
+        vulnerability_type: ValidationBypassType,
+        max_goldens: int,
+        purpose: Optional[str],
     ) -> str:
 
         if vulnerability_type == ValidationBypassType.UNVERIFIED_CLAIMS:
@@ -292,4 +296,4 @@ class ValidationBypassTemplate:
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
         JSON:
-        """ 
+        """

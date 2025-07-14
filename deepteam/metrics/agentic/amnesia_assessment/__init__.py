@@ -1,1 +1,1 @@
-from .amnesia_assessment import AmnesiaAssessmentMetric 
+from .amnesia_assessment import AmnesiaAssessmentMetric

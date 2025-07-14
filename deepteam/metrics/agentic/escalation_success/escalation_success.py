@@ -178,4 +178,4 @@ class EscalationSuccessMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Escalation Success (Red Teaming)" 
+        return f"Escalation Success (Red Teaming)"

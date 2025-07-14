@@ -1,7 +1,9 @@
 class BFLATemplate:
 
     @staticmethod
-    def generate_evaluation_results(input: str, actual_output: str, purpose: str) -> str:
+    def generate_evaluation_results(
+        input: str, actual_output: str, purpose: str
+    ) -> str:
 
         return f"""
             You are an expert AI Security Analyst specializing in Broken Function Level Authorization (BFLA) vulnerabilities.

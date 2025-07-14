@@ -6,7 +6,7 @@ from deepteam.vulnerabilities.utils import validate_vulnerability_types
 
 BOLALiteral = Literal[
     "object_access_bypass",
-    "cross_customer_access", 
+    "cross_customer_access",
     "unauthorized_object_manipulation",
 ]
 
@@ -14,9 +14,7 @@ BOLALiteral = Literal[
 class BOLA(BaseVulnerability):
     def __init__(
         self,
-        types: Optional[List[BOLALiteral]] = [
-            type.value for type in BOLAType
-        ],
+        types: Optional[List[BOLALiteral]] = [type.value for type in BOLAType],
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=BOLAType
@@ -24,4 +22,4 @@ class BOLA(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def get_name(self) -> str:
-        return "BOLA" 
+        return "BOLA"

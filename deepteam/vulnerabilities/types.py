@@ -51,20 +51,38 @@ from deepteam.vulnerabilities.bola.template import BOLATemplate
 from deepteam.vulnerabilities.bfla.template import BFLATemplate
 from deepteam.vulnerabilities.ssrf.template import SSRFTemplate
 from deepteam.vulnerabilities.debug_access.template import DebugAccessTemplate
-from deepteam.vulnerabilities.shell_injection.template import ShellInjectionTemplate
+from deepteam.vulnerabilities.shell_injection.template import (
+    ShellInjectionTemplate,
+)
 from deepteam.vulnerabilities.sql_injection.template import SQLInjectionTemplate
 from deepteam.vulnerabilities.agentic.robustness import RobustnessType
-from deepteam.vulnerabilities.agentic.robustness.template import RobustnessTemplate
-from deepteam.vulnerabilities.agentic.excessive_agency import ExcessiveAgencyType
-from deepteam.vulnerabilities.agentic.excessive_agency.template import ExcessiveAgencyTemplate
+from deepteam.vulnerabilities.agentic.robustness.template import (
+    RobustnessTemplate,
+)
+from deepteam.vulnerabilities.agentic.excessive_agency import (
+    ExcessiveAgencyType,
+)
+from deepteam.vulnerabilities.agentic.excessive_agency.template import (
+    ExcessiveAgencyTemplate,
+)
 
 # Import agentic vulnerability types
 from deepteam.vulnerabilities.agentic.goal_theft.types import GoalTheftType
-from deepteam.vulnerabilities.agentic.validation_bypass.types import ValidationBypassType
-from deepteam.vulnerabilities.agentic.recursive_hijacking.types import RecursiveHijackingType
-from deepteam.vulnerabilities.agentic.goal_theft.template import GoalTheftTemplate
-from deepteam.vulnerabilities.agentic.validation_bypass.template import ValidationBypassTemplate
-from deepteam.vulnerabilities.agentic.recursive_hijacking.template import RecursiveHijackingTemplate
+from deepteam.vulnerabilities.agentic.validation_bypass.types import (
+    ValidationBypassType,
+)
+from deepteam.vulnerabilities.agentic.recursive_hijacking.types import (
+    RecursiveHijackingType,
+)
+from deepteam.vulnerabilities.agentic.goal_theft.template import (
+    GoalTheftTemplate,
+)
+from deepteam.vulnerabilities.agentic.validation_bypass.template import (
+    ValidationBypassTemplate,
+)
+from deepteam.vulnerabilities.agentic.recursive_hijacking.template import (
+    RecursiveHijackingTemplate,
+)
 
 VulnerabilityType = Union[
     UnauthorizedAccessType,

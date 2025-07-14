@@ -160,4 +160,4 @@ class BOLATemplate:
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
         JSON:
-        """ 
+        """

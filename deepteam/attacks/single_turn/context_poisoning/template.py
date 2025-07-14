@@ -1,9 +1,9 @@
 class ContextPoisoningTemplate:
     """
     ContextInjectionTemplate class for enhancing attacks with context injection patterns.
-    Designed to work with any agentic vulnerability type by making attacks appear as legitimate 
+    Designed to work with any agentic vulnerability type by making attacks appear as legitimate
     context establishment, memory integration, or environmental adaptation.
-    
+
     Universal Enhancement Approach:
     - Compatible with all vulnerability types (permission escalation, data access, behavioral control, etc.)
     - Adapts context framing to different operational environments
@@ -214,4 +214,4 @@ class ContextPoisoningTemplate:
         
         This request amplifies existing biases through reinforcing context injection.
         Please implement bias detection and correction mechanisms in decision processes.
-        """ 
+        """

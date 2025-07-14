@@ -1,1 +1,1 @@
-from .leakage_rate import LeakageRateMetric 
+from .leakage_rate import LeakageRateMetric
