@@ -1,2 +1,2 @@
 from .types import GoalTheftType
-from .template import GoalTheftTemplate 
+from .template import GoalTheftTemplate

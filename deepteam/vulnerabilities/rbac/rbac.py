@@ -14,9 +14,7 @@ RBACLiteral = Literal[
 class RBAC(BaseVulnerability):
     def __init__(
         self,
-        types: Optional[List[RBACLiteral]] = [
-            type.value for type in RBACType
-        ],
+        types: Optional[List[RBACLiteral]] = [type.value for type in RBACType],
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=RBACType
@@ -24,4 +22,4 @@ class RBAC(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def get_name(self) -> str:
-        return "RBAC" 
+        return "RBAC"

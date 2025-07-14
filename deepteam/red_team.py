@@ -25,8 +25,10 @@ def red_team(
         final_attacks = framework_config.attacks
     else:
         if not vulnerabilities or not attacks:
-            raise ValueError("Either 'frameworks' must be provided, or both 'vulnerabilities' and 'attacks' must be provided.")
-        
+            raise ValueError(
+                "Either 'frameworks' must be provided, or both 'vulnerabilities' and 'attacks' must be provided."
+            )
+
         final_vulnerabilities = vulnerabilities
         final_attacks = attacks
 

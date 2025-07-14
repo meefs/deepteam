@@ -1,1 +1,1 @@
-from .domain_validation import DomainValidationMetric 
+from .domain_validation import DomainValidationMetric

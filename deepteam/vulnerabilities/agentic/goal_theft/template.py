@@ -11,20 +11,26 @@ class GoalTheftTemplate:
 
     @staticmethod
     def generate_baseline_attacks(
-        vulnerability_type: GoalTheftType, max_goldens: int, purpose: Optional[str]
+        vulnerability_type: GoalTheftType,
+        max_goldens: int,
+        purpose: Optional[str],
     ) -> str:
 
         if vulnerability_type == GoalTheftType.ESCALATING_PROBING:
-            return GoalTheftTemplate.generate_escalating_probing_baseline_attacks(
-                max_goldens, purpose
+            return (
+                GoalTheftTemplate.generate_escalating_probing_baseline_attacks(
+                    max_goldens, purpose
+                )
             )
         elif vulnerability_type == GoalTheftType.COOPERATIVE_DIALOGUE:
             return GoalTheftTemplate.generate_cooperative_dialogue_baseline_attacks(
                 max_goldens, purpose
             )
         elif vulnerability_type == GoalTheftType.SOCIAL_ENGINEERING:
-            return GoalTheftTemplate.generate_social_engineering_baseline_attacks(
-                max_goldens, purpose
+            return (
+                GoalTheftTemplate.generate_social_engineering_baseline_attacks(
+                    max_goldens, purpose
+                )
             )
 
     @staticmethod
@@ -293,4 +299,4 @@ class GoalTheftTemplate:
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
         JSON:
-        """ 
+        """

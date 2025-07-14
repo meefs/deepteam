@@ -22,4 +22,4 @@ class NonRefusal(BaseModel):
 
 class BLJJudge(BaseModel):
     classification: Literal["Harmful", "Not harmful"]
-    reasoning: str 
+    reasoning: str

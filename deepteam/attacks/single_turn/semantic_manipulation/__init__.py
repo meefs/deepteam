@@ -1,1 +1,1 @@
-from .template import LinguisticConfusionTemplate 
+from .template import LinguisticConfusionTemplate

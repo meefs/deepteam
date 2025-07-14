@@ -1,2 +1,2 @@
 from .types import RecursiveHijackingType
-from .template import RecursiveHijackingTemplate 
+from .template import RecursiveHijackingTemplate

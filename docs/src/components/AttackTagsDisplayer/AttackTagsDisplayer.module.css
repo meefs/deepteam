@@ -12,6 +12,12 @@
   border-radius: 0.5rem;
 }
 
+.encodingBased {
+    background-color: white;
+    border: 1px solid rgb(218, 221, 227);
+    color: black;
+}
+
 .llmSimulated {
   background-color: #fefceb;
   border: 1px solid #eeda83;
@@ -22,12 +28,6 @@
   background-color: #fff1fe;
   border: 1px solid #ffb4ff;
   color: #96107b;
-}
-
-.encodingBased {
-    background-color: white;
-    border: 1px solid rgb(218, 221, 227);
-    color: black;
 }
 
 .multiTurn {

@@ -41,6 +41,7 @@ system_config:
   attacks_per_vulnerability_type: 3     # Number of attacks per vulnerability type
   run_async: true                       # Whether to run operations asynchronously
   ignore_errors: false                  # Whether to continue on errors
+  output_folder: "results"              # Folder to save results
 
 # Vulnerabilities to test
 default_vulnerabilities:

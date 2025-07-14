@@ -178,4 +178,4 @@ class AmnesiaAssessmentMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Amnesia Assessment (Red Teaming)" 
+        return f"Amnesia Assessment (Red Teaming)"

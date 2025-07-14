@@ -125,26 +125,30 @@ def _build_attack(cfg: dict):
     return cls(**kwargs)
 
 
-def _load_callback_from_file(file_path: str, function_name: str) -> Callable[[str], Awaitable[str]]:
+def _load_callback_from_file(
+    file_path: str, function_name: str
+) -> Callable[[str], Awaitable[str]]:
     """Load a callback function from a Python file."""
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Target callback file not found: {file_path}")
-    
+
     spec = importlib.util.spec_from_file_location("target_module", file_path)
     if spec is None or spec.loader is None:
         raise ImportError(f"Could not load module from {file_path}")
-    
+
     module = importlib.util.module_from_spec(spec)
     sys.modules["target_module"] = module
     spec.loader.exec_module(module)
-    
+
     if not hasattr(module, function_name):
-        raise AttributeError(f"Function '{function_name}' not found in {file_path}")
-    
+        raise AttributeError(
+            f"Function '{function_name}' not found in {file_path}"
+        )
+
     callback = getattr(module, function_name)
     if not callable(callback):
         raise TypeError(f"'{function_name}' in {file_path} is not callable")
-    
+
     return callback
 
 
@@ -156,8 +160,24 @@ def _load_config(path: str):
 @app.command()
 def run(
     config_file: str,
-    max_concurrent: int = typer.Option(None, "-c", "--max-concurrent", help="Maximum concurrent operations (overrides config)"),
-    attacks_per_vuln: int = typer.Option(None, "-a", "--attacks-per-vuln", help="Number of attacks per vulnerability type (overrides config)")
+    max_concurrent: int = typer.Option(
+        None,
+        "-c",
+        "--max-concurrent",
+        help="Maximum concurrent operations (overrides config)",
+    ),
+    attacks_per_vuln: int = typer.Option(
+        None,
+        "-a",
+        "--attacks-per-vuln",
+        help="Number of attacks per vulnerability type (overrides config)",
+    ),
+    output_folder: str = typer.Option(
+        None,
+        "-o",
+        "--output-folder",
+        help="Path to the output folder for saving risk assessment results (overrides config)",
+    ),
 ):
     """Run a red teaming execution based on a YAML configuration"""
     cfg = _load_config(config_file)
@@ -167,14 +187,27 @@ def run(
     models_cfg = cfg.get("models", {})
     simulator_model_spec = models_cfg.get("simulator", "gpt-3.5-turbo-0125")
     evaluation_model_spec = models_cfg.get("evaluation", "gpt-4o")
-    
+
     simulator_model = load_model(simulator_model_spec)
     evaluation_model = load_model(evaluation_model_spec)
 
     # Parse system configuration (renamed from options)
     system_config = cfg.get("system_config", {})
-    final_max_concurrent = max_concurrent if max_concurrent is not None else system_config.get("max_concurrent", 10)
-    final_attacks_per_vuln = attacks_per_vuln if attacks_per_vuln is not None else system_config.get("attacks_per_vulnerability_type", 1)
+    final_max_concurrent = (
+        max_concurrent
+        if max_concurrent is not None
+        else system_config.get("max_concurrent", 10)
+    )
+    final_attacks_per_vuln = (
+        attacks_per_vuln
+        if attacks_per_vuln is not None
+        else system_config.get("attacks_per_vulnerability_type", 1)
+    )
+    final_output_folder = (
+        output_folder
+        if output_folder is not None
+        else system_config.get("output_folder", None)
+    )
 
     # Parse target configuration
     target_cfg = cfg.get("target", {})
@@ -196,31 +229,36 @@ def run(
 
     # Load target model callback - support both model specs and custom callbacks
     model_callback = None
-    
+
     if "callback" in target_cfg:
         # Load custom callback from file
         callback_cfg = target_cfg["callback"]
         file_path = callback_cfg.get("file")
         function_name = callback_cfg.get("function", "model_callback")
-        
+
         if not file_path:
-            raise ValueError("Target callback configuration missing 'file' field")
-        
+            raise ValueError(
+                "Target callback configuration missing 'file' field"
+            )
+
         model_callback = _load_callback_from_file(file_path, function_name)
-        
+
     elif "model" in target_cfg:
         # Use model specification for simple cases
         target_model_spec = target_cfg["model"]
         target_model = load_model(target_model_spec)
-        
+
         async def model_callback(input: str) -> str:
             response = await target_model.a_generate(input)
             # Ensure we return a string, handle different response types
             if isinstance(response, tuple):
                 return str(response[0]) if response else "Empty response"
             return str(response)
+
     else:
-        raise ValueError("Target configuration must specify either 'model' or 'callback'")
+        raise ValueError(
+            "Target configuration must specify either 'model' or 'callback'"
+        )
 
     risk = red_teamer.red_team(
         model_callback=model_callback,
@@ -231,11 +269,20 @@ def run(
     )
 
     red_teamer._print_risk_assessment()
+
+    # Save risk assessment if output folder is specified
+    if final_output_folder:
+        red_teamer.risk_assessment.save(to=final_output_folder)
+
     return risk
 
 
 @app.command("set-api-key")
-def set_api_key(api_key: str = typer.Argument(..., help="API Key (auto-detects provider based on prefix)")):
+def set_api_key(
+    api_key: str = typer.Argument(
+        ..., help="API Key (auto-detects provider based on prefix)"
+    )
+):
     """Store API key for later runs. Auto-detects provider from key prefix."""
     # Auto-detect provider based on key prefix
     if api_key.startswith("sk-proj"):
@@ -320,6 +367,7 @@ def unset_local_model():
     config.remove_key("LOCAL_MODEL_API_KEY")
     typer.echo("Local model unset.")
 
+
 @app.command("set-ollama")
 def set_ollama(
     model_name: str = typer.Argument(...),
@@ -357,7 +405,8 @@ def set_gemini(
     """Configure Gemini models via API key or Vertex AI."""
     if not google_api_key and not (project_id and location):
         typer.echo(
-            "Provide --google-api-key or both --project-id and --location.", err=True
+            "Provide --google-api-key or both --project-id and --location.",
+            err=True,
         )
         raise typer.Exit(code=1)
     config.set_key("USE_GEMINI_MODEL", "YES")
@@ -385,6 +434,7 @@ def unset_gemini():
     ]:
         config.remove_key(key)
     typer.echo("Gemini unset.")
+
 
 if __name__ == "__main__":
     app()

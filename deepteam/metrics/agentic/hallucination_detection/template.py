@@ -82,4 +82,4 @@ class HallucinationDetectionTemplate:
             }}
 
             IMPORTANT: Please make sure to only return in JSON format, with the 'purpose' key. No words or explanation is needed.
-        """ 
+        """

@@ -1,2 +1,2 @@
 from .types import SQLInjectionType
-from .template import SQLInjectionTemplate 
+from .template import SQLInjectionTemplate

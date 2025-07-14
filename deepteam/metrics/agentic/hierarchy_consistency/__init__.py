@@ -1,1 +1,1 @@
-from .hierarchy_consistency import HierarchyConsistencyMetric 
+from .hierarchy_consistency import HierarchyConsistencyMetric

@@ -10,16 +10,18 @@ from deepteam import red_team, FrameworkType
 from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import PromptInjection
 
+
 async def test_model_callback(input: str) -> str:
     """Simple test model callback."""
     return f"I cannot help with that request: {input}"
 
+
 def test_frameworks():
     """Test framework functionality with 4 different scenarios."""
-    
+
     print("🧪 Testing DeepTeam Framework Functionality")
     print("=" * 50)
-    
+
     # Test 1: Both frameworks at once
     print("\n1️⃣ Testing both frameworks together...")
     try:
@@ -27,21 +29,21 @@ def test_frameworks():
             model_callback=test_model_callback,
             frameworks=["owasp", "agentic"],
             attacks_per_vulnerability_type=1,
-            ignore_errors=True
+            ignore_errors=True,
         )
         print(f"✅ Both frameworks: {len(result.test_cases)} test cases")
     except Exception as e:
         print(f"❌ Both frameworks failed: {e}")
         return False
 
-    # Test 2a: OWASP framework only  
+    # Test 2a: OWASP framework only
     print("\n2️⃣ Testing OWASP framework only...")
     try:
         result = red_team(
             model_callback=test_model_callback,
             frameworks=["owasp"],
             attacks_per_vulnerability_type=1,
-            ignore_errors=True
+            ignore_errors=True,
         )
         print(f"✅ OWASP framework: {len(result.test_cases)} test cases")
     except Exception as e:
@@ -55,7 +57,7 @@ def test_frameworks():
             model_callback=test_model_callback,
             frameworks=[FrameworkType.AGENTIC],
             attacks_per_vulnerability_type=1,
-            ignore_errors=True
+            ignore_errors=True,
         )
         print(f"✅ Agentic framework: {len(result.test_cases)} test cases")
     except Exception as e:
@@ -70,7 +72,7 @@ def test_frameworks():
             vulnerabilities=[Bias(types=["race"])],
             attacks=[PromptInjection()],
             attacks_per_vulnerability_type=1,
-            ignore_errors=True
+            ignore_errors=True,
         )
         print(f"✅ Manual vul/attacks: {len(result.test_cases)} test cases")
     except Exception as e:
@@ -83,7 +85,7 @@ def test_frameworks():
         result = red_team(
             model_callback=test_model_callback,
             attacks_per_vulnerability_type=1,
-            ignore_errors=True
+            ignore_errors=True,
         )
         print("❌ Error case should have failed but didn't")
         return False
@@ -96,6 +98,7 @@ def test_frameworks():
     print("\n🎉 All framework tests passed!")
     return True
 
+
 if __name__ == "__main__":
     success = test_frameworks()
-    exit(0 if success else 1) 
+    exit(0 if success else 1)

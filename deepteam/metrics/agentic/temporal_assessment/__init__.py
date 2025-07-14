@@ -1,1 +1,1 @@
-from .temporal_assessment import TemporalAssessmentMetric 
+from .temporal_assessment import TemporalAssessmentMetric

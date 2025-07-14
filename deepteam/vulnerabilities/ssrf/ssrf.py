@@ -14,9 +14,7 @@ SSRFLiteral = Literal[
 class SSRF(BaseVulnerability):
     def __init__(
         self,
-        types: Optional[List[SSRFLiteral]] = [
-            type.value for type in SSRFType
-        ],
+        types: Optional[List[SSRFLiteral]] = [type.value for type in SSRFType],
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=SSRFType
@@ -24,4 +22,4 @@ class SSRF(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def get_name(self) -> str:
-        return "SSRF" 
+        return "SSRF"

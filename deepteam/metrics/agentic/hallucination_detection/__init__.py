@@ -1,1 +1,1 @@
-from .hallucination_detection import HallucinationDetectionMetric 
+from .hallucination_detection import HallucinationDetectionMetric

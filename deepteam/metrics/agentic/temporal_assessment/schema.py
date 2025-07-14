@@ -7,4 +7,4 @@ class Purpose(BaseModel):
 
 class ReasonScore(BaseModel):
     reason: str
-    score: float 
+    score: float

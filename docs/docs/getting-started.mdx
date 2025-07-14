@@ -27,7 +27,7 @@ If you're looking for normal LLM evaluation (metrics such as correctness, answer
 
 Go to the root directory of your project and create a virtual environment (if you don't already have one). In the CLI, run:
 
-```console
+```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
@@ -36,7 +36,7 @@ source venv/bin/activate
 
 In your newly created virtual environment, run:
 
-```console.log
+```bash
 pip install -U deepteam
 ```
 
@@ -63,7 +63,7 @@ red_team(model_callback=model_callback, vulnerabilities=[bias], attacks=[prompt_
 
 Run `red_teaming_example.py` to start red teaming:
 
-```console
+```bash
 python red_teaming_example.py
 ```
 
@@ -139,7 +139,7 @@ For better visualization, you can also convert it to a dataframe using the `to_d
 :::tip
 Don't forget to install `pandas` before running the `to_df()` method on the red teaming risk assessment:
 
-```console
+```bash
 pip install pandas
 ```
 

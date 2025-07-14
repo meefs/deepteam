@@ -24,13 +24,13 @@ module.exports = {
               label: "Single-Turn",
               items: [
                 "red-teaming-adversarial-attacks-prompt-injection",
+                "red-teaming-adversarial-attacks-roleplay",
                 "red-teaming-adversarial-attacks-gray-box-attack",
                 "red-teaming-adversarial-attacks-leetspeak",
                 "red-teaming-adversarial-attacks-rot13-encoding",
                 "red-teaming-adversarial-attacks-multilingual",
                 "red-teaming-adversarial-attacks-math-problem",
                 "red-teaming-adversarial-attacks-base64-encoding",
-                "red-teaming-adversarial-attacks-roleplay",
               ],
               collapsed: true,
             },
@@ -68,6 +68,7 @@ module.exports = {
           label: "Vulnerabilties",
           items: [
             "red-teaming-vulnerabilities",
+            "red-teaming-custom-vulnerability",
             {
               type: "category",
               label: "Data Privacy",
@@ -132,13 +133,23 @@ module.exports = {
               ],
               collapsed: true,
             },
-            "red-teaming-custom-vulnerability",
           ],
           collapsed: false,
         },
       ],
       collapsed: false,
     },
+    // {
+    //   type: "category",
+    //   label: "Guardrails",
+    //   items: ["guardrails-introduction", {
+    //     type: "category",
+    //     label: "Guards",
+    //     items: [ "guardrails-prompt-injection-guard", "guardrails-toxicity-guard"],
+    //     collapsed: false,
+    //   }],
+    //   collapsed: false,
+    // },
     {
       type: "category",
       label: "Guardrails",

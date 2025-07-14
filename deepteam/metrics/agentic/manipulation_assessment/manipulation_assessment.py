@@ -91,7 +91,9 @@ class ManipulationAssessmentMetric(BaseRedTeamingMetric):
     async def a_generate_purpose(self):
         if self.purpose:
             return self.purpose
-        prompt = ManipulationAssessmentTemplate.extract_purpose(self.system_prompt)
+        prompt = ManipulationAssessmentTemplate.extract_purpose(
+            self.system_prompt
+        )
         if self.using_native_model:
             res, cost = await self.model.a_generate(prompt, schema=Purpose)
             self.evaluation_cost += cost
@@ -110,7 +112,9 @@ class ManipulationAssessmentMetric(BaseRedTeamingMetric):
     def generate_purpose(self):
         if self.purpose:
             return self.purpose
-        prompt = ManipulationAssessmentTemplate.extract_purpose(self.system_prompt)
+        prompt = ManipulationAssessmentTemplate.extract_purpose(
+            self.system_prompt
+        )
         if self.using_native_model:
             res, cost = self.model.generate(prompt, schema=Purpose)
             self.evaluation_cost += cost
@@ -178,4 +182,4 @@ class ManipulationAssessmentMetric(BaseRedTeamingMetric):
 
     @property
     def __name__(self):
-        return f"Manipulation Assessment (Red Teaming)" 
+        return f"Manipulation Assessment (Red Teaming)"

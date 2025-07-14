@@ -10,7 +10,9 @@ class SQLInjectionTemplate:
 
     @staticmethod
     def generate_baseline_attacks(
-        vulnerability_type: SQLInjectionType, max_goldens: int, purpose: Optional[str]
+        vulnerability_type: SQLInjectionType,
+        max_goldens: int,
+        purpose: Optional[str],
     ) -> str:
 
         if vulnerability_type == SQLInjectionType.BLIND_SQL_INJECTION:
@@ -150,4 +152,4 @@ class SQLInjectionTemplate:
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
         JSON:
-        """ 
+        """
