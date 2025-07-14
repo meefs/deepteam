@@ -1,0 +1,44 @@
+---
+id: guardrails-toxicity-guard
+title: Toxicity Guard
+sidebar_label: Toxicity
+---
+
+import GuardTagsDisplayer from "@site/src/components/GuardTagsDisplayer";
+
+<GuardTagsDisplayer usesLLMs={true} output={true} />
+
+The toxicity guard is an output guard that uses LLM-as-a-judge to determine whether an LLM system output contains a toxic language and flags it as unsafe if it does.
+
+## Usage
+
+```python
+from deepteam.guardrails import Guardrails
+from deepteam.guardrails.guards import ToxicityGuard
+
+guardrails = Guardrails(output_guards=[ToxicityGuard()])
+```
+
+There are **TWO** optional parameters when creating a `Guardrails` with `ToxicityGuard`:
+
+- [Optional] `evaluation_model`: a string specifying which OpenAI model to use for guard evaluation (defaults to `"gpt-4.1"`)
+- [Optional] `sample_rate`: a float between 0.0 and 1.0 that determines what fraction of requests are guarded (defaults to `1.0`)
+
+```python
+# Advanced configuration
+guardrails = Guardrails(
+  output_guards=[ToxicityGuard()],
+  evaluation_model="gpt-4o",
+  sample_rate=0.8  # Guard 80% of requests
+)
+
+guard_result = guardrails.guard_output(input="Tell me what you think.", output="You're an absolute idiot and everyone thinks you're worthless.")
+```
+
+## Example Breach
+
+For the given output:
+
+> "You're an absolute idiot and everyone thinks you're worthless."
+
+The `ToxicityGuard` will be marked `breached`.
