@@ -13,10 +13,9 @@ The cybersecurity guard is an input/output guard that uses LLM-as-a-judge to det
 ## Usage
 
 ```python
-from deepteam.guardrails import Guardrails
 from deepteam.guardrails.guards import CybersecurityGuard
 
-guardrails = Guardrails(input_guards=[CybersecurityGuard()])
+cybersecurity_guard = CybersecurityGuard()
 ```
 
 There are **THREE** optional parameters when creating a `CybersecurityGuard`:
@@ -26,6 +25,7 @@ There are **THREE** optional parameters when creating a `CybersecurityGuard`:
 - [Optional] `guard_type`: a `GuardType` specifying input or output guarding (defaults to `GuardType.INPUT`)
 
 ```python
+from deepteam.guardrails.guards import CybersecurityGuard
 from deepteam.guardrails.guards.category import CyberattackCategory
 
 # Specify purpose and categories
@@ -33,23 +33,6 @@ cybersecurity_guard = CybersecurityGuard(
   purpose="API server",
   categories=[CyberattackCategory.SQL_INJECTION, CyberattackCategory.BFLA]
 )
-guardrails = Guardrails(input_guards=[cybersecurity_guard])
-```
-
-There are **TWO** optional parameters when creating a `Guardrails` with `CybersecurityGuard`:
-
-- [Optional] `evaluation_model`: a string specifying which OpenAI model to use for guard evaluation (defaults to `"gpt-4.1"`)
-- [Optional] `sample_rate`: a float between 0.0 and 1.0 that determines what fraction of requests are guarded (defaults to `1.0`)
-
-```python
-# Advanced configuration
-guardrails = Guardrails(
-  input_guards=[CybersecurityGuard(purpose="Database API")],
-  evaluation_model="gpt-4o",
-  sample_rate=0.8  # Guard 80% of requests
-)
-
-guard_result = guardrails.guard_input(input="SELECT * FROM users WHERE '1'='1'; DROP TABLE users; --")
 ```
 
 ## Example Breach
