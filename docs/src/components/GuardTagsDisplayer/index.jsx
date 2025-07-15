@@ -1,17 +1,15 @@
 import React from "react";
 import styles from "./GuardTagsDisplayer.module.css";
 
-const GuardTagsDisplayer = ({ usesLLMs=true, multiTurn=false, singleTurn=false, custom=false, input=false, output=false }) => {
+const GuardTagsDisplayer = ({ singleTurn=false, usesLLMs=false, input=false, output=false }) => {
   return (
-    <div className={styles.guardTagsDisplayer}>
-      {usesLLMs && <div className={`${styles.pill} ${styles.usesLLM}`}>LLM-as-a-judge</div>}
-      {multiTurn && <div className={`${styles.pill} ${styles.multiTurn}`}>Multi-turn</div>}
+    <div className={styles.tagsDisplayer}>
       {singleTurn && <div className={`${styles.pill} ${styles.singleTurn}`}>Single-turn</div>}
-      {custom && <div className={`${styles.pill} ${styles.custom}`}>Custom</div>}
-      {input && <div className={`${styles.pill} ${styles.input}`}>Input Guard</div>}
-      {output && <div className={`${styles.pill} ${styles.output}`}>Output Guard</div>}
+      {usesLLMs && <div className={`${styles.pill} ${styles.usesLLM}`}>LLM-as-a-judge</div>}
+      {input && <div className={`${styles.pill} ${styles.input}`}>Input guard</div>}
+      {output && <div className={`${styles.pill} ${styles.output}`}>Output guard</div>}
     </div>
   );
 };
 
-export default GuardTagsDisplayer;
+export default GuardTagsDisplayer; 
