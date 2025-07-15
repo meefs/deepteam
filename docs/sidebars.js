@@ -139,54 +139,54 @@ module.exports = {
       ],
       collapsed: false,
     },
-    // {
-    //   type: "category",
-    //   label: "Guardrails",
-    //   items: ["guardrails-introduction", {
-    //     type: "category",
-    //     label: "Guards",
-    //     items: [ "guardrails-prompt-injection-guard", "guardrails-toxicity-guard"],
-    //     collapsed: false,
-    //   }],
-    //   collapsed: false,
-    // },
     {
       type: "category",
       label: "Guardrails",
-      className: "sidebar-item-icon-guardrails",
-      items: [
-        "guardrails-introduction",
-        {
-          type: "category",
-          label: "Input Guards",
-          items: [
-            "guardrails-prompt-injection-guard",
-            "guardrails-topical-guard",
-          ],
-          collapsed: true,
-        },
-        {
-          type: "category",
-          label: "Output Guards",
-          items: [
-            "guardrails-toxicity-guard",
-            "guardrails-privacy-guard",
-            "guardrails-illegal-guard",
-            "guardrails-hallucination-guard",
-          ],
-          collapsed: true,
-        },
-        {
-          type: "category",
-          label: "Input/Output Guards",
-          items: [
-            "guardrails-cybersecurity-guard",
-          ],
-          collapsed: true,
-        },
-      ],
+      items: ["guardrails-introduction", {
+        type: "category",
+        label: "Guards",
+        items: [ "guardrails-prompt-injection-guard", "guardrails-toxicity-guard"],
+        collapsed: false,
+      }],
       collapsed: false,
     },
+    // {
+    //   type: "category",
+    //   label: "Guardrails",
+    //   className: "sidebar-item-icon-guardrails",
+    //   items: [
+    //     "guardrails-introduction",
+    //     {
+    //       type: "category",
+    //       label: "Input Guards",
+    //       items: [
+    //         "guardrails-prompt-injection-guard",
+    //         "guardrails-topical-guard",
+    //       ],
+    //       collapsed: true,
+    //     },
+    //     {
+    //       type: "category",
+    //       label: "Output Guards",
+    //       items: [
+    //         "guardrails-toxicity-guard",
+    //         "guardrails-privacy-guard",
+    //         "guardrails-illegal-guard",
+    //         "guardrails-hallucination-guard",
+    //       ],
+    //       collapsed: true,
+    //     },
+    //     {
+    //       type: "category",
+    //       label: "Input/Output Guards",
+    //       items: [
+    //         "guardrails-cybersecurity-guard",
+    //       ],
+    //       collapsed: true,
+    //     },
+    //   ],
+    //   collapsed: false,
+    // },
     {
       type: "category",
       label: "Guidelines & Frameworks",

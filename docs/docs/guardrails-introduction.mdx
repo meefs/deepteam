@@ -151,10 +151,20 @@ guard_result = await guardrails.a_guard_output(input, output)
 
 ### Input
 
-To be documented...
+Input guards protect your LLM system by screening user inputs before they reach your model, preventing malicious prompts and unwanted content from being processed:
+
+- **[Prompt Injection Guard](/docs/guardrails-prompt-injection-guard)** - Detects and blocks prompt injection and jailbreaking attempts that try to manipulate the AI's behavior or bypass safety measures
+- **[Topical Guard](/docs/guardrails-topical-guard)** - Restricts conversations to specific allowed topics, preventing off-topic or unauthorized discussions
+- **[Cybersecurity Guard](/docs/guardrails-cybersecurity-guard)** - (When configured for input) Protects against cybersecurity threats and malicious technical instructions
 
 ### Output
 
-To be documented...
+Output guards evaluate your LLM's responses before they reach users, ensuring safe and appropriate content delivery:
+
+- **[Toxicity Guard](/docs/guardrails-toxicity-guard)** - Prevents toxic, harmful, abusive, or discriminatory content from being shared with users
+- **[Privacy Guard](/docs/guardrails-privacy-guard)** - Detects and blocks personally identifiable information (PII) and sensitive data from being exposed
+- **[Illegal Guard](/docs/guardrails-illegal-guard)** - Prevents the sharing of illegal activity instructions or content that violates laws
+- **[Hallucination Guard](/docs/guardrails-hallucination-guard)** - Detects and prevents fabricated, inaccurate, or hallucinated information in responses
+- **[Cybersecurity Guard](/docs/guardrails-cybersecurity-guard)** - (When configured for output) Ensures responses don't contain dangerous cybersecurity information or instructions
 
 
