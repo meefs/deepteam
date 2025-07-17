@@ -109,6 +109,7 @@ prompt_injection = PromptInjection()
 j = LinearJailbreaking()
 
 api_security = CustomVulnerability(
+    criteria="Security database",
     name="API Security",  # Name reflecting the security concern
     types=["endpoint_exposure", "auth_bypass"],  # Specific aspects to test
 )

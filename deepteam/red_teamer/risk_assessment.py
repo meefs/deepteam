@@ -4,9 +4,7 @@ import datetime
 import os
 import json
 from enum import Enum
-import pandas as pd
 from deepteam.vulnerabilities.types import VulnerabilityType
-
 
 class RedTeamingTestCase(BaseModel):
     vulnerability: str
@@ -26,8 +24,9 @@ class RedTeamingTestCase(BaseModel):
 
 
 class TestCasesList(list):
-    def to_df(self) -> pd.DataFrame:
 
+    def to_df(self) -> "pd.DataFrame":
+        import pandas as pd
 
         data = []
         for case in self:
