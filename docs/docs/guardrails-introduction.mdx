@@ -147,7 +147,7 @@ Output guards evaluate your LLM's responses before they reach users, ensuring sa
 - **[Hallucination Guard](/docs/guardrails-hallucination-guard)** - Detects and prevents fabricated, inaccurate, or hallucinated information in responses
 - **[Cybersecurity Guard](/docs/guardrails-cybersecurity-guard)** - (When configured for output) Ensures responses don't contain dangerous cybersecurity information or instructions
 
-## 3-Tier Safety Assessment
+## 3-Tier Safety System
 
 All of `deepteam`'s guards uses a **3-tier safety assessment system**:
 
@@ -160,6 +160,8 @@ All of `deepteam`'s guards uses a **3-tier safety assessment system**:
 print(guard_result.safety_level)  # "safe", "uncertain", or "unsafe"
 print(guard_result.reason)        # Explanation for the assessment
 ```
+
+The reason why `deepteam` does this is it allows you to control the strictness of each and every guard, and control what consitutues as a "breached" or "mitigated" event.
 
 A `Guardrails` is considered **breached** if any guard returns `unsafe` or `uncertain`.
 
