@@ -1,6 +1,6 @@
 [project]
 name = "deepteam"
-version = "0.1.8"
+version = "0.1.9"
 description = "The LLM Red Teaming Framework"
 authors = [
     { name = "Jeffrey Ip", email = "jeffreyip@confident-ai.com" },
