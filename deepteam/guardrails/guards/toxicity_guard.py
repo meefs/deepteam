@@ -1,9 +1,10 @@
 from ..base_guard import BaseGuard
 from ..types import GuardType
+from typing import Union, Dict
 
 
 class ToxicityGuard(BaseGuard):
-    def __init__(self, evaluation_model: str = "gpt-4.1"):
+    def __init__(self, evaluation_model: Union[str, Dict] = "gpt-4.1"):
         super().__init__(evaluation_model=evaluation_model)
         self.guard_type = GuardType.OUTPUT
 

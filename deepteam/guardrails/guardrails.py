@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Union
 import time
 import asyncio
 
@@ -28,7 +28,7 @@ class Guardrails:
         self, 
         input_guards: List[BaseGuard],
         output_guards: List[BaseGuard],
-        evaluation_model: str = "gpt-4.1",
+        evaluation_model: Union[str, Dict] = "gpt-4.1",
         sample_rate: float = 1.0
     ):
         """
@@ -37,7 +37,8 @@ class Guardrails:
         Args:
             input_guards: List of guards to check inputs before they reach your LLM
             output_guards: List of guards to check outputs before they reach your users
-            evaluation_model: OpenAI model to use for guard evaluation (default: gpt-4.1)
+            evaluation_model: Model specification (string or dict) for guard evaluation (default: "gpt-4.1")
+                            Supports OpenAI, Azure, Anthropic, Gemini, Ollama, Custom models
             sample_rate: Fraction of requests to actually guard (0.0 to 1.0, default: 1.0)
         """
         # Validate sample_rate 
@@ -52,7 +53,7 @@ class Guardrails:
         self.input_guards = self._update_guards_model(input_guards, evaluation_model)
         self.output_guards = self._update_guards_model(output_guards, evaluation_model)
 
-    def _update_guards_model(self, guards: List[BaseGuard], evaluation_model: str) -> List[BaseGuard]:
+    def _update_guards_model(self, guards: List[BaseGuard], evaluation_model: Union[str, Dict]) -> List[BaseGuard]:
         """Update all guards to use the specified evaluation model"""
         updated_guards = []
         for guard in guards:
