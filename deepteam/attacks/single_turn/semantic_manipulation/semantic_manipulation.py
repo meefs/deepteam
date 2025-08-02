@@ -22,9 +22,9 @@ class LinguisticConfusion(BaseAttack):
             LinguisticConfusionTemplate.enhance_semantic_ambiguity,
             LinguisticConfusionTemplate.enhance_syntactic_variation,
             LinguisticConfusionTemplate.enhance_contextual_reframing,
-            LinguisticConfusionTemplate.enhance_linguistic_obfuscation,
-            LinguisticConfusionTemplate.enhance_meaning_distortion,
-            LinguisticConfusionTemplate.enhance_universal_confusion_bridge,
+            LinguisticConfusionTemplate.enhance_obfuscation_decoding,  
+            LinguisticConfusionTemplate.enhance_pragmatic_inference,  
+            LinguisticConfusionTemplate.enhance_universal_translation, 
         ]
 
         for attempt in range(self.max_retries):
