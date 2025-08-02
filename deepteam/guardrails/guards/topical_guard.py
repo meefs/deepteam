@@ -1,12 +1,13 @@
 from ..base_guard import BaseGuard
 from ..types import GuardType
 from typing import Union, Dict, List
+from deepeval.models.base_model import DeepEvalBaseLLM
 
 
 class TopicalGuard(BaseGuard):
     def __init__(
         self, 
-        evaluation_model: Union[str, Dict] = "gpt-4.1",
+        evaluation_model: Union[str, Dict, DeepEvalBaseLLM] = "gpt-4.1",
         allowed_topics: List[str] = None, 
         description: str = None
     ):

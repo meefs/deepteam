@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Dict, Union
 from deepeval.models.llms.utils import trim_and_load_json
+from deepeval.models.base_model import DeepEvalBaseLLM
 import json
 from deepteam.guardrails.types import GuardType
 from deepteam.cli.model_callback import load_model
@@ -13,8 +14,11 @@ class BaseGuard(ABC):
     latency: Optional[float] = None
     guard_type: GuardType
 
-    def __init__(self, evaluation_model: Union[str, Dict] = "gpt-4.1"):
-        self.model = load_model(evaluation_model)
+    def __init__(self, evaluation_model: Union[str, Dict, DeepEvalBaseLLM] = "gpt-4.1"):
+        if isinstance(evaluation_model, DeepEvalBaseLLM):
+            self.model = evaluation_model
+        else:
+            self.model = load_model(evaluation_model)
         self.evaluation_model = self.model.get_model_name()
 
     @property
