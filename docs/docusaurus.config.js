@@ -61,14 +61,14 @@ module.exports = {
       defer: true,
       "data-domain": "trydeepteam.com",
     },
-    // {
-    //   src: "https://unpkg.com/lucide@latest",
-    //   async: true,
-    // },
-    // {
-    //   src: "/js/lucide-icons.js",
-    //   async: true,
-    // },
+    {
+      src: "https://unpkg.com/lucide@latest",
+      async: true,
+    },
+    {
+      src: "/js/lucide-icons.js",
+      async: true,
+    },
   ],
   stylesheets: [
     {
