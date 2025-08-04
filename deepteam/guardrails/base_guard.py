@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Optional
-from deepeval.models import GPTModel
+from typing import Optional, Union
+
+from deepeval.models import DeepEvalBaseLLM
+from deepeval.metrics.utils import initialize_model
 from deepeval.models.llms.utils import trim_and_load_json
 from deepteam.guardrails.types import GuardType
 
@@ -8,13 +10,13 @@ from deepteam.guardrails.types import GuardType
 class BaseGuard(ABC):
     score: Optional[float] = None
     reason: Optional[str] = None
-    evaluation_model: Optional[str] = None
+    model: Optional[DeepEvalBaseLLM] = None
     error: Optional[str] = None
     latency: Optional[float] = None
     guard_type: GuardType
 
-    def __init__(self, evaluation_model: str = "gpt-4.1"):
-        self.model = GPTModel(model=evaluation_model)
+    def __init__(self, model: Union[str, DeepEvalBaseLLM] = "gpt-4.1"):
+        self.model, self.using_native_model = initialize_model(model)
         self.evaluation_model = self.model.get_model_name()
 
     @property

@@ -1,5 +1,6 @@
-from typing import Optional, Dict, Type, Union
+from typing import Optional, Dict, Type
 
+from deepteam.vulnerabilities.custom.custom import CustomVulnerability
 from deepteam.vulnerabilities.types import (
     MisinformationType,
     BiasType,
@@ -36,7 +37,6 @@ from deepteam.vulnerabilities.toxicity import ToxicityTemplate
 from deepteam.vulnerabilities.unauthorized_access import (
     UnauthorizedAccessTemplate,
 )
-from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 from deepteam.vulnerabilities.custom.template import CustomVulnerabilityTemplate
 
 # Import remaining agentic vulnerability types and templates
@@ -83,7 +83,7 @@ class AttackSimulatorTemplate:
     @staticmethod
     def generate_attacks(
         max_goldens: int,
-        vulnerability_type: Union[VulnerabilityType, CustomVulnerabilityType],
+        vulnerability_type: VulnerabilityType,
         purpose: Optional[str],
         custom_prompt: Optional[str] = None,
     ):
@@ -98,10 +98,9 @@ class AttackSimulatorTemplate:
         Returns:
             Formatted prompt template string or error message if vulnerability type not supported
         """
-        if (
-            vulnerability_type.__class__.__name__
-            == CustomVulnerabilityType.__name__
-        ):
+        vulnerability_enum_name = vulnerability_type.__class__.__name__
+        if vulnerability_enum_name == "CustomVulnerabilityType":
+            print("Custom Vulnerability!!")
             return CustomVulnerabilityTemplate.generate_baseline_attacks(
                 name="Custom Vulnerability",
                 types=[vulnerability_type.value],
@@ -114,7 +113,7 @@ class AttackSimulatorTemplate:
             type_class,
             template_class,
         ) in TEMPLATE_MAP.items():
-            if vulnerability_type.__class__.__name__ == type_class.__name__:
+            if vulnerability_enum_name == type_class.__name__:
                 return template_class.generate_baseline_attacks(
                     vulnerability_type, max_goldens, purpose
                 )

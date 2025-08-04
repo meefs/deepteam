@@ -207,7 +207,7 @@ class RedTeamer:
 
                         red_teaming_test_case = RedTeamingTestCase(
                             vulnerability=simulated_attack.vulnerability,
-                            vulnerability_type=vulnerability_type.value,
+                            vulnerability_type=vulnerability_type,
                             attackMethod=simulated_attack.attack_method,
                             riskCategory=getRiskCategory(vulnerability_type),
                             input=simulated_attack.input,

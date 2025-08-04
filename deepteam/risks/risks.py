@@ -13,7 +13,7 @@ class LLMRiskCategories(Enum):
 
 
 def getRiskCategory(
-    vulnerability_type: VulnerabilityType,
+    vulnerability_type: Union[VulnerabilityType, Enum],
 ) -> LLMRiskCategories:
     risk_category_map: Dict[VulnerabilityType, LLMRiskCategories] = {
         # Responsible AI

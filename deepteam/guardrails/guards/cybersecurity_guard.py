@@ -1,8 +1,9 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from enum import Enum
 
-from ..base_guard import BaseGuard
-from ..types import GuardType
+from deepeval.models import DeepEvalBaseLLM
+from deepteam.guardrails.base_guard import BaseGuard
+from deepteam.guardrails.types import GuardType
 
 
 class CyberattackCategory(Enum):
@@ -21,9 +22,9 @@ class CybersecurityGuard(BaseGuard):
         purpose: Optional[str] = None,
         categories: List[CyberattackCategory] = None,
         guard_type: GuardType = GuardType.INPUT,
-        evaluation_model: Optional[str] = None,
+        model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ):
-        super().__init__(evaluation_model=evaluation_model)
+        super().__init__(model=model)
         self.guard_type = guard_type
         self.purpose = purpose
         self.categories = categories or [

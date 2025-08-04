@@ -1,13 +1,17 @@
-from ..base_guard import BaseGuard
-from ..types import GuardType
-from typing import Optional
+from typing import Optional, Union
+
+from deepeval.models import DeepEvalBaseLLM
+from deepteam.guardrails.base_guard import BaseGuard
+from deepteam.guardrails.types import GuardType
 
 
 class TopicalGuard(BaseGuard):
     def __init__(
-        self, allowed_topics=None, evaluation_model: Optional[str] = None
+        self,
+        allowed_topics=None,
+        model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ):
-        super().__init__(evaluation_model=evaluation_model)
+        super().__init__(model=model)
         self.guard_type = GuardType.INPUT
         self.allowed_topics = allowed_topics or []
 

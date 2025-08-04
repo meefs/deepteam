@@ -1,15 +1,16 @@
 from pydantic import BaseModel, Field
-from typing import Dict, Optional, List, Any
+from typing import Dict, Optional, List, Any, Union
 import datetime
 import os
 import json
 from enum import Enum
+
 from deepteam.vulnerabilities.types import VulnerabilityType
 
 
 class RedTeamingTestCase(BaseModel):
     vulnerability: str
-    vulnerability_type: VulnerabilityType
+    vulnerability_type: Union[VulnerabilityType, Enum]
     risk_category: str = Field(alias="riskCategory")
     attack_method: Optional[str] = Field(None, alias="attackMethod")
     input: Optional[str] = None
@@ -54,7 +55,7 @@ class TestCasesList(list):
 
 class VulnerabilityTypeResult(BaseModel):
     vulnerability: str
-    vulnerability_type: VulnerabilityType
+    vulnerability_type: Union[VulnerabilityType, Enum]
     pass_rate: float
     passing: int
     failing: int
