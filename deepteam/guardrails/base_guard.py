@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Dict
+from typing import Optional
 from deepeval.models import GPTModel
 from deepeval.models.llms.utils import trim_and_load_json
-import json
 from deepteam.guardrails.types import GuardType
 
 

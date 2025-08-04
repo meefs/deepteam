@@ -3,7 +3,7 @@ import time
 import asyncio
 
 from deepteam.guardrails.base_guard import BaseGuard
-from deepteam.guardrails.types import GuardType
+from deepteam.telemetry import capture_guardrail_run
 
 
 class GuardResult:
@@ -97,27 +97,33 @@ class Guardrails:
 
         guard_results = {}
 
-        for guard in self.input_guards:
-            start_time = time.time()
-            try:
-                is_safe = guard.guard_input(input)
-                latency = time.time() - start_time
+        with capture_guardrail_run(
+            type="input",
+            guards=[guard.__name__ for guard in self.input_guards],
+        ):
+            for guard in self.input_guards:
+                start_time = time.time()
+                try:
+                    is_safe = guard.guard_input(input)
+                    latency = time.time() - start_time
 
-                guard_results[guard.__name__] = {
-                    "safe": is_safe,
-                    "safety_level": getattr(guard, "safety_level", "unsafe"),
-                    "latency": latency,
-                    "reason": getattr(guard, "reason", None),
-                    "score": getattr(guard, "score", None),
-                }
+                    guard_results[guard.__name__] = {
+                        "safe": is_safe,
+                        "safety_level": getattr(
+                            guard, "safety_level", "unsafe"
+                        ),
+                        "latency": latency,
+                        "reason": getattr(guard, "reason", None),
+                        "score": getattr(guard, "score", None),
+                    }
 
-            except Exception as e:
-                guard_results[guard.__name__] = {
-                    "safe": False,
-                    "safety_level": "unsafe",
-                    "latency": time.time() - start_time,
-                    "error": str(e),
-                }
+                except Exception as e:
+                    guard_results[guard.__name__] = {
+                        "safe": False,
+                        "safety_level": "unsafe",
+                        "latency": time.time() - start_time,
+                        "error": str(e),
+                    }
 
         return GuardResult(guard_results=guard_results)
 
@@ -137,27 +143,33 @@ class Guardrails:
 
         guard_results = {}
 
-        for guard in self.output_guards:
-            start_time = time.time()
-            try:
-                is_safe = guard.guard_output(input, output)
-                latency = time.time() - start_time
+        with capture_guardrail_run(
+            type="output",
+            guards=[guard.__name__ for guard in self.output_guards],
+        ):
+            for guard in self.output_guards:
+                start_time = time.time()
+                try:
+                    is_safe = guard.guard_output(input, output)
+                    latency = time.time() - start_time
 
-                guard_results[guard.__name__] = {
-                    "safe": is_safe,
-                    "safety_level": getattr(guard, "safety_level", "unsafe"),
-                    "latency": latency,
-                    "reason": getattr(guard, "reason", None),
-                    "score": getattr(guard, "score", None),
-                }
+                    guard_results[guard.__name__] = {
+                        "safe": is_safe,
+                        "safety_level": getattr(
+                            guard, "safety_level", "unsafe"
+                        ),
+                        "latency": latency,
+                        "reason": getattr(guard, "reason", None),
+                        "score": getattr(guard, "score", None),
+                    }
 
-            except Exception as e:
-                guard_results[guard.__name__] = {
-                    "safe": False,
-                    "safety_level": "unsafe",
-                    "latency": time.time() - start_time,
-                    "error": str(e),
-                }
+                except Exception as e:
+                    guard_results[guard.__name__] = {
+                        "safe": False,
+                        "safety_level": "unsafe",
+                        "latency": time.time() - start_time,
+                        "error": str(e),
+                    }
 
         return GuardResult(guard_results=guard_results)
 

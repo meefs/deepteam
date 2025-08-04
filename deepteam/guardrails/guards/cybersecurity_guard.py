@@ -1,8 +1,18 @@
 from typing import List, Optional
+from enum import Enum
 
-from .category import CyberattackCategory
 from ..base_guard import BaseGuard
 from ..types import GuardType
+
+
+class CyberattackCategory(Enum):
+    BFLA = "BFLA"
+    BOLA = "BOLA"
+    DEBUG_ACCESS = "Debug Access"
+    RBAC = "RBAC"
+    SHELL_INJECTION = "Shell Injection"
+    SQL_INJECTION = "SQL Injection"
+    SSRF = "SSRF"
 
 
 class CybersecurityGuard(BaseGuard):
