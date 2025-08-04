@@ -39,6 +39,6 @@ class CustomVulnerability(BaseVulnerability):
 
     def get_raw_types(self) -> List[str]:
         return self.raw_types
-    
+
     def get_criteria(self) -> str:
         return self.criteria

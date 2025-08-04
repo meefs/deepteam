@@ -16,4 +16,4 @@ from .illegal_guard import IllegalGuard
 from .hallucination_guard import HallucinationGuard
 from .topical_guard import TopicalGuard
 from .cybersecurity_guard import CybersecurityGuard
-from .category import CyberattackCategory 
+from .category import CyberattackCategory

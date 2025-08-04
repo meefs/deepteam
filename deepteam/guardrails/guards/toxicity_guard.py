@@ -10,7 +10,7 @@ class ToxicityGuard(BaseGuard):
     @property
     def __name__(self):
         return "Toxicity Guard"
-    
+
     def guard_input(self, input: str) -> float:
         return self.guard(input=input)
 
@@ -22,7 +22,7 @@ class ToxicityGuard(BaseGuard):
 
     async def a_guard_output(self, input: str, output: str) -> float:
         return await self.a_guard(input=input, output=output)
-    
+
     def _get_input_prompt(self, input_text: str) -> str:
         return f"""You are a strict content safety classifier. Analyze the following user input for ANY toxicity and harmful content.
 

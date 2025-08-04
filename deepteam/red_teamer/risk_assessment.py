@@ -6,6 +6,7 @@ import json
 from enum import Enum
 from deepteam.vulnerabilities.types import VulnerabilityType
 
+
 class RedTeamingTestCase(BaseModel):
     vulnerability: str
     vulnerability_type: VulnerabilityType
@@ -20,7 +21,6 @@ class RedTeamingTestCase(BaseModel):
     error: Optional[str] = None
 
     metadata: Optional[Dict[str, Any]] = None
-
 
 
 class TestCasesList(list):
@@ -106,7 +106,9 @@ class RiskAssessment(BaseModel):
 
     def __init__(self, **data):
         super().__init__(**data)
-        self.test_cases : TestCasesList = TestCasesList[RedTeamingTestCase](self.test_cases)
+        self.test_cases: TestCasesList = TestCasesList[RedTeamingTestCase](
+            self.test_cases
+        )
 
     def save(self, to: str) -> str:
         try:

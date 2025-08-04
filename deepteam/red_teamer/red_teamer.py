@@ -155,7 +155,6 @@ class RedTeamer:
                     ignore_errors=ignore_errors,
                     reuse_simulated_attacks=reuse_simulated_attacks,
                     metadata=metadata,
-
                 )
             )
         else:
@@ -212,7 +211,7 @@ class RedTeamer:
                             attackMethod=simulated_attack.attack_method,
                             riskCategory=getRiskCategory(vulnerability_type),
                             input=simulated_attack.input,
-                            metadata=simulated_attack.metadata
+                            metadata=simulated_attack.metadata,
                         )
 
                         # this will only go through if ignore_errors == True
@@ -280,7 +279,6 @@ class RedTeamer:
         ignore_errors: bool = False,
         reuse_simulated_attacks: bool = False,
         metadata: Optional[dict] = None,
-
     ):
         with capture_red_teamer_run(
             vulnerabilities=[v.get_name() for v in vulnerabilities],
@@ -662,8 +660,10 @@ class RedTeamer:
                     else:
                         criteria = vulnerability.get_criteria()
                         if not criteria:
-                            raise ValueError(f"CustomVulnerability '{vulnerability.get_name()}' must provide a 'criteria' parameter that defines what should be evaluated.")
-                        
+                            raise ValueError(
+                                f"CustomVulnerability '{vulnerability.get_name()}' must provide a 'criteria' parameter that defines what should be evaluated."
+                            )
+
                         metrics_map[vuln_type] = lambda hc=criteria: HarmMetric(
                             model=self.evaluation_model,
                             harm_category=hc,
@@ -685,7 +685,7 @@ class RedTeamer:
                 vulnerability_type=test_case.vulnerability_type,
                 input=test_case.input,
                 attack_method=test_case.attack_method,
-                metadata=test_case.metadata
+                metadata=test_case.metadata,
             )
             simulated_attacks.append(simulated_attack)
 

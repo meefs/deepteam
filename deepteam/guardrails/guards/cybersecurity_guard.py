@@ -16,7 +16,9 @@ class CybersecurityGuard(BaseGuard):
         super().__init__(evaluation_model=evaluation_model)
         self.guard_type = guard_type
         self.purpose = purpose
-        self.categories = categories or [attack for attack in CyberattackCategory]
+        self.categories = categories or [
+            attack for attack in CyberattackCategory
+        ]
 
     @property
     def __name__(self):
@@ -36,8 +38,10 @@ class CybersecurityGuard(BaseGuard):
 
     def _get_input_prompt(self, input_text: str) -> str:
         categories_text = ", ".join([cat.value for cat in self.categories])
-        purpose_line = f"Application purpose: {self.purpose}\n" if self.purpose else ""
-        
+        purpose_line = (
+            f"Application purpose: {self.purpose}\n" if self.purpose else ""
+        )
+
         return f"""You are a cybersecurity expert. Determine if the input contains potential cybersecurity attacks or malicious content.
 
 Mark content as:
@@ -65,8 +69,10 @@ Input to analyze: {input_text}"""
 
     def _get_output_prompt(self, input_text: str, output_text: str) -> str:
         categories_text = ", ".join([cat.value for cat in self.categories])
-        purpose_line = f"Application purpose: {self.purpose}\n" if self.purpose else ""
-        
+        purpose_line = (
+            f"Application purpose: {self.purpose}\n" if self.purpose else ""
+        )
+
         return f"""You are a cybersecurity expert. Analyze if this output contains security vulnerabilities.
 
 Mark content as:

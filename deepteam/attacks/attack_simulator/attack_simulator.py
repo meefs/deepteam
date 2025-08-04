@@ -33,6 +33,7 @@ class NoAttack:
     async def a_enhance(self, attack, *args, **kwargs):
         return attack
 
+
 class AttackSimulator:
     model_callback: Union[CallbackType, None] = None
 
@@ -63,7 +64,6 @@ class AttackSimulator:
         attacks: List[BaseAttack],
         ignore_errors: bool,
         metadata: Optional[dict] = None,
-
     ) -> List[SimulatedAttack]:
         # Simulate unenhanced attacks for each vulnerability
         baseline_attacks: List[SimulatedAttack] = []
@@ -81,7 +81,6 @@ class AttackSimulator:
                     vulnerability=vulnerability,
                     ignore_errors=ignore_errors,
                     metadata=metadata,
-
                 )
             )
         # Enhance attacks by sampling from the provided distribution
@@ -114,7 +113,6 @@ class AttackSimulator:
         attacks: List[BaseAttack],
         ignore_errors: bool,
         metadata: Optional[dict] = None,
-
     ) -> List[SimulatedAttack]:
         # Create a semaphore to control the number of concurrent tasks
         semaphore = asyncio.Semaphore(self.max_concurrent)
@@ -168,7 +166,9 @@ class AttackSimulator:
                     attack = NoAttack()
                 else:
                     attack_weights = [attack.weight for attack in attacks]
-                    attack = random.choices(attacks, weights=attack_weights, k=1)[0]
+                    attack = random.choices(
+                        attacks, weights=attack_weights, k=1
+                    )[0]
 
                 result = await self.a_enhance_attack(
                     attack=attack,
@@ -205,7 +205,6 @@ class AttackSimulator:
         vulnerability: BaseVulnerability,
         ignore_errors: bool,
         metadata: Optional[dict] = None,
-
     ) -> List[SimulatedAttack]:
         baseline_attacks: List[SimulatedAttack] = []
 
@@ -228,7 +227,6 @@ class AttackSimulator:
                             vulnerability_type=vulnerability_type,
                             input=local_attack,
                             metadata=metadata,
-
                         )
                         for local_attack in local_attacks
                     ]
@@ -242,7 +240,6 @@ class AttackSimulator:
                                 vulnerability_type=vulnerability_type,
                                 error=f"Error simulating adversarial attacks: {str(e)}",
                                 metadata=metadata,
-
                             )
                         )
                 else:
@@ -277,7 +274,6 @@ class AttackSimulator:
                             vulnerability_type=vulnerability_type,
                             input=local_attack,
                             metadata=metadata,
-
                         )
                         for local_attack in local_attacks
                     ]
@@ -291,7 +287,6 @@ class AttackSimulator:
                                 vulnerability_type=vulnerability_type,
                                 error=f"Error simulating adversarial attacks: {str(e)}",
                                 metadata=metadata,
-
                             )
                         )
                 else:

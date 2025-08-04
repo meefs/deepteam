@@ -1,12 +1,12 @@
 from .types import GuardType
 from .guards import (
-    ToxicityGuard, 
+    ToxicityGuard,
     PromptInjectionGuard,
     PrivacyGuard,
     IllegalGuard,
     HallucinationGuard,
     TopicalGuard,
-    CybersecurityGuard
+    CybersecurityGuard,
 )
 from .guardrails import Guardrails, GuardResult
 from .base_guard import BaseGuard

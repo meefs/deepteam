@@ -1,4 +1,4 @@
-# This file is kept for compatibility but is no longer needed 
+# This file is kept for compatibility but is no longer needed
 # since deepteam guardrails are fully open-source and local
 
 from typing import Optional, List, Union, Dict
@@ -12,6 +12,7 @@ class GuardData(BaseModel):
     Data structure for guard results.
     Used internally by the guardrails system.
     """
+
     guard: str
     score: float
     reason: str
@@ -22,5 +23,6 @@ class GuardResult(BaseModel):
     """
     Result from guardrails evaluation.
     """
+
     breached: bool
     guard_verdicts: Dict[str, GuardData]

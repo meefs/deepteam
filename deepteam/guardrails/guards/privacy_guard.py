@@ -11,7 +11,7 @@ class PrivacyGuard(BaseGuard):
     @property
     def __name__(self):
         return "Privacy Guard"
-    
+
     def _get_input_prompt(self, input_text: str) -> str:
         return f"""You are a strict privacy protection classifier. Analyze the following input for ANY personally identifiable information (PII) or sensitive data.
 

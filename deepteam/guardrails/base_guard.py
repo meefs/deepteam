@@ -5,6 +5,7 @@ from deepeval.models.llms.utils import trim_and_load_json
 import json
 from deepteam.guardrails.types import GuardType
 
+
 class BaseGuard(ABC):
     score: Optional[float] = None
     reason: Optional[str] = None
@@ -20,7 +21,7 @@ class BaseGuard(ABC):
     @property
     def __name__(self):
         return "Base Guard"
-    
+
     def guard(self, input: str = None, output: str = None, **kwargs) -> float:
         """
         Guard method - returns score: 1.0 (safe), 0.5 (uncertain), 0.0 (unsafe)
@@ -30,43 +31,45 @@ class BaseGuard(ABC):
                 prompt = self._get_output_prompt(input or "", output)
             else:
                 prompt = self._get_input_prompt(input)
-                
+
             llm_output = self.model.generate(prompt)
-            
+
             # Handle tuple response
             if isinstance(llm_output, tuple):
                 llm_output = llm_output[0]
-                
+
             return self._parse_json_response(llm_output)
-            
+
         except Exception as e:
             self.error = str(e)
-            self.score = 0.0  
+            self.score = 0.0
             return 0.0
-    
-    async def a_guard(self, input: str = None, output: str = None, **kwargs) -> float:
+
+    async def a_guard(
+        self, input: str = None, output: str = None, **kwargs
+    ) -> float:
         """
         Async guard method - returns score: 1.0 (safe), 0.5 (uncertain), 0.0 (unsafe)
         """
         try:
             if output is not None:
                 prompt = self._get_output_prompt(input or "", output)
-            else:  
+            else:
                 prompt = self._get_input_prompt(input)
-                
+
             llm_output = await self.model.a_generate(prompt)
-            
+
             # Handle tuple response
             if isinstance(llm_output, tuple):
                 llm_output = llm_output[0]
-                
+
             return self._parse_json_response(llm_output)
-            
+
         except Exception as e:
             self.error = str(e)
-            self.score = 0.0  
+            self.score = 0.0
             return 0.0
-    
+
     def _parse_json_response(self, response: str) -> float:
         """
         Parse JSON response from LLM to determine safety level
@@ -76,7 +79,7 @@ class BaseGuard(ABC):
             data = trim_and_load_json(response)
             safe_value = data.get("safe", False)
             self.reason = data.get("reason", "No explanation provided")
-            
+
             # Convert to words that developers see
             if safe_value == True or safe_value == "true":
                 self.safety_level = "safe"
@@ -87,21 +90,21 @@ class BaseGuard(ABC):
             else:  # False, "false", or any other value
                 self.safety_level = "unsafe"
                 self.score = 0.0
-                
+
             return self.score
         except Exception as e:
             self.error = str(e)
             self.safety_level = "unsafe"
             self.score = 0.0
             return 0.0
-    
+
     @abstractmethod
     def _get_input_prompt(self, input_text: str) -> str:
         """
         Get prompt for evaluating input text
         """
         pass
-    
+
     @abstractmethod
     def _get_output_prompt(self, input_text: str, output_text: str) -> str:
         """

@@ -11,7 +11,7 @@ class IllegalGuard(BaseGuard):
     @property
     def __name__(self):
         return "Illegal Guard"
-    
+
     def _get_input_prompt(self, input_text: str) -> str:
         return f"""You are a legal compliance classifier. Analyze the following user input for requests related to illegal activities.
 

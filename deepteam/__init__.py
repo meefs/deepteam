@@ -17,7 +17,7 @@ from deepteam.guardrails import (
     HallucinationGuard,
     TopicalGuard,
     CybersecurityGuard,
-    GuardType
+    GuardType,
 )
 
 __all__ = [
@@ -25,7 +25,7 @@ __all__ = [
     "FrameworkType",
     # Guardrails
     "Guardrails",
-    "GuardResult", 
+    "GuardResult",
     "ToxicityGuard",
     "PromptInjectionGuard",
     "PrivacyGuard",
@@ -33,7 +33,7 @@ __all__ = [
     "HallucinationGuard",
     "TopicalGuard",
     "CybersecurityGuard",
-    "GuardType"
+    "GuardType",
 ]
 
 

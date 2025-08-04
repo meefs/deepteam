@@ -89,7 +89,9 @@ def _build_vulnerability(cfg: dict):
     if name == "CustomVulnerability":
         criteria = cfg.get("criteria")
         if not criteria:
-            raise ValueError("CustomVulnerability configuration must include a 'criteria' field that defines what should be evaluated.")
+            raise ValueError(
+                "CustomVulnerability configuration must include a 'criteria' field that defines what should be evaluated."
+            )
         return CustomVulnerability(
             name=cfg.get("custom_name", "Custom"),
             criteria=criteria,

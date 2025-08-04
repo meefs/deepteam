@@ -4,7 +4,9 @@ from typing import Optional
 
 
 class TopicalGuard(BaseGuard):
-    def __init__(self, allowed_topics=None, evaluation_model: Optional[str] = None):
+    def __init__(
+        self, allowed_topics=None, evaluation_model: Optional[str] = None
+    ):
         super().__init__(evaluation_model=evaluation_model)
         self.guard_type = GuardType.INPUT
         self.allowed_topics = allowed_topics or []
@@ -26,8 +28,12 @@ class TopicalGuard(BaseGuard):
         return await self.a_guard(input=input, output=output)
 
     def _get_input_prompt(self, input_text: str) -> str:
-        topics_line = f"Allowed topics: {', '.join(self.allowed_topics)}\n" if self.allowed_topics else ""
-        
+        topics_line = (
+            f"Allowed topics: {', '.join(self.allowed_topics)}\n"
+            if self.allowed_topics
+            else ""
+        )
+
         return f"""You are a topic adherence expert. Determine if the input stays within allowed topics and doesn't venture into inappropriate or off-topic areas.
 
 Mark content as:
@@ -48,8 +54,12 @@ An input is UNSAFE if it goes outside the allowed topics or attempts topic manip
 Input to analyze: {input_text}"""
 
     def _get_output_prompt(self, input_text: str, output_text: str) -> str:
-        topics_line = f"Allowed topics: {', '.join(self.allowed_topics)}\n" if self.allowed_topics else ""
-        
+        topics_line = (
+            f"Allowed topics: {', '.join(self.allowed_topics)}\n"
+            if self.allowed_topics
+            else ""
+        )
+
         return f"""You are a topic adherence expert. Analyze if this output stays within allowed topics.
 
 Mark content as:
