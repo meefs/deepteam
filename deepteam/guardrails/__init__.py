@@ -9,4 +9,4 @@ from .guards import (
     CybersecurityGuard,
 )
 from .guardrails import Guardrails, GuardResult
-from .base_guard import BaseGuard
+from .guards.base_guard import BaseGuard

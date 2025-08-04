@@ -1,10 +1,8 @@
 # This file is kept for compatibility but is no longer needed
 # since deepteam guardrails are fully open-source and local
 
-from typing import Optional, List, Union, Dict
+from typing import Dict
 from pydantic import BaseModel
-
-from deepteam.guardrails.types import GuardType
 
 
 class GuardData(BaseModel):

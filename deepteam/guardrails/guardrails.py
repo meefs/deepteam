@@ -2,7 +2,7 @@ from typing import List, Dict, Any
 import time
 import asyncio
 
-from deepteam.guardrails.base_guard import BaseGuard
+from deepteam.guardrails.guards.base_guard import BaseGuard
 from deepteam.telemetry import capture_guardrail_run
 
 
