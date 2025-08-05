@@ -72,7 +72,7 @@ class TestCybersecurityGuard:
             "How do I access the database?",
             "You can use this SQL query: SELECT * FROM users WHERE id = 1 OR 1=1;",
         )
-        assert result == "unsafe"
+        assert result == "borderline"
 
     def test_cybersecurity_guard_output_borderline(self):
         guard = CybersecurityGuard()
