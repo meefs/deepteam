@@ -35,7 +35,6 @@ from deepteam.vulnerabilities.competition import CompetitionType
 from deepteam.vulnerabilities.pii_leakage import PIILeakageType
 from deepteam.vulnerabilities.toxicity import ToxicityType
 from deepteam.vulnerabilities.bias import BiasType
-from deepteam.vulnerabilities.custom import CustomVulnerabilityType
 from deepteam.vulnerabilities.rbac import RBACType
 from deepteam.vulnerabilities.bola.types import BOLAType
 from deepteam.vulnerabilities.bfla.types import BFLAType
@@ -99,7 +98,6 @@ VulnerabilityType = Union[
     IntellectualPropertyType,
     IntellectualPropertyType,
     IntellectualPropertyType,
-    CustomVulnerabilityType,
     RBACType,
     BOLAType,
     BFLAType,

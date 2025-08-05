@@ -13,6 +13,7 @@ from typing import List
 
 class Feature(Enum):
     REDTEAMING = "redteaming"
+    GUARDRAIL = "guardrail"
     UNKNOWN = "unknown"
 
 
@@ -148,6 +149,29 @@ def capture_red_teamer_run(vulnerabilities: List[str], attacks: List[str]):
             if anonymous_public_ip:
                 span.set_attribute("user.public_ip", anonymous_public_ip)
             set_last_feature(Feature.REDTEAMING)
+            yield span
+    else:
+        yield
+
+
+@contextmanager
+def capture_guardrail_run(type: str, guards: List[str]):
+    if not telemetry_opt_out():
+        with tracer.start_as_current_span(f"Invoked guardrail") as span:
+            posthog.capture(get_unique_id(), f"Invoked guardrail")
+            span.set_attribute("environment", IS_RUNNING_IN_JUPYTER)
+            span.set_attribute("user.status", get_status())
+            span.set_attribute("user.unique_id", get_unique_id())
+            span.set_attribute(
+                "feature_status.guardrail",
+                get_feature_status(Feature.GUARDRAIL),
+            )
+            span.set_attribute("guardrail.type", type)
+            for guard in guards:
+                span.set_attribute(f"guard.{guard}", 1)
+            if anonymous_public_ip:
+                span.set_attribute("user.public_ip", anonymous_public_ip)
+            set_last_feature(Feature.GUARDRAIL)
             yield span
     else:
         yield

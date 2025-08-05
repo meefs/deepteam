@@ -63,13 +63,12 @@ guardrails = Guardrails(
 )
 ```
 
-
 There are **TWO** mandatory and **TWO** optional parameters when creating a `Guardrails`:
 
 - `input_guards`: a list of input guards for protecting against malicious inputs
 - `output_guards`: a list of output guards for evaluating LLM outputs
-- [Optional] `evaluation_model`: a string specifying which OpenAI model to use for guard evaluation (defaults to `"gpt-4.1"`)
-- [Optional] `sample_rate`: a float between 0.0 and 1.0 that determines what fraction of requests are guarded (defaults to `1.0`)
+- [Optional] `evaluation_model`: a string specifying which OpenAI model to use for guard evaluation. Defaulted to `gpt-4.1`.
+- [Optional] `sample_rate`: a float between 0.0 and 1.0 that determines what fraction of requests are guarded. Defaulted to `1.0`.
 
 ```python
 # Advanced configuration
@@ -80,6 +79,7 @@ guardrails = Guardrails(
   sample_rate=0.5  # Guard 50% of requests
 )
 ```
+
 :::note
 Your list of `input_guards` and `output_guards` must not be empty if you wish to guard the respecitve inputs and outputs.
 :::
@@ -97,26 +97,6 @@ print(guard_result.breached)
 ```
 
 The `guard_input` method will invoke every single guard within your `Guardrails`s to check whether a particular input has breached any of the defined criteria.
-
-### 3-Tier Safety Assessment
-
-Each guard uses a **3-tier safety assessment system**:
-
-- **`safe`**: The content is clearly safe and poses no risk
-- **`uncertain`**: The content is borderline or ambiguous, requiring human review
-- **`unsafe`**: The content clearly violates safety guidelines
-
-```python
-# Access detailed safety assessment
-print(guard_result.safety_level)  # "safe", "uncertain", or "unsafe"
-print(guard_result.reason)        # Explanation for the assessment
-```
-
-A `Guardrails` is considered **breached** if any guard returns `unsafe` or `uncertain`.
-
-:::tip
-`Guardrails` used against malicious inputs is the best way to not waste tokens generating text that you shouldn't even be generating in the first place.
-:::
 
 ### Guard an Output
 
@@ -167,4 +147,24 @@ Output guards evaluate your LLM's responses before they reach users, ensuring sa
 - **[Hallucination Guard](/docs/guardrails-hallucination-guard)** - Detects and prevents fabricated, inaccurate, or hallucinated information in responses
 - **[Cybersecurity Guard](/docs/guardrails-cybersecurity-guard)** - (When configured for output) Ensures responses don't contain dangerous cybersecurity information or instructions
 
+## 3-Tier Safety System
 
+All of `deepteam`'s guards uses a **3-tier safety assessment system**:
+
+- `safe`: The content is clearly safe and poses no risk
+- `uncertain`: The content is borderline or ambiguous, requiring human review
+- `unsafe`: The content clearly violates safety guidelines
+
+```python
+# Access detailed safety assessment
+print(guard_result.safety_level)  # "safe", "uncertain", or "unsafe"
+print(guard_result.reason)        # Explanation for the assessment
+```
+
+The reason why `deepteam` does this is it allows you to control the strictness of each and every guard, and control what consitutues as a "breached" or "mitigated" event.
+
+A `Guardrails` is considered **breached** if any guard returns `unsafe` or `uncertain`.
+
+:::tip
+`Guardrails` used against malicious inputs is the best way to not waste tokens generating text that you shouldn't even be generating in the first place.
+:::

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Any, Union
 import datetime
 import os
 import json
@@ -10,7 +10,7 @@ from deepteam.vulnerabilities.types import VulnerabilityType
 
 class RedTeamingTestCase(BaseModel):
     vulnerability: str
-    vulnerability_type: VulnerabilityType
+    vulnerability_type: Union[VulnerabilityType, Enum]
     risk_category: str = Field(alias="riskCategory")
     attack_method: Optional[str] = Field(None, alias="attackMethod")
     input: Optional[str] = None
@@ -21,37 +21,41 @@ class RedTeamingTestCase(BaseModel):
     reason: Optional[str] = None
     error: Optional[str] = None
 
+    metadata: Optional[Dict[str, Any]] = None
+
 
 class TestCasesList(list):
-    def to_df(self):
+
+    def to_df(self) -> "pd.DataFrame":
         import pandas as pd
 
         data = []
         for case in self:
-            data.append(
-                {
-                    "Vulnerability": case.vulnerability,
-                    "Vulnerability Type": str(case.vulnerability_type.value),
-                    "Risk Category": case.risk_category,
-                    "Attack Enhancement": case.attack_method,
-                    "Input": case.input,
-                    "Actual Output": case.actual_output,
-                    "Score": case.score,
-                    "Reason": case.reason,
-                    "Error": case.error,
-                    "Status": (
-                        "Passed"
-                        if case.score and case.score > 0
-                        else "Errored" if case.error else "Failed"
-                    ),
-                }
-            )
+            case_data = {
+                "Vulnerability": case.vulnerability,
+                "Vulnerability Type": str(case.vulnerability_type.value),
+                "Risk Category": case.risk_category,
+                "Attack Enhancement": case.attack_method,
+                "Input": case.input,
+                "Actual Output": case.actual_output,
+                "Score": case.score,
+                "Reason": case.reason,
+                "Error": case.error,
+                "Status": (
+                    "Passed"
+                    if case.score and case.score > 0
+                    else "Errored" if case.error else "Failed"
+                ),
+            }
+            if case.metadata:
+                case_data.update(case.metadata)
+            data.append(case_data)
         return pd.DataFrame(data)
 
 
 class VulnerabilityTypeResult(BaseModel):
     vulnerability: str
-    vulnerability_type: VulnerabilityType
+    vulnerability_type: Union[VulnerabilityType, Enum]
     pass_rate: float
     passing: int
     failing: int
@@ -103,7 +107,9 @@ class RiskAssessment(BaseModel):
 
     def __init__(self, **data):
         super().__init__(**data)
-        self.test_cases = TestCasesList[RedTeamingTestCase](self.test_cases)
+        self.test_cases: TestCasesList = TestCasesList[RedTeamingTestCase](
+            self.test_cases
+        )
 
     def save(self, to: str) -> str:
         try:

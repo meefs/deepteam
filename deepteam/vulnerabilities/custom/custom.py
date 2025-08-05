@@ -1,7 +1,7 @@
 from typing import List, Optional
+from enum import Enum
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.custom.custom_types import CustomVulnerabilityType
 from deepteam.metrics import BaseRedTeamingMetric
 
 
@@ -13,22 +13,21 @@ class CustomVulnerability(BaseVulnerability):
     def __init__(
         self,
         name: str,
-        criterion: str,
+        criteria: str,
         types: Optional[List[str]] = None,
         custom_prompt: Optional[str] = None,
         metric: Optional[BaseRedTeamingMetric] = None,
     ):
-        if not criterion or not criterion.strip():
-            raise ValueError("CustomVulnerability requires a non-empty 'criterion' that defines what should be evaluated.")
-        
         self.name = name
-        self.types = [
-            CustomVulnerabilityType.CUSTOM_VULNERABILITY for _ in types
-        ]
-        self.raw_types = types or []
+
+        if types:
+            self.types = Enum(
+                f"CustomVulnerabilityType", {t.upper(): t for t in types}
+            )
+
         self.custom_prompt = custom_prompt
         self.metric = metric
-        self.criterion = criterion.strip()
+        self.criteria = criteria.strip()
         super().__init__(self.types)
 
     def get_name(self) -> str:
@@ -40,8 +39,5 @@ class CustomVulnerability(BaseVulnerability):
     def get_metric(self) -> Optional[BaseRedTeamingMetric]:
         return self.metric
 
-    def get_raw_types(self) -> List[str]:
-        return self.raw_types
-    
-    def get_criterion(self) -> str:
-        return self.criterion
+    def get_criteria(self) -> str:
+        return self.criteria

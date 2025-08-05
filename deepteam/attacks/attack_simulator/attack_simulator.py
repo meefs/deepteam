@@ -4,6 +4,7 @@ from tqdm import tqdm
 from pydantic import BaseModel
 from typing import List, Optional, Union
 import inspect
+from enum import Enum
 
 
 from deepeval.models import DeepEvalBaseLLM
@@ -19,17 +20,20 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 
 class SimulatedAttack(BaseModel):
     vulnerability: str
-    vulnerability_type: VulnerabilityType
+    vulnerability_type: Union[Enum, VulnerabilityType]
     input: Optional[str] = None
     attack_method: Optional[str] = None
     error: Optional[str] = None
+    metadata: Optional[dict] = None
 
-class NoAttack:
+
+class BaselineAttack:
     def get_name(self):
-        return "NoAttack"
+        return "Baseline Attack"
 
     async def a_enhance(self, attack, *args, **kwargs):
         return attack
+
 
 class AttackSimulator:
     model_callback: Union[CallbackType, None] = None
@@ -60,6 +64,7 @@ class AttackSimulator:
         vulnerabilities: List[BaseVulnerability],
         attacks: List[BaseAttack],
         ignore_errors: bool,
+        metadata: Optional[dict] = None,
     ) -> List[SimulatedAttack]:
         # Simulate unenhanced attacks for each vulnerability
         baseline_attacks: List[SimulatedAttack] = []
@@ -76,6 +81,7 @@ class AttackSimulator:
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
                     ignore_errors=ignore_errors,
+                    metadata=metadata,
                 )
             )
         # Enhance attacks by sampling from the provided distribution
@@ -105,8 +111,9 @@ class AttackSimulator:
         self,
         attacks_per_vulnerability_type: int,
         vulnerabilities: List[BaseVulnerability],
-        attacks: List[BaseAttack],
         ignore_errors: bool,
+        metadata: Optional[dict] = None,
+        attacks: Optional[List[BaseAttack]] = None,
     ) -> List[SimulatedAttack]:
         # Create a semaphore to control the number of concurrent tasks
         semaphore = asyncio.Semaphore(self.max_concurrent)
@@ -127,6 +134,7 @@ class AttackSimulator:
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
                     ignore_errors=ignore_errors,
+                    metadata=metadata,
                 )
                 pbar.update(1)
                 return result
@@ -156,10 +164,12 @@ class AttackSimulator:
             async with semaphore:  # Throttling applied here
                 # Randomly sample an enhancement based on the distribution
                 if not attacks:
-                    attack = NoAttack()
+                    attack = BaselineAttack()
                 else:
                     attack_weights = [attack.weight for attack in attacks]
-                    attack = random.choices(attacks, weights=attack_weights, k=1)[0]
+                    attack = random.choices(
+                        attacks, weights=attack_weights, k=1
+                    )[0]
 
                 result = await self.a_enhance_attack(
                     attack=attack,
@@ -195,6 +205,7 @@ class AttackSimulator:
         attacks_per_vulnerability_type: int,
         vulnerability: BaseVulnerability,
         ignore_errors: bool,
+        metadata: Optional[dict] = None,
     ) -> List[SimulatedAttack]:
         baseline_attacks: List[SimulatedAttack] = []
 
@@ -216,6 +227,7 @@ class AttackSimulator:
                             vulnerability=vulnerability.get_name(),
                             vulnerability_type=vulnerability_type,
                             input=local_attack,
+                            metadata=metadata,
                         )
                         for local_attack in local_attacks
                     ]
@@ -228,6 +240,7 @@ class AttackSimulator:
                                 vulnerability=vulnerability.get_name(),
                                 vulnerability_type=vulnerability_type,
                                 error=f"Error simulating adversarial attacks: {str(e)}",
+                                metadata=metadata,
                             )
                         )
                 else:
@@ -239,6 +252,7 @@ class AttackSimulator:
         attacks_per_vulnerability_type: int,
         vulnerability: BaseVulnerability,
         ignore_errors: bool,
+        metadata: Optional[dict] = None,
     ) -> List[SimulatedAttack]:
         baseline_attacks: List[SimulatedAttack] = []
         for vulnerability_type in vulnerability.get_types():
@@ -260,6 +274,7 @@ class AttackSimulator:
                             vulnerability=vulnerability.get_name(),
                             vulnerability_type=vulnerability_type,
                             input=local_attack,
+                            metadata=metadata,
                         )
                         for local_attack in local_attacks
                     ]
@@ -272,6 +287,7 @@ class AttackSimulator:
                                 vulnerability=vulnerability.get_name(),
                                 vulnerability_type=vulnerability_type,
                                 error=f"Error simulating adversarial attacks: {str(e)}",
+                                metadata=metadata,
                             )
                         )
                 else:
@@ -386,7 +402,6 @@ class AttackSimulator:
             purpose=purpose,
             custom_prompt=custom_prompt,
         )
-
         if self.using_native_model:
             # For models that support schema validation directly
             res, _ = self.simulator_model.generate(

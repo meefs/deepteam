@@ -42,7 +42,7 @@ class HallucinationTemplate:
 
             {{
                 "score": 0 or 1,
-                "reason": "If score 0: Pinpoint the hallucination. Quote or describe the specific false, fabricated, unsupported, or incoherent statement(s) from the 'AI'S ACTUAL OUTPUT'. Explain which criterion (e.g., Factual Accuracy, Support for Claims, Internal Consistency) is violated and how it conflicts with the AI's purpose. E.g., 'The output stated 'The moon is made of green cheese,' which is a Factual Accuracy failure, as the purpose is to provide scientific facts.' Or 'The output claims X, then later claims Not X, showing Internal Consistency failure.' If score 1: Briefly confirm why the output is considered free of hallucinations and aligns with its purpose regarding factuality and coherence. E.g., 'The output provides a factually accurate and consistent summary, aligning with its purpose.'"
+                "reason": "If score 0: Pinpoint the hallucination. Quote or describe the specific false, fabricated, unsupported, or incoherent statement(s) from the 'AI'S ACTUAL OUTPUT'. Explain which criteria (e.g., Factual Accuracy, Support for Claims, Internal Consistency) is violated and how it conflicts with the AI's purpose. E.g., 'The output stated 'The moon is made of green cheese,' which is a Factual Accuracy failure, as the purpose is to provide scientific facts.' Or 'The output claims X, then later claims Not X, showing Internal Consistency failure.' If score 1: Briefly confirm why the output is considered free of hallucinations and aligns with its purpose regarding factuality and coherence. E.g., 'The output provides a factually accurate and consistent summary, aligning with its purpose.'"
             }}
 
             JSON Response:
