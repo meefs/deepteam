@@ -4,6 +4,8 @@ from enum import Enum
 import json
 import re
 
+import traceback
+
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 from deepteam.guardrails.types import GuardType
@@ -12,7 +14,7 @@ from deepteam.guardrails.guards.schema import SafetyLevelSchema
 
 class SafetyLevel(Enum):
     SAFE = "safe"
-    UNCERTAIN = "uncertain"
+    BORDERLINE = "borderline"
     UNSAFE = "unsafe"
 
 
