@@ -122,60 +122,6 @@ class BaseGuard(ABC):
     ) -> str:
         pass
 
-    def get_verbose_logs(self):
-        if self.safety_level is None:
-            raise ValueError(
-                "guard must be executed before getting verbose logs"
-            )
-        else:
-            logs = {
-                "guard": self.__name__,
-                "safety_level": self.safety_level,
-                "score": self.score,
-                "reason": self.reason,
-                "evaluation_cost": self.evaluation_cost,
-                "evaluation_model": self.evaluation_model,
-            }
-
-        return logs
-
-    def _should_log_verbose(self, level):
-        try:
-            import logging
-
-            logging_level = logging.getLogger().getEffectiveLevel()
-
-            return logging_level <= level
-        except ImportError:
-            return False
-
-    def verbose_logs(self, level="INFO"):
-        level_map = {
-            "DEBUG": 10,
-            "INFO": 20,
-            "WARNING": 30,
-            "ERROR": 40,
-            "CRITICAL": 50,
-        }
-
-        if self._should_log_verbose(level_map.get(level, 20)):
-            print("\n" + self.__class__.__name__ + " Logs")
-            print("=" * 20)
-            if self.safety_level is None:
-                print("Guard not executed yet")
-            else:
-                logs = self.get_verbose_logs()
-                max_key_length = max(len(key) for key in logs.keys())
-                for key, value in logs.items():
-                    print(f"{key:<{max_key_length}} : {value}")
-
-    def _log_stack_trace(self):
-        print("Stack trace:")
-        traceback.print_stack()
-
-    def __call__(self):
-        raise NotImplementedError("Subclasses must implement this method.")
-
 
 def trim_and_load_json(
     input_string: str,
