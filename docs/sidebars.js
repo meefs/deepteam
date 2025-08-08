@@ -13,6 +13,7 @@ module.exports = {
       className: "sidebar-item-red-teaming root-sidebar-item",
       items: [
         "red-teaming-introduction",
+        "red-teaming-yaml-cli",
         "red-teaming-agentic-introduction",
       ],
       collapsed: false,

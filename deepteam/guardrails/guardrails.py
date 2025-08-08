@@ -61,13 +61,14 @@ class Guardrails:
         self, guards: List[BaseGuard], evaluation_model: str
     ) -> List[BaseGuard]:
         """Update all guards to use the specified evaluation model"""
-        updated_guards = []
+        from deepteam.guardrails.guards.base_guard import initialize_model
+        
         for guard in guards:
-            # Create new instance with updated model
-            guard_class = guard.__class__
-            new_guard = guard_class(evaluation_model=evaluation_model)
-            updated_guards.append(new_guard)
-        return updated_guards
+            # Update the existing guard's model instead of creating new instance
+            guard.model, guard.using_native_model = initialize_model(evaluation_model)
+            guard.evaluation_model = guard.model.get_model_name()
+        
+        return guards
 
     def _should_process(self) -> bool:
         """Deterministic sampling: exactly sample_rate fraction of requests"""
