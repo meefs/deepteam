@@ -9,48 +9,48 @@ class TestOWASPTop10:
 
     def test_owasp_top_10_init(self):
         """Test that OWASP Top 10 framework can be instantiated."""
-        framework = OWASPTop10
+        framework = OWASPTop10()
         assert framework is not None
 
     def test_owasp_top_10_name(self):
         """Test that OWASP Top 10 framework has correct name."""
-        framework = OWASPTop10
+        framework = OWASPTop10()
         assert framework.name == "OWASP"
 
     def test_owasp_top_10_description(self):
         """Test that OWASP Top 10 framework has correct description."""
-        framework = OWASPTop10
+        framework = OWASPTop10()
         assert framework.description == "The OWASP Top 10 for LLMs 2025"
 
     def test_owasp_top_10_has_vulnerabilities(self):
         """Test that OWASP Top 10 framework has vulnerabilities defined."""
-        framework = OWASPTop10
+        framework = OWASPTop10()
         assert hasattr(framework, "vulnerabilities")
         assert framework.vulnerabilities is not None
         assert len(framework.vulnerabilities) > 0
 
     def test_owasp_top_10_vulnerabilities_are_base_vulnerability(self):
         """Test that all vulnerabilities are instances of BaseVulnerability."""
-        framework = OWASPTop10
+        framework = OWASPTop10()
         for vulnerability in framework.vulnerabilities:
             assert isinstance(vulnerability, BaseVulnerability)
 
     def test_owasp_top_10_has_attacks(self):
         """Test that OWASP Top 10 framework has attacks defined."""
-        framework = OWASPTop10
+        framework = OWASPTop10()
         assert hasattr(framework, "attacks")
         assert framework.attacks is not None
         assert len(framework.attacks) > 0
 
     def test_owasp_top_10_attacks_are_base_attack(self):
         """Test that all attacks are instances of BaseAttack."""
-        framework = OWASPTop10
+        framework = OWASPTop10()
         for attack in framework.attacks:
             assert isinstance(attack, BaseAttack)
 
     def test_owasp_top_10_vulnerability_types(self):
         """Test that framework includes expected vulnerability types."""
-        framework = OWASPTop10
+        framework = OWASPTop10()
         vulnerability_names = [
             vuln.__class__.__name__ for vuln in framework.vulnerabilities
         ]
@@ -84,7 +84,7 @@ class TestOWASPTop10:
 
     def test_owasp_top_10_attack_types(self):
         """Test that framework includes expected attack types."""
-        framework = OWASPTop10
+        framework = OWASPTop10()
         attack_names = [
             attack.__class__.__name__ for attack in framework.attacks
         ]

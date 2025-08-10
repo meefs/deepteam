@@ -8,7 +8,6 @@ from deepteam.red_team import red_team
 # Import guardrails for production LLM safety
 from deepteam.guardrails import (
     Guardrails,
-    GuardResult,
     ToxicityGuard,
     PromptInjectionGuard,
     PrivacyGuard,
@@ -22,7 +21,6 @@ from deepteam.guardrails import (
 __all__ = [
     "red_team",
     "Guardrails",
-    "GuardResult",
     "ToxicityGuard",
     "PromptInjectionGuard",
     "PrivacyGuard",
