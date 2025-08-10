@@ -13,15 +13,14 @@ You can **detect all OWASP Top 10 risks** using DeepTeam's framework integration
 
 ```python
 from deepteam import red_team
-from deepteam.frameworks import get_framework_config
+from deepteam.frameworks import OWASPTop10
 
-config = get_framework_config("owasp")
 risk_assessment = red_team(
     model_callback=your_model_callback,
-    vulnerabilities=config.vulnerabilities,
-    attacks=config.attacks
+    framework=OWASPTop10()
 )
 ```
+
 :::
 
 ## What's New in 2025
@@ -29,29 +28,31 @@ risk_assessment = red_team(
 The 2025 OWASP Top 10 for LLMs includes significant updates reflecting real-world LLM deployments:
 
 **New Risks:**
+
 - **System Prompt Leakage** (LLM07): Exposure of sensitive instructions and credentials
 - **Vector and Embedding Weaknesses** (LLM08): RAG architecture vulnerabilities
 
 **Major Changes:**
+
 - **Sensitive Information Disclosure** jumped from #6 to #2 due to real-world data leaks
 - **Supply Chain Vulnerabilities** rose to #3 with increased third-party risks
 - **Misinformation** replaced Overreliance, expanded to include hallucinations
 - **Unbounded Consumption** replaced Model Denial of Service, now includes resource management
 
-## The 2025 Top 10 Risks
+## The OWASP Top 10 2025 Risks List
 
-1. [Prompt Injection](#1-prompt-injection)
-2. [Sensitive Information Disclosure](#2-sensitive-information-disclosure)
-3. [Supply Chain](#3-supply-chain)
-4. [Data and Model Poisoning](#4-data-and-model-poisoning)
-5. [Improper Output Handling](#5-improper-output-handling)
-6. [Excessive Agency](#6-excessive-agency)
-7. [System Prompt Leakage](#7-system-prompt-leakage)
-8. [Vector and Embedding Weaknesses](#8-vector-and-embedding-weaknesses)
-9. [Misinformation](#9-misinformation)
-10. [Unbounded Consumption](#10-unbounded-consumption)
+1. [Prompt Injection (LLM01:2025)](#1-prompt-injection-llm012025)
+2. [Sensitive Information Disclosure (LLM02:2025)](#2-sensitive-information-disclosure-llm022025)
+3. [Supply Chain (LLM03:2025)](#3-supply-chain-llm032025)
+4. [Data and Model Poisoning (LLM04:2025)](#4-data-and-model-poisoning-llm042025)
+5. [Improper Output Handling (LLM05:2025)](#5-improper-output-handling-llm052025)
+6. [Excessive Agency (LLM06:2025)](#6-excessive-agency-llm062025)
+7. [System Prompt Leakage (LLM07:2025)](#7-system-prompt-leakage-llm072025)
+8. [Vector and Embedding Weaknesses (LLM08:2025)](#8-vector-and-embedding-weaknesses-llm082025)
+9. [Misinformation (LLM09:2025)](#9-misinformation-llm092025)
+10. [Unbounded Consumption (LLM10:2025)](#10-unbounded-consumption-llm102025)
 
-## 1. Prompt Injection
+## 1. Prompt Injection (LLM01:2025)
 
 **Prompt Injection** remains the #1 critical vulnerability, where attackers manipulate LLM inputs to override original instructions, extract sensitive information, or trigger unintended behaviors.
 
@@ -61,15 +62,13 @@ The 2025 OWASP Top 10 for LLMs includes significant updates reflecting real-worl
 
 **Indirect Injection:** Hidden instructions in external content (documents, websites, emails) that the LLM processes.
 
-### Testing with DeepTeam
-
-```python
+```python title="main.py"
 from deepteam import red_team
 from deepteam.attacks.single_turn import PromptInjection, Base64, ROT13, Leetspeak
 from deepteam.attacks.multi_turn import LinearJailbreaking, CrescendoJailbreaking
 
 attacks = [
-    PromptInjection(),       # Direct injection attempts  
+    PromptInjection(),       # Direct injection attempts
     Base64(),               # Encoded payloads
     Leetspeak(),           # Character substitution
     LinearJailbreaking(),   # Multi-turn escalation
@@ -85,20 +84,18 @@ risk_assessment = red_team(
 Prompt injection attacks in DeepTeam test your LLM's resilience against various manipulation techniques, from simple attempts to sophisticated multi-turn conversations.
 :::
 
-## 2. Sensitive Information Disclosure
+## 2. Sensitive Information Disclosure (LLM02:2025)
 
 **Sensitive Information Disclosure** involves the unintended exposure of private data, credentials, API keys, or confidential information through LLM outputs.
 
 ### Categories
 
 - **PII Leakage**: Personal identifiable information exposure
-- **Prompt Leakage**: System prompts and configuration details  
+- **Prompt Leakage**: System prompts and configuration details
 - **Intellectual Property**: Proprietary algorithms and trade secrets
 - **Authentication Data**: API keys, passwords, tokens
 
-### Testing with DeepTeam
-
-```python
+```python title="main.py"
 from deepteam.vulnerabilities import PIILeakage, PromptLeakage, IntellectualProperty
 
 sensitive_vulnerabilities = [
@@ -118,7 +115,7 @@ risk_assessment = red_team(
 Testing for sensitive information disclosure focuses on specific vulnerability types to identify if your LLM inadvertently reveals confidential data.
 :::
 
-## 3. Supply Chain
+## 3. Supply Chain (LLM03:2025)
 
 **Supply Chain** vulnerabilities arise from compromised third-party components, models, datasets, or plugins used in LLM applications.
 
@@ -129,9 +126,7 @@ Testing for sensitive information disclosure focuses on specific vulnerability t
 - **Library Dependencies**: Vulnerable Python packages or ML frameworks
 - **Plugin Ecosystem**: Malicious or compromised LLM plugins
 
-### Testing with DeepTeam
-
-```python
+```python title="main.py"
 from deepteam.vulnerabilities import Bias, Toxicity, Misinformation, Robustness
 
 # Test for signs of compromised supply chain components
@@ -153,7 +148,7 @@ risk_assessment = red_team(
 DeepTeam detects the behavioral impact of supply chain vulnerabilities. If your model shows unexpected bias, toxicity, or robustness issues, it may indicate compromised components.
 :::
 
-## 4. Data and Model Poisoning
+## 4. Data and Model Poisoning (LLM04:2025)
 
 **Data and Model Poisoning** involves manipulating training data, fine-tuning processes, or embedding data to introduce vulnerabilities, biases, or backdoors.
 
@@ -164,9 +159,7 @@ DeepTeam detects the behavioral impact of supply chain vulnerabilities. If your 
 - **RAG Poisoning**: Malicious documents in retrieval knowledge bases
 - **Embedding Poisoning**: Corrupted vector representations
 
-### Testing with DeepTeam
-
-```python
+```python title="main.py"
 from deepteam.vulnerabilities import (
     Bias, Toxicity, Misinformation, IllegalActivity, GraphicContent, PersonalSafety
 )
@@ -185,7 +178,7 @@ risk_assessment = red_team(
 )
 ```
 
-## 5. Improper Output Handling
+## 5. Improper Output Handling (LLM05:2025)
 
 **Improper Output Handling** occurs when LLM outputs are not adequately validated, sanitized, or secured before being passed to downstream systems.
 
@@ -196,9 +189,7 @@ risk_assessment = red_team(
 - **SQL Injection**: Database queries constructed from LLM output
 - **Command Injection**: System commands generated by LLM
 
-### Testing with DeepTeam
-
-```python
+```python title="main.py"
 from deepteam.vulnerabilities import ShellInjection, SQLInjection
 
 dangerous_output_tests = [
@@ -217,19 +208,17 @@ risk_assessment = red_team(
 Implement output validation in your model callback to catch and sanitize dangerous outputs. DeepTeam helps identify when your LLM generates potentially harmful content.
 :::
 
-## 6. Excessive Agency
+## 6. Excessive Agency (LLM06:2025)
 
 **Excessive Agency** occurs when LLMs are granted too much autonomy, permissions, or functionality, leading to unintended actions beyond their intended scope.
 
 ### Types
 
 - **Functionality**: LLM has access to more tools than necessary
-- **Permissions**: LLM operates with elevated privileges  
+- **Permissions**: LLM operates with elevated privileges
 - **Autonomy**: LLM makes decisions without appropriate oversight
 
-### Testing with DeepTeam
-
-```python
+```python title="main.py"
 from deepteam.vulnerabilities import ExcessiveAgency, RBAC, BFLA, BOLA
 
 agency_tests = [
@@ -246,7 +235,7 @@ risk_assessment = red_team(
 )
 ```
 
-## 7. System Prompt Leakage
+## 7. System Prompt Leakage (LLM07:2025)
 
 **System Prompt Leakage** is a new 2025 entry focusing on the exposure of internal system prompts that contain sensitive instructions, credentials, or operational logic.
 
@@ -257,15 +246,13 @@ risk_assessment = red_team(
 - **Guards**: Security mechanisms and content filtering rules
 - **Permissions and Roles**: Access control configurations
 
-### Testing with DeepTeam
-
-```python
+```python title="main.py"
 from deepteam.vulnerabilities import PromptLeakage
 
 prompt_tests = [
     PromptLeakage(types=[
-        "secrets and credentials", 
-        "instructions", 
+        "secrets and credentials",
+        "instructions",
         "guards",
         "permissions and roles"
     ])
@@ -282,7 +269,7 @@ risk_assessment = red_team(
 Never include sensitive credentials or secrets directly in system prompts. Use external configuration management and secure credential storage instead.
 :::
 
-## 8. Vector and Embedding Weaknesses
+## 8. Vector and Embedding Weaknesses (LLM08:2025)
 
 **Vector and Embedding Weaknesses** is a new 2025 entry targeting vulnerabilities in RAG systems and vector databases.
 
@@ -293,9 +280,7 @@ Never include sensitive credentials or secrets directly in system prompts. Use e
 - **Vector Database Access**: Unauthorized access to embedding stores
 - **Embedding Inversion**: Reconstructing source text from vectors
 
-### Testing with DeepTeam
-
-```python
+```python title="main.py"
 from deepteam.vulnerabilities import Misinformation, PIILeakage
 
 # Test for RAG-specific vulnerabilities
@@ -315,7 +300,7 @@ risk_assessment = red_team(
 Vector and embedding security is crucial for RAG systems. Ensure proper access controls on vector databases and validate knowledge base integrity regularly.
 :::
 
-## 9. Misinformation
+## 9. Misinformation (LLM09:2025)
 
 **Misinformation** addresses the risk of LLMs producing false or misleading information that appears credible, including hallucinations and fabricated citations.
 
@@ -326,15 +311,13 @@ Vector and embedding security is crucial for RAG systems. Ensure proper access c
 - **Expertise Misrepresentation**: False claims about qualifications
 - **Fabricated Sources**: Made-up citations, studies, or references
 
-### Testing with DeepTeam
-
-```python
+```python title="main.py"
 from deepteam.vulnerabilities import Misinformation, Competition
 
 misinformation_tests = [
     Misinformation(types=[
-        "factual errors", 
-        "unsupported claims", 
+        "factual errors",
+        "unsupported claims",
         "expertize misrepresentation"
     ]),
     Competition(types=["discreditation"])
@@ -351,7 +334,7 @@ risk_assessment = red_team(
 LLM misinformation can have serious consequences in domains like healthcare, finance, and legal advice. Always implement fact-checking and disclaimer mechanisms.
 :::
 
-## 10. Unbounded Consumption
+## 10. Unbounded Consumption (LLM10:2025)
 
 **Unbounded Consumption** addresses uncontrolled resource usage that can lead to service degradation, financial losses, or system unavailability.
 
@@ -362,9 +345,7 @@ LLM misinformation can have serious consequences in domains like healthcare, fin
 - **API Abuse**: High-volume requests leading to cost escalation
 - **Context Flooding**: Extremely long inputs that overflow context windows
 
-### Testing with DeepTeam
-
-```python
+```python title="main.py"
 # Test for potentially resource-intensive patterns
 resource_test = red_team(
     model_callback=your_model_callback,
@@ -388,16 +369,12 @@ Use DeepTeam's framework integration for comprehensive OWASP Top 10 testing:
 
 ```python
 from deepteam import red_team
-from deepteam.frameworks import get_framework_config
-
-# Get complete OWASP Top 10 configuration
-owasp_config = get_framework_config("owasp")
+from deepteam.frameworks import OWASPTop10
 
 # Run comprehensive assessment
 owasp_assessment = red_team(
     model_callback=your_model_callback,
-    vulnerabilities=owasp_config.vulnerabilities,
-    attacks=owasp_config.attacks,
+    framework=OWASPTop10(),
     attacks_per_vulnerability_type=5
 )
 

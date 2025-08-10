@@ -13,6 +13,7 @@ from deepeval.dataset.golden import Golden
 from deepeval.test_case import LLMTestCase
 from deepeval.utils import get_or_create_event_loop
 
+from deepteam.frameworks.frameworks import AISafetyFramework
 from deepteam.telemetry import capture_red_teamer_run
 from deepteam.attacks import BaseAttack
 from deepteam.vulnerabilities import BaseVulnerability
@@ -134,13 +135,25 @@ class RedTeamer:
     def red_team(
         self,
         model_callback: CallbackType,
-        vulnerabilities: List[BaseVulnerability],
-        attacks: List[BaseAttack],
+        vulnerabilities: Optional[List[BaseVulnerability]] = None,
+        attacks: Optional[List[BaseAttack]] = None,
+        framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
         reuse_simulated_attacks: bool = False,
         metadata: Optional[dict] = None,
     ):
+        if framework:
+            vulnerabilities = framework.vulnerabilities
+            attacks = framework.attacks
+        else:
+            if not vulnerabilities:
+                raise ValueError(
+                    "You must either provide a 'framework' or 'vulnerabilities'."
+                )
+
+        print(f"Vulnerabilities: {vulnerabilities}")
+
         if self.async_mode:
             assert inspect.iscoroutinefunction(
                 model_callback
@@ -273,13 +286,23 @@ class RedTeamer:
     async def a_red_team(
         self,
         model_callback: CallbackType,
-        vulnerabilities: List[BaseVulnerability],
-        attacks: List[BaseAttack],
+        vulnerabilities: Optional[List[BaseVulnerability]] = None,
+        attacks: Optional[List[BaseAttack]] = None,
+        framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
         reuse_simulated_attacks: bool = False,
         metadata: Optional[dict] = None,
     ):
+        if framework:
+            vulnerabilities = framework.vulnerabilities
+            attacks = framework.attacks
+        else:
+            if not vulnerabilities:
+                raise ValueError(
+                    "You must either provide a 'framework' or 'vulnerabilities'."
+                )
+
         with capture_red_teamer_run(
             vulnerabilities=[v.get_name() for v in vulnerabilities],
             attacks=[a.get_name() for a in attacks],
