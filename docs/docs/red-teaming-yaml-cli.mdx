@@ -104,7 +104,7 @@ target:
   purpose: "A financial advice chatbot"
   model:
     provider: custom
-    file: "my_financial_bot.py" 
+    file: "my_financial_bot.py"
     class: "FinancialAdvisorLLM"
 ```
 
@@ -117,7 +117,7 @@ target:
   purpose: "A custom chatbot"
   callback:
     file: "my_callback.py"
-    function: "model_callback"  # optional, defaults to "model_callback"
+    function: "model_callback" # optional, defaults to "model_callback"
 ```
 
 When using `callback`, the `file` field is mandatory while `function` is optional.
@@ -172,18 +172,16 @@ For custom vulnerabilities:
 
 ```yaml
 custom_vulnerabilities:
-  - name: "CustomVulnerability"
-    custom_name: "Business Logic"
+  - name: "Business Logic"
     criteria: "Check if the response violates business logic rules"
     types: ["access_control", "privilege_escalation"]
     prompt: "Custom evaluation prompt template"
 ```
 
-There are **TWO** mandatory and **THREE** optional parameters when creating custom vulnerabilities:
+There are **TWO** mandatory and **TWO** optional parameters when creating custom vulnerabilities:
 
-- `name`: must be "CustomVulnerability"
+- `name`: display name for your vulnerability
 - `criteria`: defines what should be evaluated
-- [Optional] `custom_name`: display name for the vulnerability. Defaulted to `"Custom"`.
 - [Optional] `types`: list of sub-types for this vulnerability
 - [Optional] `prompt`: custom prompt template for evaluation
 
@@ -326,4 +324,4 @@ Available vulnerabilities: `Bias`, `Toxicity`, `Misinformation`, `Illegal Activi
 Available attacks: `Base64`, `Gray Box`, `Leetspeak`, `Math Problem`, `Multilingual`, `Prompt Injection`, `Prompt Probing`, `Roleplay`, `ROT-13`, `Crescendo Jailbreaking`, `Linear Jailbreaking`, `Tree Jailbreaking`, `Sequential Break`, `Bad Likert Judge`.
 
 For detailed documentation, refer to the [vulnerabilities documentation](/docs/red-teaming-vulnerabilities) and [attacks documentation](/docs/red-teaming-adversarial-attacks).
-::: 
+:::

@@ -82,22 +82,23 @@ ATTACK_CLASSES = [
 ATTACK_MAP = {cls().get_name(): cls for cls in ATTACK_CLASSES}
 
 
-def _build_vulnerability(cfg: dict):
+def _build_vulnerability(cfg: dict, custom: bool):
     name = cfg.get("name")
     if not name:
         raise ValueError("Vulnerability entry missing 'name'")
-    if name == "CustomVulnerability":
+    if custom:
         criteria = cfg.get("criteria")
         if not criteria:
             raise ValueError(
                 "CustomVulnerability configuration must include a 'criteria' field that defines what should be evaluated."
             )
         return CustomVulnerability(
-            name=cfg.get("custom_name", "Custom"),
+            name=name,
             criteria=criteria,
             types=cfg.get("types"),
             custom_prompt=cfg.get("prompt"),
         )
+
     cls = VULN_MAP.get(name)
     if not cls:
         raise ValueError(f"Unknown vulnerability: {name}")
@@ -224,8 +225,14 @@ def run(
     )
 
     vulnerabilities_cfg = cfg.get("default_vulnerabilities", [])
-    vulnerabilities_cfg += cfg.get("custom_vulnerabilities", [])
-    vulnerabilities = [_build_vulnerability(v) for v in vulnerabilities_cfg]
+    vulnerabilities = [
+        _build_vulnerability(v, custom=False) for v in vulnerabilities_cfg
+    ]
+
+    custom_vulnerabilities_cfg = cfg.get("custom_vulnerabilities", [])
+    vulnerabilities += [
+        _build_vulnerability(v, custom=True) for v in custom_vulnerabilities_cfg
+    ]
 
     attacks = [_build_attack(a) for a in cfg.get("attacks", [])]
 
