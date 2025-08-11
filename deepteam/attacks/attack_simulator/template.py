@@ -1,6 +1,7 @@
 from typing import Optional, Dict, Type
 
 from deepteam.vulnerabilities.custom.custom import CustomVulnerability
+from deepteam.vulnerabilities.debug_access.types import DebugAccessType
 from deepteam.vulnerabilities.types import (
     MisinformationType,
     BiasType,
@@ -56,6 +57,7 @@ from deepteam.vulnerabilities.agentic.validation_bypass.types import (
 from deepteam.vulnerabilities.agentic.validation_bypass.template import (
     ValidationBypassTemplate,
 )
+from deepteam.vulnerabilities.debug_access.template import DebugAccessTemplate
 
 TEMPLATE_MAP: Dict[Type[VulnerabilityType], TemplateType] = {
     BiasType: BiasTemplate,
@@ -75,6 +77,7 @@ TEMPLATE_MAP: Dict[Type[VulnerabilityType], TemplateType] = {
     RecursiveHijackingType: RecursiveHijackingTemplate,
     GoalTheftType: GoalTheftTemplate,
     ValidationBypassType: ValidationBypassTemplate,
+    DebugAccessType: DebugAccessTemplate,
 }
 
 
@@ -100,7 +103,6 @@ class AttackSimulatorTemplate:
         """
         vulnerability_enum_name = vulnerability_type.__class__.__name__
         if vulnerability_enum_name == "CustomVulnerabilityType":
-            print("Custom Vulnerability!!")
             return CustomVulnerabilityTemplate.generate_baseline_attacks(
                 name="Custom Vulnerability",
                 types=[vulnerability_type.value],

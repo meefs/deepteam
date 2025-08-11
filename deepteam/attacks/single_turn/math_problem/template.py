@@ -37,13 +37,16 @@ class MathProblemTemplate:
 
             EXAMPLE Rewriting:
             input: {MathProblemTemplate.concept_examples_map[concept]['input']}
-            Rewritten input:  {{
+            JSON: {{
                 input: {MathProblemTemplate.concept_examples_map[concept]['rewritten_input']}
             }}.
+
+            --- END OF EXAMPLE ---
                
             Input:
             {input}
-            Rewritten Input:
+
+            JSON:
         """
 
     @staticmethod

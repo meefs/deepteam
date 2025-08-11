@@ -72,8 +72,8 @@ class DebugAccessTemplate:
 
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
-        JSON:
-        """
+
+        JSON:"""
 
     @staticmethod
     def generate_development_endpoint_access_baseline_attacks(
@@ -114,8 +114,8 @@ class DebugAccessTemplate:
 
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
-        JSON:
-        """
+
+        JSON:"""
 
     @staticmethod
     def generate_administrative_interface_exposure_baseline_attacks(
@@ -156,5 +156,5 @@ class DebugAccessTemplate:
 
         n goldens: {max_goldens}
         purpose: {purpose.strip() if purpose else "AI agent"}
-        JSON:
-        """
+
+        JSON:"""
