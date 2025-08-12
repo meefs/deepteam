@@ -49,7 +49,6 @@ class AttackSimulator:
         self.simulator_model, self.using_native_model = initialize_model(
             simulator_model
         )
-
         # Define list of attacks and unaligned vulnerabilities
         self.simulated_attacks: List[SimulatedAttack] = []
         self.max_concurrent = max_concurrent
