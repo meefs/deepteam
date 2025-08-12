@@ -1,8 +1,9 @@
 from pydantic import BaseModel
 from tqdm import tqdm
-from typing import Optional
+from typing import Optional, Union
 
 from deepeval.models import DeepEvalBaseLLM
+from deepeval.metrics.utils import initialize_model
 
 from deepteam.attacks import BaseAttack
 from deepteam.attacks.multi_turn.sequential_break.schema import (
@@ -50,9 +51,9 @@ class SequentialJailbreak(BaseAttack):
         self,
         attack: str,
         model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
 
         # Progress bar setup
         attack_name = f"{self.attack_type.title().replace('_', ' ')}"
@@ -60,7 +61,9 @@ class SequentialJailbreak(BaseAttack):
             attack_name += f" ({self.persona.title()})"
 
         pbar = tqdm(
-            total=3, desc=f"💬 Sequential Break ({attack_name})", leave=False
+            total=3,
+            desc=f"💬 Sequential Jailbreak ({attack_name})",
+            leave=False,
         )
 
         try:
@@ -170,9 +173,9 @@ class SequentialJailbreak(BaseAttack):
         self,
         attack: str,
         model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
 
         # Progress bar setup
         attack_name = f"{self.attack_type.title().replace('_', ' ')}"
@@ -180,7 +183,9 @@ class SequentialJailbreak(BaseAttack):
             attack_name += f" ({self.persona.title()})"
 
         pbar = tqdm(
-            total=3, desc=f"💬 Sequential Break ({attack_name})", leave=False
+            total=3,
+            desc=f"💬 Sequential Jailbreak ({attack_name})",
+            leave=False,
         )
 
         try:
@@ -291,9 +296,4 @@ class SequentialJailbreak(BaseAttack):
         return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
-        if self.attack_type == "question_bank":
-            return "Sequential Break (Question Bank)"
-        elif self.attack_type == "game_environment":
-            return "Sequential Break (Game Environment)"
-        else:
-            return f"Sequential Break (Dialogue - {self.persona.title()})"
+        return "Sequential Jailbreak"

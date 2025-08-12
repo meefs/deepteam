@@ -7,10 +7,8 @@ from deepteam.attacks.single_turn.system_override.template import (
 
 
 class SystemOverride(BaseAttack):
-    def __init__(self, weight: int = 2, max_retries: int = 3):
-        self.weight = (
-            weight  # Higher weight since this is a sophisticated attack
-        )
+    def __init__(self, weight: int = 1, max_retries: int = 3):
+        self.weight = weight
         self.max_retries = max_retries
 
     def enhance(self, attack: str) -> str:

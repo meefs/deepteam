@@ -19,21 +19,21 @@ class RecursiveHijackingTemplate:
     ) -> str:
 
         if vulnerability_type == RecursiveHijackingType.SELF_MODIFYING_GOALS:
-            return RecursiveHijackingTemplate.generate_self_modifying_goals_baseline_attacks(
+            return RecursiveHijackingTemplate.generate_incremental_redefinition_baseline_attacks(
                 max_goldens, purpose
             )
         elif (
             vulnerability_type
             == RecursiveHijackingType.RECURSIVE_OBJECTIVE_CHAINING
         ):
-            return RecursiveHijackingTemplate.generate_recursive_objective_chaining_baseline_attacks(
+            return RecursiveHijackingTemplate.generate_intermediate_chaining_baseline_attacks(
                 max_goldens, purpose
             )
         elif (
             vulnerability_type
             == RecursiveHijackingType.GOAL_PROPAGATION_ATTACKS
         ):
-            return RecursiveHijackingTemplate.generate_goal_propagation_attacks_baseline_attacks(
+            return RecursiveHijackingTemplate.generate_cascading_subgoals_baseline_attacks(
                 max_goldens, purpose
             )
 

@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Union
 from pydantic import BaseModel
 from tqdm import tqdm
 from uuid import uuid4
@@ -6,6 +6,7 @@ import json
 
 
 from deepeval.models import DeepEvalBaseLLM
+from deepeval.metrics.utils import initialize_model
 
 
 from deepteam.attacks import BaseAttack
@@ -66,9 +67,9 @@ class CrescendoJailbreaking(BaseAttack):
         self,
         attack: str,
         model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
         self.model_callback = model_callback
 
         round_num = 0
@@ -151,9 +152,9 @@ class CrescendoJailbreaking(BaseAttack):
         self,
         attack: str,
         model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
         self.model_callback = model_callback
 
         round_num = 0

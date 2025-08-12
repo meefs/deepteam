@@ -58,7 +58,7 @@ module.exports = {
             "red-teaming-agentic-attacks",
             "red-teaming-agentic-attacks-system-override",
             "red-teaming-agentic-attacks-permission-escalation",
-            "red-teaming-agentic-attacks-objective-reframing",
+            "red-teaming-agentic-attacks-goal-redirection",
             "red-teaming-agentic-attacks-semantic-manipulation",
             "red-teaming-agentic-attacks-input-bypass",
             "red-teaming-agentic-attacks-context-poisoning",

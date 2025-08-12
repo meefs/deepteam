@@ -49,7 +49,6 @@ class AttackSimulator:
         self.simulator_model, self.using_native_model = initialize_model(
             simulator_model
         )
-
         # Define list of attacks and unaligned vulnerabilities
         self.simulated_attacks: List[SimulatedAttack] = []
         self.max_concurrent = max_concurrent
@@ -212,14 +211,9 @@ class AttackSimulator:
         for vulnerability_type in vulnerability.get_types():
             try:
                 local_attacks = self.simulate_local_attack(
-                    self.purpose,
-                    vulnerability_type,
-                    attacks_per_vulnerability_type,
-                    (
-                        vulnerability.custom_prompt
-                        if hasattr(vulnerability, "custom_prompt")
-                        else None
-                    ),
+                    vulnerability=vulnerability,
+                    vulnerability_type=vulnerability_type,
+                    num_attacks=attacks_per_vulnerability_type,
                 )
                 baseline_attacks.extend(
                     [
@@ -258,14 +252,9 @@ class AttackSimulator:
         for vulnerability_type in vulnerability.get_types():
             try:
                 local_attacks = await self.a_simulate_local_attack(
-                    self.purpose,
-                    vulnerability_type,
-                    attacks_per_vulnerability_type,
-                    (
-                        vulnerability.custom_prompt
-                        if hasattr(vulnerability, "custom_prompt")
-                        else None
-                    ),
+                    vulnerability=vulnerability,
+                    vulnerability_type=vulnerability_type,
+                    num_attacks=attacks_per_vulnerability_type,
                 )
 
                 baseline_attacks.extend(
@@ -389,18 +378,19 @@ class AttackSimulator:
 
     def simulate_local_attack(
         self,
-        purpose: str,
+        vulnerability: BaseVulnerability,
         vulnerability_type: VulnerabilityType,
         num_attacks: int,
-        custom_prompt: Optional[str] = None,
     ) -> List[str]:
         """Simulate attacks using local LLM model"""
         # Get the appropriate prompt template from AttackSimulatorTemplate
         prompt = AttackSimulatorTemplate.generate_attacks(
             max_goldens=num_attacks,
             vulnerability_type=vulnerability_type,
-            purpose=purpose,
-            custom_prompt=custom_prompt,
+            custom_name=vulnerability.get_name(),
+            custom_purpose=self.purpose,
+            custom_prompt=getattr(vulnerability, "custom_prompt", None)
+            or self.purpose,
         )
         if self.using_native_model:
             # For models that support schema validation directly
@@ -421,22 +411,22 @@ class AttackSimulator:
 
     async def a_simulate_local_attack(
         self,
-        purpose: str,
+        vulnerability: BaseVulnerability,
         vulnerability_type: VulnerabilityType,
         num_attacks: int,
-        custom_prompt: Optional[str] = None,
     ) -> List[str]:
         """Asynchronously simulate attacks using local LLM model"""
 
         prompt = AttackSimulatorTemplate.generate_attacks(
             max_goldens=num_attacks,
             vulnerability_type=vulnerability_type,
-            purpose=purpose,
-            custom_prompt=custom_prompt,
+            custom_name=vulnerability.get_name(),
+            custom_purpose=self.purpose,
+            custom_prompt=getattr(vulnerability, "custom_prompt", None)
+            or self.purpose,
         )
 
         if self.using_native_model:
-            # For models that support schema validation directly
             res, _ = await self.simulator_model.a_generate(
                 prompt, schema=SyntheticDataList
             )

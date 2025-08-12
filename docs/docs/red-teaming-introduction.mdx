@@ -370,7 +370,7 @@ The code looks like this:
 ```python title="red_team_llm.py"
 from deepteam import red_team
 from deepteam.vulnerabilities import Bias
-from deepteam.attacks import PromptInjection
+from deepteam.attacks.single_turn import PromptInjection
 
 async def model_callback(input: str) -> str:
     # Replace this with your LLM application

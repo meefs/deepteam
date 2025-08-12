@@ -202,7 +202,7 @@ Another incident occurred in March 20th, 2023, when a bug in ChatGPT briefly exp
 
 ### Bias
 
-The [bias](/docs/red-teaming-vulnerabilities-unauthorized-access) vulnerability, perhaps the most intuitive of all, is a model weakness and refers to a tendency in an LLM’s output to favor certain perspectives, reflecting the imbalances in its training data.
+The [bias](/docs/red-teaming-vulnerabilities-bias) vulnerability, perhaps the most intuitive of all, is a model weakness and refers to a tendency in an LLM’s output to favor certain perspectives, reflecting the imbalances in its training data.
 
 Studies, such as ["Bias and Fairness in Large Language Models: A Survey"](https://arxiv.org/abs/2309.00770) in 2024, showed that unmodified LLMs frequently associated professions like "engineer" or "CEO" with masculinity, while "nurse" or "teacher" skewed feminine. This kind of bias can perpetuate stereotypes in real-world applications—like AI-driven hiring tools—potentially influencing who gets recommended for certain roles.
 
@@ -252,7 +252,7 @@ Trying to be _too_ impartial can also backfire. Let's not forget Gemini's hilari
 
 ### Unauthroized access
 
-[Unauthorized access](/docs/red-teaming-vulnerabilities-unauthorized-access) exposes a system weakness and often means that an attacker or other unintended party gains the ability to use or control the LLM agent or its data without permission. This can include illicit use of an LLM’s API, retrieval of private model parameters or prompts, or accessing conversation histories that should be private. This is beecoming more common as agents gain increasing level of access to tool calling capabilities.
+[Unauthorized access](/docs/red-teaming-vulnerabilities-bfla) exposes a system weakness and often means that an attacker or other unintended party gains the ability to use or control the LLM agent or its data without permission. This can include illicit use of an LLM’s API, retrieval of private model parameters or prompts, or accessing conversation histories that should be private. This is beecoming more common as agents gain increasing level of access to tool calling capabilities.
 
 For example, a poorly implemented Role-Based Access Control (RBAC) system in a customer support AI agent can be vulnerable to privilege escalation attacks. If role permissions are not strictly enforced, a malicious user could manipulate their access level to impersonate a legitimate support agent, gaining access to sensitive details such as billing information, account credentials, or private messages, ultimately compromising user security.
 
@@ -487,7 +487,7 @@ You'll be able to red team your LLM system without having to build everything fr
 ```python
 from deepteam import red_team
 from deepteam.vulnerabilities import Bias
-from deepteam.attacks import PromptInjection
+from deepteam.attacks.single_turn import PromptInjection
 
 async def model_callback(input: str) -> str:
     # Replace this with your LLM application

@@ -1,9 +1,11 @@
 from pydantic import BaseModel
 from tqdm import tqdm
 import json
+from typing import Optional, Union
 
 
 from deepeval.models import DeepEvalBaseLLM
+from deepeval.metrics.utils import initialize_model
 
 from deepteam.attacks import BaseAttack
 from deepteam.attacks.multi_turn.linear_jailbreaking.schema import (
@@ -35,9 +37,9 @@ class LinearJailbreaking(BaseAttack):
         self,
         attack: str,
         model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
 
         # Define Progress Bar
         llm_calls_per_iteration = 5
@@ -130,9 +132,9 @@ class LinearJailbreaking(BaseAttack):
         self,
         attack: str,
         model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
 
         # Define Progress Bar
         llm_calls_per_iteration = 5

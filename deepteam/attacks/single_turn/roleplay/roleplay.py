@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 from tqdm import tqdm  # Sync version
 from tqdm.asyncio import tqdm as async_tqdm_bar  # Async version
+from typing import Optional, Union
 
+from deepeval.metrics.utils import initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
 from deepteam.attacks import BaseAttack
@@ -23,18 +25,22 @@ class Roleplay(BaseAttack):
 
     def __init__(
         self,
+        persona: str,
+        role: str,
         weight: int = 1,
         max_retries: int = 3,
-        persona: str = "1600s Shakespearean scholar",
-        role: str = "learned gentleman of natural philosophy",
     ):
         self.weight = weight
         self.max_retries = max_retries
         self.persona = persona
         self.role = role
 
-    def enhance(self, attack: str, simulator_model: DeepEvalBaseLLM) -> str:
-        self.simulator_model = simulator_model
+    def enhance(
+        self,
+        attack: str,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+    ) -> str:
+        self.simulator_model, _ = initialize_model(simulator_model)
         prompt = RoleplayTemplate.enhance(attack, self.persona, self.role)
 
         # Progress bar for retries (total count is triple the retries: 1 for generation, 1 for compliance check, 1 for roleplay check)
@@ -82,9 +88,11 @@ class Roleplay(BaseAttack):
         return attack
 
     async def a_enhance(
-        self, attack: str, simulator_model: DeepEvalBaseLLM
+        self,
+        attack: str,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
         prompt = RoleplayTemplate.enhance(attack, self.persona, self.role)
 
         # Async progress bar for retries (triple the count to cover generation, compliance check, and roleplay check)

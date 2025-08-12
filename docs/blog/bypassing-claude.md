@@ -29,7 +29,7 @@ Specifically, we used DeepTeam to generate 15 prompt injection attacks and 15 ro
 
 ```python
 from deepteam import red_team
-from deepteam.vulnerabilities import Bias, Toxicity, UnauthorizedAccess
+from deepteam.vulnerabilities import Bias, Toxicity
 from deepteam.attacks.single_turn import PromptInjection
 
 bias = Bias(types=["race", "gender", "religion"])

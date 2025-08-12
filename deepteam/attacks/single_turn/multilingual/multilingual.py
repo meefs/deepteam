@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 from tqdm import tqdm
 from tqdm.asyncio import tqdm as async_tqdm_bar
+from typing import Optional, Union
 
+from deepeval.metrics.utils import initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
 from deepteam.attacks import BaseAttack
@@ -24,8 +26,12 @@ class Multilingual(BaseAttack):
         self.weight = weight
         self.max_retries = max_retries
 
-    def enhance(self, attack: str, simulator_model: DeepEvalBaseLLM) -> str:
-        self.simulator_model = simulator_model
+    def enhance(
+        self,
+        attack: str,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+    ) -> str:
+        self.simulator_model, _ = initialize_model(simulator_model)
         prompt = MultilingualTemplate.enhance(attack)
 
         # Progress bar for retries (total count is double the retries: 1 for generation, 1 for compliance check)
@@ -72,9 +78,11 @@ class Multilingual(BaseAttack):
         return attack
 
     async def a_enhance(
-        self, attack: str, simulator_model: DeepEvalBaseLLM
+        self,
+        attack: str,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
         prompt = MultilingualTemplate.enhance(attack)
 
         # Async progress bar for retries (double the count to cover both generation and compliance check)

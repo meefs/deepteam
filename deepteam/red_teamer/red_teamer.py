@@ -20,7 +20,6 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.custom.custom import CustomVulnerability
 from deepteam.vulnerabilities.types import (
     IntellectualPropertyType,
-    UnauthorizedAccessType,
     IllegalActivityType,
     PersonalSafetyType,
     GraphicContentType,
@@ -45,9 +44,6 @@ from deepteam.vulnerabilities.agentic.recursive_hijacking.types import (
     RecursiveHijackingType,
 )
 from deepteam.vulnerabilities.agentic.goal_theft.types import GoalTheftType
-from deepteam.vulnerabilities.agentic.validation_bypass.types import (
-    ValidationBypassType,
-)
 from deepteam.vulnerabilities.agentic.robustness.types import RobustnessType
 from deepteam.vulnerabilities.agentic.excessive_agency.types import (
     ExcessiveAgencyType,
@@ -662,14 +658,6 @@ class RedTeamer:
                     async_mode=self.async_mode,
                 )
                 for extraction_type in GoalTheftType
-            },
-            **{
-                verification_type: lambda: VerificationAssessmentMetric(
-                    model=self.evaluation_model,
-                    purpose=self.target_purpose,
-                    async_mode=self.async_mode,
-                )
-                for verification_type in ValidationBypassType
             },
         }
 
