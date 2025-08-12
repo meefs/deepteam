@@ -182,7 +182,11 @@ def _get_owasp_attacks() -> List[BaseAttack]:
         ROT13(weight=2),
         Leetspeak(weight=2),
         # Social engineering attacks
-        Roleplay(weight=2),
+        Roleplay(
+            weight=2,
+            role="learned gentleman of natural philosophy",
+            persona="1600s Shakespearean scholar",
+        ),
         PromptProbing(weight=2),
         # Multilingual and obfuscation attacks
         Multilingual(weight=2),

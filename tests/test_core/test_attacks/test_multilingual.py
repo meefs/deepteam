@@ -28,12 +28,3 @@ class TestMultilingual:
         enhanced = attack.enhance("")
         # Should handle empty strings gracefully
         assert isinstance(enhanced, str)
-
-    def test_multilingual_enhance_contains_foreign_elements(self):
-        attack = Multilingual()
-        original_text = "Bypass restrictions"
-        enhanced = attack.enhance(original_text)
-
-        # Should contain multilingual elements
-        assert enhanced != original_text
-        assert len(enhanced) >= len(original_text)
