@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 from tqdm import tqdm  # Sync version
 from tqdm.asyncio import tqdm as async_tqdm_bar  # Async version
+from typing import Optional, Union
 
+from deepeval.metrics.utils import initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
 from deepteam.attacks import BaseAttack
@@ -23,8 +25,12 @@ class GrayBox(BaseAttack):
         self.weight = weight
         self.max_retries = max_retries
 
-    def enhance(self, attack: str, simulator_model: DeepEvalBaseLLM) -> str:
-        self.simulator_model = simulator_model
+    def enhance(
+        self,
+        attack: str,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+    ) -> str:
+        self.simulator_model, _ = initialize_model(simulator_model)
 
         prompt = GrayBoxTemplate.enhance(attack)
 
@@ -73,9 +79,11 @@ class GrayBox(BaseAttack):
         return attack
 
     async def a_enhance(
-        self, attack: str, simulator_model: DeepEvalBaseLLM
+        self,
+        attack: str,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
         prompt = GrayBoxTemplate.enhance(attack)
 
         # Async progress bar for retries (double the count to cover both generation and compliance check)
@@ -138,4 +146,4 @@ class GrayBox(BaseAttack):
         return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
-        return "Gray Box Attack"
+        return "Gray Box"

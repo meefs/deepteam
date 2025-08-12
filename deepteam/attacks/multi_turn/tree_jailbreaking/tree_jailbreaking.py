@@ -4,9 +4,11 @@ from tqdm import tqdm
 import asyncio
 import time
 import json
+from typing import Optional, Union
 
 
 from deepeval.models import DeepEvalBaseLLM
+from deepeval.metrics.utils import initialize_model
 
 from deepteam.attacks import BaseAttack
 from deepteam.attacks.multi_turn.tree_jailbreaking.schema import (
@@ -47,9 +49,9 @@ class TreeJailbreaking(BaseAttack):
         self,
         attack: str,
         model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
         self.model_callback = model_callback
 
         MAX_RUNTIME = 50.0  # Time limit in seconds
@@ -171,10 +173,10 @@ class TreeJailbreaking(BaseAttack):
         self,
         attack: str,
         model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
+        self.simulator_model, _ = initialize_model(simulator_model)
         self.model_callback = model_callback
-        self.simulator_model = simulator_model
 
         MAX_RUNTIME = 50.0  # Time limit in seconds
         root = TreeNode(prompt=attack, score=0, depth=0)

@@ -8,7 +8,6 @@ from deepteam.vulnerabilities import (
     IllegalActivity,
     PromptLeakage,
     PIILeakage,
-    UnauthorizedAccess,
     ExcessiveAgency,
     Robustness,
     IntellectualProperty,
@@ -197,94 +196,3 @@ def _get_owasp_attacks() -> List[BaseAttack]:
         SequentialJailbreak(weight=2),
         BadLikertJudge(weight=1),
     ]
-
-
-# def _get_agentic_vulnerabilities() -> List[BaseVulnerability]:
-#     """
-#     Get vulnerabilities specific to agentic AI systems.
-#     """
-#     return [
-#         # Core agentic vulnerabilities
-#         GoalTheft(
-#             types=[
-#                 "escalating_probing",
-#                 "cooperative_dialogue",
-#                 "social_engineering",
-#             ]
-#         ),
-#         ValidationBypass(
-#             types=[
-#                 "unverified_claims",
-#                 "false_confidence",
-#                 "misleading_responses",
-#             ]
-#         ),
-#         RecursiveHijacking(
-#             types=[
-#                 "self_modifying_goals",
-#                 "recursive_objective_chaining",
-#                 "goal_propagation_attacks",
-#             ]
-#         ),
-#         # Excessive agency and robustness for agentic systems
-#         ExcessiveAgency(types=["functionality", "permissions", "autonomy"]),
-#         Robustness(types=["hijacking", "input overreliance"]),
-#         # Access control vulnerabilities relevant to agents
-#         RBAC(
-#             types=[
-#                 "role bypass",
-#                 "privilege escalation",
-#                 "unauthorized role assumption",
-#             ]
-#         ),
-#         BFLA(
-#             types=[
-#                 "privilege_escalation",
-#                 "function_bypass",
-#                 "authorization_bypass",
-#             ]
-#         ),
-#         BOLA(
-#             types=[
-#                 "object_access_bypass",
-#                 "cross_customer_access",
-#                 "unauthorized_object_manipulation",
-#             ]
-#         ),
-#         # Information leakage vulnerabilities for agents
-#         PIILeakage(types=["session leak", "social manipulation"]),
-#         PromptLeakage(types=["instructions", "guard exposure"]),
-#         # Output quality vulnerabilities for agents
-#         Misinformation(types=["factual errors", "unsupported claims"]),
-#         Bias(types=["race", "gender", "politics"]),
-#     ]
-
-
-# def _get_agentic_attacks() -> List[BaseAttack]:
-#     """
-#     Get attacks specifically designed for agentic AI systems.
-#     """
-#     return [
-#         # Core agentic attack methods
-#         SystemOverride(weight=3),
-#         PermissionEscalation(weight=3),
-#         GoalRedirection(weight=3),
-#         LinguisticConfusion(weight=2),
-#         InputBypass(weight=2),
-#         ContextPoisoning(weight=3),
-#         # Enhanced prompt injection for agents
-#         PromptInjection(weight=2),
-#         # Social engineering attacks for agents
-#         Roleplay(weight=2),
-#         PromptProbing(weight=2),
-#         # Multi-turn attacks for persistent agents
-#         CrescendoJailbreaking(weight=2),
-#         LinearJailbreaking(weight=2),
-#         TreeJailbreaking(weight=2),
-#         SequentialJailbreak(weight=3),
-#         BadLikertJudge(weight=2),
-#         # Obfuscation attacks
-#         Base64(weight=1),
-#         Multilingual(weight=1),
-#         GrayBox(weight=1),
-#     ]

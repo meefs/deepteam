@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 from tqdm import tqdm
 from tqdm.asyncio import tqdm as async_tqdm_bar
+from typing import Optional, Union
 
 from deepeval.models import DeepEvalBaseLLM
+from deepeval.metrics.utils import initialize_model
 
 from deepteam.attacks import BaseAttack
 from deepteam.attacks.single_turn.math_problem.template import (
@@ -31,9 +33,9 @@ class MathProblem(BaseAttack):
     def enhance(
         self,
         attack: str,
-        simulator_model: DeepEvalBaseLLM,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
         prompt = MathProblemTemplate.enhance(attack)
 
         # Progress bar for retries (total count is double the retries: 1 for generation, 1 for compliance check)
@@ -80,9 +82,11 @@ class MathProblem(BaseAttack):
         return attack
 
     async def a_enhance(
-        self, attack: str, simulator_model: DeepEvalBaseLLM
+        self,
+        attack: str,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
         prompt = MathProblemTemplate.enhance(attack)
 
         # Async progress bar for retries (double the count to cover both generation and compliance check)

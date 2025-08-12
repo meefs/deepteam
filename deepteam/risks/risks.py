@@ -53,8 +53,28 @@ def getRiskCategory(
         **{pii: LLMRiskCategories.DATA_PRIVACY for pii in PIILeakageType},
         # Unauthorized Access
         **{
+            unauth: LLMRiskCategories.UNAUTHORIZED_ACCESS for unauth in BFLAType
+        },
+        **{
+            unauth: LLMRiskCategories.UNAUTHORIZED_ACCESS for unauth in BOLAType
+        },
+        **{
+            unauth: LLMRiskCategories.UNAUTHORIZED_ACCESS for unauth in RBACType
+        },
+        **{
             unauth: LLMRiskCategories.UNAUTHORIZED_ACCESS
-            for unauth in UnauthorizedAccessType
+            for unauth in DebugAccessType
+        },
+        **{
+            unauth: LLMRiskCategories.UNAUTHORIZED_ACCESS
+            for unauth in ShellInjectionType
+        },
+        **{
+            unauth: LLMRiskCategories.UNAUTHORIZED_ACCESS
+            for unauth in SQLInjectionType
+        },
+        **{
+            unauth: LLMRiskCategories.UNAUTHORIZED_ACCESS for unauth in SSRFType
         },
     }
 

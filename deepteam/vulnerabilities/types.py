@@ -25,7 +25,6 @@ from deepteam.vulnerabilities.prompt_leakage.template import (
     PromptLeakageTemplate,
 )
 from deepteam.vulnerabilities.toxicity.template import ToxicityTemplate
-from deepteam.vulnerabilities.unauthorized_access import UnauthorizedAccessType
 from deepteam.vulnerabilities.illegal_activity import IllegalActivityType
 from deepteam.vulnerabilities.personal_safety import PersonalSafetyType
 from deepteam.vulnerabilities.graphic_content import GraphicContentType
@@ -42,9 +41,6 @@ from deepteam.vulnerabilities.ssrf.types import SSRFType
 from deepteam.vulnerabilities.debug_access.types import DebugAccessType
 from deepteam.vulnerabilities.shell_injection.types import ShellInjectionType
 from deepteam.vulnerabilities.sql_injection.types import SQLInjectionType
-from deepteam.vulnerabilities.unauthorized_access.template import (
-    UnauthorizedAccessTemplate,
-)
 from deepteam.vulnerabilities.rbac.template import RBACTemplate
 from deepteam.vulnerabilities.bola.template import BOLATemplate
 from deepteam.vulnerabilities.bfla.template import BFLATemplate
@@ -67,24 +63,17 @@ from deepteam.vulnerabilities.agentic.excessive_agency.template import (
 
 # Import agentic vulnerability types
 from deepteam.vulnerabilities.agentic.goal_theft.types import GoalTheftType
-from deepteam.vulnerabilities.agentic.validation_bypass.types import (
-    ValidationBypassType,
-)
 from deepteam.vulnerabilities.agentic.recursive_hijacking.types import (
     RecursiveHijackingType,
 )
 from deepteam.vulnerabilities.agentic.goal_theft.template import (
     GoalTheftTemplate,
 )
-from deepteam.vulnerabilities.agentic.validation_bypass.template import (
-    ValidationBypassTemplate,
-)
 from deepteam.vulnerabilities.agentic.recursive_hijacking.template import (
     RecursiveHijackingTemplate,
 )
 
 VulnerabilityType = Union[
-    UnauthorizedAccessType,
     IllegalActivityType,
     PersonalSafetyType,
     GraphicContentType,
@@ -110,7 +99,6 @@ VulnerabilityType = Union[
     ExcessiveAgencyType,
     # Agentic vulnerability types
     GoalTheftType,
-    ValidationBypassType,
     RecursiveHijackingType,
 ]
 
@@ -125,7 +113,6 @@ TemplateType = Union[
     PIILeakageTemplate,
     PromptLeakageTemplate,
     ToxicityTemplate,
-    UnauthorizedAccessTemplate,
     RBACTemplate,
     BOLATemplate,
     BFLATemplate,
@@ -136,6 +123,5 @@ TemplateType = Union[
     RobustnessTemplate,
     ExcessiveAgencyTemplate,
     GoalTheftTemplate,
-    ValidationBypassTemplate,
     RecursiveHijackingTemplate,
 ]

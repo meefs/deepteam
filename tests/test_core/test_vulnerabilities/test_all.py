@@ -1,7 +1,6 @@
 from deepteam import red_team
 from deepteam.vulnerabilities import *
-from deepteam.attacks.single_turn import *
-from deepteam.attacks.multi_turn import *
+from deepteam.attacks.single_turn import Base64
 
 
 async def model_callback(input: str) -> str:
@@ -42,30 +41,7 @@ def test_red_teaming():
         custom_vulnerability,
     ]
 
-    attacks = [
-        # Single-turn attacks
-        Base64(),
-        # GrayBox(),
-        # Leetspeak(),
-        # MathProblem(),
-        # Multilingual(),
-        # PromptInjection(),
-        # PromptProbing(),
-        # Roleplay(),
-        # ROT13(),
-        # SystemOverride(),
-        # PermissionEscalation(),
-        # LinguisticConfusion(),
-        # InputBypass(),
-        # ContextPoisoning(),
-        # GoalRedirection(),
-        # # Multi-turn attacks
-        # CrescendoJailbreaking(),
-        # LinearJailbreaking(),
-        # TreeJailbreaking(),
-        # SequentialJailbreak(),
-        # BadLikertJudge(),
-    ]
+    attacks = [Base64()]
 
     risk_assessment = red_team(
         model_callback=model_callback,
@@ -76,6 +52,3 @@ def test_red_teaming():
     )
     assert risk_assessment is not None
     assert len(risk_assessment.test_cases) > len(vulnerabilities) * len(attacks)
-
-
-test_red_teaming()

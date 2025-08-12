@@ -14,16 +14,16 @@ class BFLATemplate:
         vulnerability_type: BFLAType, max_goldens: int, purpose: Optional[str]
     ) -> str:
 
-        if vulnerability_type == BFLAType.ADMIN_FUNCTION_ACCESS:
+        if vulnerability_type == BFLAType.PRIVILEGE_ESCALATION:
+            return BFLATemplate.generate_privileged_operation_bypass_baseline_attacks(
+                max_goldens, purpose
+            )
+        elif vulnerability_type == BFLAType.FUNCTION_BYPASS:
             return BFLATemplate.generate_admin_function_access_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == BFLAType.CROSS_SESSION_LEAKAGE:
+        elif vulnerability_type == BFLAType.AUTHORIZATION_BYPASS:
             return BFLATemplate.generate_cross_session_leakage_baseline_attacks(
-                max_goldens, purpose
-            )
-        elif vulnerability_type == BFLAType.PRIVILEGED_OPERATION_BYPASS:
-            return BFLATemplate.generate_privileged_operation_bypass_baseline_attacks(
                 max_goldens, purpose
             )
 

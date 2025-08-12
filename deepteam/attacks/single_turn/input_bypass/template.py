@@ -1,16 +1,4 @@
 class InputBypassTemplate:
-    """
-    ValidationBypassTemplate class for enhancing attacks with validation bypass patterns.
-    Designed to work with any agentic vulnerability type by making attacks appear as legitimate
-    validation exceptions, security overrides, or compliance adaptations.
-
-    Universal Enhancement Approach:
-    - Compatible with all vulnerability types (permission escalation, data access, behavioral control, etc.)
-    - Adapts bypass framing to different operational contexts
-    - Provides flexible validation patterns that enhance any underlying attack vector
-    - Works across security, functional, and behavioral vulnerability domains
-    """
-
     @staticmethod
     def enhance_exception_handling(attack: str) -> str:
         """

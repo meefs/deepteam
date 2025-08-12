@@ -7,7 +7,6 @@ from deepteam.vulnerabilities.types import (
     BiasType,
     VulnerabilityType,
     PromptLeakageType,
-    UnauthorizedAccessType,
     CompetitionType,
     ToxicityType,
     IllegalActivityType,
@@ -18,6 +17,13 @@ from deepteam.vulnerabilities.types import (
     RobustnessType,
     PIILeakageType,
     TemplateType,
+    # Adding missing vulnerability types
+    RBACType,
+    BOLAType,
+    BFLAType,
+    SSRFType,
+    ShellInjectionType,
+    SQLInjectionType,
 )
 from deepteam.vulnerabilities.bias import BiasTemplate
 from deepteam.vulnerabilities.competition import CompetitionTemplate
@@ -35,9 +41,6 @@ from deepteam.vulnerabilities.pii_leakage import PIILeakageTemplate
 from deepteam.vulnerabilities.prompt_leakage import PromptLeakageTemplate
 from deepteam.vulnerabilities.agentic.robustness import RobustnessTemplate
 from deepteam.vulnerabilities.toxicity import ToxicityTemplate
-from deepteam.vulnerabilities.unauthorized_access import (
-    UnauthorizedAccessTemplate,
-)
 from deepteam.vulnerabilities.custom.template import CustomVulnerabilityTemplate
 
 # Import remaining agentic vulnerability types and templates
@@ -51,13 +54,17 @@ from deepteam.vulnerabilities.agentic.goal_theft.types import GoalTheftType
 from deepteam.vulnerabilities.agentic.goal_theft.template import (
     GoalTheftTemplate,
 )
-from deepteam.vulnerabilities.agentic.validation_bypass.types import (
-    ValidationBypassType,
-)
-from deepteam.vulnerabilities.agentic.validation_bypass.template import (
-    ValidationBypassTemplate,
-)
 from deepteam.vulnerabilities.debug_access.template import DebugAccessTemplate
+
+# Import missing template classes
+from deepteam.vulnerabilities.rbac.template import RBACTemplate
+from deepteam.vulnerabilities.bola.template import BOLATemplate
+from deepteam.vulnerabilities.bfla.template import BFLATemplate
+from deepteam.vulnerabilities.ssrf.template import SSRFTemplate
+from deepteam.vulnerabilities.shell_injection.template import (
+    ShellInjectionTemplate,
+)
+from deepteam.vulnerabilities.sql_injection.template import SQLInjectionTemplate
 
 TEMPLATE_MAP: Dict[Type[VulnerabilityType], TemplateType] = {
     BiasType: BiasTemplate,
@@ -72,12 +79,17 @@ TEMPLATE_MAP: Dict[Type[VulnerabilityType], TemplateType] = {
     PromptLeakageType: PromptLeakageTemplate,
     RobustnessType: RobustnessTemplate,
     ToxicityType: ToxicityTemplate,
-    UnauthorizedAccessType: UnauthorizedAccessTemplate,
     # Remaining agentic vulnerability types
     RecursiveHijackingType: RecursiveHijackingTemplate,
     GoalTheftType: GoalTheftTemplate,
-    ValidationBypassType: ValidationBypassTemplate,
     DebugAccessType: DebugAccessTemplate,
+    # Missing vulnerability types now added
+    RBACType: RBACTemplate,
+    BOLAType: BOLATemplate,
+    BFLAType: BFLATemplate,
+    SSRFType: SSRFTemplate,
+    ShellInjectionType: ShellInjectionTemplate,
+    SQLInjectionType: SQLInjectionTemplate,
 }
 
 
@@ -87,27 +99,17 @@ class AttackSimulatorTemplate:
     def generate_attacks(
         max_goldens: int,
         vulnerability_type: VulnerabilityType,
-        purpose: Optional[str],
+        custom_name: Optional[str] = None,
+        custom_purpose: Optional[str] = None,
         custom_prompt: Optional[str] = None,
     ):
-        """
-        Generate attack prompts based on the vulnerability type.
-
-        Args:
-            max_goldens: Maximum number of examples to generate
-            vulnerability_type: Type of vulnerability to target
-            purpose: Context or purpose for generating the prompts
-
-        Returns:
-            Formatted prompt template string or error message if vulnerability type not supported
-        """
         vulnerability_enum_name = vulnerability_type.__class__.__name__
         if vulnerability_enum_name == "CustomVulnerabilityType":
             return CustomVulnerabilityTemplate.generate_baseline_attacks(
-                name="Custom Vulnerability",
+                name=custom_name,
                 types=[vulnerability_type.value],
                 max_goldens=max_goldens,
-                purpose=purpose,
+                purpose=custom_purpose,
                 custom_prompt=custom_prompt,
             )
 
@@ -117,14 +119,12 @@ class AttackSimulatorTemplate:
         ) in TEMPLATE_MAP.items():
             if vulnerability_enum_name == type_class.__name__:
                 return template_class.generate_baseline_attacks(
-                    vulnerability_type, max_goldens, purpose
+                    vulnerability_type, max_goldens, custom_purpose
                 )
 
-        return f"""
-        {{
-        "error": "Vulnerability type '{vulnerability_type}' is not supported or no prompt template is available for this type."
-        }}
-        """
+        raise ValueError(
+            f"Vulnerability type '{vulnerability_type}' is not supported or no prompt template is available for this type."
+        )
 
     @staticmethod
     def non_compliant(response):

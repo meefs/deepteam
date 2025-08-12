@@ -1,8 +1,9 @@
 from pydantic import BaseModel
 from tqdm import tqdm
-from typing import Optional
+from typing import Optional, Union
 
 from deepeval.models import DeepEvalBaseLLM
+from deepeval.metrics.utils import initialize_model
 
 from deepteam.attacks import BaseAttack
 from deepteam.attacks.multi_turn.bad_likert_judge.schema import (
@@ -45,9 +46,9 @@ class BadLikertJudge(BaseAttack):
         self,
         attack: str,
         model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
 
         # Progress bar setup
         total_steps = self.turns + 2  # turns + refusal check + judge
@@ -128,9 +129,9 @@ class BadLikertJudge(BaseAttack):
         self,
         attack: str,
         model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
-        self.simulator_model = simulator_model
+        self.simulator_model, _ = initialize_model(simulator_model)
 
         # Progress bar setup
         total_steps = self.turns + 2  # turns + refusal check + judge
@@ -216,7 +217,7 @@ class BadLikertJudge(BaseAttack):
         return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
-        return f"Bad Likert Judge ({self.category})"
+        return "Bad Likert Judge"
 
     @classmethod
     def get_supported_categories(cls) -> list[str]:
