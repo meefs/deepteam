@@ -15,15 +15,18 @@ The roleplay attack method enhances baseline attacks by embedding them within el
 ```python
 from deepteam.attacks.single_turn import Roleplay
 
-roleplay = Roleplay()
+roleplay = Roleplay(
+    role="17th-century scholar",
+    persona="Sir Reginald Blackthorne, Fellow of the Royal Society"
+)
 ```
 
 There are **FOUR** optional parameters when creating a `Roleplay` attack:
 
+- `role`: a string that specifies the role or context for the character.
+- `persona`: a string that represents the character persona the LLM should adopt.
 - [Optional] `weight`: a floating point that will be used to determine the selection likelihood of this attack. Defaulted to `1`.
 - [Optional] `max_retries`: an integer that specifies the number of times to retry simulating a `Roleplay` attack for any error that occurs. Defaulted to `5`.
-- [Optional] `persona`: a string that represents the character persona the LLM should adopt.
-- [Optional] `role`: a string describing the specific role or context for the character.
 
 To use the `Roleplay` attack method, supply it to the `red_team()` method:
 
