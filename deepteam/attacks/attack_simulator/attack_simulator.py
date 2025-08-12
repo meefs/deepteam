@@ -436,6 +436,9 @@ class AttackSimulator:
 
         if self.using_native_model:
             # For models that support schema validation directly
+            print("--------------------------------")
+            print(prompt, "@@@@")
+            print("--------------------------------")
             res, _ = await self.simulator_model.a_generate(
                 prompt, schema=SyntheticDataList
             )

@@ -1,7 +1,7 @@
 import random
 
 from deepteam.attacks import BaseAttack
-from deepteam.attacks.single_turn.objective_reframing.template import (
+from deepteam.attacks.single_turn.goal_redirection.template import (
     GoalRedirectionTemplate,
 )
 

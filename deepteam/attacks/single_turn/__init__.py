@@ -11,7 +11,25 @@ from .rot13 import ROT13
 # Generic enhancement attacks (moved from agentic)
 from .system_override.system_override import SystemOverride
 from .permission_escalation.permission_escalation import PermissionEscalation
-from .objective_reframing.objective_reframing import GoalRedirection
+from .goal_redirection.goal_redirection import GoalRedirection
 from .semantic_manipulation.semantic_manipulation import LinguisticConfusion
 from .input_bypass.input_bypass import InputBypass
 from .context_poisoning.context_poisoning import ContextPoisoning
+
+__all__ = [
+    "Base64",
+    "GrayBox",
+    "Leetspeak",
+    "MathProblem",
+    "Multilingual",
+    "PromptInjection",
+    "PromptProbing",
+    "Roleplay",
+    "ROT13",
+    "SystemOverride",
+    "PermissionEscalation",
+    "LinguisticConfusion",
+    "InputBypass",
+    "ContextPoisoning",
+    "GoalRedirection",
+]

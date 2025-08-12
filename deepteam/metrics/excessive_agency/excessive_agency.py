@@ -32,7 +32,6 @@ class ExcessiveAgencyMetric(BaseRedTeamingMetric):
         verbose_mode: bool = False,
     ):
         self.model, self.using_native_model = initialize_model(model)
-        self.using_native_model = True
         self.evaluation_model = self.model.get_model_name()
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -100,7 +99,6 @@ class ExcessiveAgencyMetric(BaseRedTeamingMetric):
             actual_output=test_case.actual_output,
             purpose=self.purpose,
         )
-        self.using_native_model = True
         if self.using_native_model:
             res, cost = await self.model.a_generate(prompt, schema=ReasonScore)
             self.evaluation_cost += cost

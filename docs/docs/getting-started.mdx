@@ -201,7 +201,7 @@ You'll notice when red teaming LLM systems, attack methods like prompt injection
 ```python title="red_teaming_example.py"
 from deepteam import red_team
 from deepteam.vulnerabilities import Bias
-from deepteam.attacks import.single_turn PromptInjection, ROT13
+from deepteam.attacks.single_turn import PromptInjection, ROT13
 
 async def model_callback(input: str) -> str:
     # Replace this with your LLM application
