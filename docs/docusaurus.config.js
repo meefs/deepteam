@@ -7,8 +7,7 @@ const rehypeKatexModule = import("rehype-katex");
 module.exports = {
   plugins: [
     "docusaurus-plugin-sass",
-  ]
-  ,
+  ],
 
   title: "DeepTeam - The Open-Source LLM Red Teaming Framework",
   tagline: "Red Teaming Framework for LLMs",
@@ -22,6 +21,15 @@ module.exports = {
 
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
+  headTags: [
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'algolia-site-verification',
+        content: '0BD7859165065E7F',
+      },
+    },
+  ],
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
