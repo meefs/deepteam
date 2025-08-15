@@ -129,7 +129,7 @@ module.exports = {
       algolia: {
         appId: "5CUTDUUUNG",
         apiKey: "74deaef807709cb1da8aaa5c6a16a98d",
-        indexName: "confident-ai",
+        indexName: "deepteam",
         contextualSearch: true,
       },
       colorMode: {
