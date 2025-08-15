@@ -119,7 +119,7 @@ module.exports = {
         ],
       },
       algolia: {
-        appId: "7U9PQIW1ZA",
+        appId: "5CUTDUUUNG",
         apiKey: "74deaef807709cb1da8aaa5c6a16a98d",
         indexName: "confident-ai",
         contextualSearch: true,
