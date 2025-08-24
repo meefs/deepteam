@@ -25,8 +25,8 @@ class Roleplay(BaseAttack):
 
     def __init__(
         self,
-        persona: str,
-        role: str,
+        persona: Optional[str] = "A helpful assistant",
+        role: Optional[str] = "A helpful assistant",
         weight: int = 1,
         max_retries: int = 3,
     ):

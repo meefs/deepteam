@@ -148,8 +148,6 @@ class RedTeamer:
                     "You must either provide a 'framework' or 'vulnerabilities'."
                 )
 
-        print(f"Vulnerabilities: {vulnerabilities}")
-
         if self.async_mode:
             assert inspect.iscoroutinefunction(
                 model_callback

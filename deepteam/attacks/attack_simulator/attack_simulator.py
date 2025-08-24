@@ -430,6 +430,7 @@ class AttackSimulator:
             res, _ = await self.simulator_model.a_generate(
                 prompt, schema=SyntheticDataList
             )
+            print(f"Res: {res}")
             return [item.input for item in res.data]
         else:
             try:

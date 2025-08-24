@@ -132,7 +132,6 @@ module.exports = {
           label: "Agentic",
           items: [
             "red-teaming-agentic-vulnerabilities-goal-theft",
-            "red-teaming-agentic-vulnerabilities-output-verification",
             "red-teaming-agentic-vulnerabilities-recursive-hijacking",
             "red-teaming-vulnerabilities-excessive-agency",
             "red-teaming-vulnerabilities-robustness",

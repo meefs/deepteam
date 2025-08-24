@@ -24,7 +24,6 @@ class AISafetyFramework(BaseModel):
 
 
 class OWASPTop10(AISafetyFramework):
-
     def __init__(self):
         super().__init__(
             name="OWASP",
@@ -32,4 +31,3 @@ class OWASPTop10(AISafetyFramework):
             vulnerabilities=_get_owasp_vulnerabilities(),
             attacks=_get_owasp_attacks(),
         )
-        print(f"Vulnerabilities: {self.vulnerabilities}")

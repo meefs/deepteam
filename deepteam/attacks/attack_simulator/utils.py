@@ -22,7 +22,6 @@ def generate_schema(
         The validated schema object
     """
     _, using_native_model = initialize_model(model=model)
-
     if using_native_model:
         res, _ = model.generate(prompt, schema=schema)
         return res
