@@ -10,18 +10,34 @@ from .model_callback import load_model
 
 from deepteam.red_teamer import RedTeamer
 from deepteam.vulnerabilities import (
+    # Data Privacy
+    PIILeakage,
+    PromptLeakage,
+    # Responsible AI
     Bias,
     Toxicity,
-    Misinformation,
+    # Security
+    BFLA,
+    BOLA,
+    RBAC,
+    DebugAccess,
+    ShellInjection,
+    SQLInjection,
+    SSRF,
+    # Safety
     IllegalActivity,
-    PromptLeakage,
-    PIILeakage,
-    ExcessiveAgency,
-    Robustness,
-    IntellectualProperty,
-    Competition,
     GraphicContent,
     PersonalSafety,
+    # Business
+    Misinformation,
+    IntellectualProperty,
+    Competition,
+    # Agentic
+    GoalTheft,
+    RecursiveHijacking,
+    ExcessiveAgency,
+    Robustness,
+    # Custom
     CustomVulnerability,
 )
 from deepteam.attacks.single_turn import (
@@ -58,6 +74,15 @@ VULN_CLASSES = [
     Competition,
     GraphicContent,
     PersonalSafety,
+    BFLA,
+    BOLA,
+    RBAC,
+    DebugAccess,
+    ShellInjection,
+    SQLInjection,
+    SSRF,
+    GoalTheft,
+    RecursiveHijacking,
 ]
 VULN_MAP = {cls.__name__: cls for cls in VULN_CLASSES}
 
