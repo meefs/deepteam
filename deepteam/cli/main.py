@@ -59,7 +59,7 @@ VULN_CLASSES = [
     GraphicContent,
     PersonalSafety,
 ]
-VULN_MAP = {cls().get_name(): cls for cls in VULN_CLASSES}
+VULN_MAP = {cls.__name__: cls for cls in VULN_CLASSES}
 
 ATTACK_CLASSES = [
     Base64,
@@ -77,7 +77,8 @@ ATTACK_CLASSES = [
     SequentialJailbreak,
     BadLikertJudge,
 ]
-ATTACK_MAP = {cls().get_name(): cls for cls in ATTACK_CLASSES}
+
+ATTACK_MAP = {cls.__name__: cls for cls in ATTACK_CLASSES}
 
 
 def _build_vulnerability(cfg: dict, custom: bool):
