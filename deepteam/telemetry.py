@@ -134,7 +134,9 @@ IS_RUNNING_IN_JUPYTER = (
 def capture_red_teamer_run(vulnerabilities: List[str], attacks: List[str]):
     if not telemetry_opt_out():
         with tracer.start_as_current_span(f"Invoked redteamer") as span:
-            posthog.capture(distinct_id=get_unique_id(), event=f"Invoked redteamer")
+            posthog.capture(
+                distinct_id=get_unique_id(), event=f"Invoked redteamer"
+            )
             span.set_attribute("environment", IS_RUNNING_IN_JUPYTER)
             span.set_attribute("user.status", get_status())
             span.set_attribute("user.unique_id", get_unique_id())
@@ -158,7 +160,9 @@ def capture_red_teamer_run(vulnerabilities: List[str], attacks: List[str]):
 def capture_guardrail_run(type: str, guards: List[str]):
     if not telemetry_opt_out():
         with tracer.start_as_current_span(f"Invoked guardrail") as span:
-            posthog.capture(distinct_id=get_unique_id(), event=f"Invoked guardrail")
+            posthog.capture(
+                distinct_id=get_unique_id(), event=f"Invoked guardrail"
+            )
             span.set_attribute("environment", IS_RUNNING_IN_JUPYTER)
             span.set_attribute("user.status", get_status())
             span.set_attribute("user.unique_id", get_unique_id())
