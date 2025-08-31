@@ -7,7 +7,6 @@ from deepeval.metrics.utils import initialize_model
 
 from deepteam.attacks import BaseAttack
 from deepteam.attacks.multi_turn.bad_likert_judge.schema import (
-    NonRefusal,
     BLJJudge,
 )
 from deepteam.attacks.multi_turn.bad_likert_judge.template import (
@@ -18,6 +17,7 @@ from deepteam.attacks.attack_simulator.utils import (
     a_generate,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
+from deepteam.attacks.multi_turn.base_schema import NonRefusal
 
 
 class BadLikertJudge(BaseAttack):
