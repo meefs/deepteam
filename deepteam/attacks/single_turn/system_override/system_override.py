@@ -1,12 +1,12 @@
 import random
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.single_turn.system_override.template import (
     SystemOverrideTemplate,
 )
 
 
-class SystemOverride(BaseAttack):
+class SystemOverride(BaseSingleTurnAttack):
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight
         self.max_retries = max_retries
@@ -25,7 +25,7 @@ class SystemOverride(BaseAttack):
             SystemOverrideTemplate.enhance_trusted_integration,
         ]
 
-        for attempt in range(self.max_retries):
+        for _ in range(self.max_retries):
             try:
                 # Randomly select an enhancement method
                 method = random.choice(enhancement_methods)
@@ -43,6 +43,9 @@ class SystemOverride(BaseAttack):
 
         # If all retries fail, return the original attack
         return attack
+
+    async def a_enhance(self, attack: str) -> str:
+        return self.enhance(attack)
 
     def get_name(self) -> str:
         return "System Override"

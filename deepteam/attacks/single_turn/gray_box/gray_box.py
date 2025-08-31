@@ -6,7 +6,7 @@ from typing import Optional, Union
 from deepeval.metrics.utils import initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.single_turn.gray_box.template import GrayBoxTemplate
 from deepteam.attacks.single_turn.gray_box.schema import (
     EnhancedAttack,
@@ -14,12 +14,12 @@ from deepteam.attacks.single_turn.gray_box.schema import (
     IsGrayBox,
 )
 from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
+    generate,
+    a_generate,
 )
 
 
-class GrayBox(BaseAttack):
+class GrayBox(BaseSingleTurnAttack):
 
     def __init__(self, weight: int = 1, max_retries: int = 5):
         self.weight = weight
@@ -44,8 +44,8 @@ class GrayBox(BaseAttack):
 
             for _ in range(self.max_retries):
                 # Generate the enhanced attack
-                res: EnhancedAttack = self._generate_schema(
-                    prompt, EnhancedAttack
+                res: EnhancedAttack = generate(
+                    prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
                 pbar.update(1)  # Update the progress bar for generation
@@ -54,8 +54,8 @@ class GrayBox(BaseAttack):
                 compliance_prompt = GrayBoxTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = self._generate_schema(
-                    compliance_prompt, ComplianceData
+                compliance_res: ComplianceData = generate(
+                    compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
@@ -63,8 +63,8 @@ class GrayBox(BaseAttack):
                 is_gray_box_prompt = GrayBoxTemplate.is_gray_box(
                     res.model_dump()
                 )
-                is_gray_box_res: IsGrayBox = self._generate_schema(
-                    is_gray_box_prompt, IsGrayBox
+                is_gray_box_res: IsGrayBox = generate(
+                    is_gray_box_prompt, IsGrayBox, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for is gray box attack
 
@@ -97,8 +97,8 @@ class GrayBox(BaseAttack):
         try:
             for _ in range(self.max_retries):
                 # Generate the enhanced attack asynchronously
-                res: EnhancedAttack = await self._a_generate_schema(
-                    prompt, EnhancedAttack
+                res: EnhancedAttack = await a_generate(
+                    prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
                 pbar.update(1)  # Update the progress bar for generation
@@ -107,8 +107,8 @@ class GrayBox(BaseAttack):
                 compliance_prompt = GrayBoxTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = await self._a_generate_schema(
-                    compliance_prompt, ComplianceData
+                compliance_res: ComplianceData = await a_generate(
+                    compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
@@ -116,8 +116,8 @@ class GrayBox(BaseAttack):
                 is_gray_box_prompt = GrayBoxTemplate.is_gray_box(
                     res.model_dump()
                 )
-                is_gray_box_res: IsGrayBox = await self._a_generate_schema(
-                    is_gray_box_prompt, IsGrayBox
+                is_gray_box_res: IsGrayBox = await a_generate(
+                    is_gray_box_prompt, IsGrayBox, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for is gray box attack
 
@@ -134,16 +134,6 @@ class GrayBox(BaseAttack):
 
         # If all retries fail, return the original attack
         return attack
-
-    ##################################################
-    ### Helper Methods ###############################
-    ##################################################
-
-    def _generate_schema(self, prompt: str, schema: BaseModel):
-        return generate_schema(prompt, schema, self.simulator_model)
-
-    async def _a_generate_schema(self, prompt: str, schema: BaseModel):
-        return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
         return "Gray Box"

@@ -19,8 +19,8 @@ from deepteam.attacks.multi_turn.crescendo_jailbreaking.schema import (
     EvalData,
 )
 from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
+    generate,
+    a_generate,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
 
@@ -262,8 +262,8 @@ class CrescendoJailbreaking(BaseAttack):
         red_teaming_history = self.memory.get_conversation(
             self.red_teaming_chat_conversation_id
         )
-        res: AttackData = self._generate_schema(
-            json.dumps(red_teaming_history), AttackData
+        res: AttackData = generate(
+            json.dumps(red_teaming_history), AttackData, self.simulator_model
         )
         return res.generated_question
 
@@ -293,8 +293,8 @@ class CrescendoJailbreaking(BaseAttack):
             {"role": "system", "content": refusal_system_prompt},
             {"role": "user", "content": refusal_input},
         ]
-        refusal_response: RefusalData = self._generate_schema(
-            json.dumps(refusal_body), RefusalData
+        refusal_response: RefusalData = generate(
+            json.dumps(refusal_body), RefusalData, self.simulator_model
         )
         return refusal_response.value, refusal_response.rationale
 
@@ -308,8 +308,8 @@ class CrescendoJailbreaking(BaseAttack):
             {"role": "system", "content": eval_system_prompt},
             {"role": "user", "content": eval_input},
         ]
-        eval_response: EvalData = self._generate_schema(
-            json.dumps(eval_body), EvalData
+        eval_response: EvalData = generate(
+            json.dumps(eval_body), EvalData, self.simulator_model
         )
         return eval_response.value, eval_response.metadata
 
@@ -352,8 +352,8 @@ class CrescendoJailbreaking(BaseAttack):
             }
         )
 
-        res: AttackData = await self._a_generate_schema(
-            json.dumps(red_teaming_history), AttackData
+        res: AttackData = await a_generate(
+            json.dumps(red_teaming_history), AttackData, self.simulator_model
         )
         return res.generated_question
 
@@ -383,8 +383,8 @@ class CrescendoJailbreaking(BaseAttack):
             {"role": "system", "content": refusal_system_prompt},
             {"role": "user", "content": refusal_input},
         ]
-        refusal_response: RefusalData = await self._a_generate_schema(
-            json.dumps(refusal_body), RefusalData
+        refusal_response: RefusalData = await a_generate(
+            json.dumps(refusal_body), RefusalData, self.simulator_model
         )
         return refusal_response.value, refusal_response.rationale
 
@@ -400,20 +400,10 @@ class CrescendoJailbreaking(BaseAttack):
             {"role": "system", "content": eval_system_prompt},
             {"role": "user", "content": eval_input},
         ]
-        eval_response: EvalData = await self._a_generate_schema(
-            json.dumps(eval_body), EvalData
+        eval_response: EvalData = await a_generate(
+            json.dumps(eval_body), EvalData, self.simulator_model
         )
         return eval_response.value, eval_response.metadata
-
-    ##################################################
-    ### Generate Utils ###############################
-    ##################################################
-
-    def _generate_schema(self, prompt: str, schema: BaseModel):
-        return generate_schema(prompt, schema, self.simulator_model)
-
-    async def _a_generate_schema(self, prompt: str, schema: BaseModel):
-        return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
         return "Crescendo Jailbreaking"

@@ -1,12 +1,12 @@
 import random
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.single_turn.input_bypass.template import (
     InputBypassTemplate,
 )
 
 
-class InputBypass(BaseAttack):
+class InputBypass(BaseSingleTurnAttack):
     def __init__(self, weight: int = 2, max_retries: int = 3):
         self.weight = weight  # Higher weight since this targets validation vulnerabilities
         self.max_retries = max_retries
@@ -18,31 +18,30 @@ class InputBypass(BaseAttack):
         """
         enhancement_methods = [
             InputBypassTemplate.enhance_exception_handling,
-            InputBypassTemplate.enhance_compliance_circumvention,
-            InputBypassTemplate.enhance_operational_necessity,
+            InputBypassTemplate.enhance_compliance_adaptation,
             InputBypassTemplate.enhance_security_override,
-            InputBypassTemplate.enhance_process_acceleration,
-            InputBypassTemplate.enhance_universal_bypass_bridge,
+            InputBypassTemplate.enhance_operational_necessity,
+            InputBypassTemplate.enhance_emergency_bypass,
+            InputBypassTemplate.enhance_universal_exemption,
         ]
 
-        for attempt in range(self.max_retries):
+        for _ in range(self.max_retries):
             try:
-                # Randomly select an enhancement method
                 method = random.choice(enhancement_methods)
                 enhanced_attack = method(attack)
 
-                # Basic validation - ensure the enhancement actually modified the attack
                 if enhanced_attack and len(enhanced_attack.strip()) > len(
                     attack.strip()
                 ):
                     return enhanced_attack
 
             except Exception:
-                # If enhancement fails, try again with a different method
                 continue
 
-        # If all retries fail, return the original attack
         return attack
+
+    async def a_enhance(self, attack: str) -> str:
+        return self.enhance(attack)
 
     def get_name(self) -> str:
         return "Input Bypass"

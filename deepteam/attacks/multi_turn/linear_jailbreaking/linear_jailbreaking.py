@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from tqdm import tqdm
 import json
 from typing import Optional, Union
@@ -18,8 +17,8 @@ from deepteam.attacks.multi_turn.linear_jailbreaking.template import (
     JailBreakingTemplate,
 )
 from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
+    generate,
+    a_generate,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
 
@@ -57,8 +56,8 @@ class LinearJailbreaking(BaseAttack):
         for _ in range(self.turns):
             # 1st step: Enhance the initial attack
             conversation = json.dumps(conversation_json)
-            improvement_res: ImprovementPrompt = self._generate_schema(
-                conversation, ImprovementPrompt
+            improvement_res: ImprovementPrompt = generate(
+                conversation, ImprovementPrompt, self.simulator_model
             )
             enhanced_attack = improvement_res.prompt
             pbar.update(1)
@@ -67,8 +66,8 @@ class LinearJailbreaking(BaseAttack):
             non_refusal_prompt = JailBreakingTemplate.non_refusal(
                 attack, enhanced_attack
             )
-            non_refusal_res: NonRefusal = self._generate_schema(
-                non_refusal_prompt, NonRefusal
+            non_refusal_res: NonRefusal = generate(
+                non_refusal_prompt, NonRefusal, self.simulator_model
             )
             classification = non_refusal_res.classification
             if classification == "Refusal":
@@ -83,8 +82,8 @@ class LinearJailbreaking(BaseAttack):
             is_on_topic_prompt = JailBreakingTemplate.on_topic(
                 attack, current_attack
             )
-            on_topic_res: OnTopic = self._generate_schema(
-                is_on_topic_prompt, OnTopic
+            on_topic_res: OnTopic = generate(
+                is_on_topic_prompt, OnTopic, self.simulator_model
             )
 
             on_topic = on_topic_res.on_topic
@@ -104,7 +103,9 @@ class LinearJailbreaking(BaseAttack):
             judge_prompt = JailBreakingTemplate.linear_judge(
                 attack, current_attack, target_response
             )
-            rating_res: Rating = self._generate_schema(judge_prompt, Rating)
+            rating_res: Rating = generate(
+                judge_prompt, Rating, self.simulator_model
+            )
 
             score = rating_res.rating
             pbar.update(1)
@@ -137,8 +138,7 @@ class LinearJailbreaking(BaseAttack):
         self.simulator_model, _ = initialize_model(simulator_model)
 
         # Define Progress Bar
-        llm_calls_per_iteration = 5
-        total_steps = self.turns * llm_calls_per_iteration
+        total_steps = self.turns
         pbar = tqdm(
             total=total_steps, desc="...... ⛓️  Linear Jailbreaking", leave=False
         )
@@ -152,18 +152,17 @@ class LinearJailbreaking(BaseAttack):
         for _ in range(self.turns):
             # 1st step: Enhance the initial attack
             conversation = json.dumps(conversation_json)
-            improvement_res: ImprovementPrompt = await self._a_generate_schema(
-                conversation, ImprovementPrompt
+            improvement_res: ImprovementPrompt = await a_generate(
+                conversation, ImprovementPrompt, self.simulator_model
             )
-            enhanced_attack = improvement_res.prompt
-            pbar.update(1)
+            enhanced_attack = improvement_res.new_prompt
 
             # 2nd step: Check if enhanced attack is a refusal statement
             non_refusal_prompt = JailBreakingTemplate.non_refusal(
                 attack, enhanced_attack
             )
-            non_refusal_res: NonRefusal = await self._a_generate_schema(
-                non_refusal_prompt, NonRefusal
+            non_refusal_res: NonRefusal = await a_generate(
+                non_refusal_prompt, NonRefusal, self.simulator_model
             )
             classification = non_refusal_res.classification
             if classification == "Refusal":
@@ -172,17 +171,15 @@ class LinearJailbreaking(BaseAttack):
                 return attack if current_attack is None else current_attack
             else:
                 current_attack = enhanced_attack
-            pbar.update(1)
 
             # 3rd step: Check if the enhanced attack is on-topic
             is_on_topic_prompt = JailBreakingTemplate.on_topic(
                 attack, current_attack
             )
-            on_topic_res: OnTopic = await self._a_generate_schema(
-                is_on_topic_prompt, OnTopic
+            on_topic_res: OnTopic = await a_generate(
+                is_on_topic_prompt, OnTopic, self.simulator_model
             )
             on_topic = on_topic_res.on_topic
-            pbar.update(1)
 
             # 4th step: Generate a response from the target LLM using the enhanced attack
             target_response = await model_callback(current_attack)
@@ -192,14 +189,13 @@ class LinearJailbreaking(BaseAttack):
                 phrase.lower() in target_response.lower()
                 for phrase in penalized_phrases
             )
-            pbar.update(1)
 
             # 5th step: Calculate the score for the enhanced attack
             judge_prompt = JailBreakingTemplate.linear_judge(
                 attack, current_attack, target_response
             )
-            rating_res: Rating = await self._a_generate_schema(
-                judge_prompt, Rating
+            rating_res: Rating = await a_generate(
+                judge_prompt, Rating, self.simulator_model
             )
             score = rating_res.rating
             pbar.update(1)
@@ -222,16 +218,6 @@ class LinearJailbreaking(BaseAttack):
             )
         pbar.close()
         return current_attack
-
-    ##################################################
-    ### Utils ########################################
-    ##################################################
-
-    def _generate_schema(self, prompt: str, schema: BaseModel):
-        return generate_schema(prompt, schema, self.simulator_model)
-
-    async def _a_generate_schema(self, prompt: str, schema: BaseModel):
-        return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
         return "Linear Jailbreaking"

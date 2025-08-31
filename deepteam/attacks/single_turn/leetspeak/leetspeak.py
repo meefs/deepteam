@@ -1,7 +1,7 @@
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 
-class Leetspeak(BaseAttack):
+class Leetspeak(BaseSingleTurnAttack):
     def __init__(self, weight: int = 1):
         self.weight = weight
 
@@ -24,6 +24,9 @@ class Leetspeak(BaseAttack):
             "L": "1",
         }
         return "".join(leet_map.get(char, char) for char in attack)
+
+    async def a_enhance(self, attack: str) -> str:
+        return self.enhance(attack)
 
     def get_name(self) -> str:
         return "Leetspeak"

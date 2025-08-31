@@ -1,12 +1,12 @@
 import random
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.single_turn.semantic_manipulation.template import (
     LinguisticConfusionTemplate,
 )
 
 
-class LinguisticConfusion(BaseAttack):
+class LinguisticConfusion(BaseSingleTurnAttack):
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight
         self.max_retries = max_retries
@@ -25,7 +25,7 @@ class LinguisticConfusion(BaseAttack):
             LinguisticConfusionTemplate.enhance_universal_translation,
         ]
 
-        for attempt in range(self.max_retries):
+        for _ in range(self.max_retries):
             try:
                 method = random.choice(enhancement_methods)
                 enhanced_attack = method(attack)
@@ -38,6 +38,9 @@ class LinguisticConfusion(BaseAttack):
                 continue
 
         return attack
+
+    async def a_enhance(self, attack: str) -> str:
+        return self.enhance(attack)
 
     def get_name(self) -> str:
         return "Linguistic Confusion"

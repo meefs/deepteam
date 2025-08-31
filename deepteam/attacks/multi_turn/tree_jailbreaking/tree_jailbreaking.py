@@ -20,8 +20,8 @@ from deepteam.attacks.multi_turn.tree_jailbreaking.template import (
     JailBreakingTemplate,
 )
 from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
+    generate,
+    a_generate,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
 
@@ -130,8 +130,8 @@ class TreeJailbreaking(BaseAttack):
         num_branches = self.calculate_branches(node.score, node.depth)
         for _ in range(num_branches):
             conversation = json.dumps(conversation_json)
-            res: ImprovementPrompt = self._generate_schema(
-                conversation, ImprovementPrompt
+            res: ImprovementPrompt = generate(
+                conversation, ImprovementPrompt, self.simulator_model
             )
             enhanced_attack = res.prompt
 
@@ -139,8 +139,8 @@ class TreeJailbreaking(BaseAttack):
             non_refusal_prompt = JailBreakingTemplate.non_refusal(
                 initial_attack, enhanced_attack
             )
-            res: NonRefusal = self._generate_schema(
-                non_refusal_prompt, NonRefusal
+            res: NonRefusal = generate(
+                non_refusal_prompt, NonRefusal, self.simulator_model
             )
             classification = res.classification
             if classification == "Refusal":
@@ -153,7 +153,7 @@ class TreeJailbreaking(BaseAttack):
             judge_prompt = JailBreakingTemplate.linear_judge(
                 initial_attack, enhanced_attack, target_response
             )
-            res: Rating = self._generate_schema(judge_prompt, Rating)
+            res: Rating = generate(judge_prompt, Rating, self.simulator_model)
             score = res.rating
 
             # Prune if the score is too low
@@ -267,8 +267,8 @@ class TreeJailbreaking(BaseAttack):
     ):
         """Asynchronously generates a child node."""
         conversation = json.dumps(conversation_json)
-        res: ImprovementPrompt = await self._a_generate_schema(
-            conversation, ImprovementPrompt
+        res: ImprovementPrompt = await a_generate(
+            conversation, ImprovementPrompt, self.simulator_model
         )
         enhanced_attack = res.prompt
 
@@ -276,8 +276,8 @@ class TreeJailbreaking(BaseAttack):
         non_refusal_prompt = JailBreakingTemplate.non_refusal(
             initial_attack, enhanced_attack
         )
-        res: NonRefusal = await self._a_generate_schema(
-            non_refusal_prompt, NonRefusal
+        res: NonRefusal = await a_generate(
+            non_refusal_prompt, NonRefusal, self.simulator_model
         )
         classification = res.classification
         if classification == "Refusal":
@@ -290,7 +290,9 @@ class TreeJailbreaking(BaseAttack):
         judge_prompt = JailBreakingTemplate.linear_judge(
             initial_attack, enhanced_attack, target_response
         )
-        res: Rating = await self._a_generate_schema(judge_prompt, Rating)
+        res: Rating = await a_generate(
+            judge_prompt, Rating, self.simulator_model
+        )
         score = res.rating
 
         # Prune if the score is too low
@@ -346,16 +348,6 @@ class TreeJailbreaking(BaseAttack):
             branches -= 1
 
         return max(MIN_BRANCHES, min(MAX_BRANCHES, branches))
-
-    ##################################################
-    ### Utils ########################################
-    ##################################################
-
-    def _generate_schema(self, prompt: str, schema: BaseModel):
-        return generate_schema(prompt, schema, self.simulator_model)
-
-    async def _a_generate_schema(self, prompt: str, schema: BaseModel):
-        return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
         return "Tree Jailbreaking"

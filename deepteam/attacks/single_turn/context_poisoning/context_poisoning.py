@@ -1,12 +1,12 @@
 import random
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.single_turn.context_poisoning.template import (
     ContextPoisoningTemplate,
 )
 
 
-class ContextPoisoning(BaseAttack):
+class ContextPoisoning(BaseSingleTurnAttack):
     def __init__(self, weight: int = 3, max_retries: int = 3):
         self.weight = weight  # Higher weight since memory poisoning can have persistent effects
         self.max_retries = max_retries
@@ -25,7 +25,7 @@ class ContextPoisoning(BaseAttack):
             ContextPoisoningTemplate.enhance_universal_context_bridge,
         ]
 
-        for attempt in range(self.max_retries):
+        for _ in range(self.max_retries):
             try:
                 # Randomly select an enhancement method
                 method = random.choice(enhancement_methods)
@@ -43,6 +43,9 @@ class ContextPoisoning(BaseAttack):
 
         # If all retries fail, return the original attack
         return attack
+
+    async def a_enhance(self, attack: str) -> str:
+        return self.enhance(attack)
 
     def get_name(self) -> str:
         return "Context Poisoning"

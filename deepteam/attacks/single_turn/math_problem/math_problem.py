@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from tqdm import tqdm
 from tqdm.asyncio import tqdm as async_tqdm_bar
 from typing import Optional, Union
@@ -6,7 +5,7 @@ from typing import Optional, Union
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.single_turn.math_problem.template import (
     MathProblemTemplate,
 )
@@ -16,12 +15,12 @@ from deepteam.attacks.single_turn.math_problem.schema import (
     IsMathProblem,
 )
 from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
+    generate,
+    a_generate,
 )
 
 
-class MathProblem(BaseAttack):
+class MathProblem(BaseSingleTurnAttack):
     def __init__(
         self,
         weight: int = 1,
@@ -47,8 +46,8 @@ class MathProblem(BaseAttack):
         ) as pbar:
             for _ in range(self.max_retries):
                 # Generate the enhanced prompt
-                res: EnhancedAttack = self._generate_schema(
-                    prompt, EnhancedAttack
+                res: EnhancedAttack = generate(
+                    prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input + self.get_additional_instructions()
                 pbar.update(1)  # Update the progress bar for generation
@@ -57,8 +56,8 @@ class MathProblem(BaseAttack):
                 compliance_prompt = MathProblemTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = self._generate_schema(
-                    compliance_prompt, ComplianceData
+                compliance_res: ComplianceData = generate(
+                    compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
@@ -66,8 +65,8 @@ class MathProblem(BaseAttack):
                 is_math_problem_prompt = MathProblemTemplate.is_math_problem(
                     res.model_dump()
                 )
-                is_math_problem_res: IsMathProblem = self._generate_schema(
-                    is_math_problem_prompt, IsMathProblem
+                is_math_problem_res: IsMathProblem = generate(
+                    is_math_problem_prompt, IsMathProblem, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for is math problem
 
@@ -100,8 +99,8 @@ class MathProblem(BaseAttack):
         try:
             for _ in range(self.max_retries):
                 # Generate the enhanced prompt asynchronously
-                res: EnhancedAttack = await self._a_generate_schema(
-                    prompt, EnhancedAttack
+                res: EnhancedAttack = await a_generate(
+                    prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input + self.get_additional_instructions()
                 pbar.update(1)  # Update the progress bar for generation
@@ -110,8 +109,8 @@ class MathProblem(BaseAttack):
                 compliance_prompt = MathProblemTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = await self._a_generate_schema(
-                    compliance_prompt, ComplianceData
+                compliance_res: ComplianceData = await a_generate(
+                    compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
@@ -119,10 +118,8 @@ class MathProblem(BaseAttack):
                 is_math_problem_prompt = MathProblemTemplate.is_math_problem(
                     res.model_dump()
                 )
-                is_math_problem_res: IsMathProblem = (
-                    await self._a_generate_schema(
-                        is_math_problem_prompt, IsMathProblem
-                    )
+                is_math_problem_res: IsMathProblem = await a_generate(
+                    is_math_problem_prompt, IsMathProblem, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for is math problem
 
@@ -139,16 +136,6 @@ class MathProblem(BaseAttack):
 
         # If all retries fail, return the original attack
         return attack
-
-    ##################################################
-    ### Helper Methods ###############################
-    ##################################################
-
-    def _generate_schema(self, prompt: str, schema: BaseModel):
-        return generate_schema(prompt, schema, self.simulator_model)
-
-    async def _a_generate_schema(self, prompt: str, schema: BaseModel):
-        return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_additional_instructions(self) -> str:
         return (

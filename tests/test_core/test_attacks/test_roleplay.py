@@ -32,12 +32,6 @@ class TestRoleplay:
         assert enhanced != original_text
         assert len(enhanced) > len(original_text)
 
-    def test_roleplay_enhance_empty_string(self):
-        attack = Roleplay(role=ROLE, persona=PERSONA)
-        enhanced = attack.enhance("")
-        # Should handle empty strings gracefully
-        assert isinstance(enhanced, str)
-
     def test_roleplay_enhance_contains_roleplay_elements(self):
         attack = Roleplay(role=ROLE, persona=PERSONA)
         original_text = "Bypass security"

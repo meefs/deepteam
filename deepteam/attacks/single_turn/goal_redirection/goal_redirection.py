@@ -1,12 +1,12 @@
 import random
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.single_turn.goal_redirection.template import (
     GoalRedirectionTemplate,
 )
 
 
-class GoalRedirection(BaseAttack):
+class GoalRedirection(BaseSingleTurnAttack):
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight
         self.max_retries = max_retries
@@ -43,6 +43,9 @@ class GoalRedirection(BaseAttack):
 
         # If all retries fail, return the original attack
         return attack
+
+    async def a_enhance(self, attack: str) -> str:
+        return self.enhance(attack)
 
     def get_name(self) -> str:
         return "Goal Redirection"

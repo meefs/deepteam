@@ -6,7 +6,7 @@ from typing import Optional, Union
 from deepeval.metrics.utils import initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.single_turn.multilingual.template import (
     MultilingualTemplate,
 )
@@ -16,12 +16,12 @@ from deepteam.attacks.single_turn.multilingual.schema import (
     IsTranslation,
 )
 from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
+    generate,
+    a_generate,
 )
 
 
-class Multilingual(BaseAttack):
+class Multilingual(BaseSingleTurnAttack):
     def __init__(self, weight: int = 1, max_retries: int = 5):
         self.weight = weight
         self.max_retries = max_retries
@@ -43,8 +43,8 @@ class Multilingual(BaseAttack):
         ) as pbar:
             for _ in range(self.max_retries):
                 # Generate the enhanced prompt
-                res: EnhancedAttack = self._generate_schema(
-                    prompt, EnhancedAttack
+                res: EnhancedAttack = generate(
+                    prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
                 pbar.update(1)  # Update the progress bar for generation
@@ -53,8 +53,8 @@ class Multilingual(BaseAttack):
                 compliance_prompt = MultilingualTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = self._generate_schema(
-                    compliance_prompt, ComplianceData
+                compliance_res: ComplianceData = generate(
+                    compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
@@ -62,8 +62,8 @@ class Multilingual(BaseAttack):
                 is_translation_prompt = MultilingualTemplate.is_translation(
                     res.model_dump()
                 )
-                is_translation_res: IsTranslation = self._generate_schema(
-                    is_translation_prompt, IsTranslation
+                is_translation_res: IsTranslation = generate(
+                    is_translation_prompt, IsTranslation, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for is a translation
 
@@ -96,8 +96,8 @@ class Multilingual(BaseAttack):
         try:
             for _ in range(self.max_retries):
                 # Generate the enhanced prompt asynchronously
-                res: EnhancedAttack = await self._a_generate_schema(
-                    prompt, EnhancedAttack
+                res: EnhancedAttack = await a_generate(
+                    prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
                 pbar.update(1)  # Update the progress bar for generation
@@ -106,8 +106,8 @@ class Multilingual(BaseAttack):
                 compliance_prompt = MultilingualTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = await self._a_generate_schema(
-                    compliance_prompt, ComplianceData
+                compliance_res: ComplianceData = await a_generate(
+                    compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
@@ -115,10 +115,8 @@ class Multilingual(BaseAttack):
                 is_translation_prompt = MultilingualTemplate.is_translation(
                     res.model_dump()
                 )
-                is_translation_res: IsTranslation = (
-                    await self._a_generate_schema(
-                        is_translation_prompt, IsTranslation
-                    )
+                is_translation_res: IsTranslation = await a_generate(
+                    is_translation_prompt, IsTranslation, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for is a translation
 
@@ -135,16 +133,6 @@ class Multilingual(BaseAttack):
 
         # If all retries fail, return the original prompt
         return attack
-
-    ##################################################
-    ### Helper Methods ###############################
-    ##################################################
-
-    def _generate_schema(self, prompt: str, schema: BaseModel):
-        return generate_schema(prompt, schema, self.simulator_model)
-
-    async def _a_generate_schema(self, prompt: str, schema: BaseModel):
-        return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
         return "Multilingual"
