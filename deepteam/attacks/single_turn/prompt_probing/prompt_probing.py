@@ -15,8 +15,8 @@ from deepteam.attacks.single_turn.prompt_probing.schema import (
     IsPromptProbing,
 )
 from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
+    generate,
+    a_generate,
 )
 
 
@@ -44,7 +44,7 @@ class PromptProbing(BaseSingleTurnAttack):
 
             for _ in range(self.max_retries):
                 # Generate the enhanced attack
-                res: EnhancedAttack = generate_schema(
+                res: EnhancedAttack = generate(
                     prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
@@ -54,7 +54,7 @@ class PromptProbing(BaseSingleTurnAttack):
                 compliance_prompt = PromptProbingTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = generate_schema(
+                compliance_res: ComplianceData = generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
@@ -63,7 +63,7 @@ class PromptProbing(BaseSingleTurnAttack):
                 is_prompt_probing_prompt = (
                     PromptProbingTemplate.is_prompt_probing(res.model_dump())
                 )
-                is_prompt_probing_res: IsPromptProbing = generate_schema(
+                is_prompt_probing_res: IsPromptProbing = generate(
                     is_prompt_probing_prompt,
                     IsPromptProbing,
                     self.simulator_model,
@@ -99,7 +99,7 @@ class PromptProbing(BaseSingleTurnAttack):
         try:
             for _ in range(self.max_retries):
                 # Generate the enhanced attack asynchronously
-                res: EnhancedAttack = await a_generate_schema(
+                res: EnhancedAttack = await a_generate(
                     prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
@@ -109,7 +109,7 @@ class PromptProbing(BaseSingleTurnAttack):
                 compliance_prompt = PromptProbingTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = await a_generate_schema(
+                compliance_res: ComplianceData = await a_generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
@@ -118,12 +118,10 @@ class PromptProbing(BaseSingleTurnAttack):
                 is_prompt_probing_prompt = (
                     PromptProbingTemplate.is_prompt_probing(res.model_dump())
                 )
-                is_prompt_probing_res: IsPromptProbing = (
-                    await a_generate_schema(
-                        is_prompt_probing_prompt,
-                        IsPromptProbing,
-                        self.simulator_model,
-                    )
+                is_prompt_probing_res: IsPromptProbing = await a_generate(
+                    is_prompt_probing_prompt,
+                    IsPromptProbing,
+                    self.simulator_model,
                 )
                 pbar.update(1)  # Update the progress bar
 

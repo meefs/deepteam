@@ -14,8 +14,8 @@ from deepteam.attacks.multi_turn.bad_likert_judge.template import (
     BadLikertJudgeTemplate,
 )
 from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
+    generate,
+    a_generate,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
 
@@ -70,7 +70,7 @@ class BadLikertJudge(BaseAttack):
             non_refusal_prompt = BadLikertJudgeTemplate.non_refusal(
                 attack, turn_1_response
             )
-            non_refusal_res: NonRefusal = generate_schema(
+            non_refusal_res: NonRefusal = generate(
                 non_refusal_prompt, NonRefusal, self.simulator_model
             )
 
@@ -110,7 +110,7 @@ class BadLikertJudge(BaseAttack):
             judge_prompt = BadLikertJudgeTemplate.blj_judge(
                 attack, current_attack, current_attack
             )
-            judge_res: BLJJudge = generate_schema(
+            judge_res: BLJJudge = generate(
                 judge_prompt, BLJJudge, self.simulator_model
             )
             pbar.update(1)
@@ -155,7 +155,7 @@ class BadLikertJudge(BaseAttack):
             non_refusal_prompt = BadLikertJudgeTemplate.non_refusal(
                 attack, turn_1_response
             )
-            non_refusal_res: NonRefusal = await a_generate_schema(
+            non_refusal_res: NonRefusal = await a_generate(
                 non_refusal_prompt, NonRefusal, self.simulator_model
             )
 
@@ -195,7 +195,7 @@ class BadLikertJudge(BaseAttack):
             judge_prompt = BadLikertJudgeTemplate.blj_judge(
                 attack, current_attack, current_attack
             )
-            judge_res: BLJJudge = await a_generate_schema(
+            judge_res: BLJJudge = await a_generate(
                 judge_prompt, BLJJudge, self.simulator_model
             )
             pbar.update(1)

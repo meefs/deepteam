@@ -3,8 +3,8 @@ from pydantic import BaseModel
 
 
 class ImprovementPrompt(BaseModel):
-    improvement: str
-    prompt: str
+    reasoning: str
+    new_prompt: str
 
 
 class OnTopic(BaseModel):

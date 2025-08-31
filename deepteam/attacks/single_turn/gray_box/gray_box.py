@@ -14,8 +14,8 @@ from deepteam.attacks.single_turn.gray_box.schema import (
     IsGrayBox,
 )
 from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
+    generate,
+    a_generate,
 )
 
 
@@ -44,7 +44,7 @@ class GrayBox(BaseSingleTurnAttack):
 
             for _ in range(self.max_retries):
                 # Generate the enhanced attack
-                res: EnhancedAttack = generate_schema(
+                res: EnhancedAttack = generate(
                     prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
@@ -54,7 +54,7 @@ class GrayBox(BaseSingleTurnAttack):
                 compliance_prompt = GrayBoxTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = generate_schema(
+                compliance_res: ComplianceData = generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
@@ -63,7 +63,7 @@ class GrayBox(BaseSingleTurnAttack):
                 is_gray_box_prompt = GrayBoxTemplate.is_gray_box(
                     res.model_dump()
                 )
-                is_gray_box_res: IsGrayBox = generate_schema(
+                is_gray_box_res: IsGrayBox = generate(
                     is_gray_box_prompt, IsGrayBox, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for is gray box attack
@@ -97,7 +97,7 @@ class GrayBox(BaseSingleTurnAttack):
         try:
             for _ in range(self.max_retries):
                 # Generate the enhanced attack asynchronously
-                res: EnhancedAttack = await a_generate_schema(
+                res: EnhancedAttack = await a_generate(
                     prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
@@ -107,7 +107,7 @@ class GrayBox(BaseSingleTurnAttack):
                 compliance_prompt = GrayBoxTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = await a_generate_schema(
+                compliance_res: ComplianceData = await a_generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
@@ -116,7 +116,7 @@ class GrayBox(BaseSingleTurnAttack):
                 is_gray_box_prompt = GrayBoxTemplate.is_gray_box(
                     res.model_dump()
                 )
-                is_gray_box_res: IsGrayBox = await a_generate_schema(
+                is_gray_box_res: IsGrayBox = await a_generate(
                     is_gray_box_prompt, IsGrayBox, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for is gray box attack

@@ -5,7 +5,7 @@ from deepeval.metrics.utils import trimAndLoadJson, initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
 
-def generate_schema(
+def generate(
     prompt: str,
     schema: BaseModel,
     model: DeepEvalBaseLLM = None,
@@ -28,7 +28,8 @@ def generate_schema(
     else:
         try:
             res = model.generate(prompt, schema=schema)
-            return res
+            data = trimAndLoadJson(res)
+            return schema(**data)
         except TypeError:
             res = model.generate(prompt)
             data = trimAndLoadJson(res)
@@ -39,7 +40,7 @@ def generate_schema(
                 return schema(**data)
 
 
-async def a_generate_schema(
+async def a_generate(
     prompt: str,
     schema: BaseModel,
     model: DeepEvalBaseLLM = None,
@@ -63,7 +64,8 @@ async def a_generate_schema(
     else:
         try:
             res = await model.a_generate(prompt, schema=schema)
-            return res
+            data = trimAndLoadJson(res)
+            return schema(**data)
         except TypeError:
             res = await model.a_generate(prompt)
             data = trimAndLoadJson(res)

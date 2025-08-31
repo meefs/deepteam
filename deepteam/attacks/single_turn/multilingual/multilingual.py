@@ -16,8 +16,8 @@ from deepteam.attacks.single_turn.multilingual.schema import (
     IsTranslation,
 )
 from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
+    generate,
+    a_generate,
 )
 
 
@@ -43,7 +43,7 @@ class Multilingual(BaseSingleTurnAttack):
         ) as pbar:
             for _ in range(self.max_retries):
                 # Generate the enhanced prompt
-                res: EnhancedAttack = generate_schema(
+                res: EnhancedAttack = generate(
                     prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
@@ -53,7 +53,7 @@ class Multilingual(BaseSingleTurnAttack):
                 compliance_prompt = MultilingualTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = generate_schema(
+                compliance_res: ComplianceData = generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
@@ -62,7 +62,7 @@ class Multilingual(BaseSingleTurnAttack):
                 is_translation_prompt = MultilingualTemplate.is_translation(
                     res.model_dump()
                 )
-                is_translation_res: IsTranslation = generate_schema(
+                is_translation_res: IsTranslation = generate(
                     is_translation_prompt, IsTranslation, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for is a translation
@@ -96,7 +96,7 @@ class Multilingual(BaseSingleTurnAttack):
         try:
             for _ in range(self.max_retries):
                 # Generate the enhanced prompt asynchronously
-                res: EnhancedAttack = await a_generate_schema(
+                res: EnhancedAttack = await a_generate(
                     prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
@@ -106,7 +106,7 @@ class Multilingual(BaseSingleTurnAttack):
                 compliance_prompt = MultilingualTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = await a_generate_schema(
+                compliance_res: ComplianceData = await a_generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
@@ -115,7 +115,7 @@ class Multilingual(BaseSingleTurnAttack):
                 is_translation_prompt = MultilingualTemplate.is_translation(
                     res.model_dump()
                 )
-                is_translation_res: IsTranslation = await a_generate_schema(
+                is_translation_res: IsTranslation = await a_generate(
                     is_translation_prompt, IsTranslation, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for is a translation

@@ -19,8 +19,8 @@ from deepteam.attacks.multi_turn.sequential_break.template import (
     SequentialBreakTemplate,
 )
 from deepteam.attacks.attack_simulator.utils import (
-    generate_schema,
-    a_generate_schema,
+    generate,
+    a_generate,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
 
@@ -83,7 +83,7 @@ class SequentialJailbreak(BaseAttack):
                     SequentialBreakTemplate.rewrite_dialogue_prompt(attack)
                 )
 
-            rewritten_res: RewrittenDialogue = generate_schema(
+            rewritten_res: RewrittenDialogue = generate(
                 rewrite_prompt, RewrittenDialogue, self.simulator_model
             )
             rewritten_content = rewritten_res.paraphrased_version
@@ -122,7 +122,7 @@ class SequentialJailbreak(BaseAttack):
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(
                 attack, target_response
             )
-            non_refusal_res: NonRefusal = generate_schema(
+            non_refusal_res: NonRefusal = generate(
                 non_refusal_prompt, NonRefusal, self.simulator_model
             )
 
@@ -137,21 +137,21 @@ class SequentialJailbreak(BaseAttack):
                 judge_prompt = SequentialBreakTemplate.question_bank_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: QuestionBankJudge = generate_schema(
+                judge_res: QuestionBankJudge = generate(
                     judge_prompt, QuestionBankJudge, self.simulator_model
                 )
             elif self.attack_type == "game_environment":
                 judge_prompt = SequentialBreakTemplate.game_environment_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: GameEnvironmentJudge = generate_schema(
+                judge_res: GameEnvironmentJudge = generate(
                     judge_prompt, GameEnvironmentJudge, self.simulator_model
                 )
             else:
                 judge_prompt = SequentialBreakTemplate.dialogue_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: DialogueJudge = generate_schema(
+                judge_res: DialogueJudge = generate(
                     judge_prompt, DialogueJudge, self.simulator_model
                 )
 
@@ -205,7 +205,7 @@ class SequentialJailbreak(BaseAttack):
                     SequentialBreakTemplate.rewrite_dialogue_prompt(attack)
                 )
 
-            rewritten_res: RewrittenDialogue = await a_generate_schema(
+            rewritten_res: RewrittenDialogue = await a_generate(
                 rewrite_prompt, RewrittenDialogue, self.simulator_model
             )
             rewritten_content = rewritten_res.paraphrased_version
@@ -244,7 +244,7 @@ class SequentialJailbreak(BaseAttack):
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(
                 attack, target_response
             )
-            non_refusal_res: NonRefusal = await a_generate_schema(
+            non_refusal_res: NonRefusal = await a_generate(
                 non_refusal_prompt, NonRefusal, self.simulator_model
             )
 
@@ -259,21 +259,21 @@ class SequentialJailbreak(BaseAttack):
                 judge_prompt = SequentialBreakTemplate.question_bank_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: QuestionBankJudge = await a_generate_schema(
+                judge_res: QuestionBankJudge = await a_generate(
                     judge_prompt, QuestionBankJudge, self.simulator_model
                 )
             elif self.attack_type == "game_environment":
                 judge_prompt = SequentialBreakTemplate.game_environment_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: GameEnvironmentJudge = await a_generate_schema(
+                judge_res: GameEnvironmentJudge = await a_generate(
                     judge_prompt, GameEnvironmentJudge, self.simulator_model
                 )
             else:
                 judge_prompt = SequentialBreakTemplate.dialogue_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: DialogueJudge = await a_generate_schema(
+                judge_res: DialogueJudge = await a_generate(
                     judge_prompt, DialogueJudge, self.simulator_model
                 )
 
