@@ -1,7 +1,7 @@
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 
-class ROT13(BaseAttack):
+class ROT13(BaseSingleTurnAttack):
     def __init__(self, weight: int = 1):
         self.weight = weight
 
@@ -13,6 +13,9 @@ class ROT13(BaseAttack):
                 "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm",
             )
         )
+
+    async def a_enhance(self, attack: str) -> str:
+        return self.enhance(attack)
 
     def get_name(self) -> str:
         return "ROT-13"

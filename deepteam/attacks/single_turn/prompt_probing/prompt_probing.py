@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from tqdm import tqdm  # Sync version
 from tqdm.asyncio import tqdm as async_tqdm_bar  # Async version
 from typing import Optional, Union
@@ -6,7 +5,7 @@ from typing import Optional, Union
 from deepeval.metrics.utils import initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.single_turn.prompt_probing.template import (
     PromptProbingTemplate,
 )
@@ -21,7 +20,7 @@ from deepteam.attacks.attack_simulator.utils import (
 )
 
 
-class PromptProbing(BaseAttack):
+class PromptProbing(BaseSingleTurnAttack):
 
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight
@@ -45,8 +44,8 @@ class PromptProbing(BaseAttack):
 
             for _ in range(self.max_retries):
                 # Generate the enhanced attack
-                res: EnhancedAttack = self._generate_schema(
-                    prompt, EnhancedAttack
+                res: EnhancedAttack = generate_schema(
+                    prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
                 pbar.update(1)  # Update the progress bar for generation
@@ -55,8 +54,8 @@ class PromptProbing(BaseAttack):
                 compliance_prompt = PromptProbingTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = self._generate_schema(
-                    compliance_prompt, ComplianceData
+                compliance_res: ComplianceData = generate_schema(
+                    compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
@@ -64,8 +63,10 @@ class PromptProbing(BaseAttack):
                 is_prompt_probing_prompt = (
                     PromptProbingTemplate.is_prompt_probing(res.model_dump())
                 )
-                is_prompt_probing_res: IsPromptProbing = self._generate_schema(
-                    is_prompt_probing_prompt, IsPromptProbing
+                is_prompt_probing_res: IsPromptProbing = generate_schema(
+                    is_prompt_probing_prompt,
+                    IsPromptProbing,
+                    self.simulator_model,
                 )
                 pbar.update(1)  # Update the progress bar
 
@@ -98,8 +99,8 @@ class PromptProbing(BaseAttack):
         try:
             for _ in range(self.max_retries):
                 # Generate the enhanced attack asynchronously
-                res: EnhancedAttack = await self._a_generate_schema(
-                    prompt, EnhancedAttack
+                res: EnhancedAttack = await a_generate_schema(
+                    prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
                 pbar.update(1)  # Update the progress bar for generation
@@ -108,8 +109,8 @@ class PromptProbing(BaseAttack):
                 compliance_prompt = PromptProbingTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = await self._a_generate_schema(
-                    compliance_prompt, ComplianceData
+                compliance_res: ComplianceData = await a_generate_schema(
+                    compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
@@ -118,8 +119,10 @@ class PromptProbing(BaseAttack):
                     PromptProbingTemplate.is_prompt_probing(res.model_dump())
                 )
                 is_prompt_probing_res: IsPromptProbing = (
-                    await self._a_generate_schema(
-                        is_prompt_probing_prompt, IsPromptProbing
+                    await a_generate_schema(
+                        is_prompt_probing_prompt,
+                        IsPromptProbing,
+                        self.simulator_model,
                     )
                 )
                 pbar.update(1)  # Update the progress bar
@@ -137,16 +140,6 @@ class PromptProbing(BaseAttack):
 
         # If all retries fail, return the original attack
         return attack
-
-    ##################################################
-    ### Helper Methods ################################
-    ##################################################
-
-    def _generate_schema(self, prompt: str, schema: BaseModel):
-        return generate_schema(prompt, schema, self.simulator_model)
-
-    async def _a_generate_schema(self, prompt: str, schema: BaseModel):
-        return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
         return "Prompt Probing"

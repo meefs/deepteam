@@ -1,9 +1,8 @@
 import base64
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 
-class Base64(BaseAttack):
-
+class Base64(BaseSingleTurnAttack):
     def __init__(self, weight: int = 1):
         self.weight = weight
 

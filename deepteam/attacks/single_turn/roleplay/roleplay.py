@@ -6,7 +6,7 @@ from typing import Optional, Union
 from deepeval.metrics.utils import initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.single_turn.roleplay.template import (
     RoleplayTemplate,
 )
@@ -21,7 +21,7 @@ from deepteam.attacks.attack_simulator.utils import (
 )
 
 
-class Roleplay(BaseAttack):
+class Roleplay(BaseSingleTurnAttack):
 
     def __init__(
         self,
@@ -53,8 +53,8 @@ class Roleplay(BaseAttack):
 
             for _ in range(self.max_retries):
                 # Generate the enhanced attack
-                res: EnhancedAttack = self._generate_schema(
-                    prompt, EnhancedAttack
+                res: EnhancedAttack = generate_schema(
+                    prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
                 pbar.update(1)  # Update the progress bar for generation
@@ -63,8 +63,8 @@ class Roleplay(BaseAttack):
                 compliance_prompt = RoleplayTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = self._generate_schema(
-                    compliance_prompt, ComplianceData
+                compliance_res: ComplianceData = generate_schema(
+                    compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
@@ -72,8 +72,8 @@ class Roleplay(BaseAttack):
                 is_roleplay_prompt = RoleplayTemplate.is_roleplay(
                     res.model_dump()
                 )
-                is_roleplay_res: IsRoleplay = self._generate_schema(
-                    is_roleplay_prompt, IsRoleplay
+                is_roleplay_res: IsRoleplay = generate_schema(
+                    is_roleplay_prompt, IsRoleplay, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar
 
@@ -106,8 +106,8 @@ class Roleplay(BaseAttack):
         try:
             for _ in range(self.max_retries):
                 # Generate the enhanced attack asynchronously
-                res: EnhancedAttack = await self._a_generate_schema(
-                    prompt, EnhancedAttack
+                res: EnhancedAttack = await a_generate_schema(
+                    prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
                 pbar.update(1)  # Update the progress bar for generation
@@ -116,8 +116,8 @@ class Roleplay(BaseAttack):
                 compliance_prompt = RoleplayTemplate.non_compliant(
                     res.model_dump()
                 )
-                compliance_res: ComplianceData = await self._a_generate_schema(
-                    compliance_prompt, ComplianceData
+                compliance_res: ComplianceData = await a_generate_schema(
+                    compliance_prompt, ComplianceData, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar for compliance
 
@@ -125,8 +125,8 @@ class Roleplay(BaseAttack):
                 is_roleplay_prompt = RoleplayTemplate.is_roleplay(
                     res.model_dump()
                 )
-                is_roleplay_res: IsRoleplay = await self._a_generate_schema(
-                    is_roleplay_prompt, IsRoleplay
+                is_roleplay_res: IsRoleplay = await a_generate_schema(
+                    is_roleplay_prompt, IsRoleplay, self.simulator_model
                 )
                 pbar.update(1)  # Update the progress bar
 
@@ -143,16 +143,6 @@ class Roleplay(BaseAttack):
 
         # If all retries fail, return the original attack
         return attack
-
-    ##################################################
-    ### Helper Methods ################################
-    ##################################################
-
-    def _generate_schema(self, prompt: str, schema: BaseModel):
-        return generate_schema(prompt, schema, self.simulator_model)
-
-    async def _a_generate_schema(self, prompt: str, schema: BaseModel):
-        return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
         return "Roleplay"

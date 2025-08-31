@@ -83,8 +83,8 @@ class SequentialJailbreak(BaseAttack):
                     SequentialBreakTemplate.rewrite_dialogue_prompt(attack)
                 )
 
-            rewritten_res: RewrittenDialogue = self._generate_schema(
-                rewrite_prompt, RewrittenDialogue
+            rewritten_res: RewrittenDialogue = generate_schema(
+                rewrite_prompt, RewrittenDialogue, self.simulator_model
             )
             rewritten_content = rewritten_res.paraphrased_version
 
@@ -122,8 +122,8 @@ class SequentialJailbreak(BaseAttack):
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(
                 attack, target_response
             )
-            non_refusal_res: NonRefusal = self._generate_schema(
-                non_refusal_prompt, NonRefusal
+            non_refusal_res: NonRefusal = generate_schema(
+                non_refusal_prompt, NonRefusal, self.simulator_model
             )
 
             classification = non_refusal_res.classification
@@ -137,22 +137,22 @@ class SequentialJailbreak(BaseAttack):
                 judge_prompt = SequentialBreakTemplate.question_bank_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: QuestionBankJudge = self._generate_schema(
-                    judge_prompt, QuestionBankJudge
+                judge_res: QuestionBankJudge = generate_schema(
+                    judge_prompt, QuestionBankJudge, self.simulator_model
                 )
             elif self.attack_type == "game_environment":
                 judge_prompt = SequentialBreakTemplate.game_environment_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: GameEnvironmentJudge = self._generate_schema(
-                    judge_prompt, GameEnvironmentJudge
+                judge_res: GameEnvironmentJudge = generate_schema(
+                    judge_prompt, GameEnvironmentJudge, self.simulator_model
                 )
             else:
                 judge_prompt = SequentialBreakTemplate.dialogue_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: DialogueJudge = self._generate_schema(
-                    judge_prompt, DialogueJudge
+                judge_res: DialogueJudge = generate_schema(
+                    judge_prompt, DialogueJudge, self.simulator_model
                 )
 
             pbar.update(1)
@@ -205,8 +205,8 @@ class SequentialJailbreak(BaseAttack):
                     SequentialBreakTemplate.rewrite_dialogue_prompt(attack)
                 )
 
-            rewritten_res: RewrittenDialogue = await self._a_generate_schema(
-                rewrite_prompt, RewrittenDialogue
+            rewritten_res: RewrittenDialogue = await a_generate_schema(
+                rewrite_prompt, RewrittenDialogue, self.simulator_model
             )
             rewritten_content = rewritten_res.paraphrased_version
 
@@ -244,8 +244,8 @@ class SequentialJailbreak(BaseAttack):
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(
                 attack, target_response
             )
-            non_refusal_res: NonRefusal = await self._a_generate_schema(
-                non_refusal_prompt, NonRefusal
+            non_refusal_res: NonRefusal = await a_generate_schema(
+                non_refusal_prompt, NonRefusal, self.simulator_model
             )
 
             classification = non_refusal_res.classification
@@ -259,22 +259,22 @@ class SequentialJailbreak(BaseAttack):
                 judge_prompt = SequentialBreakTemplate.question_bank_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: QuestionBankJudge = await self._a_generate_schema(
-                    judge_prompt, QuestionBankJudge
+                judge_res: QuestionBankJudge = await a_generate_schema(
+                    judge_prompt, QuestionBankJudge, self.simulator_model
                 )
             elif self.attack_type == "game_environment":
                 judge_prompt = SequentialBreakTemplate.game_environment_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: GameEnvironmentJudge = await self._a_generate_schema(
-                    judge_prompt, GameEnvironmentJudge
+                judge_res: GameEnvironmentJudge = await a_generate_schema(
+                    judge_prompt, GameEnvironmentJudge, self.simulator_model
                 )
             else:
                 judge_prompt = SequentialBreakTemplate.dialogue_judge(
                     attack, final_prompt, target_response
                 )
-                judge_res: DialogueJudge = await self._a_generate_schema(
-                    judge_prompt, DialogueJudge
+                judge_res: DialogueJudge = await a_generate_schema(
+                    judge_prompt, DialogueJudge, self.simulator_model
                 )
 
             pbar.update(1)
@@ -288,12 +288,6 @@ class SequentialJailbreak(BaseAttack):
         except Exception as e:
             pbar.close()
             return attack
-
-    def _generate_schema(self, prompt: str, schema: BaseModel):
-        return generate_schema(prompt, schema, self.simulator_model)
-
-    async def _a_generate_schema(self, prompt: str, schema: BaseModel):
-        return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
         return "Sequential Jailbreak"

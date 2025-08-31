@@ -70,8 +70,8 @@ class BadLikertJudge(BaseAttack):
             non_refusal_prompt = BadLikertJudgeTemplate.non_refusal(
                 attack, turn_1_response
             )
-            non_refusal_res: NonRefusal = self._generate_schema(
-                non_refusal_prompt, NonRefusal
+            non_refusal_res: NonRefusal = generate_schema(
+                non_refusal_prompt, NonRefusal, self.simulator_model
             )
 
             if non_refusal_res.classification == "Refusal":
@@ -110,7 +110,9 @@ class BadLikertJudge(BaseAttack):
             judge_prompt = BadLikertJudgeTemplate.blj_judge(
                 attack, current_attack, current_attack
             )
-            judge_res: BLJJudge = self._generate_schema(judge_prompt, BLJJudge)
+            judge_res: BLJJudge = generate_schema(
+                judge_prompt, BLJJudge, self.simulator_model
+            )
             pbar.update(1)
 
             pbar.close()
@@ -153,8 +155,8 @@ class BadLikertJudge(BaseAttack):
             non_refusal_prompt = BadLikertJudgeTemplate.non_refusal(
                 attack, turn_1_response
             )
-            non_refusal_res: NonRefusal = await self._a_generate_schema(
-                non_refusal_prompt, NonRefusal
+            non_refusal_res: NonRefusal = await a_generate_schema(
+                non_refusal_prompt, NonRefusal, self.simulator_model
             )
 
             if non_refusal_res.classification == "Refusal":
@@ -193,8 +195,8 @@ class BadLikertJudge(BaseAttack):
             judge_prompt = BadLikertJudgeTemplate.blj_judge(
                 attack, current_attack, current_attack
             )
-            judge_res: BLJJudge = await self._a_generate_schema(
-                judge_prompt, BLJJudge
+            judge_res: BLJJudge = await a_generate_schema(
+                judge_prompt, BLJJudge, self.simulator_model
             )
             pbar.update(1)
 
@@ -209,12 +211,6 @@ class BadLikertJudge(BaseAttack):
         except Exception as e:
             pbar.close()
             return attack
-
-    def _generate_schema(self, prompt: str, schema: BaseModel):
-        return generate_schema(prompt, schema, self.simulator_model)
-
-    async def _a_generate_schema(self, prompt: str, schema: BaseModel):
-        return await a_generate_schema(prompt, schema, self.simulator_model)
 
     def get_name(self) -> str:
         return "Bad Likert Judge"
