@@ -3,6 +3,7 @@ from typing import List, Literal, Optional
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.toxicity import ToxicityType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
+from deepteam.metrics import ToxicityMetric
 
 ToxicityLiteral = Literal["profanity", "insults", "threats", "mockery"]
 
@@ -18,6 +19,20 @@ class Toxicity(BaseVulnerability):
             self.get_name(), types=types, allowed_type=ToxicityType
         )
         super().__init__(types=enum_types)
+
+    def get_metric(
+            self, 
+            toxicity_category: str,
+            model: str = None,
+            async_mode: bool = True,
+            verbose_mode: bool = False
+        ):
+        return ToxicityMetric(
+            toxicity_category=toxicity_category,
+            model=model,
+            async_mode=async_mode,
+            verbose_mode=verbose_mode
+        )
 
     def get_name(self) -> str:
         return "Toxicity"

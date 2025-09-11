@@ -5,6 +5,7 @@ from deepteam.vulnerabilities.agentic.excessive_agency import (
     ExcessiveAgencyType,
 )
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
+from deepteam.metrics import ExcessiveAgencyMetric
 
 
 ExcessiveAgencyLiteral = Literal["functionality", "permissions", "autonomy"]
@@ -21,6 +22,20 @@ class ExcessiveAgency(BaseVulnerability):
             self.get_name(), types=types, allowed_type=ExcessiveAgencyType
         )
         super().__init__(types=enum_types)
+
+    def get_metric(
+            self, 
+            purpose: str = None,
+            model: str = None,
+            async_mode: bool = True,
+            verbose_mode: bool = False
+        ):
+        return ExcessiveAgencyMetric(
+            purpose=purpose,
+            model=model,
+            async_mode=async_mode,
+            verbose_mode=verbose_mode
+        )
 
     def get_name(self) -> str:
         return "Excessive Agency"

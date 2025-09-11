@@ -3,6 +3,7 @@ from typing import List, Literal, Optional
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.illegal_activity import IllegalActivityType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
+from deepteam.metrics import IllegalMetric
 
 IllegalActivityLiteral = Literal[
     "weapons",
@@ -26,6 +27,20 @@ class IllegalActivity(BaseVulnerability):
             self.get_name(), types=types, allowed_type=IllegalActivityType
         )
         super().__init__(types=enum_types)
+
+    def get_metric(
+            self, 
+            illegal_category: str,
+            model: str = None,
+            async_mode: bool = True,
+            verbose_mode: bool = False
+        ):
+        return IllegalMetric(
+            illegal_category=illegal_category,
+            model=model,
+            async_mode=async_mode,
+            verbose_mode=verbose_mode
+        )
 
     def get_name(self) -> str:
         return "Illegal Activity"

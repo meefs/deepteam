@@ -5,6 +5,7 @@ from deepteam.vulnerabilities.agentic.recursive_hijacking import (
     RecursiveHijackingType,
 )
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
+from deepteam.metrics.agentic.subversion_success.subversion_success import SubversionSuccessMetric
 
 RecursiveHijackingLiteralType = Literal[
     "self_modifying_goals",
@@ -24,6 +25,20 @@ class RecursiveHijacking(BaseVulnerability):
             self.get_name(), types=types, allowed_type=RecursiveHijackingType
         )
         super().__init__(types=enum_types)
+
+    def get_metric(
+            self, 
+            purpose: str,
+            model: str = None,
+            async_mode: bool = True,
+            verbose_mode: bool = False
+        ):
+        return SubversionSuccessMetric(
+            purpose=purpose,
+            model=model,
+            async_mode=async_mode,
+            verbose_mode=verbose_mode
+        )
 
     def get_name(self) -> str:
         return "Recursive Hijacking"

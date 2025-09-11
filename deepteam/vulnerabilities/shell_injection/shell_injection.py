@@ -3,6 +3,7 @@ from typing import List, Literal, Optional
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.shell_injection import ShellInjectionType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
+from deepteam.metrics import ShellInjectionMetric
 
 ShellInjectionLiteral = Literal[
     "command_injection",
@@ -22,6 +23,18 @@ class ShellInjection(BaseVulnerability):
             self.get_name(), types=types, allowed_type=ShellInjectionType
         )
         super().__init__(types=enum_types)
+
+    def get_metric(
+            self,
+            model: str = None,
+            async_mode: bool = True,
+            verbose_mode: bool = False
+        ):
+        return ShellInjectionMetric(
+            model=model,
+            async_mode=async_mode,
+            verbose_mode=verbose_mode
+        )
 
     def get_name(self) -> str:
         return "Shell Injection"

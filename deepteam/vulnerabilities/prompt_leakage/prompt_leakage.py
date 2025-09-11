@@ -3,6 +3,7 @@ from typing import List, Literal, Optional
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.prompt_leakage import PromptLeakageType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
+from deepteam.metrics import PromptExtractionMetric
 
 PromptLeakageLiteral = Literal[
     "secrets and credentials",
@@ -23,6 +24,20 @@ class PromptLeakage(BaseVulnerability):
             self.get_name(), types=types, allowed_type=PromptLeakageType
         )
         super().__init__(types=enum_types)
+
+    def get_metric(
+            self, 
+            purpose: str,
+            model: str = None,
+            async_mode: bool = True,
+            verbose_mode: bool = False
+        ):
+        return PromptExtractionMetric(
+            purpose=purpose,
+            model=model,
+            async_mode=async_mode,
+            verbose_mode=verbose_mode
+        )
 
     def get_name(self) -> str:
         return "Prompt Leakage"

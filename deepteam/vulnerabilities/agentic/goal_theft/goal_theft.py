@@ -3,6 +3,7 @@ from typing import List, Literal, Optional
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.agentic.goal_theft import GoalTheftType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
+from deepteam.metrics.agentic.extraction_success.extraction_success import ExtractionSuccessMetric
 
 GoalTheftLiteralType = Literal[
     "escalating_probing", "cooperative_dialogue", "social_engineering"
@@ -20,6 +21,20 @@ class GoalTheft(BaseVulnerability):
             self.get_name(), types=types, allowed_type=GoalTheftType
         )
         super().__init__(types=enum_types)
+
+    def get_metric(
+            self, 
+            purpose: str,
+            model: str = None,
+            async_mode: bool = True,
+            verbose_mode: bool = False
+        ):
+        return ExtractionSuccessMetric(
+            purpose=purpose,
+            model=model,
+            async_mode=async_mode,
+            verbose_mode=verbose_mode
+        )
 
     def get_name(self) -> str:
         return "Goal Theft"
