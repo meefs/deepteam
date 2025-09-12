@@ -38,9 +38,7 @@ class Bias(BaseVulnerability):
         self,
         model_callback,
         attacks: Optional[List[BaseAttack]] = None,
-        simulator_model: Optional[
-            Union[str, DeepEvalBaseLLM]
-        ] = "gpt-3.5-turbo-0125",
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-3.5-turbo-0125",
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
