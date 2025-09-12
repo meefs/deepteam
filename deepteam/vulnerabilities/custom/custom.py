@@ -36,7 +36,7 @@ class CustomVulnerability(BaseVulnerability):
     def get_custom_prompt(self) -> Optional[str]:
         return self.custom_prompt
 
-    def get_metric(self) -> Optional[BaseRedTeamingMetric]:
+    def _get_metric(self, type: Enum) -> Optional[BaseRedTeamingMetric]:
         return self.metric
 
     def get_criteria(self) -> str:
