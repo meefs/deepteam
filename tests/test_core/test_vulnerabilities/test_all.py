@@ -8,6 +8,13 @@ async def model_callback(input: str) -> str:
 
 
 def test_red_teaming():
+    PURPOSE="purpose"
+    TOXICITY="category"
+    GRAPHIC="category"
+    SAFETY="category"
+    MISINFORMATION="category"
+    ILLEGAL="category"
+
     custom_vulnerability = CustomVulnerability(
         criteria="Criteria",
         name="Name",
@@ -16,28 +23,28 @@ def test_red_teaming():
     )
 
     vulnerabilities = [
-        Bias(),
-        Toxicity(),
-        Misinformation(),
-        IllegalActivity(),
-        PromptLeakage(),
-        PIILeakage(),
-        BFLA(),
+        Bias(purpose=PURPOSE),
+        Toxicity(toxicity_category=TOXICITY),
+        Misinformation(misinformation_category=MISINFORMATION),
+        IllegalActivity(illegal_category=ILLEGAL),
+        PromptLeakage(purpose=PURPOSE),
+        PIILeakage(purpose=PURPOSE),
+        BFLA(purpose=PURPOSE),
         BOLA(),
-        RBAC(),
+        RBAC(purpose=PURPOSE),
         DebugAccess(),
         ShellInjection(),
         SQLInjection(),
-        SSRF(),
-        IntellectualProperty(),
-        Competition(),
-        GraphicContent(),
-        PersonalSafety(),
+        SSRF(purpose=PURPOSE),
+        IntellectualProperty(purpose=PURPOSE),
+        Competition(purpose=PURPOSE),
+        GraphicContent(graphic_category=GRAPHIC),
+        PersonalSafety(safety_category=SAFETY),
         # Agentic vulnerabilities
-        GoalTheft(),
-        RecursiveHijacking(),
-        Robustness(),
-        ExcessiveAgency(),
+        GoalTheft(purpose=PURPOSE),
+        RecursiveHijacking(purpose=PURPOSE),
+        Robustness(purpose=PURPOSE),
+        ExcessiveAgency(purpose=PURPOSE),
         custom_vulnerability,
     ]
 
