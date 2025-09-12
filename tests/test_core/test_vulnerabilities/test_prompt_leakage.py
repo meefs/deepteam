@@ -5,6 +5,7 @@ from deepteam.vulnerabilities.prompt_leakage import PromptLeakageType
 
 
 class TestPromptLeakage:
+    PURPOSE="purpose"
 
     def test_prompt_leakage_all_types(self):
         types = [
@@ -13,41 +14,41 @@ class TestPromptLeakage:
             "guard exposure",
             "permissions and roles",
         ]
-        prompt_leakage = PromptLeakage(types=types)
+        prompt_leakage = PromptLeakage(purpose=TestPromptLeakage.PURPOSE, types=types)
         assert sorted(type.value for type in prompt_leakage.types) == sorted(
             types
         )
 
     def test_prompt_leakage_all_types_default(self):
-        prompt_leakage = PromptLeakage()
+        prompt_leakage = PromptLeakage(purpose=TestPromptLeakage.PURPOSE, )
         assert sorted(type.value for type in prompt_leakage.types) == sorted(
             type.value for type in PromptLeakageType
         )
 
     def test_prompt_leakage_secrets_and_credentials(self):
         types = ["secrets and credentials"]
-        prompt_leakage = PromptLeakage(types=types)
+        prompt_leakage = PromptLeakage(purpose=TestPromptLeakage.PURPOSE, types=types)
         assert sorted(type.value for type in prompt_leakage.types) == sorted(
             types
         )
 
     def test_prompt_leakage_instructions(self):
         types = ["instructions"]
-        prompt_leakage = PromptLeakage(types=types)
+        prompt_leakage = PromptLeakage(purpose=TestPromptLeakage.PURPOSE, types=types)
         assert sorted(type.value for type in prompt_leakage.types) == sorted(
             types
         )
 
     def test_prompt_leakage_guard_exposure(self):
         types = ["guard exposure"]
-        prompt_leakage = PromptLeakage(types=types)
+        prompt_leakage = PromptLeakage(purpose=TestPromptLeakage.PURPOSE, types=types)
         assert sorted(type.value for type in prompt_leakage.types) == sorted(
             types
         )
 
     def test_prompt_leakage_permissions_and_roles(self):
         types = ["permissions and roles"]
-        prompt_leakage = PromptLeakage(types=types)
+        prompt_leakage = PromptLeakage(purpose=TestPromptLeakage.PURPOSE, types=types)
         assert sorted(type.value for type in prompt_leakage.types) == sorted(
             types
         )
@@ -61,4 +62,4 @@ class TestPromptLeakage:
             "invalid",
         ]
         with pytest.raises(ValueError):
-            PromptLeakage(types=types)
+            PromptLeakage(purpose=TestPromptLeakage.PURPOSE, types=types)
