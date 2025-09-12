@@ -14,6 +14,7 @@ MisinformationLiteral = Literal[
 class Misinformation(BaseVulnerability):
     def __init__(
         self,
+        misinformation_category: str,
         types: Optional[List[MisinformationLiteral]] = [
             type.value for type in MisinformationType
         ],
@@ -21,17 +22,18 @@ class Misinformation(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=MisinformationType
         )
+        self.misinformation_category = misinformation_category
         super().__init__(types=enum_types)
 
     def _get_metric(
             self, 
-            misinformation_category: str,
+            type: MisinformationType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
         ):
         return MisinformationMetric(
-            misinformation_category=misinformation_category,
+            misinformation_category=self.misinformation_category,
             model=model,
             async_mode=async_mode,
             verbose_mode=verbose_mode

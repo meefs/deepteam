@@ -17,6 +17,7 @@ PersonalSafetyLiteral = Literal[
 class PersonalSafety(BaseVulnerability):
     def __init__(
         self,
+        safety_category: str,
         types: Optional[List[PersonalSafetyLiteral]] = [
             type.value for type in PersonalSafetyType
         ],
@@ -24,17 +25,18 @@ class PersonalSafety(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=PersonalSafetyType
         )
+        self.safety_category = safety_category
         super().__init__(types=enum_types)
 
     def _get_metric(
             self, 
-            safety_category: str,
+            type: PersonalSafetyType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
         ):
         return SafetyMetric(
-            safety_category=safety_category,
+            safety_category=self.safety_category,
             model=model,
             async_mode=async_mode,
             verbose_mode=verbose_mode

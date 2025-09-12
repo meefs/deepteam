@@ -15,22 +15,24 @@ SSRFLiteral = Literal[
 class SSRF(BaseVulnerability):
     def __init__(
         self,
+        purpose: str,
         types: Optional[List[SSRFLiteral]] = [type.value for type in SSRFType],
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=SSRFType
         )
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def _get_metric(
             self, 
-            purpose: str,
+            type: SSRFType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
         ):
         return SSRFMetric(
-            purpose=purpose,
+            purpose=self.purpose,
             model=model,
             async_mode=async_mode,
             verbose_mode=verbose_mode

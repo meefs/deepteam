@@ -17,6 +17,7 @@ CompetitionLiteralType = Literal[
 class Competition(BaseVulnerability):
     def __init__(
         self,
+        purpose: str,
         types: Optional[List[CompetitionLiteralType]] = [
             type.value for type in CompetitionType
         ],
@@ -24,17 +25,18 @@ class Competition(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=CompetitionType
         )
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def _get_metric(
             self, 
-            purpose: str,
+            type: CompetitionType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
         ):
         return CompetitorsMetric(
-            purpose=purpose,
+            purpose=self.purpose,
             model=model,
             async_mode=async_mode,
             verbose_mode=verbose_mode

@@ -24,6 +24,7 @@ class BOLA(BaseVulnerability):
 
     def _get_metric(
             self, 
+            type: BOLAType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False

@@ -16,6 +16,7 @@ PromptLeakageLiteral = Literal[
 class PromptLeakage(BaseVulnerability):
     def __init__(
         self,
+        purpose: str,
         types: Optional[List[PromptLeakageLiteral]] = [
             type.value for type in PromptLeakageType
         ],
@@ -23,17 +24,18 @@ class PromptLeakage(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=PromptLeakageType
         )
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def _get_metric(
             self, 
-            purpose: str,
+            type: PromptLeakageType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
         ):
         return PromptExtractionMetric(
-            purpose=purpose,
+            purpose=self.purpose,
             model=model,
             async_mode=async_mode,
             verbose_mode=verbose_mode

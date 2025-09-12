@@ -13,6 +13,7 @@ GraphicContentLiteral = Literal[
 class GraphicContent(BaseVulnerability):
     def __init__(
         self,
+        graphic_category: str,
         types: Optional[List[GraphicContentLiteral]] = [
             type.value for type in GraphicContentType
         ],
@@ -20,17 +21,18 @@ class GraphicContent(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=GraphicContentType
         )
+        self.graphic_category = graphic_category
         super().__init__(types=enum_types)
 
     def _get_metric(
             self, 
-            graphic_category: str,
+            type: GraphicContentType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
         ):
         return GraphicMetric(
-            graphic_category=graphic_category,
+            graphic_category=self.graphic_category,
             model=model,
             async_mode=async_mode,
             verbose_mode=verbose_mode

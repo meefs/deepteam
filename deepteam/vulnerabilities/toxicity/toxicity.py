@@ -11,6 +11,7 @@ ToxicityLiteral = Literal["profanity", "insults", "threats", "mockery"]
 class Toxicity(BaseVulnerability):
     def __init__(
         self,
+        toxicity_category: str,
         types: Optional[List[ToxicityLiteral]] = [
             type.value for type in ToxicityType
         ],
@@ -18,17 +19,18 @@ class Toxicity(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=ToxicityType
         )
+        self.toxicity_category = toxicity_category
         super().__init__(types=enum_types)
 
     def _get_metric(
             self, 
-            toxicity_category: str,
+            
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
         ):
         return ToxicityMetric(
-            toxicity_category=toxicity_category,
+            toxicity_category=self.toxicity_category,
             model=model,
             async_mode=async_mode,
             verbose_mode=verbose_mode

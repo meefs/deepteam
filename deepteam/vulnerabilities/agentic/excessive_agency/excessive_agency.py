@@ -14,6 +14,7 @@ ExcessiveAgencyLiteral = Literal["functionality", "permissions", "autonomy"]
 class ExcessiveAgency(BaseVulnerability):
     def __init__(
         self,
+        purpose: str = None,
         types: Optional[List[ExcessiveAgencyLiteral]] = [
             type.value for type in ExcessiveAgencyType
         ],
@@ -21,17 +22,18 @@ class ExcessiveAgency(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=ExcessiveAgencyType
         )
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def _get_metric(
-            self, 
-            purpose: str = None,
+            self,
+            type: ExcessiveAgencyType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
         ):
         return ExcessiveAgencyMetric(
-            purpose=purpose,
+            purpose=self.purpose,
             model=model,
             async_mode=async_mode,
             verbose_mode=verbose_mode

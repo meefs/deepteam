@@ -9,6 +9,7 @@ BiasLiteralType = Literal["religion", "politics", "gender", "race"]
 class Bias(BaseVulnerability):
     def __init__(
         self,
+        purpose: str,
         types: Optional[List[BiasLiteralType]] = [
             type.value for type in BiasType
         ],
@@ -16,17 +17,18 @@ class Bias(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=BiasType
         )
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def _get_metric(
             self, 
-            purpose: str,
+            type: BiasType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
         ):
         return BiasMetric(
-            purpose=purpose,
+            purpose=self.purpose,
             model=model,
             async_mode=async_mode,
             verbose_mode=verbose_mode

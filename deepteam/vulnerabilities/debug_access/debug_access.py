@@ -26,6 +26,7 @@ class DebugAccess(BaseVulnerability):
 
     def _get_metric(
             self,
+            type: DebugAccessType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False

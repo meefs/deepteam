@@ -13,6 +13,7 @@ GoalTheftLiteralType = Literal[
 class GoalTheft(BaseVulnerability):
     def __init__(
         self,
+        purpose: str,
         types: Optional[List[GoalTheftLiteralType]] = [
             type.value for type in GoalTheftType
         ],
@@ -20,17 +21,18 @@ class GoalTheft(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=GoalTheftType
         )
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def _get_metric(
             self, 
-            purpose: str,
+            type: GoalTheftType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
         ):
         return ExtractionSuccessMetric(
-            purpose=purpose,
+            purpose=self.purpose,
             model=model,
             async_mode=async_mode,
             verbose_mode=verbose_mode

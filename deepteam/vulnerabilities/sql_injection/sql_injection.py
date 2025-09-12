@@ -26,6 +26,7 @@ class SQLInjection(BaseVulnerability):
 
     def _get_metric(
             self,
+            type: SQLInjectionType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False

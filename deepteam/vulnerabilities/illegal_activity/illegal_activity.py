@@ -19,6 +19,7 @@ IllegalActivityLiteral = Literal[
 class IllegalActivity(BaseVulnerability):
     def __init__(
         self,
+        illegal_category: str,
         types: Optional[List[IllegalActivityLiteral]] = [
             type.value for type in IllegalActivityType
         ],
@@ -26,17 +27,18 @@ class IllegalActivity(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=IllegalActivityType
         )
+        self.illegal_category = illegal_category
         super().__init__(types=enum_types)
 
     def _get_metric(
             self, 
-            illegal_category: str,
+            type: IllegalActivityType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
         ):
         return IllegalMetric(
-            illegal_category=illegal_category,
+            illegal_category=self.illegal_category,
             model=model,
             async_mode=async_mode,
             verbose_mode=verbose_mode

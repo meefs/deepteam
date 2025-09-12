@@ -26,6 +26,7 @@ class ShellInjection(BaseVulnerability):
 
     def _get_metric(
             self,
+            type: ShellInjectionType,
             model: str = None,
             async_mode: bool = True,
             verbose_mode: bool = False
