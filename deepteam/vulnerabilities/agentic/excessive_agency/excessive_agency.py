@@ -23,7 +23,7 @@ class ExcessiveAgency(BaseVulnerability):
         )
         super().__init__(types=enum_types)
 
-    def get_metric(
+    def _get_metric(
             self, 
             purpose: str = None,
             model: str = None,

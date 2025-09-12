@@ -23,7 +23,7 @@ class Misinformation(BaseVulnerability):
         )
         super().__init__(types=enum_types)
 
-    def get_metric(
+    def _get_metric(
             self, 
             misinformation_category: str,
             model: str = None,

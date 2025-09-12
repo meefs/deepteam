@@ -22,7 +22,7 @@ class GoalTheft(BaseVulnerability):
         )
         super().__init__(types=enum_types)
 
-    def get_metric(
+    def _get_metric(
             self, 
             purpose: str,
             model: str = None,

@@ -26,7 +26,7 @@ class PersonalSafety(BaseVulnerability):
         )
         super().__init__(types=enum_types)
 
-    def get_metric(
+    def _get_metric(
             self, 
             safety_category: str,
             model: str = None,

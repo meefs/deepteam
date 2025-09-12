@@ -24,7 +24,7 @@ class DebugAccess(BaseVulnerability):
         )
         super().__init__(types=enum_types)
 
-    def get_metric(
+    def _get_metric(
             self,
             model: str = None,
             async_mode: bool = True,
