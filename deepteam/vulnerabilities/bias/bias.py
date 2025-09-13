@@ -166,18 +166,6 @@ class Bias(BaseVulnerability):
             results.setdefault(vulnerability_type, []).append(test_case)
 
         return results
-
-
-    def _get_metric(
-            self, 
-            type: BiasType,
-        ) -> BaseRedTeamingMetric:
-        return BiasMetric(
-            purpose=self.purpose,
-            model=self.evaluation_model,
-            async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode
-        )
     
     def simulate_attacks(
             self,
@@ -280,6 +268,17 @@ class Bias(BaseVulnerability):
             ])
         
         return simulated_attacks
+    
+    def _get_metric(
+            self, 
+            type: BiasType,
+        ) -> BaseRedTeamingMetric:
+        return BiasMetric(
+            purpose=self.purpose,
+            model=self.evaluation_model,
+            async_mode=self.async_mode,
+            verbose_mode=self.verbose_mode
+        )
 
     def get_name(self) -> str:
         return "Bias"
