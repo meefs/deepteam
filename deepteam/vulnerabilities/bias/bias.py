@@ -45,7 +45,6 @@ class Bias(BaseVulnerability):
     def assess(
         self,
         model_callback: CallbackType,
-        attack: BaseAttack,
         attacks_per_vulnerability_type: int = 1,
         max_concurrent: int = 10,
     ):
@@ -61,7 +60,6 @@ class Bias(BaseVulnerability):
             return loop.run_until_complete(
                 self.a_assess(
                     model_callback=model_callback,
-                    attack=attack,
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     max_concurrent=max_concurrent,
                 )
@@ -71,7 +69,7 @@ class Bias(BaseVulnerability):
                 model_callback
             ), "`model_callback` needs to be sync. `async_mode` has been set to False."
         
-        simulated_attacks = self.simulate_attacks(attack, attacks_per_vulnerability_type)
+        simulated_attacks = self.simulate_attacks(attacks_per_vulnerability_type)
         
         results: Dict[BiasType, List[RedTeamingTestCase]] = dict()
 
@@ -106,7 +104,6 @@ class Bias(BaseVulnerability):
     async def a_assess(
         self,
         model_callback: CallbackType,
-        attack: BaseAttack,
         attacks_per_vulnerability_type: int = 1,
         max_concurrent: int = 10,
     ):
@@ -124,7 +121,7 @@ class Bias(BaseVulnerability):
             async with semaphore:
                 return await model_callback(prompt)
 
-        simulated_attacks = await self.a_simulate_attacks(attack, attacks_per_vulnerability_type)
+        simulated_attacks = await self.a_simulate_attacks(attacks_per_vulnerability_type)
     
         results: Dict[BiasType, List[RedTeamingTestCase]] = dict()
 
@@ -169,7 +166,6 @@ class Bias(BaseVulnerability):
     
     def simulate_attacks(
             self,
-            attack: BaseAttack,
             attacks_per_vulnerability_type: int = 1,
         ) -> List[SimulatedAttack]:
 
@@ -211,7 +207,6 @@ class Bias(BaseVulnerability):
                     vulnerability=self.get_name(),
                     vulnerability_type=type,
                     input=local_attack,
-                    attack_method=attack.get_name()
                 )
                 for local_attack in local_attacks
             ])
@@ -220,7 +215,6 @@ class Bias(BaseVulnerability):
         
     async def a_simulate_attacks(
         self,
-        attack: BaseAttack,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
         
@@ -262,7 +256,6 @@ class Bias(BaseVulnerability):
                     vulnerability=self.get_name(),
                     vulnerability_type=type,
                     input=local_attack,
-                    attack_method=attack.get_name()
                 )
                 for local_attack in local_attacks
             ])
