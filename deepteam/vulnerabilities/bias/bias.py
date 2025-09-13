@@ -19,13 +19,16 @@ from .template import BiasTemplate
 
 BiasLiteralType = Literal["religion", "politics", "gender", "race"]
 
+
 class Bias(BaseVulnerability):
     def __init__(
         self,
         purpose: str,
         async_mode: bool = True,
         verbose_mode: bool = False,
-        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-3.5-turbo-0125",
+        simulator_model: Optional[
+            Union[str, DeepEvalBaseLLM]
+        ] = "gpt-3.5-turbo-0125",
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
         types: Optional[List[BiasLiteralType]] = [
             type.value for type in BiasType
@@ -67,9 +70,11 @@ class Bias(BaseVulnerability):
             assert not inspect.iscoroutinefunction(
                 model_callback
             ), "`model_callback` needs to be sync. `async_mode` has been set to False."
-        
-        simulated_attacks = self.simulate_attacks(attacks_per_vulnerability_type)
-        
+
+        simulated_attacks = self.simulate_attacks(
+            attacks_per_vulnerability_type
+        )
+
         results: Dict[BiasType, List[RedTeamingTestCase]] = dict()
 
         for simulated_attack in simulated_attacks:
@@ -77,8 +82,7 @@ class Bias(BaseVulnerability):
 
             target_output = model_callback(simulated_attack.input)
             test_case = LLMTestCase(
-                input=simulated_attack.input,
-                actual_output=target_output
+                input=simulated_attack.input, actual_output=target_output
             )
 
             metric = self._get_metric(vulnerability_type)
@@ -97,7 +101,7 @@ class Bias(BaseVulnerability):
 
             results[vulnerability_type] = results.get(vulnerability_type, [])
             results[vulnerability_type].append(red_teaming_test_case)
-        
+
         return results
 
     async def a_assess(
@@ -120,8 +124,10 @@ class Bias(BaseVulnerability):
             async with semaphore:
                 return await model_callback(prompt)
 
-        simulated_attacks = await self.a_simulate_attacks(attacks_per_vulnerability_type)
-    
+        simulated_attacks = await self.a_simulate_attacks(
+            attacks_per_vulnerability_type
+        )
+
         results: Dict[BiasType, List[RedTeamingTestCase]] = dict()
 
         async def process_attack(simulated_attack: SimulatedAttack):
@@ -162,13 +168,15 @@ class Bias(BaseVulnerability):
             results.setdefault(vulnerability_type, []).append(test_case)
 
         return results
-    
-    def simulate_attacks(
-            self,
-            attacks_per_vulnerability_type: int = 1,
-        ) -> List[SimulatedAttack]:
 
-        self.simulator_model, self.using_native_model = initialize_model(self.simulator_model)
+    def simulate_attacks(
+        self,
+        attacks_per_vulnerability_type: int = 1,
+    ) -> List[SimulatedAttack]:
+
+        self.simulator_model, self.using_native_model = initialize_model(
+            self.simulator_model
+        )
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -177,12 +185,10 @@ class Bias(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 BiasTemplate.generate_baseline_attacks(
-                    type, 
-                    attacks_per_vulnerability_type, 
-                    self.purpose
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
-        
+
         for type in self.types:
             for prompt in templates[type]:
                 if self.using_native_model:
@@ -201,23 +207,27 @@ class Bias(BaseVulnerability):
                         data = trimAndLoadJson(res)
                         local_attacks = [item["input"] for item in data["data"]]
 
-            simulated_attacks.extend([
-                SimulatedAttack(
-                    vulnerability=self.get_name(),
-                    vulnerability_type=type,
-                    input=local_attack,
-                )
-                for local_attack in local_attacks
-            ])
-        
+            simulated_attacks.extend(
+                [
+                    SimulatedAttack(
+                        vulnerability=self.get_name(),
+                        vulnerability_type=type,
+                        input=local_attack,
+                    )
+                    for local_attack in local_attacks
+                ]
+            )
+
         return simulated_attacks
-        
+
     async def a_simulate_attacks(
         self,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
-        
-        self.simulator_model, self.using_native_model = initialize_model(self.simulator_model)
+
+        self.simulator_model, self.using_native_model = initialize_model(
+            self.simulator_model
+        )
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -226,12 +236,10 @@ class Bias(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 BiasTemplate.generate_baseline_attacks(
-                    type, 
-                    attacks_per_vulnerability_type, 
-                    self.purpose
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
-        
+
         for type in self.types:
             for prompt in templates[type]:
                 if self.using_native_model:
@@ -241,8 +249,10 @@ class Bias(BaseVulnerability):
                     local_attacks = [item.input for item in res.data]
                 else:
                     try:
-                        res: SyntheticDataList = await self.simulator_model.a_generate(
-                            prompt, schema=SyntheticDataList
+                        res: SyntheticDataList = (
+                            await self.simulator_model.a_generate(
+                                prompt, schema=SyntheticDataList
+                            )
                         )
                         local_attacks = [item.input for item in res.data]
                     except TypeError:
@@ -250,26 +260,28 @@ class Bias(BaseVulnerability):
                         data = trimAndLoadJson(res)
                         local_attacks = [item["input"] for item in data["data"]]
 
-            simulated_attacks.extend([
-                SimulatedAttack(
-                    vulnerability=self.get_name(),
-                    vulnerability_type=type,
-                    input=local_attack,
-                )
-                for local_attack in local_attacks
-            ])
-        
+            simulated_attacks.extend(
+                [
+                    SimulatedAttack(
+                        vulnerability=self.get_name(),
+                        vulnerability_type=type,
+                        input=local_attack,
+                    )
+                    for local_attack in local_attacks
+                ]
+            )
+
         return simulated_attacks
-    
+
     def _get_metric(
-            self, 
-            type: BiasType,
-        ) -> BaseRedTeamingMetric:
+        self,
+        type: BiasType,
+    ) -> BaseRedTeamingMetric:
         return BiasMetric(
             purpose=self.purpose,
             model=self.evaluation_model,
             async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode
+            verbose_mode=self.verbose_mode,
         )
 
     def get_name(self) -> str:

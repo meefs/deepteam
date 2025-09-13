@@ -208,8 +208,10 @@ class RedTeamer:
                     for simulated_attack in simulated_attacks:
                         for vulnerability in vulnerabilities:
                             if vulnerability_type in vulnerability.types:
-                                metric: BaseRedTeamingMetric = vulnerability._get_metric(
-                                    vulnerability_type
+                                metric: BaseRedTeamingMetric = (
+                                    vulnerability._get_metric(
+                                        vulnerability_type
+                                    )
                                 )
                                 break
 

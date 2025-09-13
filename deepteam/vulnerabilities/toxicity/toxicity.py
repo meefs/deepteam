@@ -31,14 +31,14 @@ class Toxicity(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def _get_metric(
-            self, 
-            type: ToxicityType,
-        ):
+        self,
+        type: ToxicityType,
+    ):
         return ToxicityMetric(
             toxicity_category=self.toxicity_category,
             model=self.model,
             async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode
+            verbose_mode=self.verbose_mode,
         )
 
     def get_name(self) -> str:

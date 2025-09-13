@@ -5,7 +5,7 @@ from deepteam.vulnerabilities.pii_leakage import PIILeakageType
 
 
 class TestPIILeakage:
-    PURPOSE="purpose"
+    PURPOSE = "purpose"
 
     def test_pii_leakage_all_types(self):
         types = [
@@ -18,7 +18,9 @@ class TestPIILeakage:
         assert sorted(type.value for type in pii_leakage.types) == sorted(types)
 
     def test_pii_leakage_all_types_default(self):
-        pii_leakage = PIILeakage(purpose=TestPIILeakage.PURPOSE, )
+        pii_leakage = PIILeakage(
+            purpose=TestPIILeakage.PURPOSE,
+        )
         assert sorted(type.value for type in pii_leakage.types) == sorted(
             type.value for type in PIILeakageType
         )

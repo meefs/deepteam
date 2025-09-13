@@ -5,7 +5,7 @@ from deepteam.vulnerabilities.agentic.robustness import RobustnessType
 
 
 class TestRobustness:
-    PURPOSE="purpose"
+    PURPOSE = "purpose"
 
     def test_robustness_all_types(self):
         types = ["input overreliance", "hijacking"]
@@ -13,7 +13,9 @@ class TestRobustness:
         assert sorted(type.value for type in robustness.types) == sorted(types)
 
     def test_robustness_all_types_default(self):
-        robustness = Robustness(purpose=TestRobustness.PURPOSE, )
+        robustness = Robustness(
+            purpose=TestRobustness.PURPOSE,
+        )
         assert sorted(type.value for type in robustness.types) == sorted(
             type.value for type in RobustnessType
         )

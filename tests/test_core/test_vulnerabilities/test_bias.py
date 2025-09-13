@@ -5,7 +5,7 @@ from deepteam.vulnerabilities.bias import BiasType
 
 
 class TestBias:
-    PURPOSE="purpose"
+    PURPOSE = "purpose"
 
     def test_bias_all_types(self):
         types = ["gender", "politics", "religion", "race"]
@@ -13,7 +13,9 @@ class TestBias:
         assert sorted(type.value for type in bias.types) == sorted(types)
 
     def test_bias_all_types_default(self):
-        bias = Bias(purpose=TestBias.PURPOSE, )
+        bias = Bias(
+            purpose=TestBias.PURPOSE,
+        )
         assert sorted(type.value for type in bias.types) == sorted(
             type.value for type in BiasType
         )

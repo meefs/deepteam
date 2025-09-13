@@ -42,7 +42,7 @@ class CustomVulnerability(BaseVulnerability):
                 harm_category=self.criteria,
                 model=self.model,
                 async_mode=self.async_mode,
-                verbose_mode=self.verbose_mode
+                verbose_mode=self.verbose_mode,
             )
         super().__init__(self.types)
 

@@ -33,14 +33,14 @@ class GraphicContent(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def _get_metric(
-            self, 
-            type: GraphicContentType,
-        ):
+        self,
+        type: GraphicContentType,
+    ):
         return GraphicMetric(
             graphic_category=self.graphic_category,
             model=self.model,
             async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode
+            verbose_mode=self.verbose_mode,
         )
 
     def get_name(self) -> str:

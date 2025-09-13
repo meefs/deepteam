@@ -9,12 +9,12 @@ async def model_callback(input: str) -> str:
 
 
 def test_red_teaming():
-    PURPOSE="purpose"
-    TOXICITY="category"
-    GRAPHIC="category"
-    SAFETY="category"
-    MISINFORMATION="category"
-    ILLEGAL="category"
+    PURPOSE = "purpose"
+    TOXICITY = "category"
+    GRAPHIC = "category"
+    SAFETY = "category"
+    MISINFORMATION = "category"
+    ILLEGAL = "category"
 
     custom_vulnerability = CustomVulnerability(
         criteria="Criteria",

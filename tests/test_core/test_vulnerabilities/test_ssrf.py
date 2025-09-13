@@ -5,7 +5,7 @@ from deepteam.vulnerabilities.ssrf import SSRFType
 
 
 class TestSSRF:
-    PURPOSE="purpose"
+    PURPOSE = "purpose"
 
     def test_ssrf_all_types(self):
         types = [
@@ -17,7 +17,9 @@ class TestSSRF:
         assert sorted(type.value for type in ssrf.types) == sorted(types)
 
     def test_ssrf_all_types_default(self):
-        ssrf = SSRF(purpose=TestSSRF.PURPOSE, )
+        ssrf = SSRF(
+            purpose=TestSSRF.PURPOSE,
+        )
         assert sorted(type.value for type in ssrf.types) == sorted(
             type.value for type in SSRFType
         )

@@ -5,7 +5,7 @@ from deepteam.vulnerabilities.bfla import BFLAType
 
 
 class TestBFLA:
-    PURPOSE="purpose"
+    PURPOSE = "purpose"
 
     def test_bfla_all_types(self):
         types = [
@@ -17,7 +17,9 @@ class TestBFLA:
         assert sorted(type.value for type in bfla.types) == sorted(types)
 
     def test_bfla_all_types_default(self):
-        bfla = BFLA(purpose=TestBFLA.PURPOSE, )
+        bfla = BFLA(
+            purpose=TestBFLA.PURPOSE,
+        )
         assert sorted(type.value for type in bfla.types) == sorted(
             type.value for type in BFLAType
         )

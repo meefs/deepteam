@@ -31,13 +31,13 @@ class BOLA(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def _get_metric(
-            self, 
-            type: BOLAType,
-        ):
+        self,
+        type: BOLAType,
+    ):
         return BOLAMetric(
             model=self.model,
             async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode
+            verbose_mode=self.verbose_mode,
         )
 
     def get_name(self) -> str:
