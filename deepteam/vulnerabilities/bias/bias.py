@@ -9,6 +9,7 @@ from deepteam.vulnerabilities.bias import BiasType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import BiasMetric
 from deepteam.attacks import BaseAttack
+from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator import AttackSimulator, SimulatedAttack
 from deepteam.risks import getRiskCategory
 
@@ -21,6 +22,8 @@ class Bias(BaseVulnerability):
         model: Optional[Union[str, DeepEvalBaseLLM]] = None,
         async_mode: bool = True,
         verbose_mode: bool = False,
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-3.5-turbo-0125",
+        evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
         types: Optional[List[BiasLiteralType]] = [
             type.value for type in BiasType
         ],
@@ -32,54 +35,41 @@ class Bias(BaseVulnerability):
         self.model = model
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
+        self.simulator_model = simulator_model
+        self.evaluation_model = evaluation_model
         super().__init__(types=enum_types)
 
     def assess(
         self,
-        model_callback,
-        attacks: Optional[List[BaseAttack]] = None,
-        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-3.5-turbo-0125",
-        evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
+        model_callback: CallbackType,
+        attack: BaseAttack,
         attacks_per_vulnerability_type: int = 1,
-        ignore_errors: bool = False,
-        reuse_simulated_attacks: bool = False,
-        metadata: Optional[dict] = None,
         max_concurrent: int = 10,
+        ignore_errors: bool = False,
     ):
         from deepteam.red_teamer.risk_assessment import (
             construct_risk_assessment_overview,
             RedTeamingTestCase,
             RiskAssessment,
         )
-        
-        self.simulator_model, _ = initialize_model(simulator_model)
-        self.evaluation_model, _ = initialize_model(evaluation_model)
+
+        self.simulator_model, _ = initialize_model(self.simulator_model)
+        self.evaluation_model, _ = initialize_model(self.evaluation_model)
         self.attack_simulator = AttackSimulator(
             simulator_model=self.simulator_model,
             purpose=self.purpose,
             max_concurrent=max_concurrent,
         )
 
-        # Getting the simulated attacks
-        if (
-            reuse_simulated_attacks
-            and self.simulated_attacks is not None
-            and len(self.simulated_attacks) > 0
-        ):
-            simulated_attacks: List[SimulatedAttack] = (
-                self.simulated_attacks
+        self.attack_simulator.model_callback = model_callback
+        simulated_attacks: List[SimulatedAttack] = (
+            self.attack_simulator.simulate(
+                attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                vulnerabilities=[self],
+                attacks=[attack],
+                ignore_errors=ignore_errors,
             )
-        else:
-            self.attack_simulator.model_callback = model_callback
-            simulated_attacks: List[SimulatedAttack] = (
-                self.attack_simulator.simulate(
-                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                    vulnerabilities=[self],
-                    attacks=attacks,
-                    ignore_errors=ignore_errors,
-                    metadata=metadata,
-                )
-            )
+        )
         # Create a mapping of vulnerabilities to attacks
         vulnerability_type_to_attacks_map: Dict[
             BiasType, List[SimulatedAttack]
