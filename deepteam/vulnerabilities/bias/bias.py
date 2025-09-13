@@ -1,6 +1,5 @@
 from typing import List, Literal, Optional, Union, Dict
 import asyncio
-import inspect
 
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model, trimAndLoadJson
@@ -81,9 +80,10 @@ class Bias(BaseVulnerability):
         for simulated_attack in simulated_attacks:
             vulnerability_type = simulated_attack.vulnerability_type
 
+            target_output = model_callback(simulated_attack.input)
             test_case = LLMTestCase(
                 input=simulated_attack.input,
-                actual_output=model_callback(simulated_attack.input),
+                actual_output=target_output,
             )
 
             metric = self._get_metric(vulnerability_type)

@@ -16,13 +16,12 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.frameworks.frameworks import AISafetyFramework
 from deepteam.telemetry import capture_red_teamer_run
 from deepteam.attacks import BaseAttack
+from deepteam.utils import validate_model_callback_signature
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.types import VulnerabilityType
-
 from deepteam.attacks.attack_simulator import AttackSimulator, SimulatedAttack
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.metrics import BaseRedTeamingMetric
-
 from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 from deepteam.red_teamer.risk_assessment import (
     construct_risk_assessment_overview,
