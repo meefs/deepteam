@@ -48,7 +48,6 @@ class Bias(BaseVulnerability):
         attack: BaseAttack,
         attacks_per_vulnerability_type: int = 1,
         max_concurrent: int = 10,
-        ignore_errors: bool = False,
     ):
         from deepteam.red_teamer.risk_assessment import (
             construct_risk_assessment_overview,
@@ -66,7 +65,6 @@ class Bias(BaseVulnerability):
                     model_callback=model_callback,
                     attack=attack,
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                    ignore_errors=ignore_errors,
                 )
             )
         else:
@@ -88,7 +86,7 @@ class Bias(BaseVulnerability):
                 attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 vulnerabilities=[self],
                 attacks=[attack],
-                ignore_errors=ignore_errors,
+                ignore_errors=False,
             )
         )
         # Create a mapping of vulnerabilities to attacks
@@ -125,47 +123,19 @@ class Bias(BaseVulnerability):
                     metadata=simulated_attack.metadata,
                 )
 
-                # this will only go through if ignore_errors == True
-                if simulated_attack.error:
-                    red_teaming_test_case.error = simulated_attack.error
-                    red_teaming_test_cases.append(red_teaming_test_case)
-                    continue
-
-                try:
-                    target_output = model_callback(
-                        simulated_attack.input
-                    )
-                    red_teaming_test_case.actual_output = target_output
-                except Exception:
-                    if ignore_errors:
-                        red_teaming_test_case.error = (
-                            "Error generating output from target LLM"
-                        )
-                        red_teaming_test_cases.append(
-                            red_teaming_test_case
-                        )
-                        continue
-                    else:
-                        raise
+                target_output = model_callback(
+                    simulated_attack.input
+                )
+                red_teaming_test_case.actual_output = target_output
                 
                 test_case = LLMTestCase(
                     input=simulated_attack.input,
                     actual_output=target_output,
                 )
 
-                try:
-                    metric.measure(test_case)
-                    red_teaming_test_case.score = metric.score
-                    red_teaming_test_case.reason = metric.reason
-                except Exception:
-                    if ignore_errors:
-                        red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability"
-                        red_teaming_test_cases.append(
-                            red_teaming_test_case
-                        )
-                        continue
-                    else:
-                        raise
+                metric.measure(test_case)
+                red_teaming_test_case.score = metric.score
+                red_teaming_test_case.reason = metric.reason
 
                 red_teaming_test_cases.append(red_teaming_test_case)
             
@@ -184,7 +154,6 @@ class Bias(BaseVulnerability):
         attack: BaseAttack,
         attacks_per_vulnerability_type: int = 1,
         max_concurrent: int = 10,
-        ignore_errors: bool = False,
     ):
         from deepteam.red_teamer.risk_assessment import (
             construct_risk_assessment_overview,
@@ -206,7 +175,7 @@ class Bias(BaseVulnerability):
                 attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 vulnerabilities=[self],
                 attacks=[attack],
-                ignore_errors=ignore_errors,
+                ignore_errors=False,
             )
         )
 
@@ -246,34 +215,19 @@ class Bias(BaseVulnerability):
                     simulated_attack=simulated_attack,
                     red_teaming_test_case=red_teaming_test_case,
                     metric=metric,
-                    vulnerability_type=vulnerability_type,
                 ):
-                    try:
-                        async with semaphore:
-                            target_output = await model_callback(simulated_attack.input)
-                        red_teaming_test_case.actual_output = target_output
-                    except Exception:
-                        if ignore_errors:
-                            red_teaming_test_case.error = "Error generating output from target LLM"
-                            return red_teaming_test_case
-                        else:
-                            raise
+                    async with semaphore:
+                        target_output = await model_callback(simulated_attack.input)
+                    red_teaming_test_case.actual_output = target_output
 
                     test_case = LLMTestCase(
                         input=simulated_attack.input,
                         actual_output=target_output,
                     )
 
-                    try:
-                        await metric.a_measure(test_case)
-                        red_teaming_test_case.score = metric.score
-                        red_teaming_test_case.reason = metric.reason
-                    except Exception:
-                        if ignore_errors:
-                            red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability"
-                            return red_teaming_test_case
-                        else:
-                            raise
+                    await metric.a_measure(test_case)
+                    red_teaming_test_case.score = metric.score
+                    red_teaming_test_case.reason = metric.reason
 
                     return red_teaming_test_case
 
