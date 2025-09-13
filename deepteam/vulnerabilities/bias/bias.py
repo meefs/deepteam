@@ -132,7 +132,7 @@ class Bias(BaseVulnerability):
 
         simulated_attacks = await self.a_simulate_attacks(attack, attacks_per_vulnerability_type)
     
-        results: Dict[BiasType, List[RedTeamingTestCase]] = {}
+        results: Dict[BiasType, List[RedTeamingTestCase]] = dict()
 
         async def process_attack(simulated_attack: SimulatedAttack):
             vulnerability_type = simulated_attack.vulnerability_type
