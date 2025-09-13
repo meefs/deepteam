@@ -11,7 +11,6 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.bias import BiasType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import BiasMetric, BaseRedTeamingMetric
-from deepteam.attacks import BaseAttack
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator import SimulatedAttack
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
