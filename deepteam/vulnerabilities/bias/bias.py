@@ -77,9 +77,15 @@ class Bias(BaseVulnerability):
 
         for simulated_attack in simulated_attacks:
             vulnerability_type = simulated_attack.vulnerability_type
-            metric = self._get_metric(
-                vulnerability_type
+
+            target_output = model_callback(simulated_attack.input)
+            test_case = LLMTestCase(
+                input=simulated_attack.input,
+                actual_output=target_output
             )
+
+            metric = self._get_metric(vulnerability_type)
+            metric.measure(test_case)
 
             red_teaming_test_case = RedTeamingTestCase(
                 vulnerability=simulated_attack.vulnerability,
@@ -87,22 +93,10 @@ class Bias(BaseVulnerability):
                 attackMethod=simulated_attack.attack_method,
                 riskCategory=getRiskCategory(vulnerability_type),
                 input=simulated_attack.input,
-                metadata=simulated_attack.metadata,
-            )
-
-            target_output = model_callback(
-                simulated_attack.input
-            )
-            red_teaming_test_case.actual_output = target_output
-            
-            test_case = LLMTestCase(
-                input=simulated_attack.input,
                 actual_output=target_output,
+                score=metric.score,
+                reason=metric.reason,
             )
-
-            metric.measure(test_case)
-            red_teaming_test_case.score = metric.score
-            red_teaming_test_case.reason = metric.reason
 
             results[vulnerability_type] = results.get(vulnerability_type, [])
             results[vulnerability_type].append(red_teaming_test_case)
@@ -138,18 +132,7 @@ class Bias(BaseVulnerability):
             vulnerability_type = simulated_attack.vulnerability_type
 
             metric = self._get_metric(vulnerability_type)
-
-            red_teaming_test_case = RedTeamingTestCase(
-                vulnerability=simulated_attack.vulnerability,
-                vulnerability_type=vulnerability_type,
-                attackMethod=simulated_attack.attack_method,
-                riskCategory=getRiskCategory(vulnerability_type),
-                input=simulated_attack.input,
-                metadata=simulated_attack.metadata,
-            )
-
             target_output = await safe_model_callback(simulated_attack.input)
-            red_teaming_test_case.actual_output = target_output
 
             test_case = LLMTestCase(
                 input=simulated_attack.input,
@@ -157,8 +140,17 @@ class Bias(BaseVulnerability):
             )
 
             metric.measure(test_case)
-            red_teaming_test_case.score = metric.score
-            red_teaming_test_case.reason = metric.reason
+
+            red_teaming_test_case = RedTeamingTestCase(
+                vulnerability=simulated_attack.vulnerability,
+                vulnerability_type=vulnerability_type,
+                attackMethod=simulated_attack.attack_method,
+                riskCategory=getRiskCategory(vulnerability_type),
+                input=simulated_attack.input,
+                actual_output=target_output,
+                score=metric.score,
+                reason=metric.reason,
+            )
 
             return vulnerability_type, red_teaming_test_case
 
@@ -169,8 +161,8 @@ class Bias(BaseVulnerability):
             if simulated_attack.vulnerability_type in self.types
         ]
 
-        for coro in asyncio.as_completed(all_tasks):
-            vulnerability_type, test_case = await coro
+        for task in asyncio.as_completed(all_tasks):
+            vulnerability_type, test_case = await task
             results.setdefault(vulnerability_type, []).append(test_case)
 
         return results
