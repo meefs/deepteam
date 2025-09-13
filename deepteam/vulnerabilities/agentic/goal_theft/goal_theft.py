@@ -5,7 +5,9 @@ from deepeval.models import DeepEvalBaseLLM
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.agentic.goal_theft import GoalTheftType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
-from deepteam.metrics.agentic.extraction_success.extraction_success import ExtractionSuccessMetric
+from deepteam.metrics.agentic.extraction_success.extraction_success import (
+    ExtractionSuccessMetric,
+)
 
 GoalTheftLiteralType = Literal[
     "escalating_probing", "cooperative_dialogue", "social_engineering"
@@ -33,14 +35,14 @@ class GoalTheft(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def _get_metric(
-            self, 
-            type: GoalTheftType,
-        ):
+        self,
+        type: GoalTheftType,
+    ):
         return ExtractionSuccessMetric(
             purpose=self.purpose,
             model=self.model,
             async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode
+            verbose_mode=self.verbose_mode,
         )
 
     def get_name(self) -> str:

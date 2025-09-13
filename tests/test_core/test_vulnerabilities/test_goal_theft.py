@@ -5,7 +5,7 @@ from deepteam.vulnerabilities.agentic.goal_theft import GoalTheftType
 
 
 class TestGoalTheft:
-    PURPOSE="purpose"
+    PURPOSE = "purpose"
 
     def test_goal_theft_all_types(self):
         types = [
@@ -17,7 +17,9 @@ class TestGoalTheft:
         assert sorted(type.value for type in goal_theft.types) == sorted(types)
 
     def test_goal_theft_all_types_default(self):
-        goal_theft = GoalTheft(purpose=TestGoalTheft.PURPOSE, )
+        goal_theft = GoalTheft(
+            purpose=TestGoalTheft.PURPOSE,
+        )
         assert sorted(type.value for type in goal_theft.types) == sorted(
             type.value for type in GoalTheftType
         )

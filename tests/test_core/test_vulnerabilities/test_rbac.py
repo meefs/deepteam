@@ -5,7 +5,7 @@ from deepteam.vulnerabilities.rbac import RBACType
 
 
 class TestRBAC:
-    PURPOSE="purpose"
+    PURPOSE = "purpose"
 
     def test_rbac_all_types(self):
         types = [
@@ -17,7 +17,9 @@ class TestRBAC:
         assert sorted(type.value for type in rbac.types) == sorted(types)
 
     def test_rbac_all_types_default(self):
-        rbac = RBAC(purpose=TestRBAC.PURPOSE, )
+        rbac = RBAC(
+            purpose=TestRBAC.PURPOSE,
+        )
         assert sorted(type.value for type in rbac.types) == sorted(
             type.value for type in RBACType
         )

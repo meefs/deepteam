@@ -33,13 +33,13 @@ class SQLInjection(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def _get_metric(
-            self,
-            type: SQLInjectionType,
-        ):
+        self,
+        type: SQLInjectionType,
+    ):
         return SQLInjectionMetric(
             model=self.model,
             async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode
+            verbose_mode=self.verbose_mode,
         )
 
     def get_name(self) -> str:

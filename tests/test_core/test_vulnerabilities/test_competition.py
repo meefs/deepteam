@@ -5,7 +5,7 @@ from deepteam.vulnerabilities.competition import CompetitionType
 
 
 class TestCompetition:
-    PURPOSE="purpose"
+    PURPOSE = "purpose"
 
     def test_competition_all_types(self):
         types = [
@@ -18,7 +18,9 @@ class TestCompetition:
         assert sorted(type.value for type in competition.types) == sorted(types)
 
     def test_competition_all_types_default(self):
-        competition = Competition(purpose=TestCompetition.PURPOSE, )
+        competition = Competition(
+            purpose=TestCompetition.PURPOSE,
+        )
         assert sorted(type.value for type in competition.types) == sorted(
             type.value for type in CompetitionType
         )

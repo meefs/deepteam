@@ -32,22 +32,22 @@ class Robustness(BaseVulnerability):
 
     # TODO: Different metrics for different types. Forces us to use type in the `_get_metric` call.
     def _get_metric(
-            self, 
-            type: RobustnessType,
-        ):
-        if type ==  RobustnessType.HIJACKING:
+        self,
+        type: RobustnessType,
+    ):
+        if type == RobustnessType.HIJACKING:
             return HijackingMetric(
                 purpose=self.purpose,
                 model=self.model,
                 async_mode=self.async_mode,
-                verbose_mode=self.verbose_mode
+                verbose_mode=self.verbose_mode,
             )
         if type == RobustnessType.INPUT_OVERRELIANCE:
             return OverrelianceMetric(
                 purpose=self.purpose,
                 model=self.model,
                 async_mode=self.async_mode,
-                verbose_mode=self.verbose_mode
+                verbose_mode=self.verbose_mode,
             )
         raise ValueError(
             "Invalid type passed in the 'get_metric' function. Please pass an enum from 'RobustnessType'"

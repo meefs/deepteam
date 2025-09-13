@@ -34,16 +34,16 @@ class PIILeakage(BaseVulnerability):
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
         super().__init__(types=enum_types)
-    
+
     def _get_metric(
-            self, 
-            type: PIILeakageType,
-        ):
+        self,
+        type: PIILeakageType,
+    ):
         return PIIMetric(
             purpose=self.purpose,
             model=self.model,
             async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode
+            verbose_mode=self.verbose_mode,
         )
 
     def get_name(self) -> str:

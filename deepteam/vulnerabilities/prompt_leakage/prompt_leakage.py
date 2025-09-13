@@ -36,14 +36,14 @@ class PromptLeakage(BaseVulnerability):
         super().__init__(types=enum_types)
 
     def _get_metric(
-            self, 
-            type: PromptLeakageType,
-        ):
+        self,
+        type: PromptLeakageType,
+    ):
         return PromptExtractionMetric(
             purpose=self.purpose,
             model=self.model,
             async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode
+            verbose_mode=self.verbose_mode,
         )
 
     def get_name(self) -> str:
