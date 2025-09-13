@@ -1,12 +1,13 @@
 from typing import List, Literal, Optional, Union, Dict
-import inspect
 import asyncio
+import inspect
 
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model, trimAndLoadJson
 from deepeval.utils import get_or_create_event_loop
 from deepeval.test_case import LLMTestCase
 
+from deepteam.utils import validate_model_callback_signature
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.bias import BiasType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
@@ -48,28 +49,28 @@ class Bias(BaseVulnerability):
         self,
         model_callback: CallbackType,
         attacks_per_vulnerability_type: int = 1,
-        max_concurrent: int = 10,
     ):
         from deepteam.red_teamer.risk_assessment import (
             RedTeamingTestCase,
         )
 
         if self.async_mode:
-            assert inspect.iscoroutinefunction(
-                model_callback
-            ), "`model_callback` needs to be async. `async_mode` has been set to True."
+            validate_model_callback_signature(
+                model_callback=model_callback,
+                async_mode=self.async_mode,
+            )
             loop = get_or_create_event_loop()
             return loop.run_until_complete(
                 self.a_assess(
                     model_callback=model_callback,
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                    max_concurrent=max_concurrent,
                 )
             )
         else:
-            assert not inspect.iscoroutinefunction(
-                model_callback
-            ), "`model_callback` needs to be sync. `async_mode` has been set to False."
+            validate_model_callback_signature(
+                model_callback=model_callback,
+                async_mode=self.async_mode,
+            )
 
         simulated_attacks = self.simulate_attacks(
             attacks_per_vulnerability_type
@@ -80,9 +81,9 @@ class Bias(BaseVulnerability):
         for simulated_attack in simulated_attacks:
             vulnerability_type = simulated_attack.vulnerability_type
 
-            target_output = model_callback(simulated_attack.input)
             test_case = LLMTestCase(
-                input=simulated_attack.input, actual_output=target_output
+                input=simulated_attack.input,
+                actual_output=model_callback(simulated_attack.input),
             )
 
             metric = self._get_metric(vulnerability_type)
@@ -108,21 +109,15 @@ class Bias(BaseVulnerability):
         self,
         model_callback: CallbackType,
         attacks_per_vulnerability_type: int = 1,
-        max_concurrent: int = 10,
     ):
         from deepteam.red_teamer.risk_assessment import (
             RedTeamingTestCase,
         )
 
-        assert inspect.iscoroutinefunction(
-            model_callback
-        ), "`model_callback` must be async when using `a_assess`."
-
-        semaphore = asyncio.Semaphore(max_concurrent)
-
-        async def safe_model_callback(prompt: str):
-            async with semaphore:
-                return await model_callback(prompt)
+        validate_model_callback_signature(
+            model_callback=model_callback,
+            async_mode=self.async_mode,
+        )
 
         simulated_attacks = await self.a_simulate_attacks(
             attacks_per_vulnerability_type
@@ -134,7 +129,7 @@ class Bias(BaseVulnerability):
             vulnerability_type = simulated_attack.vulnerability_type
 
             metric = self._get_metric(vulnerability_type)
-            target_output = await safe_model_callback(simulated_attack.input)
+            target_output = await model_callback(simulated_attack.input)
 
             test_case = LLMTestCase(
                 input=simulated_attack.input,
@@ -156,7 +151,7 @@ class Bias(BaseVulnerability):
 
             return vulnerability_type, red_teaming_test_case
 
-        # Run all processing concurrently with bounded concurrency
+        # Run all processing concurrently
         all_tasks = [
             process_attack(simulated_attack)
             for simulated_attack in simulated_attacks

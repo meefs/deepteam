@@ -17,81 +17,11 @@ from deepteam.frameworks.frameworks import AISafetyFramework
 from deepteam.telemetry import capture_red_teamer_run
 from deepteam.attacks import BaseAttack
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.custom.custom import CustomVulnerability
-from deepteam.vulnerabilities.types import (
-    IntellectualPropertyType,
-    IllegalActivityType,
-    PersonalSafetyType,
-    GraphicContentType,
-    MisinformationType,
-    PromptLeakageType,
-    CompetitionType,
-    PIILeakageType,
-    ToxicityType,
-    BiasType,
-    RBACType,
-    BOLAType,
-    BFLAType,
-    SSRFType,
-    DebugAccessType,
-    ShellInjectionType,
-    SQLInjectionType,
-    VulnerabilityType,
-)
-
-# Import agentic vulnerability types
-from deepteam.vulnerabilities.agentic.recursive_hijacking.types import (
-    RecursiveHijackingType,
-)
-from deepteam.vulnerabilities.agentic.goal_theft.types import GoalTheftType
-from deepteam.vulnerabilities.agentic.robustness.types import RobustnessType
-from deepteam.vulnerabilities.agentic.excessive_agency.types import (
-    ExcessiveAgencyType,
-)
+from deepteam.vulnerabilities.types import VulnerabilityType
 
 from deepteam.attacks.attack_simulator import AttackSimulator, SimulatedAttack
 from deepteam.attacks.multi_turn.types import CallbackType
-from deepteam.metrics import (
-    BaseRedTeamingMetric,
-    BiasMetric,
-    HarmMetric,
-    PromptExtractionMetric,
-    PIIMetric,
-    RBACMetric,
-    DebugAccessMetric,
-    ShellInjectionMetric,
-    SQLInjectionMetric,
-    BFLAMetric,
-    BOLAMetric,
-    SSRFMetric,
-    ExcessiveAgencyMetric,
-    HijackingMetric,
-    IntellectualPropertyMetric,
-    OverrelianceMetric,
-    CompetitorsMetric,
-    ToxicityMetric,
-    MisinformationMetric,
-    GraphicMetric,
-    SafetyMetric,
-    IllegalMetric,
-)
-from deepteam.metrics.toxicity.toxicity import ToxicityMetric
-from deepteam.metrics.misinformation.misinformation import MisinformationMetric
-from deepteam.metrics.illegal_activity.illegal_activity import IllegalMetric
-from deepteam.metrics.graphic_content.graphic_content import GraphicMetric
-from deepteam.metrics.personal_safety.personal_safety import SafetyMetric
-
-# Import agentic metrics
-from deepteam.metrics.agentic.subversion_success.subversion_success import (
-    SubversionSuccessMetric,
-)
-from deepteam.metrics.agentic.extraction_success.extraction_success import (
-    ExtractionSuccessMetric,
-)
-from deepteam.metrics.agentic.verification_assessment.verification_assessment import (
-    VerificationAssessmentMetric,
-)
-
+from deepteam.metrics import BaseRedTeamingMetric
 
 from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 from deepteam.red_teamer.risk_assessment import (
@@ -149,9 +79,10 @@ class RedTeamer:
                 )
 
         if self.async_mode:
-            assert inspect.iscoroutinefunction(
-                model_callback
-            ), "`model_callback` needs to be async. `async_mode` has been set to True."
+            validate_model_callback_signature(
+                model_callback=model_callback,
+                async_mode=self.async_mode,
+            )
             loop = get_or_create_event_loop()
             return loop.run_until_complete(
                 self.a_red_team(
