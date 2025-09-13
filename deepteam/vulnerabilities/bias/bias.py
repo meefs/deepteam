@@ -71,101 +71,43 @@ class Bias(BaseVulnerability):
                 model_callback
             ), "`model_callback` needs to be sync. `async_mode` has been set to False."
         
-        self.simulator_model, self.using_native_model = initialize_model(self.simulator_model)
+        simulated_attacks = self.simulate_attacks(attack, attacks_per_vulnerability_type)
         
-        attack_prompts = self.get_attacks(attacks_per_vulnerability_type)
-        baseline_attacks: List[SimulatedAttack] = []
+        results: Dict[BiasType, List[RedTeamingTestCase]] = dict()
 
-        for type in self.types:
-            for prompt in attack_prompts[type]:
-                if self.using_native_model:
-                    res, _ = self.simulator_model.generate(
-                        prompt, schema=SyntheticDataList
-                    )
-                    local_attacks = [item.input for item in res.data]
-                else:
-                    try:
-                        res: SyntheticDataList = self.simulator_model.generate(
-                            prompt, schema=SyntheticDataList
-                        )
-                        local_attacks = [item.input for item in res.data]
-                    except TypeError:
-                        res = self.simulator_model.generate(prompt)
-                        data = trimAndLoadJson(res)
-                        local_attacks = [item["input"] for item in data["data"]]
+        for simulated_attack in simulated_attacks:
+            vulnerability_type = simulated_attack.vulnerability_type
+            metric = self._get_metric(
+                vulnerability_type
+            )
 
-            baseline_attacks.extend([
-                SimulatedAttack(
-                    vulnerability=self.get_name(),
-                    vulnerability_type=type,
-                    input=local_attack,
-                    attack_method=attack.get_name()
-                )
-                for local_attack in local_attacks
-            ])
+            red_teaming_test_case = RedTeamingTestCase(
+                vulnerability=simulated_attack.vulnerability,
+                vulnerability_type=vulnerability_type,
+                attackMethod=simulated_attack.attack_method,
+                riskCategory=getRiskCategory(vulnerability_type),
+                input=simulated_attack.input,
+                metadata=simulated_attack.metadata,
+            )
 
-        for baseline_attack in baseline_attacks:
-            sig = inspect.signature(attack.enhance)
-            if (
-                "simulator_model" in sig.parameters
-                and "model_callback" in sig.parameters
-            ):
-                baseline_attack.input = attack.enhance(
-                    attack=baseline_attack.input,
-                    simulator_model=self.simulator_model,
-                    model_callback=model_callback,
-                )
-            elif "simulator_model" in sig.parameters:
-                baseline_attack.input = attack.enhance(
-                    attack=baseline_attack.input,
-                    simulator_model=self.simulator_model,
-                )
-            elif "model_callback" in sig.parameters:
-                baseline_attack.input = attack.enhance(
-                    attack=baseline_attack.input,
-                    model_callback=model_callback,
-                )
-            else:
-                baseline_attack.input = attack.enhance(attack=baseline_attack.input)
+            target_output = model_callback(
+                simulated_attack.input
+            )
+            red_teaming_test_case.actual_output = target_output
+            
+            test_case = LLMTestCase(
+                input=simulated_attack.input,
+                actual_output=target_output,
+            )
+
+            metric.measure(test_case)
+            red_teaming_test_case.score = metric.score
+            red_teaming_test_case.reason = metric.reason
+
+            results[vulnerability_type] = results.get(vulnerability_type, [])
+            results[vulnerability_type].append(red_teaming_test_case)
         
-        simulated_attacks = baseline_attacks
-        
-        self.results: Dict[BiasType, List[RedTeamingTestCase]] = dict()
-
-        for vulnerability_type in self.types:
-            for simulated_attack in simulated_attacks:
-
-                if simulated_attack.vulnerability_type != vulnerability_type:
-                    continue
-
-                metric = self._get_metric(
-                    vulnerability_type
-                )
-                red_teaming_test_case = RedTeamingTestCase(
-                    vulnerability=simulated_attack.vulnerability,
-                    vulnerability_type=vulnerability_type,
-                    attackMethod=simulated_attack.attack_method,
-                    riskCategory=getRiskCategory(vulnerability_type),
-                    input=simulated_attack.input,
-                    metadata=simulated_attack.metadata,
-                )
-
-                target_output = model_callback(
-                    simulated_attack.input
-                )
-                red_teaming_test_case.actual_output = target_output
-                
-                test_case = LLMTestCase(
-                    input=simulated_attack.input,
-                    actual_output=target_output,
-                )
-
-                metric.measure(test_case)
-                red_teaming_test_case.score = metric.score
-                red_teaming_test_case.reason = metric.reason
-
-                self.results[vulnerability_type] = self.results.get(vulnerability_type, [])
-                self.results[vulnerability_type].append(red_teaming_test_case)
+        return results
 
     async def a_assess(
         self,
@@ -182,69 +124,15 @@ class Bias(BaseVulnerability):
             model_callback
         ), "`model_callback` must be async when using `a_assess`."
 
-        self.simulator_model, self.using_native_model = initialize_model(self.simulator_model)
-        attack_prompts = self.get_attacks(attacks_per_vulnerability_type)
-        baseline_attacks: List[SimulatedAttack] = []
-
         semaphore = asyncio.Semaphore(max_concurrent)
 
         async def safe_model_callback(prompt: str):
             async with semaphore:
                 return await model_callback(prompt)
 
-        for type in self.types:
-            for prompt in attack_prompts[type]:
-                if self.using_native_model:
-                    res, _ = await self.simulator_model.a_generate(
-                        prompt, schema=SyntheticDataList
-                    )
-                    local_attacks = [item.input for item in res.data]
-                else:
-                    try:
-                        res: SyntheticDataList = await self.simulator_model.a_generate(
-                            prompt, schema=SyntheticDataList
-                        )
-                        local_attacks = [item.input for item in res.data]
-                    except TypeError:
-                        res = await self.simulator_model.a_generate(prompt)
-                        data = trimAndLoadJson(res)
-                        local_attacks = [item["input"] for item in data["data"]]
-
-            baseline_attacks.extend([
-                SimulatedAttack(
-                    vulnerability=self.get_name(),
-                    vulnerability_type=type,
-                    input=local_attack,
-                    attack_method=attack.get_name()
-                )
-                for local_attack in local_attacks
-            ])
-
-        for baseline_attack in baseline_attacks:
-            sig = inspect.signature(attack.a_enhance)
-            if "simulator_model" in sig.parameters and "model_callback" in sig.parameters:
-                baseline_attack.input = await attack.a_enhance(
-                    attack=baseline_attack.input,
-                    simulator_model=self.simulator_model,
-                    model_callback=model_callback,
-                )
-            elif "simulator_model" in sig.parameters:
-                baseline_attack.input = await attack.a_enhance(
-                    attack=baseline_attack.input,
-                    simulator_model=self.simulator_model,
-                )
-            elif "model_callback" in sig.parameters:
-                baseline_attack.input = await attack.a_enhance(
-                    attack=baseline_attack.input,
-                    model_callback=model_callback,
-                )
-            else:
-                baseline_attack.input = await attack.a_enhance(
-                    attack=baseline_attack.input
-                )
-
-        simulated_attacks = baseline_attacks
-        self.results: Dict[BiasType, List[RedTeamingTestCase]] = {}
+        simulated_attacks = await self.a_simulate_attacks(attack, attacks_per_vulnerability_type)
+    
+        results: Dict[BiasType, List[RedTeamingTestCase]] = {}
 
         async def process_attack(simulated_attack: SimulatedAttack):
             vulnerability_type = simulated_attack.vulnerability_type
@@ -283,9 +171,9 @@ class Bias(BaseVulnerability):
 
         for coro in asyncio.as_completed(all_tasks):
             vulnerability_type, test_case = await coro
-            self.results.setdefault(vulnerability_type, []).append(test_case)
+            results.setdefault(vulnerability_type, []).append(test_case)
 
-        return self.results
+        return results
 
 
     def _get_metric(
@@ -299,11 +187,17 @@ class Bias(BaseVulnerability):
             verbose_mode=self.verbose_mode
         )
     
-    def get_attacks(
+    def simulate_attacks(
             self,
+            attack: BaseAttack,
             attacks_per_vulnerability_type: int = 1,
-        ) -> Dict[BiasType, List[str]]:
+        ) -> List[SimulatedAttack]:
+
+        self.simulator_model, self.using_native_model = initialize_model(self.simulator_model)
+
         templates = dict()
+        simulated_attacks: List[SimulatedAttack] = []
+
         for type in self.types:
             templates[type] = templates.get(type, [])
             templates[type].append(
@@ -314,7 +208,86 @@ class Bias(BaseVulnerability):
                 )
             )
         
-        return templates
+        for type in self.types:
+            for prompt in templates[type]:
+                if self.using_native_model:
+                    res, _ = self.simulator_model.generate(
+                        prompt, schema=SyntheticDataList
+                    )
+                    local_attacks = [item.input for item in res.data]
+                else:
+                    try:
+                        res: SyntheticDataList = self.simulator_model.generate(
+                            prompt, schema=SyntheticDataList
+                        )
+                        local_attacks = [item.input for item in res.data]
+                    except TypeError:
+                        res = self.simulator_model.generate(prompt)
+                        data = trimAndLoadJson(res)
+                        local_attacks = [item["input"] for item in data["data"]]
+
+            simulated_attacks.extend([
+                SimulatedAttack(
+                    vulnerability=self.get_name(),
+                    vulnerability_type=type,
+                    input=local_attack,
+                    attack_method=attack.get_name()
+                )
+                for local_attack in local_attacks
+            ])
+        
+        return simulated_attacks
+        
+    async def a_simulate_attacks(
+        self,
+        attack: BaseAttack,
+        attacks_per_vulnerability_type: int = 1,
+    ) -> List[SimulatedAttack]:
+        
+        self.simulator_model, self.using_native_model = initialize_model(self.simulator_model)
+
+        templates = dict()
+        simulated_attacks: List[SimulatedAttack] = []
+
+        for type in self.types:
+            templates[type] = templates.get(type, [])
+            templates[type].append(
+                BiasTemplate.generate_baseline_attacks(
+                    type, 
+                    attacks_per_vulnerability_type, 
+                    self.purpose
+                )
+            )
+        
+        for type in self.types:
+            for prompt in templates[type]:
+                if self.using_native_model:
+                    res, _ = await self.simulator_model.a_generate(
+                        prompt, schema=SyntheticDataList
+                    )
+                    local_attacks = [item.input for item in res.data]
+                else:
+                    try:
+                        res: SyntheticDataList = await self.simulator_model.a_generate(
+                            prompt, schema=SyntheticDataList
+                        )
+                        local_attacks = [item.input for item in res.data]
+                    except TypeError:
+                        res = await self.simulator_model.a_generate(prompt)
+                        data = trimAndLoadJson(res)
+                        local_attacks = [item["input"] for item in data["data"]]
+
+            simulated_attacks.extend([
+                SimulatedAttack(
+                    vulnerability=self.get_name(),
+                    vulnerability_type=type,
+                    input=local_attack,
+                    attack_method=attack.get_name()
+                )
+                for local_attack in local_attacks
+            ])
+        
+        return simulated_attacks
 
     def get_name(self) -> str:
         return "Bias"
