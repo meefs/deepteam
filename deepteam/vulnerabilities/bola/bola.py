@@ -28,6 +28,7 @@ BOLALiteral = Literal[
 class BOLA(BaseVulnerability):
     def __init__(
         self,
+        purpose: str,
         async_mode: bool = True,
         verbose_mode: bool = False,
         simulator_model: Optional[
@@ -39,6 +40,7 @@ class BOLA(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=BOLAType
         )
+        self.purpose = purpose
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
@@ -164,7 +166,7 @@ class BOLA(BaseVulnerability):
             results.setdefault(vulnerability_type, []).append(test_case)
 
         return results
-    
+
     def simulate_attacks(
         self,
         attacks_per_vulnerability_type: int = 1,
@@ -181,7 +183,7 @@ class BOLA(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 BOLATemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
 
@@ -232,7 +234,7 @@ class BOLA(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 BOLATemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
 

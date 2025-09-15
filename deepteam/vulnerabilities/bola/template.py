@@ -11,7 +11,9 @@ class BOLATemplate:
 
     @staticmethod
     def generate_baseline_attacks(
-        vulnerability_type: BOLAType, max_goldens: int, purpose: Optional[str]
+        vulnerability_type: BOLAType,
+        max_goldens: int,
+        purpose: Optional[str] = None,
     ) -> str:
 
         if vulnerability_type == BOLAType.OBJECT_ACCESS_BYPASS:
