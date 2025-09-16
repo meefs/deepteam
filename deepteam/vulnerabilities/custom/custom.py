@@ -16,6 +16,7 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.risks import getRiskCategory
 from .template import CustomVulnerabilityTemplate
 
+
 class CustomVulnerability(BaseVulnerability):
     """
     Custom vulnerability class that allows users to define their own vulnerability types.
@@ -64,7 +65,7 @@ class CustomVulnerability(BaseVulnerability):
 
     def get_custom_prompt(self) -> Optional[str]:
         return self.custom_prompt
-    
+
     def assess(
         self,
         model_callback: CallbackType,
@@ -148,6 +149,7 @@ class CustomVulnerability(BaseVulnerability):
 
         async def process_attack(simulated_attack):
             from deepteam.attacks.attack_simulator import SimulatedAttack
+
             vulnerability_type = simulated_attack.vulnerability_type
 
             metric = self._get_metric(vulnerability_type)
@@ -203,7 +205,10 @@ class CustomVulnerability(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 CustomVulnerabilityTemplate.generate_baseline_attacks(
-                    self.name, type, attacks_per_vulnerability_type, self.custom_prompt
+                    self.name,
+                    type,
+                    attacks_per_vulnerability_type,
+                    self.custom_prompt,
                 )
             )
 
@@ -255,7 +260,10 @@ class CustomVulnerability(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 CustomVulnerabilityTemplate.generate_baseline_attacks(
-                    self.name, type, attacks_per_vulnerability_type, self.custom_prompt
+                    self.name,
+                    type,
+                    attacks_per_vulnerability_type,
+                    self.custom_prompt,
                 )
             )
 

@@ -12,8 +12,8 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.agentic.goal_theft import GoalTheftType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics.agentic.extraction_success.extraction_success import (
-    ExtractionSuccessMetric, 
-    BaseRedTeamingMetric
+    ExtractionSuccessMetric,
+    BaseRedTeamingMetric,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList

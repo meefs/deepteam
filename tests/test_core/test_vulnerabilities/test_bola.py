@@ -5,6 +5,7 @@ from deepteam.vulnerabilities.bola import BOLAType
 
 
 class TestBOLA:
+    PURPOSE = "purpose"
 
     def test_bola_all_types(self):
         types = [
@@ -12,28 +13,30 @@ class TestBOLA:
             "cross_customer_access",
             "unauthorized_object_manipulation",
         ]
-        bola = BOLA(types=types)
+        bola = BOLA(purpose=TestBOLA.PURPOSE, types=types)
         assert sorted(type.value for type in bola.types) == sorted(types)
 
     def test_bola_all_types_default(self):
-        bola = BOLA()
+        bola = BOLA(
+            purpose=TestBOLA.PURPOSE,
+        )
         assert sorted(type.value for type in bola.types) == sorted(
             type.value for type in BOLAType
         )
 
     def test_bola_object_access_bypass(self):
         types = ["object_access_bypass"]
-        bola = BOLA(types=types)
+        bola = BOLA(purpose=TestBOLA.PURPOSE, types=types)
         assert sorted(type.value for type in bola.types) == sorted(types)
 
     def test_bola_cross_customer_access(self):
         types = ["cross_customer_access"]
-        bola = BOLA(types=types)
+        bola = BOLA(purpose=TestBOLA.PURPOSE, types=types)
         assert sorted(type.value for type in bola.types) == sorted(types)
 
     def test_bola_unauthorized_object_manipulation(self):
         types = ["unauthorized_object_manipulation"]
-        bola = BOLA(types=types)
+        bola = BOLA(purpose=TestBOLA.PURPOSE, types=types)
         assert sorted(type.value for type in bola.types) == sorted(types)
 
     def test_bola_all_types_invalid(self):
@@ -44,4 +47,4 @@ class TestBOLA:
             "invalid",
         ]
         with pytest.raises(ValueError):
-            BOLA(types=types)
+            BOLA(purpose=TestBOLA.PURPOSE, types=types)
