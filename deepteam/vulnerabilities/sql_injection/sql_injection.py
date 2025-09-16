@@ -28,6 +28,7 @@ SQLInjectionLiteral = Literal[
 class SQLInjection(BaseVulnerability):
     def __init__(
         self,
+        purpose: str,
         async_mode: bool = True,
         verbose_mode: bool = False,
         simulator_model: Optional[
@@ -41,6 +42,7 @@ class SQLInjection(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=SQLInjectionType
         )
+        self.purpose = purpose
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
@@ -183,7 +185,7 @@ class SQLInjection(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 SQLInjectionTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
 
@@ -234,7 +236,7 @@ class SQLInjection(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 SQLInjectionTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
 
