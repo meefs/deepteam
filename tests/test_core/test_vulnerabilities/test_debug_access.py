@@ -5,7 +5,7 @@ from deepteam.vulnerabilities.debug_access import DebugAccessType
 
 
 class TestDebugAccess:
-    PURPOSE="purpose"
+    PURPOSE = "purpose"
 
     def test_debug_access_all_types(self):
         types = [
@@ -19,7 +19,9 @@ class TestDebugAccess:
         )
 
     def test_debug_access_all_types_default(self):
-        debug_access = DebugAccess(purpose=TestDebugAccess.PURPOSE, )
+        debug_access = DebugAccess(
+            purpose=TestDebugAccess.PURPOSE,
+        )
         assert sorted(type.value for type in debug_access.types) == sorted(
             type.value for type in DebugAccessType
         )
