@@ -30,7 +30,7 @@ def test_red_teaming():
         PromptLeakage(purpose=PURPOSE),
         PIILeakage(purpose=PURPOSE),
         BFLA(purpose=PURPOSE),
-        BOLA(),
+        BOLA(purpose=PURPOSE),
         RBAC(purpose=PURPOSE),
         DebugAccess(),
         ShellInjection(),

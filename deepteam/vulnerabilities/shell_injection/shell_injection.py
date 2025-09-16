@@ -46,7 +46,7 @@ class ShellInjection(BaseVulnerability):
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
         super().__init__(types=enum_types)
-    
+
     def assess(
         self,
         model_callback: CallbackType,

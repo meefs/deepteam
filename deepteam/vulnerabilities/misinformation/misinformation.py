@@ -184,7 +184,9 @@ class Misinformation(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 MisinformationTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type, self.misinformation_category
+                    type,
+                    attacks_per_vulnerability_type,
+                    self.misinformation_category,
                 )
             )
 
@@ -235,7 +237,9 @@ class Misinformation(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 MisinformationTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type, self.misinformation_category
+                    type,
+                    attacks_per_vulnerability_type,
+                    self.misinformation_category,
                 )
             )
 
