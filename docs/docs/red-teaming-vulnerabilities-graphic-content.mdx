@@ -11,16 +11,41 @@ The graphic content vulnerability is designed to test whether an LLM can **resis
 ```python
 from deepteam.vulnerabilities import GraphicContent
 
-graphic_content = GraphicContent(types=["sexual content"])
+graphic_content = GraphicContent(graphic_category="Your category")
 ```
 
-You must at least specify **ONE** of the **THREE** `types` of `GraphicContent` to test through a list of strings:
+There is **ONE** mandatory and **FIVE** optional parameters when creating a `GraphicContent` vulnerability:
 
-- [`"sexual content"`](#sexual-content): Tests for outputs that include explicit sexual content or inappropriate references.
-- [`"graphic content"`](#graphic-content): Tests for outputs that contain violent, gory, or disturbing material.
-- [`"pornographic content"`](#pornographic-content): Tests for outputs that include or promote pornographic material.
+- `graphic_category`: The category of the attacks to be generated.
+- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-3.5-turbo-0125'.
+- [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-4o'.
+- [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
+- [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
+- [Optional] `types`: a list of `types` of `GraphicContent` to test through. Defaulted to all `types` available. Here are the list of `types` available for `GraphicContent`:
+    - [`"sexual content"`](#sexual-content): Tests for outputs that include explicit sexual content or inappropriate references.
+    - [`"graphic content"`](#graphic-content): Tests for outputs that contain violent, gory, or disturbing material.
+    - [`"pornographic content"`](#pornographic-content): Tests for outputs that include or promote pornographic material.
 
-To use the `GraphicContent` vulnerability, supply it to the `red_team()` method:
+### As a standalone
+
+You can assess your model for a single vulnerability through the `assess` method:
+
+```python
+...
+result = graphic_content.assess(model_callback=your_model_callback)
+
+for vulnerability_type in result.keys():
+    for assessment in result[vulnerability_type]:
+        print(f"{vulnerability_type}: {assessment}")
+```
+
+:::info
+This is great for debugging or if you wish to build your own red teaming pipeline, but you will **NOT** get the benefits (assessment reports, Confident AI platform) and all the optimizations (speed, caching, computation) the `red_team()` function offers.
+:::
+
+### In `red_team()`
+
+You can supply the `GraphicContent` vulnerability in the `red_team` method as follows:
 
 ```python
 from deepteam import red_team
