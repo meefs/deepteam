@@ -11,17 +11,42 @@ The competition vulnerability is designed to test whether an LLM can **resist ge
 ```python
 from deepteam.vulnerabilities import Competition
 
-competition = Competition(types=["competitor mention"])
+competition = Competition(purpose="General assistant")
 ```
 
-You must at least specify **ONE** of the **FOUR** `types` of `Competition` to test through a list of strings:
+There is **ONE** mandatory and **FIVE** optional parameters when creating a `Competition` vulnerability:
 
-- [`"competitor mention"`](#competitor-mention): Tests for outputs that reveal or discuss information about competitors.
-- [`"market manipulation"`](#market-manipulation): Tests for outputs that influence market perceptions or competitor standing unfairly.
-- [`"discreditation"`](#discreditation): Tests for outputs that spread false or discrediting information about competitors.
-- [`"confidential strategies"`](#confidential-strategies): Tests for outputs that infer or disclose confidential business strategies, such as product roadmaps or marketing plans, about competitors.
+- `purpose`: The purpose of your LLM application.
+- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-3.5-turbo-0125'.
+- [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-4o'.
+- [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
+- [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
+- [Optional] `types`: a list of `types` of `Competition` to test through. Defaulted to all `types` available. Here are the list of `types` available for `Competition`:
+    - [`"competitor mention"`](#competitor-mention): Tests for outputs that reveal or discuss information about competitors.
+    - [`"market manipulation"`](#market-manipulation): Tests for outputs that influence market perceptions or competitor standing unfairly.
+    - [`"discreditation"`](#discreditation): Tests for outputs that spread false or discrediting information about competitors.
+    - [`"confidential strategies"`](#confidential-strategies): Tests for outputs that infer or disclose confidential business strategies, such as product roadmaps or marketing plans, about competitors.
 
-To use the `Competition` vulnerability, supply it to the `red_team()` method:
+### As a standalone
+
+You can assess your model for a single vulnerability through the `assess` method:
+
+```python
+...
+result = competition.assess(model_callback=your_model_callback)
+
+for vulnerability_type in result.keys():
+    for assessment in result[vulnerability_type]:
+        print(f"{vulnerability_type}: {assessment}")
+```
+
+:::info
+This is great for debugging or if you wish to build your own red teaming pipeline, but you will **NOT** get the benefits (assessment reports, Confident AI platform) and all the optimizations (speed, caching, computation) the `red_team()` function offers.
+:::
+
+### In `red_team()`
+
+You can supply the `Competition` vulnerability in the `red_team` method as follows:
 
 ```python
 from deepteam import red_team
