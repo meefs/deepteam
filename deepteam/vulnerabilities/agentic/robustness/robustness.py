@@ -11,7 +11,11 @@ from deepteam.utils import validate_model_callback_signature
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.agentic.robustness import RobustnessType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
-from deepteam.metrics import HijackingMetric, OverrelianceMetric, BaseRedTeamingMetric
+from deepteam.metrics import (
+    HijackingMetric,
+    OverrelianceMetric,
+    BaseRedTeamingMetric,
+)
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from .template import RobustnessTemplate

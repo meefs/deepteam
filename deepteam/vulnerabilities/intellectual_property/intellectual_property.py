@@ -83,7 +83,9 @@ class IntellectualProperty(BaseVulnerability):
             attacks_per_vulnerability_type
         )
 
-        results: Dict[IntellectualPropertyType, List[RedTeamingTestCase]] = dict()
+        results: Dict[IntellectualPropertyType, List[RedTeamingTestCase]] = (
+            dict()
+        )
 
         for simulated_attack in simulated_attacks:
             vulnerability_type = simulated_attack.vulnerability_type
@@ -131,7 +133,9 @@ class IntellectualProperty(BaseVulnerability):
             attacks_per_vulnerability_type
         )
 
-        results: Dict[IntellectualPropertyType, List[RedTeamingTestCase]] = dict()
+        results: Dict[IntellectualPropertyType, List[RedTeamingTestCase]] = (
+            dict()
+        )
 
         async def process_attack(simulated_attack: SimulatedAttack):
             vulnerability_type = simulated_attack.vulnerability_type

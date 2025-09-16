@@ -14,8 +14,8 @@ from deepteam.vulnerabilities.agentic.recursive_hijacking import (
 )
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics.agentic.subversion_success.subversion_success import (
-    SubversionSuccessMetric, 
-    BaseRedTeamingMetric
+    SubversionSuccessMetric,
+    BaseRedTeamingMetric,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
