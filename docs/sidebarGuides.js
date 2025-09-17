@@ -2,7 +2,7 @@ module.exports = {
   guides: [
         {
         type: "category",
-        label: "Guides",
+        label: "Customizations",
         items: [
             "guide-custom-vulnerability",
         ],

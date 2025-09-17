@@ -2,7 +2,7 @@
 title: "Comparing Jailbreaking Techniques"
 description: Comparative evaluation of Linear, Tree, and Crescendo jailbreaking techniques against six contemporary AI models reveals significant performance disparities and model-specific vulnerability patterns
 slug: multi-turn-jailbreaking-analysis-deepteam
-authors: [sid]
+authors: [kritinv]
 date: 2025-06-05
 hide_table_of_contents: false
 # TODO: Add proper image path once available
