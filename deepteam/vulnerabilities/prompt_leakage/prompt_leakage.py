@@ -51,7 +51,7 @@ class PromptLeakage(BaseVulnerability):
     def assess(
         self,
         model_callback: CallbackType,
-        purpose: str,
+        purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -114,7 +114,7 @@ class PromptLeakage(BaseVulnerability):
     async def a_assess(
         self,
         model_callback: CallbackType,
-        purpose: str,
+        purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -173,7 +173,7 @@ class PromptLeakage(BaseVulnerability):
 
     def simulate_attacks(
         self,
-        purpose: str,
+        purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
 
@@ -227,7 +227,7 @@ class PromptLeakage(BaseVulnerability):
 
     async def a_simulate_attacks(
         self,
-        purpose: str,
+        purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
 

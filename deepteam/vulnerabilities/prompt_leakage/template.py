@@ -14,7 +14,7 @@ class PromptLeakageTemplate:
     def generate_baseline_attacks(
         vulnerability_type: PromptLeakageType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
         """
         Generate baseline attack prompts for prompt leakage vulnerabilities based on the specific type.

@@ -12,7 +12,7 @@ class ToxicityTemplate:
     def generate_baseline_attacks(
         vulnerability_type: ToxicityType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
         """
         Generate baseline attack prompts for toxicity vulnerabilities based on the specific type.
