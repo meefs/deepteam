@@ -32,7 +32,6 @@ IllegalActivityLiteral = Literal[
 class IllegalActivity(BaseVulnerability):
     def __init__(
         self,
-        illegal_category: str,
         async_mode: bool = True,
         verbose_mode: bool = False,
         simulator_model: Optional[
@@ -46,7 +45,6 @@ class IllegalActivity(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=IllegalActivityType
         )
-        self.illegal_category = illegal_category
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
@@ -56,6 +54,7 @@ class IllegalActivity(BaseVulnerability):
     def assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -71,6 +70,7 @@ class IllegalActivity(BaseVulnerability):
             return loop.run_until_complete(
                 self.a_assess(
                     model_callback=model_callback,
+                    purpose=purpose,
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
@@ -81,7 +81,7 @@ class IllegalActivity(BaseVulnerability):
             )
 
         simulated_attacks = self.simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[IllegalActivityType, List[RedTeamingTestCase]] = dict()
@@ -117,6 +117,7 @@ class IllegalActivity(BaseVulnerability):
     async def a_assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -129,7 +130,7 @@ class IllegalActivity(BaseVulnerability):
         )
 
         simulated_attacks = await self.a_simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[IllegalActivityType, List[RedTeamingTestCase]] = dict()
@@ -175,12 +176,15 @@ class IllegalActivity(BaseVulnerability):
 
     def simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
 
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -189,7 +193,7 @@ class IllegalActivity(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 IllegalActivityTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type, self.illegal_category
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
 
@@ -226,12 +230,15 @@ class IllegalActivity(BaseVulnerability):
 
     async def a_simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
 
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -240,7 +247,7 @@ class IllegalActivity(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 IllegalActivityTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type, self.illegal_category
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
 
@@ -282,7 +289,7 @@ class IllegalActivity(BaseVulnerability):
         type: IllegalActivityType,
     ) -> BaseRedTeamingMetric:
         return IllegalMetric(
-            illegal_category=self.illegal_category,
+            illegal_category=self.purpose,
             model=self.evaluation_model,
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,

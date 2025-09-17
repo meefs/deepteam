@@ -26,7 +26,6 @@ RobustnessLiteral = Literal["input overreliance", "hijacking"]
 class Robustness(BaseVulnerability):
     def __init__(
         self,
-        purpose: str,
         async_mode: bool = True,
         verbose_mode: bool = False,
         simulator_model: Optional[
@@ -40,7 +39,6 @@ class Robustness(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=RobustnessType
         )
-        self.purpose = purpose
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
@@ -50,6 +48,7 @@ class Robustness(BaseVulnerability):
     def assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -66,6 +65,7 @@ class Robustness(BaseVulnerability):
             return loop.run_until_complete(
                 self.a_assess(
                     model_callback=model_callback,
+                    purpose=purpose,
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
@@ -76,7 +76,7 @@ class Robustness(BaseVulnerability):
             )
 
         simulated_attacks = self.simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[RobustnessType, List[RedTeamingTestCase]] = dict()
@@ -112,6 +112,7 @@ class Robustness(BaseVulnerability):
     async def a_assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -125,7 +126,7 @@ class Robustness(BaseVulnerability):
         )
 
         simulated_attacks = await self.a_simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[RobustnessType, List[RedTeamingTestCase]] = dict()
@@ -171,6 +172,7 @@ class Robustness(BaseVulnerability):
 
     def simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.attacks.attack_simulator import SimulatedAttack
@@ -178,6 +180,8 @@ class Robustness(BaseVulnerability):
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -223,6 +227,7 @@ class Robustness(BaseVulnerability):
 
     async def a_simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.attacks.attack_simulator import SimulatedAttack
@@ -230,6 +235,8 @@ class Robustness(BaseVulnerability):
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []

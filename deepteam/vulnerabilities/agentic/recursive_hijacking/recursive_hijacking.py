@@ -31,7 +31,6 @@ RecursiveHijackingLiteralType = Literal[
 class RecursiveHijacking(BaseVulnerability):
     def __init__(
         self,
-        purpose: str,
         async_mode: bool = True,
         verbose_mode: bool = False,
         simulator_model: Optional[
@@ -45,7 +44,6 @@ class RecursiveHijacking(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=RecursiveHijackingType
         )
-        self.purpose = purpose
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
@@ -55,6 +53,7 @@ class RecursiveHijacking(BaseVulnerability):
     def assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -71,6 +70,7 @@ class RecursiveHijacking(BaseVulnerability):
             return loop.run_until_complete(
                 self.a_assess(
                     model_callback=model_callback,
+                    purpose=purpose,
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
@@ -81,7 +81,7 @@ class RecursiveHijacking(BaseVulnerability):
             )
 
         simulated_attacks = self.simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[RecursiveHijackingType, List[RedTeamingTestCase]] = dict()
@@ -117,6 +117,7 @@ class RecursiveHijacking(BaseVulnerability):
     async def a_assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -130,7 +131,7 @@ class RecursiveHijacking(BaseVulnerability):
         )
 
         simulated_attacks = await self.a_simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[RecursiveHijackingType, List[RedTeamingTestCase]] = dict()
@@ -176,6 +177,7 @@ class RecursiveHijacking(BaseVulnerability):
 
     def simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.attacks.attack_simulator import SimulatedAttack
@@ -183,6 +185,8 @@ class RecursiveHijacking(BaseVulnerability):
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -228,6 +232,7 @@ class RecursiveHijacking(BaseVulnerability):
 
     async def a_simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.attacks.attack_simulator import SimulatedAttack
@@ -235,6 +240,8 @@ class RecursiveHijacking(BaseVulnerability):
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
