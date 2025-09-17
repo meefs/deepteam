@@ -5,7 +5,6 @@ from deepteam.vulnerabilities.illegal_activity import IllegalActivityType
 
 
 class TestIllegalActivity:
-    ILLEGAL = "category"
 
     def test_illegal_activity_all_types(self):
         types = [
@@ -18,16 +17,14 @@ class TestIllegalActivity:
             "child exploitation",
         ]
         illegal_activity = IllegalActivity(
-            illegal_category=TestIllegalActivity.ILLEGAL, types=types
+            types=types
         )
         assert sorted(type.value for type in illegal_activity.types) == sorted(
             types
         )
 
     def test_illegal_activity_all_types_default(self):
-        illegal_activity = IllegalActivity(
-            illegal_category=TestIllegalActivity.ILLEGAL,
-        )
+        illegal_activity = IllegalActivity()
         assert sorted(type.value for type in illegal_activity.types) == sorted(
             type.value for type in IllegalActivityType
         )
@@ -35,7 +32,7 @@ class TestIllegalActivity:
     def test_illegal_activity_weapons(self):
         types = ["weapons"]
         illegal_activity = IllegalActivity(
-            illegal_category=TestIllegalActivity.ILLEGAL, types=types
+            types=types
         )
         assert sorted(type.value for type in illegal_activity.types) == sorted(
             types
@@ -44,7 +41,7 @@ class TestIllegalActivity:
     def test_illegal_activity_illegal_drugs(self):
         types = ["illegal drugs"]
         illegal_activity = IllegalActivity(
-            illegal_category=TestIllegalActivity.ILLEGAL, types=types
+            types=types
         )
         assert sorted(type.value for type in illegal_activity.types) == sorted(
             types
@@ -53,7 +50,7 @@ class TestIllegalActivity:
     def test_illegal_activity_violent_crimes(self):
         types = ["violent crimes"]
         illegal_activity = IllegalActivity(
-            illegal_category=TestIllegalActivity.ILLEGAL, types=types
+            types=types
         )
         assert sorted(type.value for type in illegal_activity.types) == sorted(
             types
@@ -62,7 +59,7 @@ class TestIllegalActivity:
     def test_illegal_activity_non_violent_crimes(self):
         types = ["non violent crimes"]
         illegal_activity = IllegalActivity(
-            illegal_category=TestIllegalActivity.ILLEGAL, types=types
+            types=types
         )
         assert sorted(type.value for type in illegal_activity.types) == sorted(
             types
@@ -71,7 +68,7 @@ class TestIllegalActivity:
     def test_illegal_activity_sex_crimes(self):
         types = ["sex crimes"]
         illegal_activity = IllegalActivity(
-            illegal_category=TestIllegalActivity.ILLEGAL, types=types
+            types=types
         )
         assert sorted(type.value for type in illegal_activity.types) == sorted(
             types
@@ -80,7 +77,7 @@ class TestIllegalActivity:
     def test_illegal_activity_cybercrime(self):
         types = ["cybercrime"]
         illegal_activity = IllegalActivity(
-            illegal_category=TestIllegalActivity.ILLEGAL, types=types
+            types=types
         )
         assert sorted(type.value for type in illegal_activity.types) == sorted(
             types
@@ -89,7 +86,7 @@ class TestIllegalActivity:
     def test_illegal_activity_child_exploitation(self):
         types = ["child exploitation"]
         illegal_activity = IllegalActivity(
-            illegal_category=TestIllegalActivity.ILLEGAL, types=types
+            types=types
         )
         assert sorted(type.value for type in illegal_activity.types) == sorted(
             types
@@ -108,5 +105,5 @@ class TestIllegalActivity:
         ]
         with pytest.raises(ValueError):
             IllegalActivity(
-                illegal_category=TestIllegalActivity.ILLEGAL, types=types
+                types=types
             )

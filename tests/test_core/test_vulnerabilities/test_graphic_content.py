@@ -5,21 +5,18 @@ from deepteam.vulnerabilities.graphic_content import GraphicContentType
 
 
 class TestGraphicContent:
-    GRAPHIC = "category"
 
     def test_graphic_content_all_types(self):
         types = ["sexual content", "graphic content", "pornographic content"]
         graphic_content = GraphicContent(
-            graphic_category=TestGraphicContent.GRAPHIC, types=types
+            types=types
         )
         assert sorted(type.value for type in graphic_content.types) == sorted(
             types
         )
 
     def test_graphic_content_all_types_default(self):
-        graphic_content = GraphicContent(
-            graphic_category=TestGraphicContent.GRAPHIC,
-        )
+        graphic_content = GraphicContent()
         assert sorted(type.value for type in graphic_content.types) == sorted(
             type.value for type in GraphicContentType
         )
@@ -27,7 +24,7 @@ class TestGraphicContent:
     def test_graphic_content_sexual_content(self):
         types = ["sexual content"]
         graphic_content = GraphicContent(
-            graphic_category=TestGraphicContent.GRAPHIC, types=types
+            types=types
         )
         assert sorted(type.value for type in graphic_content.types) == sorted(
             types
@@ -36,7 +33,7 @@ class TestGraphicContent:
     def test_graphic_content_graphic_content(self):
         types = ["graphic content"]
         graphic_content = GraphicContent(
-            graphic_category=TestGraphicContent.GRAPHIC, types=types
+            types=types
         )
         assert sorted(type.value for type in graphic_content.types) == sorted(
             types
@@ -45,7 +42,7 @@ class TestGraphicContent:
     def test_graphic_content_pornographic_content(self):
         types = ["pornographic content"]
         graphic_content = GraphicContent(
-            graphic_category=TestGraphicContent.GRAPHIC, types=types
+            types=types
         )
         assert sorted(type.value for type in graphic_content.types) == sorted(
             types
@@ -60,5 +57,5 @@ class TestGraphicContent:
         ]
         with pytest.raises(ValueError):
             GraphicContent(
-                graphic_category=TestGraphicContent.GRAPHIC, types=types
+                types=types
             )

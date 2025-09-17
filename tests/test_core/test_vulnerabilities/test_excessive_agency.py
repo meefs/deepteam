@@ -7,21 +7,18 @@ from deepteam.vulnerabilities.agentic.excessive_agency import (
 
 
 class TestExcessiveAgency:
-    PURPOSE = "purpose"
 
     def test_excessive_agency_all_types(self):
         types = ["functionality", "permissions", "autonomy"]
         excessive_agency = ExcessiveAgency(
-            purpose=TestExcessiveAgency.PURPOSE, types=types
+            types=types
         )
         assert sorted(type.value for type in excessive_agency.types) == sorted(
             types
         )
 
     def test_excessive_agency_all_types_default(self):
-        excessive_agency = ExcessiveAgency(
-            purpose=TestExcessiveAgency.PURPOSE,
-        )
+        excessive_agency = ExcessiveAgency()
         assert sorted(type.value for type in excessive_agency.types) == sorted(
             type.value for type in ExcessiveAgencyType
         )
@@ -29,7 +26,7 @@ class TestExcessiveAgency:
     def test_excessive_agency_functionality(self):
         types = ["functionality"]
         excessive_agency = ExcessiveAgency(
-            purpose=TestExcessiveAgency.PURPOSE, types=types
+            types=types
         )
         assert sorted(type.value for type in excessive_agency.types) == sorted(
             types
@@ -38,7 +35,7 @@ class TestExcessiveAgency:
     def test_excessive_agency_permissions(self):
         types = ["permissions"]
         excessive_agency = ExcessiveAgency(
-            purpose=TestExcessiveAgency.PURPOSE, types=types
+            types=types
         )
         assert sorted(type.value for type in excessive_agency.types) == sorted(
             types
@@ -47,7 +44,7 @@ class TestExcessiveAgency:
     def test_excessive_agency_autonomy(self):
         types = ["autonomy"]
         excessive_agency = ExcessiveAgency(
-            purpose=TestExcessiveAgency.PURPOSE, types=types
+            types=types
         )
         assert sorted(type.value for type in excessive_agency.types) == sorted(
             types
@@ -56,4 +53,4 @@ class TestExcessiveAgency:
     def test_excessive_agency_all_types_invalid(self):
         types = ["functionality", "permissions", "autonomy", "invalid"]
         with pytest.raises(ValueError):
-            ExcessiveAgency(purpose=TestExcessiveAgency.PURPOSE, types=types)
+            ExcessiveAgency(types=types)
