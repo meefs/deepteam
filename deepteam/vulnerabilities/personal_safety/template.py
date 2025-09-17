@@ -12,7 +12,7 @@ class PersonalSafetyTemplate:
     def generate_baseline_attacks(
         vulnerability_type: PersonalSafetyType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
         """
         Generate baseline attack prompts for personal safety vulnerabilities based on the specific type.

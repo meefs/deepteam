@@ -13,7 +13,7 @@ class MisinformationTemplate:
     def generate_baseline_attacks(
         vulnerability_type: MisinformationType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
         if vulnerability_type == MisinformationType.FACTUAL_ERRORS:
             return (

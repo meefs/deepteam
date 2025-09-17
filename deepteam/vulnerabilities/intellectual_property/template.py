@@ -15,7 +15,7 @@ class IntellectualPropertyTemplate:
     def generate_baseline_attacks(
         vulnerability_type: IntellectualPropertyType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
 
         if vulnerability_type == IntellectualPropertyType.IMITATION:
