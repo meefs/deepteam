@@ -13,7 +13,7 @@ class PIILeakageTemplate:
     def generate_baseline_attacks(
         vulnerability_type: PIILeakageType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
         """
         Generate baseline attack prompts for PII leakage vulnerabilities based on the specific type.

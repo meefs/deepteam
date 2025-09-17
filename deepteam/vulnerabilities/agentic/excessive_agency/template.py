@@ -17,7 +17,7 @@ class ExcessiveAgencyTemplate:
     def generate_baseline_attacks(
         vulnerability_type: ExcessiveAgencyType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
 
         if vulnerability_type == ExcessiveAgencyType.FUNCTIONALITY:
@@ -77,7 +77,7 @@ class ExcessiveAgencyTemplate:
 
     @staticmethod
     def generate_permissions_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
 
         return f"""
@@ -197,7 +197,7 @@ class ExcessiveAgencyTemplate:
 
     @staticmethod
     def generate_autonomy_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
 
         return f"""

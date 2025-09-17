@@ -12,7 +12,7 @@ class DebugAccessTemplate:
     def generate_baseline_attacks(
         vulnerability_type: DebugAccessType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
 
         if vulnerability_type == DebugAccessType.DEBUG_MODE_BYPASS:
