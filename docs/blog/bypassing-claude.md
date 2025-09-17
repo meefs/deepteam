@@ -2,11 +2,9 @@
 title: Bypassing Claude 4 Opus with Roleplay
 description: How enhanced roleplay attacks using Elizabethan personas exposed bias vulnerabilities that standard prompt injection couldn't breach
 slug: shakespeare-claude-jailbreak-deepteam
-authors: [sid]
+authors: [penguine]
 date: 2025-05-28
 hide_table_of_contents: false
-# TODO: Add proper image path once available
-# image: https://deepeval-docs.s3.us-east-1.amazonaws.com/blog:shakespeare-claude-cover.jpg
 ---
 
 ## TL;DR

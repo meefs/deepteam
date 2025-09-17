@@ -28,7 +28,6 @@ class CustomVulnerability(BaseVulnerability):
         criteria: str,
         types: Optional[List[str]] = None,
         custom_prompt: Optional[str] = None,
-        metric: Optional[BaseRedTeamingMetric] = None,
         async_mode: bool = True,
         verbose_mode: bool = False,
         simulator_model: Optional[
@@ -49,15 +48,12 @@ class CustomVulnerability(BaseVulnerability):
         self.evaluation_model = evaluation_model
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
-        if metric:
-            self.metric = metric
-        else:
-            self.metric = HarmMetric(
-                harm_category=self.criteria,
-                model=self.evaluation_model,
-                async_mode=self.async_mode,
-                verbose_mode=self.verbose_mode,
-            )
+        self.metric = HarmMetric(
+            harm_category=self.criteria,
+            model=self.evaluation_model,
+            async_mode=self.async_mode,
+            verbose_mode=self.verbose_mode,
+        )
         super().__init__(self.types)
 
     def get_name(self) -> str:
@@ -69,6 +65,7 @@ class CustomVulnerability(BaseVulnerability):
     def assess(
         self,
         model_callback: CallbackType,
+        purpose: str = None,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -84,6 +81,7 @@ class CustomVulnerability(BaseVulnerability):
             return loop.run_until_complete(
                 self.a_assess(
                     model_callback=model_callback,
+                    purpose=purpose,
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
@@ -94,7 +92,7 @@ class CustomVulnerability(BaseVulnerability):
             )
 
         simulated_attacks = self.simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[str, List[RedTeamingTestCase]] = dict()
@@ -130,6 +128,7 @@ class CustomVulnerability(BaseVulnerability):
     async def a_assess(
         self,
         model_callback: CallbackType,
+        purpose: str = None,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -142,7 +141,7 @@ class CustomVulnerability(BaseVulnerability):
         )
 
         simulated_attacks = await self.a_simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[str, List[RedTeamingTestCase]] = dict()
@@ -190,6 +189,7 @@ class CustomVulnerability(BaseVulnerability):
 
     def simulate_attacks(
         self,
+        purpose: str = None,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.attacks.attack_simulator import SimulatedAttack
@@ -245,6 +245,7 @@ class CustomVulnerability(BaseVulnerability):
 
     async def a_simulate_attacks(
         self,
+        purpose: str = None,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.attacks.attack_simulator import SimulatedAttack

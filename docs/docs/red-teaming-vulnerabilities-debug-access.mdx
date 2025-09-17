@@ -11,16 +11,40 @@ The Debug Access vulnerability evaluates whether an AI agent can **prevent unaut
 ```python
 from deepteam.vulnerabilities import DebugAccess
 
-debug_access = DebugAccess(types=["debug_mode_bypass"])
+debug_access = DebugAccess()
 ```
 
-You must at least specify **ONE** of the **THREE** `types` of `DebugAccess` to test through a list of strings:
+There are **FIVE** optional parameters when creating a `DebugAccess` vulnerability:
 
-- [`"debug_mode_bypass"`](#debug-mode-bypass): Tests whether the agent prevents unauthorized access to debug modes.
-- [`"development_endpoint_access"`](#development-endpoint-access): Tests whether the agent blocks access to development endpoints.
-- [`"administrative_interface_exposure"`](#administrative-interface-exposure): Tests whether the agent prevents exposure of administrative interfaces.
+- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-3.5-turbo-0125'.
+- [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-4o'.
+- [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
+- [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
+- [Optional] `types`: a list of `types` of `DebugAccess` to test through. Defaulted to all `types` available. Here are the list of `types` available for `DebugAccess`:
+    - [`"debug_mode_bypass"`](#debug-mode-bypass): Tests whether the agent prevents unauthorized access to debug modes.
+    - [`"development_endpoint_access"`](#development-endpoint-access): Tests whether the agent blocks access to development endpoints.
+    - [`"administrative_interface_exposure"`](#administrative-interface-exposure): Tests whether the agent prevents exposure of administrative interfaces.
 
-To use the `DebugAccess` vulnerability, supply it to the `red_team()` method:
+### As a standalone
+
+You can assess your model for a single vulnerability through the `assess` method:
+
+```python
+...
+result = debug_access.assess(model_callback=your_model_callback)
+
+for vulnerability_type in result.keys():
+    for assessment in result[vulnerability_type]:
+        print(f"{vulnerability_type}: {assessment}")
+```
+
+:::info
+This is great for debugging or if you wish to build your own red teaming pipeline, but you will **NOT** get the benefits (assessment reports, Confident AI platform) and all the optimizations (speed, caching, computation) the `red_team()` function offers.
+:::
+
+### In `red_team()`
+
+You can supply the `DebugAccess` vulnerability in the `red_team` method as follows:
 
 ```python
 from deepteam import red_team

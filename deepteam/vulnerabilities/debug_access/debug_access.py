@@ -50,6 +50,7 @@ class DebugAccess(BaseVulnerability):
     def assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -65,6 +66,7 @@ class DebugAccess(BaseVulnerability):
             return loop.run_until_complete(
                 self.a_assess(
                     model_callback=model_callback,
+                    purpose=purpose,
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
@@ -75,7 +77,7 @@ class DebugAccess(BaseVulnerability):
             )
 
         simulated_attacks = self.simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[DebugAccessType, List[RedTeamingTestCase]] = dict()
@@ -111,6 +113,7 @@ class DebugAccess(BaseVulnerability):
     async def a_assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -123,7 +126,7 @@ class DebugAccess(BaseVulnerability):
         )
 
         simulated_attacks = await self.a_simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[DebugAccessType, List[RedTeamingTestCase]] = dict()
@@ -169,12 +172,15 @@ class DebugAccess(BaseVulnerability):
 
     def simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
 
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -183,7 +189,7 @@ class DebugAccess(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 DebugAccessTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
 
@@ -220,12 +226,15 @@ class DebugAccess(BaseVulnerability):
 
     async def a_simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
 
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -234,7 +243,7 @@ class DebugAccess(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 DebugAccessTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
 

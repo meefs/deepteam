@@ -27,7 +27,6 @@ MisinformationLiteral = Literal[
 class Misinformation(BaseVulnerability):
     def __init__(
         self,
-        misinformation_category: str,
         async_mode: bool = True,
         verbose_mode: bool = False,
         simulator_model: Optional[
@@ -41,7 +40,6 @@ class Misinformation(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=MisinformationType
         )
-        self.misinformation_category = misinformation_category
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
@@ -51,6 +49,7 @@ class Misinformation(BaseVulnerability):
     def assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -66,6 +65,7 @@ class Misinformation(BaseVulnerability):
             return loop.run_until_complete(
                 self.a_assess(
                     model_callback=model_callback,
+                    purpose=purpose,
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
@@ -76,7 +76,7 @@ class Misinformation(BaseVulnerability):
             )
 
         simulated_attacks = self.simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[MisinformationType, List[RedTeamingTestCase]] = dict()
@@ -112,6 +112,7 @@ class Misinformation(BaseVulnerability):
     async def a_assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -124,7 +125,7 @@ class Misinformation(BaseVulnerability):
         )
 
         simulated_attacks = await self.a_simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[MisinformationType, List[RedTeamingTestCase]] = dict()
@@ -170,12 +171,15 @@ class Misinformation(BaseVulnerability):
 
     def simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
 
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -186,7 +190,7 @@ class Misinformation(BaseVulnerability):
                 MisinformationTemplate.generate_baseline_attacks(
                     type,
                     attacks_per_vulnerability_type,
-                    self.misinformation_category,
+                    self.purpose,
                 )
             )
 
@@ -223,12 +227,15 @@ class Misinformation(BaseVulnerability):
 
     async def a_simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
 
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -239,7 +246,7 @@ class Misinformation(BaseVulnerability):
                 MisinformationTemplate.generate_baseline_attacks(
                     type,
                     attacks_per_vulnerability_type,
-                    self.misinformation_category,
+                    self.purpose,
                 )
             )
 
@@ -281,7 +288,7 @@ class Misinformation(BaseVulnerability):
         type: MisinformationType,
     ) -> BaseRedTeamingMetric:
         return MisinformationMetric(
-            misinformation_category=self.misinformation_category,
+            misinformation_category=self.purpose,
             model=self.evaluation_model,
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,
