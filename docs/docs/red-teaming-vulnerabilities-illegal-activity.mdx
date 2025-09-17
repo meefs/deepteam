@@ -11,20 +11,45 @@ The illegal activity vulnerability is designed to test whether an LLM can **resi
 ```python
 from deepteam.vulnerabilities import IllegalActivity
 
-illegal_activity = IllegalActivity(types=["violent crimes"])
+illegal_activity = IllegalActivity(illegal_category="Your category")
 ```
 
-You must at least specify **ONE** of the **SEVEN** `types` of `IllegalActivity` to test through a list of strings:
+There is **ONE** mandatory and **FIVE** optional parameters when creating a `IllegalActivity` vulnerability:
 
-- [`"weapons"`](#weapons): Tests for outputs providing instructions, recipes, or methods for creating weapons.
-- [`"illegal drugs"`](#illegal-drugs): Tests for outputs offering methods or plans for buying, selling, or laundering money from illegal drug activities.
-- [`"violent crime"`](#violent-crime): Tests for outputs providing methods or plans for committing violent crimes.
-- [`"nonviolent crime"`](#nonviolent-crime): Tests for outputs providing methods or plans for committing non-violent crimes.
-- [`"sex crime"`](#sex-crime): Tests for outputs facilitating sexual exploitation or blackmail.
-- [`"cybercrime"`](#cybercrime): Tests for outputs providing methods or plans for committing cybercrime and hacking systems.
-- [`"child exploitation"`](#child-exploitation):Tests for outputs providing methods or plans for exploiting children.
+- `illegal_category`: The category of the attacks to be generated.
+- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-3.5-turbo-0125'.
+- [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-4o'.
+- [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
+- [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
+- [Optional] `types`: a list of `types` of `IllegalActivity` to test through. Defaulted to all `types` available. Here are the list of `types` available for `IllegalActivity`:
+    - [`"weapons"`](#weapons): Tests for outputs providing instructions, recipes, or methods for creating weapons.
+    - [`"illegal drugs"`](#illegal-drugs): Tests for outputs offering methods or plans for buying, selling, or laundering money from illegal drug activities.
+    - [`"violent crime"`](#violent-crime): Tests for outputs providing methods or plans for committing violent crimes.
+    - [`"nonviolent crime"`](#nonviolent-crime): Tests for outputs providing methods or plans for committing non-violent crimes.
+    - [`"sex crime"`](#sex-crime): Tests for outputs facilitating sexual exploitation or blackmail.
+    - [`"cybercrime"`](#cybercrime): Tests for outputs providing methods or plans for committing cybercrime and hacking systems.
+    - [`"child exploitation"`](#child-exploitation):Tests for outputs providing methods or plans for exploiting children.
 
-To use the `IllegalActivity` vulnerability, supply it to the `red_team()` method:
+### As a standalone
+
+You can assess your model for a single vulnerability through the `assess` method:
+
+```python
+...
+result = illegal_activity.assess(model_callback=your_model_callback)
+
+for vulnerability_type in result.keys():
+    for assessment in result[vulnerability_type]:
+        print(f"{vulnerability_type}: {assessment}")
+```
+
+:::info
+This is great for debugging or if you wish to build your own red teaming pipeline, but you will **NOT** get the benefits (assessment reports, Confident AI platform) and all the optimizations (speed, caching, computation) the `red_team()` function offers.
+:::
+
+### In `red_team()`
+
+You can supply the `IllegalActivity` vulnerability in the `red_team` method as follows:
 
 ```python
 from deepteam import red_team

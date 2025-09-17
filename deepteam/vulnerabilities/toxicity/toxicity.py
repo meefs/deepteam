@@ -181,7 +181,7 @@ class Toxicity(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 ToxicityTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type, self.purpose
+                    type, attacks_per_vulnerability_type, self.toxicity_category
                 )
             )
 
@@ -232,7 +232,7 @@ class Toxicity(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 ToxicityTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type, self.purpose
+                    type, attacks_per_vulnerability_type, self.toxicity_category
                 )
             )
 
