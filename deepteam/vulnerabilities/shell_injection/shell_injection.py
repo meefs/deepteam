@@ -233,7 +233,7 @@ class ShellInjection(BaseVulnerability):
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
-        
+
         self.purpose = purpose
 
         templates = dict()

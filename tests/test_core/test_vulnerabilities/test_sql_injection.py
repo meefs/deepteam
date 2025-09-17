@@ -12,9 +12,7 @@ class TestSQLInjection:
             "union_based_injection",
             "error_based_injection",
         ]
-        sql_injection = SQLInjection(
-            types=types
-        )
+        sql_injection = SQLInjection(types=types)
         assert sorted(type.value for type in sql_injection.types) == sorted(
             types
         )
@@ -27,27 +25,21 @@ class TestSQLInjection:
 
     def test_sql_injection_blind_sql_injection(self):
         types = ["blind_sql_injection"]
-        sql_injection = SQLInjection(
-            types=types
-        )
+        sql_injection = SQLInjection(types=types)
         assert sorted(type.value for type in sql_injection.types) == sorted(
             types
         )
 
     def test_sql_injection_union_based_injection(self):
         types = ["union_based_injection"]
-        sql_injection = SQLInjection(
-            types=types
-        )
+        sql_injection = SQLInjection(types=types)
         assert sorted(type.value for type in sql_injection.types) == sorted(
             types
         )
 
     def test_sql_injection_error_based_injection(self):
         types = ["error_based_injection"]
-        sql_injection = SQLInjection(
-            types=types
-        )
+        sql_injection = SQLInjection(types=types)
         assert sorted(type.value for type in sql_injection.types) == sorted(
             types
         )

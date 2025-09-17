@@ -13,9 +13,7 @@ class TestPromptLeakage:
             "guard exposure",
             "permissions and roles",
         ]
-        prompt_leakage = PromptLeakage(
-            types=types
-        )
+        prompt_leakage = PromptLeakage(types=types)
         assert sorted(type.value for type in prompt_leakage.types) == sorted(
             types
         )
@@ -28,36 +26,28 @@ class TestPromptLeakage:
 
     def test_prompt_leakage_secrets_and_credentials(self):
         types = ["secrets and credentials"]
-        prompt_leakage = PromptLeakage(
-            types=types
-        )
+        prompt_leakage = PromptLeakage(types=types)
         assert sorted(type.value for type in prompt_leakage.types) == sorted(
             types
         )
 
     def test_prompt_leakage_instructions(self):
         types = ["instructions"]
-        prompt_leakage = PromptLeakage(
-            types=types
-        )
+        prompt_leakage = PromptLeakage(types=types)
         assert sorted(type.value for type in prompt_leakage.types) == sorted(
             types
         )
 
     def test_prompt_leakage_guard_exposure(self):
         types = ["guard exposure"]
-        prompt_leakage = PromptLeakage(
-            types=types
-        )
+        prompt_leakage = PromptLeakage(types=types)
         assert sorted(type.value for type in prompt_leakage.types) == sorted(
             types
         )
 
     def test_prompt_leakage_permissions_and_roles(self):
         types = ["permissions and roles"]
-        prompt_leakage = PromptLeakage(
-            types=types
-        )
+        prompt_leakage = PromptLeakage(types=types)
         assert sorted(type.value for type in prompt_leakage.types) == sorted(
             types
         )

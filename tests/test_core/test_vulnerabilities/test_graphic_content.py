@@ -8,9 +8,7 @@ class TestGraphicContent:
 
     def test_graphic_content_all_types(self):
         types = ["sexual content", "graphic content", "pornographic content"]
-        graphic_content = GraphicContent(
-            types=types
-        )
+        graphic_content = GraphicContent(types=types)
         assert sorted(type.value for type in graphic_content.types) == sorted(
             types
         )
@@ -23,27 +21,21 @@ class TestGraphicContent:
 
     def test_graphic_content_sexual_content(self):
         types = ["sexual content"]
-        graphic_content = GraphicContent(
-            types=types
-        )
+        graphic_content = GraphicContent(types=types)
         assert sorted(type.value for type in graphic_content.types) == sorted(
             types
         )
 
     def test_graphic_content_graphic_content(self):
         types = ["graphic content"]
-        graphic_content = GraphicContent(
-            types=types
-        )
+        graphic_content = GraphicContent(types=types)
         assert sorted(type.value for type in graphic_content.types) == sorted(
             types
         )
 
     def test_graphic_content_pornographic_content(self):
         types = ["pornographic content"]
-        graphic_content = GraphicContent(
-            types=types
-        )
+        graphic_content = GraphicContent(types=types)
         assert sorted(type.value for type in graphic_content.types) == sorted(
             types
         )
@@ -56,6 +48,4 @@ class TestGraphicContent:
             "invalid",
         ]
         with pytest.raises(ValueError):
-            GraphicContent(
-                types=types
-            )
+            GraphicContent(types=types)

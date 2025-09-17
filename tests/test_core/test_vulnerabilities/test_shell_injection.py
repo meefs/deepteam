@@ -12,9 +12,7 @@ class TestShellInjection:
             "system_command_execution",
             "shell_escape_sequences",
         ]
-        shell_injection = ShellInjection(
-            types=types
-        )
+        shell_injection = ShellInjection(types=types)
         assert sorted(type.value for type in shell_injection.types) == sorted(
             types
         )
@@ -27,27 +25,21 @@ class TestShellInjection:
 
     def test_shell_injection_command_injection(self):
         types = ["command_injection"]
-        shell_injection = ShellInjection(
-            types=types
-        )
+        shell_injection = ShellInjection(types=types)
         assert sorted(type.value for type in shell_injection.types) == sorted(
             types
         )
 
     def test_shell_injection_system_command_execution(self):
         types = ["system_command_execution"]
-        shell_injection = ShellInjection(
-            types=types
-        )
+        shell_injection = ShellInjection(types=types)
         assert sorted(type.value for type in shell_injection.types) == sorted(
             types
         )
 
     def test_shell_injection_shell_escape_sequences(self):
         types = ["shell_escape_sequences"]
-        shell_injection = ShellInjection(
-            types=types
-        )
+        shell_injection = ShellInjection(types=types)
         assert sorted(type.value for type in shell_injection.types) == sorted(
             types
         )

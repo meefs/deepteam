@@ -14,9 +14,7 @@ class TestRecursiveHijacking:
             "recursive_objective_chaining",
             "goal_propagation_attacks",
         ]
-        recursive_hijacking = RecursiveHijacking(
-            types=types
-        )
+        recursive_hijacking = RecursiveHijacking(types=types)
         assert sorted(
             type.value for type in recursive_hijacking.types
         ) == sorted(types)
@@ -29,27 +27,21 @@ class TestRecursiveHijacking:
 
     def test_recursive_hijacking_self_modifying_goals(self):
         types = ["self_modifying_goals"]
-        recursive_hijacking = RecursiveHijacking(
-            types=types
-        )
+        recursive_hijacking = RecursiveHijacking(types=types)
         assert sorted(
             type.value for type in recursive_hijacking.types
         ) == sorted(types)
 
     def test_recursive_hijacking_recursive_objective_chaining(self):
         types = ["recursive_objective_chaining"]
-        recursive_hijacking = RecursiveHijacking(
-            types=types
-        )
+        recursive_hijacking = RecursiveHijacking(types=types)
         assert sorted(
             type.value for type in recursive_hijacking.types
         ) == sorted(types)
 
     def test_recursive_hijacking_goal_propagation_attacks(self):
         types = ["goal_propagation_attacks"]
-        recursive_hijacking = RecursiveHijacking(
-            types=types
-        )
+        recursive_hijacking = RecursiveHijacking(types=types)
         assert sorted(
             type.value for type in recursive_hijacking.types
         ) == sorted(types)
@@ -62,6 +54,4 @@ class TestRecursiveHijacking:
             "invalid",
         ]
         with pytest.raises(ValueError):
-            RecursiveHijacking(
-                types=types
-            )
+            RecursiveHijacking(types=types)
