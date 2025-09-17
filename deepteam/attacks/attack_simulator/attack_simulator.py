@@ -206,6 +206,7 @@ class AttackSimulator:
     ) -> List[SimulatedAttack]:
         try:
             return vulnerability.simulate_attacks(
+                purpose=self.purpose,
                 attacks_per_vulnerability_type=attacks_per_vulnerability_type
             )
         except Exception as e:
@@ -232,6 +233,7 @@ class AttackSimulator:
     ) -> List[SimulatedAttack]:
         try:
             return await vulnerability.a_simulate_attacks(
+                purpose=self.purpose,
                 attacks_per_vulnerability_type=attacks_per_vulnerability_type
             )
         except Exception as e:
