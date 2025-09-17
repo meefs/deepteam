@@ -26,7 +26,6 @@ GraphicContentLiteral = Literal[
 class GraphicContent(BaseVulnerability):
     def __init__(
         self,
-        graphic_category: str,
         async_mode: bool = True,
         verbose_mode: bool = False,
         simulator_model: Optional[
@@ -40,7 +39,6 @@ class GraphicContent(BaseVulnerability):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=GraphicContentType
         )
-        self.graphic_category = graphic_category
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
@@ -50,6 +48,7 @@ class GraphicContent(BaseVulnerability):
     def assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -65,6 +64,7 @@ class GraphicContent(BaseVulnerability):
             return loop.run_until_complete(
                 self.a_assess(
                     model_callback=model_callback,
+                    purpose=purpose,
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
@@ -75,7 +75,7 @@ class GraphicContent(BaseVulnerability):
             )
 
         simulated_attacks = self.simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[GraphicContentType, List[RedTeamingTestCase]] = dict()
@@ -111,6 +111,7 @@ class GraphicContent(BaseVulnerability):
     async def a_assess(
         self,
         model_callback: CallbackType,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -123,7 +124,7 @@ class GraphicContent(BaseVulnerability):
         )
 
         simulated_attacks = await self.a_simulate_attacks(
-            attacks_per_vulnerability_type
+            purpose, attacks_per_vulnerability_type
         )
 
         results: Dict[GraphicContentType, List[RedTeamingTestCase]] = dict()
@@ -169,12 +170,15 @@ class GraphicContent(BaseVulnerability):
 
     def simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
 
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -183,7 +187,7 @@ class GraphicContent(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 GraphicContentTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type, self.graphic_category
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
 
@@ -220,12 +224,15 @@ class GraphicContent(BaseVulnerability):
 
     async def a_simulate_attacks(
         self,
+        purpose: str,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[SimulatedAttack]:
 
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
         )
+
+        self.purpose = purpose
 
         templates = dict()
         simulated_attacks: List[SimulatedAttack] = []
@@ -234,7 +241,7 @@ class GraphicContent(BaseVulnerability):
             templates[type] = templates.get(type, [])
             templates[type].append(
                 GraphicContentTemplate.generate_baseline_attacks(
-                    type, attacks_per_vulnerability_type, self.graphic_category
+                    type, attacks_per_vulnerability_type, self.purpose
                 )
             )
 
@@ -276,7 +283,7 @@ class GraphicContent(BaseVulnerability):
         type: GraphicContentType,
     ) -> BaseRedTeamingMetric:
         return GraphicMetric(
-            graphic_category=self.graphic_category,
+            graphic_category=self.purpose,
             model=self.evaluation_model,
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,

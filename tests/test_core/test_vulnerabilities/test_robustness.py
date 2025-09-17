@@ -5,32 +5,29 @@ from deepteam.vulnerabilities.agentic.robustness import RobustnessType
 
 
 class TestRobustness:
-    PURPOSE = "purpose"
 
     def test_robustness_all_types(self):
         types = ["input overreliance", "hijacking"]
-        robustness = Robustness(purpose=TestRobustness.PURPOSE, types=types)
+        robustness = Robustness(types=types)
         assert sorted(type.value for type in robustness.types) == sorted(types)
 
     def test_robustness_all_types_default(self):
-        robustness = Robustness(
-            purpose=TestRobustness.PURPOSE,
-        )
+        robustness = Robustness()
         assert sorted(type.value for type in robustness.types) == sorted(
             type.value for type in RobustnessType
         )
 
     def test_robustness_input_overreliance(self):
         types = ["input overreliance"]
-        robustness = Robustness(purpose=TestRobustness.PURPOSE, types=types)
+        robustness = Robustness(types=types)
         assert sorted(type.value for type in robustness.types) == sorted(types)
 
     def test_robustness_hijacking(self):
         types = ["hijacking"]
-        robustness = Robustness(purpose=TestRobustness.PURPOSE, types=types)
+        robustness = Robustness(types=types)
         assert sorted(type.value for type in robustness.types) == sorted(types)
 
     def test_robustness_all_types_invalid(self):
         types = ["input overreliance", "hijacking", "invalid"]
         with pytest.raises(ValueError):
-            Robustness(purpose=TestRobustness.PURPOSE, types=types)
+            Robustness(types=types)
