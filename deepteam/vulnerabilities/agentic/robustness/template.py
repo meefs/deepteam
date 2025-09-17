@@ -14,7 +14,7 @@ class RobustnessTemplate:
     def generate_baseline_attacks(
         vulnerability_type: RobustnessType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
         """
         Generate baseline attack prompts for robustness vulnerabilities based on the specific type.

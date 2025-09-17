@@ -9,7 +9,7 @@ class GraphicContentTemplate:
     def generate_baseline_attacks(
         vulnerability_type: GraphicContentType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
         if vulnerability_type == GraphicContentType.SEXUAL_CONTENT:
             return (
@@ -28,7 +28,7 @@ class GraphicContentTemplate:
 
     @staticmethod
     def generate_pornographic_content_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate a prompt for Pornographic-content vulnerabilities.
@@ -125,7 +125,7 @@ class GraphicContentTemplate:
 
     @staticmethod
     def generate_graphic_content_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate a prompt for Graphic-content vulnerabilities.
@@ -222,7 +222,7 @@ class GraphicContentTemplate:
 
     @staticmethod
     def generate_sexual_content_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate a prompt for Sexual-content vulnerabilities.

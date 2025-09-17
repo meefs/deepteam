@@ -12,7 +12,7 @@ class SQLInjectionTemplate:
     def generate_baseline_attacks(
         vulnerability_type: SQLInjectionType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
 
         if vulnerability_type == SQLInjectionType.BLIND_SQL_INJECTION:

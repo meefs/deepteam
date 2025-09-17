@@ -14,7 +14,7 @@ class CompetitionTemplate:
     def generate_baseline_attacks(
         vulnerability_type: CompetitionType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
         """
         Generate baseline attacks for the given competition vulnerability type.

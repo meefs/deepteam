@@ -47,7 +47,7 @@ class ExcessiveAgency(BaseVulnerability):
     def assess(
         self,
         model_callback: CallbackType,
-        purpose: str,
+        purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -111,7 +111,7 @@ class ExcessiveAgency(BaseVulnerability):
     async def a_assess(
         self,
         model_callback: CallbackType,
-        purpose: str,
+        purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.red_teamer.risk_assessment import (
@@ -171,7 +171,7 @@ class ExcessiveAgency(BaseVulnerability):
 
     def simulate_attacks(
         self,
-        purpose: str = None,
+        purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.attacks.attack_simulator import SimulatedAttack
@@ -226,7 +226,7 @@ class ExcessiveAgency(BaseVulnerability):
 
     async def a_simulate_attacks(
         self,
-        purpose: str = None,
+        purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
     ):
         from deepteam.attacks.attack_simulator import SimulatedAttack

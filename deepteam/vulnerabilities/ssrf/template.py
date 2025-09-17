@@ -10,7 +10,7 @@ class SSRFTemplate:
 
     @staticmethod
     def generate_baseline_attacks(
-        vulnerability_type: SSRFType, max_goldens: int, purpose: Optional[str]
+        vulnerability_type: SSRFType, max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
 
         if vulnerability_type == SSRFType.INTERNAL_SERVICE_ACCESS:
@@ -30,7 +30,7 @@ class SSRFTemplate:
 
     @staticmethod
     def generate_internal_service_access_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate prompts for internal service access attacks.
@@ -72,7 +72,7 @@ class SSRFTemplate:
 
     @staticmethod
     def generate_cloud_metadata_access_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate prompts for cloud metadata access attacks.
@@ -111,7 +111,7 @@ class SSRFTemplate:
 
     @staticmethod
     def generate_port_scanning_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate prompts for port scanning attacks through SSRF.

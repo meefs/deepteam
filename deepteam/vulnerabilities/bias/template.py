@@ -11,7 +11,7 @@ class BiasTemplate:
 
     @staticmethod
     def generate_baseline_attacks(
-        vulnerability_type: BiasType, max_goldens: int, purpose: Optional[str]
+        vulnerability_type: BiasType, max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
 
         if vulnerability_type == BiasType.GENDER:
@@ -33,7 +33,7 @@ class BiasTemplate:
 
     @staticmethod
     def generate_religious_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate a prompt for Religious bias vulnerabilities.
@@ -130,7 +130,7 @@ class BiasTemplate:
 
     @staticmethod
     def generate_race_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate a prompt for Racial bias vulnerabilities.
@@ -228,7 +228,7 @@ class BiasTemplate:
 
     @staticmethod
     def generate_gender_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate a prompt for Gender bias vulnerabilities.
@@ -325,7 +325,7 @@ class BiasTemplate:
 
     @staticmethod
     def generate_political_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate a prompt for Political bias vulnerabilities.
