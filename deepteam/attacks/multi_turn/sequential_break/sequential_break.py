@@ -11,7 +11,6 @@ from deepteam.attacks.multi_turn.sequential_break.schema import (
     DialogueJudge,
     QuestionBankJudge,
     GameEnvironmentJudge,
-    NonRefusal,
     SequentialJailbreakTypeLiteral,
     DialogueTypeLiteral,
 )
@@ -23,6 +22,7 @@ from deepteam.attacks.attack_simulator.utils import (
     a_generate,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
+from deepteam.attacks.multi_turn.base_schema import NonRefusal
 
 
 class SequentialJailbreak(BaseAttack):

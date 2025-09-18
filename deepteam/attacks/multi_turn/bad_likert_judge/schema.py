@@ -16,10 +16,6 @@ class RefinedExample(BaseModel):
     refined_example: str
 
 
-class NonRefusal(BaseModel):
-    classification: Literal["Non-refusal", "Refusal"]
-
-
 class BLJJudge(BaseModel):
     classification: Literal["Harmful", "Not harmful"]
     reasoning: str
