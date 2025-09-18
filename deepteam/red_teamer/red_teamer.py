@@ -16,83 +16,12 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.frameworks.frameworks import AISafetyFramework
 from deepteam.telemetry import capture_red_teamer_run
 from deepteam.attacks import BaseAttack
+from deepteam.utils import validate_model_callback_signature
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.custom.custom import CustomVulnerability
-from deepteam.vulnerabilities.types import (
-    IntellectualPropertyType,
-    IllegalActivityType,
-    PersonalSafetyType,
-    GraphicContentType,
-    MisinformationType,
-    PromptLeakageType,
-    CompetitionType,
-    PIILeakageType,
-    ToxicityType,
-    BiasType,
-    RBACType,
-    BOLAType,
-    BFLAType,
-    SSRFType,
-    DebugAccessType,
-    ShellInjectionType,
-    SQLInjectionType,
-    VulnerabilityType,
-)
-
-# Import agentic vulnerability types
-from deepteam.vulnerabilities.agentic.recursive_hijacking.types import (
-    RecursiveHijackingType,
-)
-from deepteam.vulnerabilities.agentic.goal_theft.types import GoalTheftType
-from deepteam.vulnerabilities.agentic.robustness.types import RobustnessType
-from deepteam.vulnerabilities.agentic.excessive_agency.types import (
-    ExcessiveAgencyType,
-)
-
+from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.attacks.attack_simulator import AttackSimulator, SimulatedAttack
 from deepteam.attacks.multi_turn.types import CallbackType
-from deepteam.metrics import (
-    BaseRedTeamingMetric,
-    BiasMetric,
-    HarmMetric,
-    PromptExtractionMetric,
-    PIIMetric,
-    RBACMetric,
-    DebugAccessMetric,
-    ShellInjectionMetric,
-    SQLInjectionMetric,
-    BFLAMetric,
-    BOLAMetric,
-    SSRFMetric,
-    ExcessiveAgencyMetric,
-    HijackingMetric,
-    IntellectualPropertyMetric,
-    OverrelianceMetric,
-    CompetitorsMetric,
-    ToxicityMetric,
-    MisinformationMetric,
-    GraphicMetric,
-    SafetyMetric,
-    IllegalMetric,
-)
-from deepteam.metrics.toxicity.toxicity import ToxicityMetric
-from deepteam.metrics.misinformation.misinformation import MisinformationMetric
-from deepteam.metrics.illegal_activity.illegal_activity import IllegalMetric
-from deepteam.metrics.graphic_content.graphic_content import GraphicMetric
-from deepteam.metrics.personal_safety.personal_safety import SafetyMetric
-
-# Import agentic metrics
-from deepteam.metrics.agentic.subversion_success.subversion_success import (
-    SubversionSuccessMetric,
-)
-from deepteam.metrics.agentic.extraction_success.extraction_success import (
-    ExtractionSuccessMetric,
-)
-from deepteam.metrics.agentic.verification_assessment.verification_assessment import (
-    VerificationAssessmentMetric,
-)
-
-
+from deepteam.metrics import BaseRedTeamingMetric
 from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 from deepteam.red_teamer.risk_assessment import (
     MultiTurnRTTestCase,
@@ -150,9 +79,10 @@ class RedTeamer:
                 )
 
         if self.async_mode:
-            assert inspect.iscoroutinefunction(
-                model_callback
-            ), "`model_callback` needs to be async. `async_mode` has been set to True."
+            validate_model_callback_signature(
+                model_callback=model_callback,
+                async_mode=self.async_mode,
+            )
             loop = get_or_create_event_loop()
             return loop.run_until_complete(
                 self.a_red_team(
@@ -173,8 +103,6 @@ class RedTeamer:
                 vulnerabilities=[v.get_name() for v in vulnerabilities],
                 attacks=[a.get_name() for a in attacks],
             ):
-                # Initialize metric map
-                metrics_map = self.get_red_teaming_metrics_map(vulnerabilities)
                 # Simulate attacks
                 if (
                     reuse_simulated_attacks
@@ -209,9 +137,14 @@ class RedTeamer:
                 )
                 for vulnerability_type, simulated_attacks in pbar:
                     for simulated_attack in simulated_attacks:
-                        metric: BaseRedTeamingMetric = metrics_map.get(
-                            vulnerability_type
-                        )()
+                        for vulnerability in vulnerabilities:
+                            if vulnerability_type in vulnerability.types:
+                                metric: BaseRedTeamingMetric = (
+                                    vulnerability._get_metric(
+                                        vulnerability_type
+                                    )
+                                )
+                                break
 
                         red_teaming_test_case = SingleTurnRTTestCase(
                             vulnerability=simulated_attack.vulnerability,
@@ -310,9 +243,6 @@ class RedTeamer:
             vulnerabilities=[v.get_name() for v in vulnerabilities],
             attacks=[a.get_name() for a in attacks],
         ):
-            # Initialize metric map
-            metrics_map = self.get_red_teaming_metrics_map(vulnerabilities)
-
             # Generate attacks
             if (
                 reuse_simulated_attacks
@@ -375,9 +305,9 @@ class RedTeamer:
                 async with semaphore:
                     test_cases = await self._a_evaluate_vulnerability_type(
                         model_callback,
+                        vulnerabilities,
                         vulnerability_type,
                         attacks,
-                        metrics_map,
                         ignore_errors=ignore_errors,
                     )
                     red_teaming_test_cases.extend(test_cases)
@@ -411,7 +341,7 @@ class RedTeamer:
         simulated_attack: SimulatedAttack,
         vulnerability: str,
         vulnerability_type: VulnerabilityType,
-        metrics_map,
+        vulnerabilities: List[BaseVulnerability],
         ignore_errors: bool,
     ) -> Union[SingleTurnRTTestCase, MultiTurnRTTestCase]:
         multi_turn = (
@@ -432,11 +362,20 @@ class RedTeamer:
             if simulated_attack.error is not None:
                 red_teaming_test_case.error = simulated_attack.error
 
-            is_last_turn_user = simulated_attack.turn_history[-1].role == "user"
-            if is_last_turn_user:
-                test_case = LLMTestCase(
-                    input=simulated_attack.turn_history[-2].content,
-                    actual_output=simulated_attack.turn_history[-3].content,
+
+        for _vulnerability in vulnerabilities:
+            if vulnerability_type in _vulnerability.types:
+                metric: BaseRedTeamingMetric = _vulnerability._get_metric(
+                    vulnerability_type
+                )
+                break
+        try:
+            actual_output = await model_callback(simulated_attack.input)
+            red_teaming_test_case.actual_output = actual_output
+        except Exception:
+            if ignore_errors:
+                red_teaming_test_case.error = (
+                    "Error generating output from target LLM"
                 )
             else:
                 test_case = LLMTestCase(
@@ -507,9 +446,9 @@ class RedTeamer:
     async def _a_evaluate_vulnerability_type(
         self,
         model_callback: CallbackType,
+        vulnerabilities: List[BaseVulnerability],
         vulnerability_type: VulnerabilityType,
         simulated_attacks: List[SimulatedAttack],
-        metrics_map,
         ignore_errors: bool,
     ) -> List[Union[SingleTurnRTTestCase, MultiTurnRTTestCase]]:
         red_teaming_test_cases = await asyncio.gather(
@@ -517,232 +456,15 @@ class RedTeamer:
                 self._a_attack(
                     model_callback=model_callback,
                     simulated_attack=simulated_attack,
+                    vulnerabilities=vulnerabilities,
                     vulnerability=simulated_attack.vulnerability,
                     vulnerability_type=vulnerability_type,
-                    metrics_map=metrics_map,
                     ignore_errors=ignore_errors,
                 )
                 for simulated_attack in simulated_attacks
             ]
         )
         return red_teaming_test_cases
-
-    ##################################################
-    ### Metrics Map ##################################
-    ##################################################
-
-    def get_red_teaming_metrics_map(
-        self, vulnerabilities: List[BaseVulnerability]
-    ):
-
-        metrics_map = {
-            #### Bias ####
-            **{
-                bias_type: lambda: BiasMetric(
-                    model=self.evaluation_model,
-                    purpose=self.target_purpose,
-                    async_mode=self.async_mode,
-                )
-                for bias_type in BiasType
-            },
-            #### Toxicity ####
-            **{
-                toxicity_type: lambda tt=toxicity_type: ToxicityMetric(
-                    model=self.evaluation_model,
-                    toxicity_category=tt.value,
-                    async_mode=self.async_mode,
-                )
-                for toxicity_type in ToxicityType
-            },
-            #### Misinformation ####
-            **{
-                misinformation_type: lambda mt=misinformation_type: MisinformationMetric(
-                    model=self.evaluation_model,
-                    misinformation_category=mt.value,
-                    async_mode=self.async_mode,
-                )
-                for misinformation_type in MisinformationType
-            },
-            #### Illegal ####
-            **{
-                illegal_activity_type: lambda iat=illegal_activity_type: IllegalMetric(
-                    model=self.evaluation_model,
-                    illegal_category=iat.value,
-                    async_mode=self.async_mode,
-                )
-                for illegal_activity_type in IllegalActivityType
-            },
-            #### Prompt Leakage ####
-            **{
-                prompt_leakage_type: lambda: PromptExtractionMetric(
-                    model=self.evaluation_model,
-                    purpose=self.target_purpose,
-                    async_mode=self.async_mode,
-                )
-                for prompt_leakage_type in PromptLeakageType
-            },
-            #### PII Leakage ####
-            **{
-                pii_type: lambda: PIIMetric(
-                    model=self.evaluation_model,
-                    purpose=self.target_purpose,
-                    async_mode=self.async_mode,
-                )
-                for pii_type in PIILeakageType
-            },
-            #### Debug Access ####
-            **{
-                debug_access_type: lambda: DebugAccessMetric(
-                    model=self.evaluation_model, async_mode=self.async_mode
-                )
-                for debug_access_type in DebugAccessType
-            },
-            #### Shell Injection ####
-            **{
-                shell_injection_type: lambda: ShellInjectionMetric(
-                    model=self.evaluation_model, async_mode=self.async_mode
-                )
-                for shell_injection_type in ShellInjectionType
-            },
-            #### SQL Injection ####
-            **{
-                sql_injection_type: lambda: SQLInjectionMetric(
-                    model=self.evaluation_model, async_mode=self.async_mode
-                )
-                for sql_injection_type in SQLInjectionType
-            },
-            #### BFLA ####
-            **{
-                bfla_type: lambda: BFLAMetric(
-                    purpose=self.target_purpose,
-                    model=self.evaluation_model,
-                    async_mode=self.async_mode,
-                )
-                for bfla_type in BFLAType
-            },
-            #### BOLA ####
-            **{
-                bola_type: lambda: BOLAMetric(
-                    model=self.evaluation_model,
-                    async_mode=self.async_mode,
-                )
-                for bola_type in BOLAType
-            },
-            #### SSRF ####
-            **{
-                ssrf_type: lambda: SSRFMetric(
-                    purpose=self.target_purpose,
-                    model=self.evaluation_model,
-                    async_mode=self.async_mode,
-                )
-                for ssrf_type in SSRFType
-            },
-            #### RBAC ####
-            **{
-                rbac_type: lambda: RBACMetric(
-                    model=self.evaluation_model,
-                    purpose=self.target_purpose,
-                    async_mode=self.async_mode,
-                )
-                for rbac_type in RBACType
-            },
-            #### Excessive Agency ####
-            **{
-                excessive_agency_type: lambda: ExcessiveAgencyMetric(
-                    model=self.evaluation_model,
-                    purpose=self.target_purpose,
-                    async_mode=self.async_mode,
-                )
-                for excessive_agency_type in ExcessiveAgencyType
-            },
-            #### Robustness ####
-            RobustnessType.HIJACKING: lambda: HijackingMetric(
-                purpose=self.target_purpose,
-                model=self.evaluation_model,
-                async_mode=self.async_mode,
-            ),
-            RobustnessType.INPUT_OVERRELIANCE: lambda: OverrelianceMetric(
-                purpose=self.target_purpose,
-                model=self.evaluation_model,
-                async_mode=self.async_mode,
-            ),
-            #### Intellectual Property ####
-            **{
-                ip_type: lambda: IntellectualPropertyMetric(
-                    model=self.evaluation_model,
-                    purpose=self.target_purpose,
-                    async_mode=self.async_mode,
-                )
-                for ip_type in IntellectualPropertyType
-            },
-            #### Competition ####
-            **{
-                competiton_type: lambda: CompetitorsMetric(
-                    model=self.evaluation_model,
-                    purpose=self.target_purpose,
-                    async_mode=self.async_mode,
-                )
-                for competiton_type in CompetitionType
-            },
-            #### Graphic Content ####
-            **{
-                content_type: lambda ct=content_type: GraphicMetric(
-                    model=self.evaluation_model,
-                    graphic_category=ct.value,
-                    async_mode=self.async_mode,
-                )
-                for content_type in GraphicContentType
-            },
-            #### Personal Safety ####
-            **{
-                safety_type: lambda st=safety_type: SafetyMetric(
-                    model=self.evaluation_model,
-                    safety_category=st.value,
-                    async_mode=self.async_mode,
-                )
-                for safety_type in PersonalSafetyType
-            },
-            #### Agentic Vulnerabilities ####
-            **{
-                subversion_type: lambda: SubversionSuccessMetric(
-                    model=self.evaluation_model,
-                    purpose=self.target_purpose,
-                    async_mode=self.async_mode,
-                )
-                for subversion_type in RecursiveHijackingType
-            },
-            **{
-                extraction_type: lambda: ExtractionSuccessMetric(
-                    model=self.evaluation_model,
-                    purpose=self.target_purpose,
-                    async_mode=self.async_mode,
-                )
-                for extraction_type in GoalTheftType
-            },
-        }
-
-        # Store custom vulnerability instances for dynamic metric assignment
-        for vulnerability in vulnerabilities:
-            if isinstance(vulnerability, CustomVulnerability):
-                for vuln_type in vulnerability.get_types():
-                    metric = vulnerability.get_metric()
-                    if metric:
-                        metrics_map[vuln_type] = lambda: metric
-                    else:
-                        criteria = vulnerability.get_criteria()
-                        if not criteria:
-                            raise ValueError(
-                                f"CustomVulnerability '{vulnerability.get_name()}' must provide a 'criteria' parameter that defines what should be evaluated."
-                            )
-
-                        metrics_map[vuln_type] = lambda hc=criteria: HarmMetric(
-                            model=self.evaluation_model,
-                            harm_category=hc,
-                            async_mode=self.async_mode,
-                        )
-
-        self.metrics_map = metrics_map
-        return metrics_map
 
     def save_test_cases_as_simulated_attacks(
         self, test_cases: List[Union[SingleTurnRTTestCase, MultiTurnRTTestCase]]

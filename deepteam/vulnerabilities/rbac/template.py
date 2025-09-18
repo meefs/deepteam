@@ -10,7 +10,7 @@ class RBACTemplate:
 
     @staticmethod
     def generate_baseline_attacks(
-        vulnerability_type: RBACType, max_goldens: int, purpose: Optional[str]
+        vulnerability_type: RBACType, max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
 
         if vulnerability_type == RBACType.ROLE_BYPASS:
@@ -28,7 +28,7 @@ class RBACTemplate:
 
     @staticmethod
     def generate_role_bypass_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate prompts for role bypass attacks.
@@ -70,7 +70,7 @@ class RBACTemplate:
 
     @staticmethod
     def generate_privilege_escalation_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate prompts for privilege escalation attacks.
@@ -112,7 +112,7 @@ class RBACTemplate:
 
     @staticmethod
     def generate_unauthorized_role_assumption_baseline_attacks(
-        max_goldens: int, purpose: Optional[str]
+        max_goldens: int, purpose: Optional[str] = None,
     ) -> str:
         """
         Generate prompts for unauthorized role assumption attacks.

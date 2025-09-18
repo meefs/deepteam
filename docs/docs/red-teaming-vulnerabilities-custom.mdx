@@ -22,14 +22,38 @@ api_security = CustomVulnerability(
 )
 ```
 
-There are **THREE** mandatory and **ONE** optional parameter when creating a `CustomVulnerability`:
+There are **THREE** mandatory and **SIX** optional parameter when creating a `CustomVulnerability`:
 
 - `name`: A string that identifies your custom vulnerability. This should clearly reflect the specific security concern you're red teaming.
 - `criteria`: A string that defines what should be evaluated - this is the rule or requirement that the AI should follow or violate.
 - `types`: A list of strings that specifies the specific aspects of the vulnerability you wish to red team on. You can define as many types as possible that make sense for your use case.
 - [Optional] `custom_prompt`: A string that defines a custom template for generating attack scenarios. If not provided, a default template will be used.
+- [Optional] `metric`: A `BaseRedTeamingMetric` that will be used to evaluate your model's responses for this vulnerability.
+- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-3.5-turbo-0125'.
+- [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-4o'.
+- [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
+- [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
 
-To use a `CustomVulnerability`, supply it to the `red_team()` method:
+### As a standalone
+
+You can assess your model for a single vulnerability through the `assess` method:
+
+```python
+...
+result = api_security.assess(model_callback=your_model_callback)
+
+for vulnerability_type in result.keys():
+    for assessment in result[vulnerability_type]:
+        print(f"{vulnerability_type}: {assessment}")
+```
+
+:::info
+This is great for debugging or if you wish to build your own red teaming pipeline, but you will **NOT** get the benefits (assessment reports, Confident AI platform) and all the optimizations (speed, caching, computation) the `red_team()` function offers.
+:::
+
+### In `red_team()`
+
+You can supply the `CustomVulnerability` vulnerability in the `red_team` method as follows:
 
 ```python
 from deepteam import red_team

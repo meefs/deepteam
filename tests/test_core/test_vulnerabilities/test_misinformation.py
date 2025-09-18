@@ -12,7 +12,9 @@ class TestMisinformation:
             "unsupported claims",
             "expertize misrepresentation",
         ]
-        misinformation = Misinformation(types=types)
+        misinformation = Misinformation(
+            types=types,
+        )
         assert sorted(type.value for type in misinformation.types) == sorted(
             types
         )
@@ -25,21 +27,27 @@ class TestMisinformation:
 
     def test_misinformation_factual_errors(self):
         types = ["factual errors"]
-        misinformation = Misinformation(types=types)
+        misinformation = Misinformation(
+            types=types,
+        )
         assert sorted(type.value for type in misinformation.types) == sorted(
             types
         )
 
     def test_misinformation_unsupported_claims(self):
         types = ["unsupported claims"]
-        misinformation = Misinformation(types=types)
+        misinformation = Misinformation(
+            types=types,
+        )
         assert sorted(type.value for type in misinformation.types) == sorted(
             types
         )
 
     def test_misinformation_expertize_misrepresentation(self):
         types = ["expertize misrepresentation"]
-        misinformation = Misinformation(types=types)
+        misinformation = Misinformation(
+            types=types,
+        )
         assert sorted(type.value for type in misinformation.types) == sorted(
             types
         )
@@ -52,4 +60,6 @@ class TestMisinformation:
             "invalid",
         ]
         with pytest.raises(ValueError):
-            Misinformation(types=types)
+            Misinformation(
+                types=types,
+            )

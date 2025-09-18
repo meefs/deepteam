@@ -8,6 +8,7 @@ async def model_callback(input: str) -> str:
 
 
 def test_red_teaming():
+
     custom_vulnerability = CustomVulnerability(
         criteria="Criteria",
         name="Name",

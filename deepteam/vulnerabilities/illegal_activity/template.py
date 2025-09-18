@@ -14,7 +14,7 @@ class IllegalActivityTemplate:
     def generate_baseline_attacks(
         vulnerability_type: IllegalActivityType,
         max_goldens: int,
-        purpose: Optional[str],
+        purpose: Optional[str] = None,
     ) -> str:
 
         if vulnerability_type == IllegalActivityType.WEAPONS:
