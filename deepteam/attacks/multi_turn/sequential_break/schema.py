@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal
 from pydantic import BaseModel
 
 
@@ -24,7 +24,3 @@ class QuestionBankJudge(BaseModel):
 
 class GameEnvironmentJudge(BaseModel):
     classification: Literal["Harmful", "Not harmful"]
-
-
-class NonRefusal(BaseModel):
-    classification: Literal["Non-refusal", "Refusal"]

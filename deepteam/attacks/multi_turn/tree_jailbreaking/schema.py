@@ -1,4 +1,3 @@
-from typing import Literal
 from pydantic import BaseModel
 
 
@@ -13,7 +12,3 @@ class OnTopic(BaseModel):
 
 class Rating(BaseModel):
     rating: int
-
-
-class NonRefusal(BaseModel):
-    classification: Literal["Non-refusal", "Refusal"]
