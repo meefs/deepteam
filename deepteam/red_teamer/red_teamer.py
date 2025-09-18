@@ -10,7 +10,7 @@ from rich import box
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 from deepeval.dataset.golden import Golden
-from deepeval.test_case import LLMTestCase
+from deepeval.test_case import LLMTestCase, ConversationalTestCase, Turn
 from deepeval.utils import get_or_create_event_loop
 
 from deepteam.frameworks.frameworks import AISafetyFramework
@@ -24,8 +24,9 @@ from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.metrics import BaseRedTeamingMetric
 from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 from deepteam.red_teamer.risk_assessment import (
+    MultiTurnRTTestCase,
     construct_risk_assessment_overview,
-    RedTeamingTestCase,
+    SingleTurnRTTestCase,
     RiskAssessment,
 )
 from deepteam.risks import getRiskCategory
@@ -126,7 +127,7 @@ class RedTeamer:
                 vulnerability_type_to_attacks_map = (
                     group_attacks_by_vulnerability_type(simulated_attacks)
                 )
-                red_teaming_test_cases: List[RedTeamingTestCase] = []
+                red_teaming_test_cases: List[SingleTurnRTTestCase] = []
                 total_vulnerability_types = sum(
                     len(v.get_types()) for v in vulnerabilities
                 )
@@ -145,7 +146,7 @@ class RedTeamer:
                                 )
                                 break
 
-                        red_teaming_test_case = RedTeamingTestCase(
+                        red_teaming_test_case = SingleTurnRTTestCase(
                             vulnerability=simulated_attack.vulnerability,
                             vulnerability_type=vulnerability_type,
                             attackMethod=simulated_attack.attack_method,
@@ -161,9 +162,16 @@ class RedTeamer:
                             continue
 
                         try:
-                            target_output = model_callback(
-                                simulated_attack.input
-                            )
+                            sig = inspect.signature(model_callback)
+                            if "turn_history" in sig.parameters:
+                                target_output = model_callback(
+                                    simulated_attack.input,
+                                    simulated_attack.turn_history,
+                                )
+                            else:
+                                target_output = model_callback(
+                                    simulated_attack.input
+                                )
                             red_teaming_test_case.actual_output = target_output
                         except Exception:
                             if ignore_errors:
@@ -183,6 +191,7 @@ class RedTeamer:
                         )
                         try:
                             metric.measure(test_case)
+                            red_teaming_test_case.actual_output = target_output
                             red_teaming_test_case.score = metric.score
                             red_teaming_test_case.reason = metric.reason
                         except Exception:
@@ -254,6 +263,8 @@ class RedTeamer:
                         metadata=metadata,
                     )
                 )
+
+            print(len(simulated_attacks))
             # Create a mapping of vulnerabilities to attacks
             vulnerability_type_to_attacks_map: Dict[
                 VulnerabilityType, List[SimulatedAttack]
@@ -284,7 +295,9 @@ class RedTeamer:
                 desc=f"📝 Evaluating {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s)",
             )
 
-            red_teaming_test_cases: List[RedTeamingTestCase] = []
+            red_teaming_test_cases: List[
+                Union[SingleTurnRTTestCase, MultiTurnRTTestCase]
+            ] = []
 
             async def throttled_evaluate_vulnerability_type(
                 vulnerability_type, attacks
@@ -330,18 +343,24 @@ class RedTeamer:
         vulnerability_type: VulnerabilityType,
         vulnerabilities: List[BaseVulnerability],
         ignore_errors: bool,
-    ) -> RedTeamingTestCase:
-        red_teaming_test_case = RedTeamingTestCase(
-            input=simulated_attack.input,
-            vulnerability=vulnerability,
-            vulnerability_type=vulnerability_type,
-            attackMethod=simulated_attack.attack_method,
-            riskCategory=getRiskCategory(vulnerability_type),
+    ) -> Union[SingleTurnRTTestCase, MultiTurnRTTestCase]:
+        multi_turn = (
+            simulated_attack.turn_history is not None
+            and len(simulated_attack.turn_history) > 0
         )
+        metric: BaseRedTeamingMetric = metrics_map[vulnerability_type]()
 
-        if simulated_attack.error is not None:
-            red_teaming_test_case.error = simulated_attack.error
-            return red_teaming_test_case
+        if multi_turn:
+            red_teaming_test_case = MultiTurnRTTestCase(
+                turns=simulated_attack.turn_history,
+                vulnerability=vulnerability,
+                vulnerability_type=vulnerability_type,
+                attackMethod=simulated_attack.attack_method,
+                riskCategory=getRiskCategory(vulnerability_type),
+                metadata=simulated_attack.metadata,
+            )
+            if simulated_attack.error is not None:
+                red_teaming_test_case.error = simulated_attack.error
 
         for _vulnerability in vulnerabilities:
             if vulnerability_type in _vulnerability.types:
@@ -357,25 +376,71 @@ class RedTeamer:
                 red_teaming_test_case.error = (
                     "Error generating output from target LLM"
                 )
-                return red_teaming_test_case
             else:
-                raise
+                test_case = LLMTestCase(
+                    input=simulated_attack.turn_history[-1].content,
+                    actual_output=simulated_attack.turn_history[-2].content,
+                )
 
-        test_case = LLMTestCase(
-            input=simulated_attack.input,
-            actual_output=actual_output,
-        )
-        try:
-            await metric.a_measure(test_case)
-            red_teaming_test_case.score = metric.score
-            red_teaming_test_case.reason = metric.reason
-        except:
-            if ignore_errors:
-                red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability type"
+            try:
+                await metric.a_measure(test_case)
+                red_teaming_test_case.score = metric.score
+                red_teaming_test_case.reason = metric.reason
+            except:
+                if ignore_errors:
+                    red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability type"
+                    return red_teaming_test_case
+                else:
+                    raise
+            return red_teaming_test_case
+
+        else:
+            red_teaming_test_case = SingleTurnRTTestCase(
+                input=simulated_attack.input,
+                vulnerability=vulnerability,
+                vulnerability_type=vulnerability_type,
+                attackMethod=simulated_attack.attack_method,
+                riskCategory=getRiskCategory(vulnerability_type),
+                metadata=simulated_attack.metadata,
+            )
+
+            if simulated_attack.error is not None:
+                red_teaming_test_case.error = simulated_attack.error
                 return red_teaming_test_case
-            else:
-                raise
-        return red_teaming_test_case
+
+            try:
+                sig = inspect.signature(model_callback)
+                if "turn_history" in sig.parameters:
+                    actual_output = await model_callback(
+                        simulated_attack.input, simulated_attack.turn_history
+                    )
+                else:
+                    actual_output = await model_callback(simulated_attack.input)
+            except Exception:
+                if ignore_errors:
+                    red_teaming_test_case.error = (
+                        "Error generating output from target LLM"
+                    )
+                    return red_teaming_test_case
+                else:
+                    raise
+            test_case = LLMTestCase(
+                input=simulated_attack.input,
+                actual_output=actual_output,
+            )
+
+            try:
+                await metric.a_measure(test_case)
+                red_teaming_test_case.actual_output = actual_output
+                red_teaming_test_case.score = metric.score
+                red_teaming_test_case.reason = metric.reason
+            except:
+                if ignore_errors:
+                    red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability type"
+                    return red_teaming_test_case
+                else:
+                    raise
+            return red_teaming_test_case
 
     async def _a_evaluate_vulnerability_type(
         self,
@@ -384,7 +449,7 @@ class RedTeamer:
         vulnerability_type: VulnerabilityType,
         simulated_attacks: List[SimulatedAttack],
         ignore_errors: bool,
-    ) -> List[RedTeamingTestCase]:
+    ) -> List[Union[SingleTurnRTTestCase, MultiTurnRTTestCase]]:
         red_teaming_test_cases = await asyncio.gather(
             *[
                 self._a_attack(
@@ -401,16 +466,38 @@ class RedTeamer:
         return red_teaming_test_cases
 
     def save_test_cases_as_simulated_attacks(
-        self, test_cases: List[RedTeamingTestCase]
+        self, test_cases: List[Union[SingleTurnRTTestCase, MultiTurnRTTestCase]]
     ):
         simulated_attacks: List[SimulatedAttack] = []
         for test_case in test_cases:
-            if test_case.error or test_case.input is None:
+            if test_case.error:
                 continue
+
+            if (
+                isinstance(test_case, MultiTurnRTTestCase)
+                and test_case.turns is None
+                or len(test_case.turns) == 0
+            ):
+                continue
+            elif (
+                isinstance(test_case, SingleTurnRTTestCase)
+                and test_case.input is None
+            ):
+                continue
+
             simulated_attack = SimulatedAttack(
                 vulnerability=test_case.vulnerability,
                 vulnerability_type=test_case.vulnerability_type,
-                input=test_case.input,
+                input=(
+                    test_case.input
+                    if isinstance(test_case, SingleTurnRTTestCase)
+                    else None
+                ),
+                turn_history=(
+                    test_case.turns
+                    if isinstance(test_case, MultiTurnRTTestCase)
+                    else None
+                ),
                 attack_method=test_case.attack_method,
                 metadata=test_case.metadata,
             )
@@ -448,6 +535,7 @@ class RedTeamer:
         table.add_column("Attack Method", style="green", width=10)
         table.add_column("Input", style="white", width=30, no_wrap=False)
         table.add_column("Output", style="white", width=30, no_wrap=False)
+        table.add_column("Turns", style="white", width=30, no_wrap=False)
         table.add_column("Reason", style="dim", width=30, no_wrap=False)
         table.add_column("Status", justify="center", width=10)
 
@@ -463,16 +551,27 @@ class RedTeamer:
             if status == "Passed":
                 status_style = "[bold green]✓ PASS[/bold green]"
             elif status == "Errored":
-                status_style = "[bold yellow]⚠ ERROR[/bold yellow]"
+                status_style = (
+                    f"[bold yellow]⚠ ERROR: {case.error}[/bold yellow]"
+                )
             else:
                 status_style = "[bold red]✗ FAIL[/bold red]"
+
+            turns = """"""
+            if isinstance(case, MultiTurnRTTestCase):
+                for turn in case.turns:
+                    turns += f"{turn.role}: {turn.content}\n\n"
+                    turns += "=" * 80 + "\n"
+            else:
+                turns = "N/A"
 
             table.add_row(
                 case.vulnerability,
                 str(case.vulnerability_type.value),
                 case.attack_method or "N/A",
-                case.input or "N/A",
-                case.actual_output or "N/A",
+                getattr(case, "input", "N/A"),
+                getattr(case, "actual_output", "N/A"),
+                turns or "N/A",
                 case.reason or "N/A",
                 status_style,
             )

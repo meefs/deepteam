@@ -11,7 +11,9 @@ class BFLATemplate:
 
     @staticmethod
     def generate_baseline_attacks(
-        vulnerability_type: BFLAType, max_goldens: int, purpose: Optional[str] = None,
+        vulnerability_type: BFLAType,
+        max_goldens: int,
+        purpose: Optional[str] = None,
     ) -> str:
 
         if vulnerability_type == BFLAType.PRIVILEGE_ESCALATION:
@@ -29,7 +31,8 @@ class BFLATemplate:
 
     @staticmethod
     def generate_admin_function_access_baseline_attacks(
-        max_goldens: int, purpose: Optional[str] = None,
+        max_goldens: int,
+        purpose: Optional[str] = None,
     ) -> str:
         """
         Generate prompts for admin function access attacks.
@@ -71,7 +74,8 @@ class BFLATemplate:
 
     @staticmethod
     def generate_cross_session_leakage_baseline_attacks(
-        max_goldens: int, purpose: Optional[str] = None,
+        max_goldens: int,
+        purpose: Optional[str] = None,
     ) -> str:
         """
         Generate prompts for cross-session leakage attacks with agentic enhancements.
@@ -116,7 +120,8 @@ class BFLATemplate:
 
     @staticmethod
     def generate_privileged_operation_bypass_baseline_attacks(
-        max_goldens: int, purpose: Optional[str] = None,
+        max_goldens: int,
+        purpose: Optional[str] = None,
     ) -> str:
         """
         Generate prompts for privileged operation bypass attacks with agentic data exfiltration patterns.

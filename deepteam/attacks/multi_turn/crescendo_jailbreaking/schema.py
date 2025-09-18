@@ -1,14 +1,9 @@
-from typing import Literal
 from pydantic import BaseModel
 
 
 class ImprovementPrompt(BaseModel):
     improvement: str
     prompt: str
-
-
-class OnTopic(BaseModel):
-    response: bool
 
 
 class AttackData(BaseModel):
