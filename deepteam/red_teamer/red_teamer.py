@@ -362,7 +362,6 @@ class RedTeamer:
             if simulated_attack.error is not None:
                 red_teaming_test_case.error = simulated_attack.error
 
-
         for _vulnerability in vulnerabilities:
             if vulnerability_type in _vulnerability.types:
                 metric: BaseRedTeamingMetric = _vulnerability._get_metric(

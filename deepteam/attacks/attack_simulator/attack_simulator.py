@@ -21,7 +21,6 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.errors import ModelRefusalError
 
 
-
 class SimulatedAttack(BaseModel):
     vulnerability: str
     vulnerability_type: Union[Enum, VulnerabilityType]
