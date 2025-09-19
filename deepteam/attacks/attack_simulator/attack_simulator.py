@@ -329,7 +329,7 @@ class AttackSimulator:
                     raise
 
             return simulated_attack
-        
+
         attack_input = simulated_attack.input
         if attack_input is None:
             return simulated_attack
