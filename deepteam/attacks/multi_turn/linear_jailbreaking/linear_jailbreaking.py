@@ -238,6 +238,7 @@ class LinearJailbreaking(BaseAttack):
             turns.append(RTTurn(role="assistant", content=target_response))
 
         # Main simulation loop
+        # TODO: This loop adds the first input inside the turns again
         for i in range(self.num_turns):
             target_response = await model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
