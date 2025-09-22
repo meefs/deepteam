@@ -66,6 +66,7 @@ class RedTeamer:
         framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
+        async_mode: bool = True,
         reuse_simulated_attacks: bool = False,
         metadata: Optional[dict] = None,
     ):
@@ -77,6 +78,8 @@ class RedTeamer:
                 raise ValueError(
                     "You must either provide a 'framework' or 'vulnerabilities'."
                 )
+        
+        self.async_mode = async_mode
 
         if self.async_mode:
             validate_model_callback_signature(
@@ -103,7 +106,7 @@ class RedTeamer:
                 vulnerabilities=[v.get_name() for v in vulnerabilities],
                 attacks=[a.get_name() for a in attacks],
             ):
-                # Simulate attacks
+                # Generate attacks
                 if (
                     reuse_simulated_attacks
                     and self.simulated_attacks is not None
@@ -124,87 +127,52 @@ class RedTeamer:
                         )
                     )
 
-                vulnerability_type_to_attacks_map = (
-                    group_attacks_by_vulnerability_type(simulated_attacks)
+                # Create a mapping of vulnerabilities to attacks
+                vulnerability_type_to_attacks_map: Dict[
+                    VulnerabilityType, List[SimulatedAttack]
+                ] = {}
+                for simulated_attack in simulated_attacks:
+                    if (
+                        simulated_attack.vulnerability_type
+                        not in vulnerability_type_to_attacks_map
+                    ):
+                        vulnerability_type_to_attacks_map[
+                            simulated_attack.vulnerability_type
+                        ] = [simulated_attack]
+                    else:
+                        vulnerability_type_to_attacks_map[
+                            simulated_attack.vulnerability_type
+                        ].append(simulated_attack)
+
+                total_attacks = sum(
+                    len(attacks)
+                    for attacks in vulnerability_type_to_attacks_map.values()
                 )
-                red_teaming_test_cases: List[SingleTurnRTTestCase] = []
-                total_vulnerability_types = sum(
+                num_vulnerability_types = sum(
                     len(v.get_types()) for v in vulnerabilities
                 )
                 pbar = tqdm(
-                    vulnerability_type_to_attacks_map.items(),
-                    desc=f"📝 Evaluating {total_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s)",
+                    total=total_attacks,
+                    desc=f"📝 Evaluating {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s)",
                 )
-                for vulnerability_type, simulated_attacks in pbar:
-                    for simulated_attack in simulated_attacks:
-                        for vulnerability in vulnerabilities:
-                            if vulnerability_type in vulnerability.types:
-                                metric: BaseRedTeamingMetric = (
-                                    vulnerability._get_metric(
-                                        vulnerability_type
-                                    )
-                                )
-                                break
 
-                        red_teaming_test_case = SingleTurnRTTestCase(
-                            vulnerability=simulated_attack.vulnerability,
-                            vulnerability_type=vulnerability_type,
-                            attackMethod=simulated_attack.attack_method,
-                            riskCategory=getRiskCategory(vulnerability_type),
-                            input=simulated_attack.input,
-                            metadata=simulated_attack.metadata,
-                        )
+                red_teaming_test_cases: List[
+                    Union[SingleTurnRTTestCase, MultiTurnRTTestCase]
+                ] = []
 
-                        # this will only go through if ignore_errors == True
-                        if simulated_attack.error:
-                            red_teaming_test_case.error = simulated_attack.error
-                            red_teaming_test_cases.append(red_teaming_test_case)
-                            continue
+                for vulnerability_type, attacks in vulnerability_type_to_attacks_map.items():
+                    test_cases = self._evaluate_vulnerability_type(
+                        model_callback,
+                        vulnerabilities,
+                        vulnerability_type,
+                        attacks,
+                        ignore_errors=ignore_errors,
+                    )
+                    red_teaming_test_cases.extend(test_cases)
+                    
+                    pbar.update(len(attacks))
 
-                        try:
-                            sig = inspect.signature(model_callback)
-                            if "turn_history" in sig.parameters:
-                                target_output = model_callback(
-                                    simulated_attack.input,
-                                    simulated_attack.turn_history,
-                                )
-                            else:
-                                target_output = model_callback(
-                                    simulated_attack.input
-                                )
-                            red_teaming_test_case.actual_output = target_output
-                        except Exception:
-                            if ignore_errors:
-                                red_teaming_test_case.error = (
-                                    "Error generating output from target LLM"
-                                )
-                                red_teaming_test_cases.append(
-                                    red_teaming_test_case
-                                )
-                                continue
-                            else:
-                                raise
-
-                        test_case = LLMTestCase(
-                            input=simulated_attack.input,
-                            actual_output=target_output,
-                        )
-                        try:
-                            metric.measure(test_case)
-                            red_teaming_test_case.actual_output = target_output
-                            red_teaming_test_case.score = metric.score
-                            red_teaming_test_case.reason = metric.reason
-                        except Exception:
-                            if ignore_errors:
-                                red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability"
-                                red_teaming_test_cases.append(
-                                    red_teaming_test_case
-                                )
-                                continue
-                            else:
-                                raise
-
-                        red_teaming_test_cases.append(red_teaming_test_case)
+                pbar.close()
 
                 self.risk_assessment = RiskAssessment(
                     overview=construct_risk_assessment_overview(
@@ -212,11 +180,11 @@ class RedTeamer:
                     ),
                     test_cases=red_teaming_test_cases,
                 )
-
                 self.save_test_cases_as_simulated_attacks(
                     test_cases=red_teaming_test_cases
                 )
                 self._print_risk_assessment()
+                
                 return self.risk_assessment
 
     async def a_red_team(
@@ -334,6 +302,112 @@ class RedTeamer:
             )
             self._print_risk_assessment()
             return self.risk_assessment
+        
+    def _attack(
+        self,
+        model_callback: CallbackType,
+        simulated_attack: SimulatedAttack,
+        vulnerability: str,
+        vulnerability_type: VulnerabilityType,
+        vulnerabilities: List[BaseVulnerability],
+        ignore_errors: bool,
+    ) -> Union[SingleTurnRTTestCase, MultiTurnRTTestCase]:
+        multi_turn = (
+            simulated_attack.turn_history is not None
+            and len(simulated_attack.turn_history) > 0
+        )
+
+        for _vulnerability in vulnerabilities:
+            if vulnerability_type in _vulnerability.types:
+                metric: BaseRedTeamingMetric = _vulnerability._get_metric(
+                    vulnerability_type
+                )
+                break
+
+        if multi_turn:
+            red_teaming_test_case = MultiTurnRTTestCase(
+                turns=simulated_attack.turn_history,
+                vulnerability=vulnerability,
+                vulnerability_type=vulnerability_type,
+                attackMethod=simulated_attack.attack_method,
+                riskCategory=getRiskCategory(vulnerability_type),
+                metadata=simulated_attack.metadata,
+            )
+            if simulated_attack.error is not None:
+                red_teaming_test_case.error = simulated_attack.error
+
+            try:
+                actual_output = model_callback(simulated_attack.input)
+                red_teaming_test_case.actual_output = actual_output
+            except Exception:
+                if ignore_errors:
+                    red_teaming_test_case.error = (
+                        "Error generating output from target LLM"
+                    )
+                else:
+                    test_case = LLMTestCase(
+                        input=simulated_attack.input,
+                        actual_output=str(simulated_attack.turn_history),
+                    )
+
+                try:
+                    metric.measure(test_case)
+                    red_teaming_test_case.score = metric.score
+                    red_teaming_test_case.reason = metric.reason
+                except:
+                    if ignore_errors:
+                        red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability type"
+                        return red_teaming_test_case
+                    else:
+                        raise
+                return red_teaming_test_case
+        else:
+            red_teaming_test_case = SingleTurnRTTestCase(
+                input=simulated_attack.input,
+                vulnerability=vulnerability,
+                vulnerability_type=vulnerability_type,
+                attackMethod=simulated_attack.attack_method,
+                riskCategory=getRiskCategory(vulnerability_type),
+                metadata=simulated_attack.metadata,
+            )
+
+            if simulated_attack.error is not None:
+                red_teaming_test_case.error = simulated_attack.error
+                return red_teaming_test_case
+
+            try:
+                sig = inspect.signature(model_callback)
+                if "turn_history" in sig.parameters:
+                    actual_output = model_callback(
+                        simulated_attack.input, simulated_attack.turn_history
+                    )
+                else:
+                    actual_output = model_callback(simulated_attack.input)
+            except Exception:
+                if ignore_errors:
+                    red_teaming_test_case.error = (
+                        "Error generating output from target LLM"
+                    )
+                    return red_teaming_test_case
+                else:
+                    raise
+            test_case = LLMTestCase(
+                input=simulated_attack.input,
+                actual_output=actual_output,
+            )
+
+            try:
+                metric.measure(test_case)
+                red_teaming_test_case.actual_output = actual_output
+                red_teaming_test_case.score = metric.score
+                red_teaming_test_case.reason = metric.reason
+            except:
+                if ignore_errors:
+                    red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability type"
+                    return red_teaming_test_case
+                else:
+                    raise
+            return red_teaming_test_case
 
     async def _a_attack(
         self,
@@ -378,8 +452,8 @@ class RedTeamer:
                     )
                 else:
                     test_case = LLMTestCase(
-                        input=simulated_attack.turn_history[-1].content,
-                        actual_output=simulated_attack.turn_history[-2].content,
+                        input=simulated_attack.input,
+                        actual_output=str(simulated_attack.turn_history),
                     )
 
                 try:
@@ -440,6 +514,28 @@ class RedTeamer:
                 else:
                     raise
             return red_teaming_test_case
+    
+    def _evaluate_vulnerability_type(
+        self,
+        model_callback: CallbackType,
+        vulnerabilities: List[BaseVulnerability],
+        vulnerability_type: VulnerabilityType,
+        simulated_attacks: List[SimulatedAttack],
+        ignore_errors: bool,
+    ) -> List[Union[SingleTurnRTTestCase, MultiTurnRTTestCase]]:
+        red_teaming_test_cases = []
+
+        for simulated_attack in simulated_attacks:
+            red_teaming_test_cases.append(self._attack(
+                model_callback=model_callback,
+                simulated_attack=simulated_attack,
+                vulnerabilities=vulnerabilities,
+                vulnerability=simulated_attack.vulnerability,
+                vulnerability_type=vulnerability_type,
+                ignore_errors=ignore_errors,
+            ))
+
+        return red_teaming_test_cases
 
     async def _a_evaluate_vulnerability_type(
         self,
