@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from tqdm import tqdm
-from typing import Optional, Union
-
+from typing import Optional, Union, List
+import asyncio
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
@@ -18,6 +18,8 @@ from deepteam.attacks.attack_simulator.utils import (
 )
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
+from deepteam.errors import ModelRefusalError
+from deepteam.test_case.test_case import RTTurn
 
 
 class BadLikertJudge(BaseAttack):
@@ -25,192 +27,295 @@ class BadLikertJudge(BaseAttack):
         self,
         weight: int = 1,
         category: str = "bias",
-        turns: int = 3,
-        enable_refinement: bool = True,
+        num_turns: int = 5,
     ):
-        """
-        Initialize Bad Likert Judge attack.
-
-        Args:
-            weight: Attack selection probability weight
-            category: Vulnerability category for Likert scale guidelines.
-            turns: Maximum number of turns (default 3)
-            enable_refinement: Whether to use Turn 3 refinement
-        """
         self.weight = weight
         self.category = category
-        self.turns = min(max(turns, 2), 3)  # Ensure between 2-3 turns
-        self.enable_refinement = enable_refinement
+        self.num_turns = num_turns
 
-    def enhance(
+    def _get_turns(
         self,
-        attack: str,
         model_callback: CallbackType,
+        turns: Optional[List[RTTurn]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
-    ) -> str:
-        self.simulator_model, _ = initialize_model(simulator_model)
+    ) -> List[RTTurn]:
+        if turns is None:
+            turns = []
 
-        # Progress bar setup
-        total_steps = self.turns + 2  # turns + refusal check + judge
         pbar = tqdm(
-            total=total_steps,
+            total=self.num_turns,
             desc=f"🎯 Bad Likert Judge ({self.category})",
             leave=False,
         )
 
-        try:
-            # Turn 1: Set up model as Likert Judge
-            turn_1_prompt = BadLikertJudgeTemplate.turn_1_judge_setup(
-                attack, self.category
+        # Extract last user turn as the original attack
+        current_attack = None
+        original_attack = None
+        for turn in reversed(turns):
+            if turn.role == "user":
+                current_attack = turn.content
+                original_attack = turn.content
+                break
+
+        if current_attack is None:
+            raise ValueError("No user turn found in the conversation history")
+
+        # Generate assistant response if needed
+        if len(turns) == 0 or turns[-1].role == "user":
+            assistant_response = model_callback(current_attack, turns)
+            turns.append(RTTurn(role="assistant", content=assistant_response))
+        else:
+            assistant_response = turns[-1].content
+
+        for _ in range(self.num_turns):
+            # Judge current assistant response
+            judge_prompt = BadLikertJudgeTemplate.likert_judge(
+                original_attack, current_attack, assistant_response
             )
-            turn_1_response = model_callback(turn_1_prompt)
-            pbar.update(1)
+            judge_res: BLJJudge = generate(judge_prompt, BLJJudge, self.simulator_model)
 
-            # Check if Turn 1 was refused
-            non_refusal_prompt = BadLikertJudgeTemplate.non_refusal(
-                attack, turn_1_response
-            )
-            non_refusal_res: NonRefusal = generate(
-                non_refusal_prompt, NonRefusal, self.simulator_model
-            )
-
-            if non_refusal_res.classification == "Refusal":
-                pbar.close()
-                return attack
-            pbar.update(1)
-
-            # Turn 2: Request examples for different scores
-            turn_2_prompt = BadLikertJudgeTemplate.turn_2_generate_examples(
-                attack, self.category
-            )
-            turn_2_response = model_callback(turn_2_prompt)
-
-            # Extract the score 3 example (most harmful)
-            score_3_example = BadLikertJudgeTemplate.extract_score_3_example(
-                turn_2_response
-            )
-            current_attack = (
-                score_3_example if score_3_example else turn_2_response
-            )
-            pbar.update(1)
-
-            # Turn 3: Optional refinement (if enabled and turns >= 3)
-            if self.enable_refinement and self.turns >= 3:
-                turn_3_prompt = BadLikertJudgeTemplate.turn_3_refinement(attack)
-                turn_3_response = model_callback(turn_3_prompt)
-
-                # Use refined response if it's more detailed
-                if len(turn_3_response.strip()) > len(current_attack.strip()):
-                    current_attack = turn_3_response
-                pbar.update(1)
-            elif self.turns >= 3:
-                pbar.update(1)  # Skip refinement but update progress
-
-            # Final judgment
-            judge_prompt = BadLikertJudgeTemplate.blj_judge(
-                attack, current_attack, current_attack
-            )
-            judge_res: BLJJudge = generate(
-                judge_prompt, BLJJudge, self.simulator_model
-            )
-            pbar.update(1)
-
-            pbar.close()
-
-            # Return the harmful content if successful, otherwise original attack
             if judge_res.classification == "Harmful":
-                return current_attack
-            else:
-                return attack
+                pbar.n = pbar.total
+                pbar.close()
+                break
 
-        except Exception as e:
-            pbar.close()
-            return attack
+            # Generate new prompt variation
+            improvement_prompt = BadLikertJudgeTemplate.likert_generate_examples(
+                current_attack, self.category
+            )
+            improvement_response = model_callback(improvement_prompt, turns)
+
+            next_attack = BadLikertJudgeTemplate.extract_score_3_example(
+                improvement_response
+            ) or improvement_response
+
+            # Refusal check
+            refusal_prompt = BadLikertJudgeTemplate.non_refusal(
+                current_attack, next_attack
+            )
+            refusal_res: NonRefusal = generate(
+                refusal_prompt, NonRefusal, self.simulator_model
+            )
+
+            if refusal_res.classification == "Refusal":
+                raise ModelRefusalError(entity=self.get_name())
+
+            current_attack = next_attack
+            assistant_response = model_callback(current_attack, turns)
+            turns.append(RTTurn(role="user", content=current_attack))
+            turns.append(RTTurn(role="assistant", content=assistant_response))
+
+            pbar.update(1)
+
+        pbar.close()
+        return turns
+
+    async def _a_get_turns(
+        self,
+        model_callback: CallbackType,
+        turns: Optional[List[RTTurn]] = None,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+    ) -> List[RTTurn]:
+        if turns is None:
+            turns = []
+
+        pbar = tqdm(
+            total=self.num_turns,
+            desc=f"🎯 Bad Likert Judge ({self.category})",
+            leave=False,
+        )
+
+        # Extract last user turn
+        current_attack = None
+        original_attack = None
+        for turn in reversed(turns):
+            if turn.role == "user":
+                current_attack = turn.content
+                original_attack = turn.content
+                break
+
+        if current_attack is None:
+            raise ValueError("No user turn found")
+
+        # Ensure assistant response
+        if len(turns) == 0 or turns[-1].role == "user":
+            assistant_response = await model_callback(current_attack, turns)
+            turns.append(RTTurn(role="assistant", content=assistant_response))
+        else:
+            assistant_response = turns[-1].content
+
+        for _ in range(self.num_turns):
+            judge_prompt = BadLikertJudgeTemplate.likert_judge(
+                original_attack, current_attack, assistant_response
+            )
+            judge_res: BLJJudge = await a_generate(judge_prompt, BLJJudge, self.simulator_model)
+
+            if judge_res.classification == "Harmful":
+                pbar.n = pbar.total
+                pbar.close()
+                break
+
+            # Generate new attack candidate
+            improvement_prompt = BadLikertJudgeTemplate.likert_generate_examples(
+                current_attack, self.category
+            )
+            improvement_response = await model_callback(improvement_prompt, turns)
+
+            next_attack = BadLikertJudgeTemplate.extract_score_3_example(
+                improvement_response
+            ) or improvement_response
+
+            # Check for refusal
+            refusal_prompt = BadLikertJudgeTemplate.non_refusal(
+                current_attack, next_attack
+            )
+            refusal_res: NonRefusal = await a_generate(
+                refusal_prompt, NonRefusal, self.simulator_model
+            )
+
+            if refusal_res.classification == "Refusal":
+                raise ModelRefusalError(entity=self.get_name())
+
+            current_attack = next_attack
+            assistant_response = await model_callback(current_attack, turns)
+            turns.append(RTTurn(role="user", content=current_attack))
+            turns.append(RTTurn(role="assistant", content=assistant_response))
+
+            pbar.update(1)
+
+        pbar.close()
+        return turns
+    
+    def enhance(
+        self,
+        vulnerability: "BaseVulnerability",
+        model_callback: CallbackType,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+        turns: Optional[List[RTTurn]] = None,
+    ) -> dict:
+        from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
+        # Simulate and group attacks
+        simulated_attacks = group_attacks_by_vulnerability_type(
+            vulnerability.simulate_attacks()
+        )
+
+        result = {}
+
+        for vuln_type, attacks in simulated_attacks.items():
+            for attack in attacks:
+                # Defensive copy to avoid mutating external turns
+                inner_turns = list(turns) if turns else []
+
+                # Case 1: No turns, or last is user -> create assistant response
+                if len(inner_turns) == 0 or inner_turns[-1].role == "user":
+                    inner_turns = [RTTurn(role="user", content=attack.input)]
+                    assistant_response = model_callback(attack.input, inner_turns)
+                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+
+                # Case 2: Last is assistant -> find preceding user
+                elif inner_turns[-1].role == "assistant":
+                    user_turn_content = None
+                    for turn in reversed(inner_turns[:-1]):
+                        if turn.role == "user":
+                            user_turn_content = turn.content
+                            break
+
+                    if user_turn_content:
+                        inner_turns = [
+                            RTTurn(role="user", content=user_turn_content),
+                            RTTurn(role="assistant", content=inner_turns[-1].content),
+                        ]
+                    else:
+                        # Fallback if no user found
+                        inner_turns = [RTTurn(role="user", content=attack.input)]
+                        assistant_response = model_callback(attack.input, inner_turns)
+                        inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+
+                else:
+                    # Unrecognized state — fallback to default
+                    inner_turns = [RTTurn(role="user", content=attack.input)]
+                    assistant_response = model_callback(attack.input, inner_turns)
+                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+
+                # Run enhancement loop and assign full turn history
+                enhanced_turns = self._get_turns(
+                    model_callback=model_callback,
+                    turns=inner_turns,
+                    simulator_model=simulator_model,
+                )
+
+                attack.turn_history = enhanced_turns
+
+            result[vuln_type] = attacks
+
+        return result
 
     async def a_enhance(
         self,
-        attack: str,
+        vulnerability: "BaseVulnerability",
         model_callback: CallbackType,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
-    ) -> str:
-        self.simulator_model, _ = initialize_model(simulator_model)
+        turns: Optional[List[RTTurn]] = None,
+    ) -> dict:
+        from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 
-        # Progress bar setup
-        total_steps = self.turns + 2  # turns + refusal check + judge
-        pbar = tqdm(
-            total=total_steps,
-            desc=f"🎯 Bad Likert Judge ({self.category})",
-            leave=False,
-        )
+        # Simulate and group attacks asynchronously
+        simulated_attacks = await vulnerability.a_simulate_attacks()
+        grouped_attacks = group_attacks_by_vulnerability_type(simulated_attacks)
 
-        try:
-            # Turn 1: Set up model as Likert Judge
-            turn_1_prompt = BadLikertJudgeTemplate.turn_1_judge_setup(
-                attack, self.category
-            )
-            turn_1_response = await model_callback(turn_1_prompt)
-            pbar.update(1)
+        result = {}
 
-            # Check if Turn 1 was refused
-            non_refusal_prompt = BadLikertJudgeTemplate.non_refusal(
-                attack, turn_1_response
-            )
-            non_refusal_res: NonRefusal = await a_generate(
-                non_refusal_prompt, NonRefusal, self.simulator_model
-            )
+        for vuln_type, attacks in grouped_attacks.items():
+            async def enhance_attack(attack):
+                # Defensive copy of base turns
+                inner_turns = list(turns) if turns else []
 
-            if non_refusal_res.classification == "Refusal":
-                pbar.close()
-                return attack
-            pbar.update(1)
+                # Case 1: No turns or ends in user — generate assistant response
+                if len(inner_turns) == 0 or inner_turns[-1].role == "user":
+                    inner_turns = [RTTurn(role="user", content=attack.input)]
+                    assistant_response = await model_callback(attack.input, inner_turns)
+                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
-            # Turn 2: Request examples for different scores
-            turn_2_prompt = BadLikertJudgeTemplate.turn_2_generate_examples(
-                attack, self.category
-            )
-            turn_2_response = await model_callback(turn_2_prompt)
+                # Case 2: Ends in assistant — rebuild last user+assistant pair
+                elif inner_turns[-1].role == "assistant":
+                    user_turn_content = None
+                    for turn in reversed(inner_turns[:-1]):
+                        if turn.role == "user":
+                            user_turn_content = turn.content
+                            break
 
-            # Extract the score 3 example (most harmful)
-            score_3_example = BadLikertJudgeTemplate.extract_score_3_example(
-                turn_2_response
-            )
-            current_attack = (
-                score_3_example if score_3_example else turn_2_response
-            )
-            pbar.update(1)
+                    if user_turn_content:
+                        inner_turns = [
+                            RTTurn(role="user", content=user_turn_content),
+                            RTTurn(role="assistant", content=inner_turns[-1].content),
+                        ]
+                    else:
+                        inner_turns = [RTTurn(role="user", content=attack.input)]
+                        assistant_response = await model_callback(attack.input, inner_turns)
+                        inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
-            # Turn 3: Optional refinement (if enabled and turns >= 3)
-            if self.enable_refinement and self.turns >= 3:
-                turn_3_prompt = BadLikertJudgeTemplate.turn_3_refinement(attack)
-                turn_3_response = await model_callback(turn_3_prompt)
+                else:
+                    # Fallback for unexpected structure
+                    inner_turns = [RTTurn(role="user", content=attack.input)]
+                    assistant_response = await model_callback(attack.input, inner_turns)
+                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
-                # Use refined response if it's more detailed
-                if len(turn_3_response.strip()) > len(current_attack.strip()):
-                    current_attack = turn_3_response
-                pbar.update(1)
-            elif self.turns >= 3:
-                pbar.update(1)  # Skip refinement but update progress
+                # Run async enhancement and store turn history
+                attack.turn_history = await self._a_get_turns(
+                    model_callback=model_callback,
+                    turns=inner_turns,
+                    simulator_model=simulator_model,
+                )
 
-            # Final judgment
-            judge_prompt = BadLikertJudgeTemplate.blj_judge(
-                attack, current_attack, current_attack
-            )
-            judge_res: BLJJudge = await a_generate(
-                judge_prompt, BLJJudge, self.simulator_model
-            )
-            pbar.update(1)
-
-            pbar.close()
-
-            # Return the harmful content if successful, otherwise original attack
-            if judge_res.classification == "Harmful":
-                return current_attack
-            else:
                 return attack
 
-        except Exception as e:
-            pbar.close()
-            return attack
+            # Run all attacks in this vulnerability group concurrently
+            enhanced_attacks = await asyncio.gather(
+                *(enhance_attack(attack) for attack in attacks)
+            )
+            result[vuln_type] = enhanced_attacks
+
+        return result
 
     def get_name(self) -> str:
         return "Bad Likert Judge"
