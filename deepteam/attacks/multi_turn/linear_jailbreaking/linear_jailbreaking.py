@@ -39,11 +39,15 @@ class LinearJailbreaking(BaseAttack):
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+        vulnerability: "BaseVulnerability" = None,
+        vulnerability_type: str = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
 
         self.simulator_model, _ = initialize_model(simulator_model)
+
+        vulnerability_data = f"Vulnerability: {vulnerability.get_name()} Type: {vulnerability_type}."
 
         pbar = tqdm(
             total=self.num_turns,
@@ -73,7 +77,7 @@ class LinearJailbreaking(BaseAttack):
         # Main simulation loop
         for _ in range(self.num_turns):
             judge_prompt = JailBreakingTemplate.linear_judge(
-                original_attack, current_attack, target_response
+                original_attack, current_attack, target_response, vulnerability_data
             )
             feedback: Feedback = generate(
                 judge_prompt, Feedback, self.simulator_model
@@ -85,7 +89,7 @@ class LinearJailbreaking(BaseAttack):
                 break
 
             improvement_prompt = JailBreakingTemplate.improvement_prompt(
-                turns, feedback.suggestion
+                turns, feedback.suggestion, vulnerability_data
             )
             improvement: Improvement = generate(
                 improvement_prompt, Improvement, self.simulator_model
@@ -119,11 +123,15 @@ class LinearJailbreaking(BaseAttack):
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+        vulnerability: "BaseVulnerability" = None,
+        vulnerability_type: str = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
 
         self.simulator_model, _ = initialize_model(simulator_model)
+
+        vulnerability_data = f"Vulnerability: {vulnerability.get_name()} Type: {vulnerability_type}."
 
         pbar = tqdm(
             total=self.num_turns,
@@ -153,7 +161,7 @@ class LinearJailbreaking(BaseAttack):
         # Main simulation loop
         for _ in range(self.num_turns):
             judge_prompt = JailBreakingTemplate.linear_judge(
-                original_attack, current_attack, target_response
+                original_attack, current_attack, target_response, vulnerability_data
             )
             feedback: Feedback = await a_generate(
                 judge_prompt, Feedback, self.simulator_model
@@ -165,7 +173,7 @@ class LinearJailbreaking(BaseAttack):
                 break
 
             improvement_prompt = JailBreakingTemplate.improvement_prompt(
-                turns, feedback.suggestion
+                turns, feedback.suggestion, vulnerability_data
             )
             improvement: Improvement = await a_generate(
                 improvement_prompt, Improvement, self.simulator_model
@@ -251,6 +259,8 @@ class LinearJailbreaking(BaseAttack):
                     model_callback=model_callback,
                     turns=inner_turns,
                     simulator_model=simulator_model,
+                    vulnerability=vulnerability,
+                    vulnerability_type=vuln_type
                 )
 
                 attack.turn_history = enhanced_turns
@@ -314,6 +324,8 @@ class LinearJailbreaking(BaseAttack):
                     model_callback=model_callback,
                     turns=inner_turns,
                     simulator_model=simulator_model,
+                    vulnerability=vulnerability,
+                    vulnerability_type=vuln_type
                 )
 
                 return attack
