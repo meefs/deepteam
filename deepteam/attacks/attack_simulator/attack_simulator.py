@@ -280,14 +280,15 @@ class AttackSimulator:
             SequentialJailbreak,
         ]
 
+        # Check if the attack is a multi-turn attack
         if type(attack) in MULTI_TURN_ATTACKS:
-            # This is multi-turn attack
+            # This is a multi-turn attack
             attack_input = simulated_attack.input
             if attack_input is None:
                 return simulated_attack
 
             simulated_attack.attack_method = attack.get_name()
-            sig = inspect.signature(attack.a_enhance)
+            sig = inspect.signature(attack.enhance)
             turns = [RTTurn(role="user", content=attack_input)]
 
             try:
@@ -297,21 +298,25 @@ class AttackSimulator:
                     and "model_callback" in sig.parameters
                     and "turns" in sig.parameters
                 ):
-                    res = attack.enhance(
-                        self.model_callback, turns, self.simulator_model
+                    res = attack._get_turns(
+                        model_callback=self.model_callback, 
+                        turns=turns, 
+                        simulator_model=self.simulator_model,
+                        vulnerability=simulated_attack.vulnerability,
+                        vulnerability_type=simulated_attack.vulnerability_type
                     )
                 elif "simulator_model" in sig.parameters:
-                    res = attack.enhance(
-                        attack=attack_input,
-                        simulator_model=self.simulator_model,
+                    res = attack._get_turns(
+                        turns=turns, 
+                        simulator_model=self.simulator_model
                     )
                 elif "model_callback" in sig.parameters:
-                    res = attack.enhance(
-                        attack=attack_input,
-                        model_callback=self.model_callback,
+                    res = attack._get_turns(
+                        turns=turns, 
+                        model_callback=self.model_callback
                     )
                 else:
-                    res = attack.enhance(attack=attack_input)
+                    res = attack._get_turns(turns=turns)
 
                 simulated_attack.turn_history = res
 
@@ -321,21 +326,23 @@ class AttackSimulator:
                     return simulated_attack
                 else:
                     raise
-            except:
+            except Exception as e:
                 if ignore_errors:
-                    simulated_attack.error = "Error enhancing attack"
+                    simulated_attack.error = f"Error enhancing multi-turn attack: {str(e)}"
                     return simulated_attack
                 else:
                     raise
 
             return simulated_attack
 
+        # Regular attack handling (non-multi-turn)
         attack_input = simulated_attack.input
         if attack_input is None:
             return simulated_attack
 
         simulated_attack.attack_method = attack.get_name()
         sig = inspect.signature(attack.enhance)
+
         try:
             res = None
             if (
@@ -368,14 +375,15 @@ class AttackSimulator:
                 return simulated_attack
             else:
                 raise
-        except:
+        except Exception as e:
             if ignore_errors:
-                simulated_attack.error = "Error enhancing attack"
+                simulated_attack.error = f"Error enhancing regular attack: {str(e)}"
                 return simulated_attack
             else:
                 raise
 
         return simulated_attack
+
 
     async def a_enhance_attack(
         self,
@@ -417,21 +425,25 @@ class AttackSimulator:
                     and "model_callback" in sig.parameters
                     and "turns" in sig.parameters
                 ):
-                    res = await attack.a_enhance(
-                        self.model_callback, turns, self.simulator_model
+                    res = await attack._a_get_turns(
+                        model_callback=self.model_callback, 
+                        turns=turns, 
+                        simulator_model=self.simulator_model,
+                        vulnerability=simulated_attack.vulnerability,
+                        vulnerability_type=simulated_attack.vulnerability_type
                     )
                 elif "simulator_model" in sig.parameters:
-                    res = await attack.a_enhance(
+                    res = await attack._a_get_turns(
                         attack=attack_input,
                         simulator_model=self.simulator_model,
                     )
                 elif "model_callback" in sig.parameters:
-                    res = await attack.a_enhance(
+                    res = await attack._a_get_turns(
                         attack=attack_input,
                         model_callback=self.model_callback,
                     )
                 else:
-                    res = await attack.a_enhance(attack=attack_input)
+                    res = await attack._a_get_turns(attack=attack_input)
 
                 simulated_attack.turn_history = res
 
