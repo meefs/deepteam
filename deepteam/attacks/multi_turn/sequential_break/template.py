@@ -3,9 +3,10 @@ from deepteam.attacks.multi_turn.sequential_break.schema import (
     SequentialJailbreakTypeLiteral,
     DialogueTypeLiteral,
 )
+from deepteam.attacks.multi_turn.base_template import BaseMultiTurnTemplate
 
 
-class SequentialBreakTemplate:
+class SequentialBreakTemplate(BaseMultiTurnTemplate):
 
     @staticmethod
     def rewrite_dialogue_prompt(harmful_prompt: str) -> str:
