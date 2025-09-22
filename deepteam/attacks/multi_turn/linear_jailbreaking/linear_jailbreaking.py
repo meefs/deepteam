@@ -1,5 +1,5 @@
 from tqdm import tqdm
-from typing import Optional, Union, List
+from typing import Optional, Union, List, Dict
 import asyncio
 
 from deepeval.models import DeepEvalBaseLLM
@@ -23,7 +23,8 @@ from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.attacks.multi_turn.base_template import BaseMultiTurnTemplate
 from deepteam.errors import ModelRefusalError
 from deepteam.test_case.test_case import RTTurn
-
+from deepteam.vulnerabilities.types import VulnerabilityType
+from deepteam.vulnerabilities import BaseVulnerability
 
 class LinearJailbreaking(BaseAttack):
     def __init__(
@@ -39,7 +40,7 @@ class LinearJailbreaking(BaseAttack):
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
-        vulnerability: "BaseVulnerability" = None,
+        vulnerability: str = None,
         vulnerability_type: str = None,
     ) -> List[RTTurn]:
         if turns is None:
@@ -47,7 +48,7 @@ class LinearJailbreaking(BaseAttack):
 
         self.simulator_model, _ = initialize_model(simulator_model)
 
-        vulnerability_data = f"Vulnerability: {vulnerability.get_name()} | Type: {vulnerability_type}"
+        vulnerability_data = f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
 
         pbar = tqdm(
             total=self.num_turns,
@@ -123,7 +124,7 @@ class LinearJailbreaking(BaseAttack):
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
-        vulnerability: "BaseVulnerability" = None,
+        vulnerability: str = None,
         vulnerability_type: str = None,
     ) -> List[RTTurn]:
         if turns is None:
@@ -131,7 +132,7 @@ class LinearJailbreaking(BaseAttack):
 
         self.simulator_model, _ = initialize_model(simulator_model)
 
-        vulnerability_data = f"Vulnerability: {vulnerability.get_name()} | Type: {vulnerability_type}"
+        vulnerability_data = f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
 
         pbar = tqdm(
             total=self.num_turns,
@@ -205,11 +206,11 @@ class LinearJailbreaking(BaseAttack):
     
     def enhance(
         self,
-        vulnerability: "BaseVulnerability",
+        vulnerability: BaseVulnerability,
         model_callback: CallbackType,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> dict:
+    ) -> Dict[VulnerabilityType, List[RTTurn]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
         # Simulate and group attacks
         simulated_attacks = group_attacks_by_vulnerability_type(
@@ -255,27 +256,26 @@ class LinearJailbreaking(BaseAttack):
                     inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
                 # Run enhancement loop and assign full turn history
+                vulnerability_name = vulnerability.get_name()
                 enhanced_turns = self._get_turns(
                     model_callback=model_callback,
                     turns=inner_turns,
                     simulator_model=simulator_model,
-                    vulnerability=vulnerability,
+                    vulnerability=vulnerability_name,
                     vulnerability_type=vuln_type
                 )
 
-                attack.turn_history = enhanced_turns
-
-            result[vuln_type] = attacks
+            result[vuln_type] = enhanced_turns
 
         return result
 
     async def a_enhance(
         self,
-        vulnerability: "BaseVulnerability",
+        vulnerability: BaseVulnerability,
         model_callback: CallbackType,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> dict:
+    ) -> Dict[VulnerabilityType, List[RTTurn]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 
         # Simulate and group attacks asynchronously
@@ -285,7 +285,7 @@ class LinearJailbreaking(BaseAttack):
         result = {}
 
         for vuln_type, attacks in grouped_attacks.items():
-            async def enhance_attack(attack):
+            async def get_enhance_turns(attack):
                 # Defensive copy of base turns
                 inner_turns = list(turns) if turns else []
 
@@ -320,21 +320,22 @@ class LinearJailbreaking(BaseAttack):
                     inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
                 # Run async enhancement and store turn history
-                attack.turn_history = await self._a_get_turns(
+                vulnerability_name = vulnerability.get_name()
+                enhanced_turns = await self._a_get_turns(
                     model_callback=model_callback,
                     turns=inner_turns,
                     simulator_model=simulator_model,
-                    vulnerability=vulnerability,
+                    vulnerability=vulnerability_name,
                     vulnerability_type=vuln_type
                 )
 
-                return attack
+                return enhanced_turns
 
             # Run all attacks in this vulnerability group concurrently
-            enhanced_attacks = await asyncio.gather(
-                *(enhance_attack(attack) for attack in attacks)
+            enhanced_turns = await asyncio.gather(
+                *(get_enhance_turns(attack) for attack in attacks)
             )
-            result[vuln_type] = enhanced_attacks
+            result[vuln_type] = enhanced_turns
 
         return result
 
