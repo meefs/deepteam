@@ -47,7 +47,7 @@ class LinearJailbreaking(BaseAttack):
 
         self.simulator_model, _ = initialize_model(simulator_model)
 
-        vulnerability_data = f"Vulnerability: {vulnerability.get_name()} Type: {vulnerability_type}."
+        vulnerability_data = f"Vulnerability: {vulnerability.get_name()} | Type: {vulnerability_type}"
 
         pbar = tqdm(
             total=self.num_turns,
@@ -131,7 +131,7 @@ class LinearJailbreaking(BaseAttack):
 
         self.simulator_model, _ = initialize_model(simulator_model)
 
-        vulnerability_data = f"Vulnerability: {vulnerability.get_name()} Type: {vulnerability_type}."
+        vulnerability_data = f"Vulnerability: {vulnerability.get_name()} | Type: {vulnerability_type}"
 
         pbar = tqdm(
             total=self.num_turns,
