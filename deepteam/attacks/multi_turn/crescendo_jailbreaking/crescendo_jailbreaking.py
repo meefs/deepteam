@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from tqdm import tqdm
 from uuid import uuid4
 import json
+import asyncio
 
 
 from deepeval.models import DeepEvalBaseLLM
@@ -23,6 +24,7 @@ from deepteam.attacks.attack_simulator.utils import (
     a_generate,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
+from deepteam.test_case.test_case import RTTurn
 
 
 class MemorySystem:
@@ -63,26 +65,71 @@ class CrescendoJailbreaking(BaseAttack):
         self.max_rounds = max_rounds
         self.max_backtracks = max_backtracks
 
-    def enhance(
+    def _get_turns(
         self,
-        attack: str,
         model_callback: CallbackType,
+        turns: Optional[List[RTTurn]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
-    ) -> str:
+    ) -> List[RTTurn]:
+        if turns is None:
+            turns = []
+
         self.simulator_model, _ = initialize_model(simulator_model)
         self.model_callback = model_callback
 
+        if len(turns) == 0:
+            raise ValueError("No conversation history provided.")
+
+        # Find the last user turn index
+        last_user_index = None
+        for i in reversed(range(len(turns))):
+            if turns[i].role == "user":
+                last_user_index = i
+                break
+
+        # Edge case 2: no user turn found at all
+        if last_user_index is None:
+            raise ValueError("No user turn found in the conversation history to start the attack.")
+
+        last_turn = turns[-1]
+
+        # Edge case 3: last turn is user only (no assistant response) → generate assistant response first
+        if last_turn.role == "user":
+            assistant_response = model_callback(last_turn.content, turns)
+            turns.append(RTTurn(role="assistant", content=assistant_response))
+
+        # Edge case 4: last two turns are [Assistant, User] → generate assistant for last user turn
+        elif (
+            len(turns) >= 2
+            and turns[-2].role == "assistant"
+            and turns[-1].role == "user"
+        ):
+            assistant_response = model_callback(turns[-1].content, turns)
+            turns.append(RTTurn(role="assistant", content=assistant_response))
+
+        # Now re-find the last user turn content, in case turns got appended
+        current_attack = None
+        for turn in reversed(turns):
+            if turn.role == "user":
+                current_attack = turn.content
+                break
+
+        if current_attack is None:
+            # Defensive check, should not happen now
+            raise ValueError("No user turn found after processing conversation history.")
+
         round_num = 0
         backtrack_count = 0
-        last_response = ""
+        last_response = turns[-1].content if turns[-1].role == "assistant" else ""
         eval_flag = False
         eval_percentage = None
 
         system_prompt = JailBreakingCrescendoTemplate.crescendo_system_prompt(
-            conversation_objective=attack,
+            conversation_objective=current_attack,
             current_round=round_num + 1,
             max_rounds=self.max_rounds,
         )
+
         self.memory.add_message(
             self.red_teaming_chat_conversation_id,
             {"role": "system", "content": system_prompt},
@@ -94,7 +141,6 @@ class CrescendoJailbreaking(BaseAttack):
             leave=False,
         )
 
-        # Inner progress bar: Tracks the number of backtracks
         pbar_backtracks = tqdm(
             total=self.max_backtracks,
             desc="...... 🎺 Crescendo Jailbreaking: BackTracking",
@@ -103,18 +149,18 @@ class CrescendoJailbreaking(BaseAttack):
 
         while round_num < self.max_rounds:
             round_num += 1
-            enhanced_attack = self.generate_attack(
-                round_num, eval_flag, last_response
-            )
+
+            enhanced_attack = self.generate_attack(round_num, eval_flag, last_response)
             pbar_rounds.update(1)
+
+            turns.append(RTTurn(role="user", content=enhanced_attack))
 
             last_response = self.generate_target_response(enhanced_attack)
             pbar_rounds.update(1)
 
-            # Refusal logic for backtracking
-            is_refusal, refusal_rationale = self.get_refusal_score(
-                last_response, attack
-            )
+            turns.append(RTTurn(role="assistant", content=last_response))
+
+            is_refusal, refusal_rationale = self.get_refusal_score(last_response, current_attack)
             pbar_rounds.update(1)
 
             if is_refusal:
@@ -130,44 +176,94 @@ class CrescendoJailbreaking(BaseAttack):
                 )
                 eval_flag = False
                 eval_percentage = None
+
                 if backtrack_count < self.max_backtracks:
                     round_num -= 1
-                    pbar_rounds.update(-3)  # Adjust for backtracking
+                    pbar_rounds.update(-3)
                     pbar_backtracks.update(1)
+                    turns.pop()  # remove last assistant turn
+                    turns.pop()  # remove last user turn
                 if backtrack_count >= self.max_backtracks:
                     break
                 continue
 
-            # Eval logic
-            eval_flag, eval_percentage = self.get_eval_score(
-                last_response, attack
-            )
+            eval_flag, eval_percentage = self.get_eval_score(last_response, current_attack)
             pbar_rounds.update(1)
+
             if eval_percentage == 100:
                 break
 
-        return enhanced_attack
+        pbar_rounds.close()
+        pbar_backtracks.close()
+        return turns
 
-    async def a_enhance(
+
+
+    async def _a_get_turns(
         self,
-        attack: str,
         model_callback: CallbackType,
+        turns: Optional[List[RTTurn]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
-    ) -> str:
+    ) -> List[RTTurn]:
+        if turns is None:
+            turns = []
+
         self.simulator_model, _ = initialize_model(simulator_model)
         self.model_callback = model_callback
 
+        if len(turns) == 0:
+            raise ValueError("No conversation history provided.")
+
+        # Find the last user turn index
+        last_user_index = None
+        for i in reversed(range(len(turns))):
+            if turns[i].role == "user":
+                last_user_index = i
+                break
+
+        # Edge case 2: no user turn found at all
+        if last_user_index is None:
+            raise ValueError("No user turn found in the conversation history to start the attack.")
+
+        last_turn = turns[-1]
+
+        # Edge case 3: last turn is user only (no assistant response) → generate assistant response first
+        if last_turn.role == "user":
+            assistant_response = await model_callback(last_turn.content, turns)
+            turns.append(RTTurn(role="assistant", content=assistant_response))
+
+        # Edge case 4: last two turns are [Assistant, User] → generate assistant for last user turn
+        elif (
+            len(turns) >= 2
+            and turns[-2].role == "assistant"
+            and turns[-1].role == "user"
+        ):
+            assistant_response = await model_callback(turns[-1].content, turns)
+            turns.append(RTTurn(role="assistant", content=assistant_response))
+
+        # Now re-find the last user turn content, in case turns got appended
+        current_attack = None
+        for turn in reversed(turns):
+            if turn.role == "user":
+                current_attack = turn.content
+                break
+
+        if current_attack is None:
+            # Defensive check, should not happen now
+            raise ValueError("No user turn found after processing conversation history.")
+
         round_num = 0
         backtrack_count = 0
-        last_response = ""
+        last_response = turns[-1].content if turns[-1].role == "assistant" else ""
         eval_flag = False
         eval_percentage = None
 
         system_prompt = JailBreakingCrescendoTemplate.crescendo_system_prompt(
-            conversation_objective=attack,
+            conversation_objective=current_attack,
             current_round=round_num + 1,
             max_rounds=self.max_rounds,
         )
+
         self.memory.add_message(
             self.red_teaming_chat_conversation_id,
             {"role": "system", "content": system_prompt},
@@ -179,7 +275,6 @@ class CrescendoJailbreaking(BaseAttack):
             leave=False,
         )
 
-        # Inner progress bar: Tracks the number of backtracks
         pbar_backtracks = tqdm(
             total=self.max_backtracks,
             desc="...... 🎺 Crescendo Jailbreaking: BackTracking",
@@ -188,20 +283,18 @@ class CrescendoJailbreaking(BaseAttack):
 
         while round_num < self.max_rounds:
             round_num += 1
-            enhanced_attack = await self.a_generate_attack(
-                round_num, eval_flag, last_response
-            )
+
+            enhanced_attack = await self.a_generate_attack(round_num, eval_flag, last_response)
             pbar_rounds.update(1)
 
-            last_response = await self.a_generate_target_response(
-                enhanced_attack
-            )
+            turns.append(RTTurn(role="user", content=enhanced_attack))
+
+            last_response = await self.a_generate_target_response(enhanced_attack)
             pbar_rounds.update(1)
 
-            # Refusal logic for backtracing
-            is_refusal, refusal_rationale = await self.a_get_refusal_score(
-                last_response, attack
-            )
+            turns.append(RTTurn(role="assistant", content=last_response))
+
+            is_refusal, refusal_rationale = await self.a_get_refusal_score(last_response, current_attack)
             pbar_rounds.update(1)
 
             if is_refusal:
@@ -217,23 +310,158 @@ class CrescendoJailbreaking(BaseAttack):
                 )
                 eval_flag = False
                 eval_percentage = None
+
                 if backtrack_count < self.max_backtracks:
                     round_num -= 1
                     pbar_rounds.update(-3)
                     pbar_backtracks.update(1)
+                    turns.pop()  # remove last assistant turn
+                    turns.pop()  # remove last user turn
                 if backtrack_count >= self.max_backtracks:
                     break
                 continue
 
-            # Eval logic
-            eval_flag, eval_percentage = await self.a_get_eval_score(
-                last_response, attack
-            )
+            eval_flag, eval_percentage = await self.a_get_eval_score(last_response, current_attack)
             pbar_rounds.update(1)
+
             if eval_percentage == 100:
                 break
 
-        return enhanced_attack
+        pbar_rounds.close()
+        pbar_backtracks.close()
+        return turns
+    
+    def enhance(
+        self,
+        vulnerability: "BaseVulnerability",
+        model_callback: CallbackType,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+        turns: Optional[List[RTTurn]] = None,
+    ) -> dict:
+        from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
+        # Simulate and group attacks
+        simulated_attacks = group_attacks_by_vulnerability_type(
+            vulnerability.simulate_attacks()
+        )
+
+        result = {}
+
+        for vuln_type, attacks in simulated_attacks.items():
+            for attack in attacks:
+                # Defensive copy to avoid mutating external turns
+                inner_turns = list(turns) if turns else []
+
+                # Case 1: No turns, or last is user -> create assistant response
+                if len(inner_turns) == 0 or inner_turns[-1].role == "user":
+                    inner_turns = [RTTurn(role="user", content=attack.input)]
+                    assistant_response = model_callback(attack.input, inner_turns)
+                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+
+                # Case 2: Last is assistant -> find preceding user
+                elif inner_turns[-1].role == "assistant":
+                    user_turn_content = None
+                    for turn in reversed(inner_turns[:-1]):
+                        if turn.role == "user":
+                            user_turn_content = turn.content
+                            break
+
+                    if user_turn_content:
+                        inner_turns = [
+                            RTTurn(role="user", content=user_turn_content),
+                            RTTurn(role="assistant", content=inner_turns[-1].content),
+                        ]
+                    else:
+                        # Fallback if no user found
+                        inner_turns = [RTTurn(role="user", content=attack.input)]
+                        assistant_response = model_callback(attack.input, inner_turns)
+                        inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+
+                else:
+                    # Unrecognized state — fallback to default
+                    inner_turns = [RTTurn(role="user", content=attack.input)]
+                    assistant_response = model_callback(attack.input, inner_turns)
+                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+
+                # Run enhancement loop and assign full turn history
+                enhanced_turns = self._get_turns(
+                    model_callback=model_callback,
+                    turns=inner_turns,
+                    simulator_model=simulator_model,
+                )
+
+                attack.turn_history = enhanced_turns
+
+            result[vuln_type] = attacks
+
+        return result
+
+    async def a_enhance(
+        self,
+        vulnerability: "BaseVulnerability",
+        model_callback: CallbackType,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+        turns: Optional[List[RTTurn]] = None,
+    ) -> dict:
+        from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
+
+        # Simulate and group attacks asynchronously
+        simulated_attacks = await vulnerability.a_simulate_attacks()
+        grouped_attacks = group_attacks_by_vulnerability_type(simulated_attacks)
+
+        result = {}
+
+        for vuln_type, attacks in grouped_attacks.items():
+            async def enhance_attack(attack):
+                # Defensive copy of base turns
+                inner_turns = list(turns) if turns else []
+
+                # Case 1: No turns or ends in user — generate assistant response
+                if len(inner_turns) == 0 or inner_turns[-1].role == "user":
+                    inner_turns = [RTTurn(role="user", content=attack.input)]
+                    assistant_response = await model_callback(attack.input, inner_turns)
+                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+
+                # Case 2: Ends in assistant — rebuild last user+assistant pair
+                elif inner_turns[-1].role == "assistant":
+                    user_turn_content = None
+                    for turn in reversed(inner_turns[:-1]):
+                        if turn.role == "user":
+                            user_turn_content = turn.content
+                            break
+
+                    if user_turn_content:
+                        inner_turns = [
+                            RTTurn(role="user", content=user_turn_content),
+                            RTTurn(role="assistant", content=inner_turns[-1].content),
+                        ]
+                    else:
+                        inner_turns = [RTTurn(role="user", content=attack.input)]
+                        assistant_response = await model_callback(attack.input, inner_turns)
+                        inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+
+                else:
+                    # Fallback for unexpected structure
+                    inner_turns = [RTTurn(role="user", content=attack.input)]
+                    assistant_response = await model_callback(attack.input, inner_turns)
+                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+
+                # Run async enhancement and store turn history
+                attack.turn_history = await self._a_get_turns(
+                    model_callback=model_callback,
+                    turns=inner_turns,
+                    simulator_model=simulator_model,
+                )
+
+                return attack
+
+            # Run all attacks in this vulnerability group concurrently
+            enhanced_attacks = await asyncio.gather(
+                *(enhance_attack(attack) for attack in attacks)
+            )
+            result[vuln_type] = enhanced_attacks
+
+        return result
+
 
     ##################################################
     ### Sync Utils ###################################
