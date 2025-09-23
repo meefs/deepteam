@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from tqdm import tqdm
-from typing import Optional, Union, List
+from typing import Optional, Union, List, Dict
 import asyncio
 
 from deepeval.models import DeepEvalBaseLLM
@@ -25,6 +25,8 @@ from deepteam.attacks.attack_simulator.utils import (
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.test_case.test_case import RTTurn
+from deepteam.vulnerabilities.types import VulnerabilityType
+from deepteam.vulnerabilities import BaseVulnerability
 
 
 class SequentialJailbreak(BaseAttack):
@@ -56,6 +58,8 @@ class SequentialJailbreak(BaseAttack):
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+        vulnerability: str = None,
+        vulnerability_type: str = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
@@ -68,6 +72,8 @@ class SequentialJailbreak(BaseAttack):
             desc=f"🎯 Sequential Jailbreak ({self.attack_type})",
             leave=False,
         )
+
+        vulnerability_data = f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
 
         original_attack = None
         for turn in reversed(turns):
@@ -84,11 +90,11 @@ class SequentialJailbreak(BaseAttack):
 
         for _ in range(self.num_turns):
             if self.attack_type == "question_bank":
-                rewrite_prompt = SequentialBreakTemplate.rewrite_question_bank_prompt(current_attack)
+                rewrite_prompt = SequentialBreakTemplate.rewrite_question_bank_prompt(current_attack, vulnerability_data)
             elif self.attack_type == "game_environment":
-                rewrite_prompt = SequentialBreakTemplate.rewrite_game_environment_prompt(current_attack)
+                rewrite_prompt = SequentialBreakTemplate.rewrite_game_environment_prompt(current_attack, vulnerability_data)
             else:
-                rewrite_prompt = SequentialBreakTemplate.rewrite_dialogue_prompt(current_attack)
+                rewrite_prompt = SequentialBreakTemplate.rewrite_dialogue_prompt(current_attack, vulnerability_data)
 
             rewritten_res: RewrittenDialogue = generate(rewrite_prompt, RewrittenDialogue, self.simulator_model)
             rewritten_content = rewritten_res.paraphrased_version
@@ -115,17 +121,17 @@ class SequentialJailbreak(BaseAttack):
                 return turns
 
             if self.attack_type == "question_bank":
-                judge_prompt = SequentialBreakTemplate.question_bank_judge(original_attack, final_prompt, assistant_response)
+                judge_prompt = SequentialBreakTemplate.question_bank_judge(original_attack, final_prompt, assistant_response, vulnerability_data)
                 judge_res: QuestionBankJudge = generate(judge_prompt, QuestionBankJudge, self.simulator_model)
                 eval_flag = (judge_res.classification == "Harmful")
                 eval_percentage = getattr(judge_res, 'score', 0)
             elif self.attack_type == "game_environment":
-                judge_prompt = SequentialBreakTemplate.game_environment_judge(original_attack, final_prompt, assistant_response)
+                judge_prompt = SequentialBreakTemplate.game_environment_judge(original_attack, final_prompt, assistant_response, vulnerability_data)
                 judge_res: GameEnvironmentJudge = generate(judge_prompt, GameEnvironmentJudge, self.simulator_model)
                 eval_flag = (judge_res.classification == "Harmful")
                 eval_percentage = getattr(judge_res, 'score', 0)
             else:
-                judge_prompt = SequentialBreakTemplate.dialogue_judge(original_attack, final_prompt, assistant_response)
+                judge_prompt = SequentialBreakTemplate.dialogue_judge(original_attack, final_prompt, assistant_response, vulnerability_data)
                 judge_res: DialogueJudge = generate(judge_prompt, DialogueJudge, self.simulator_model)
                 eval_flag = (judge_res.classification == "Harmful")
                 eval_percentage = getattr(judge_res, 'score', 0)
@@ -153,6 +159,8 @@ class SequentialJailbreak(BaseAttack):
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+        vulnerability: str = None,
+        vulnerability_type: str = None,
     ) -> List[RTTurn]:
         self.simulator_model, _ = initialize_model(simulator_model)
         self.model_callback = model_callback
@@ -163,6 +171,8 @@ class SequentialJailbreak(BaseAttack):
             desc=f"🎯 Sequential Jailbreak ({self.attack_type})",
             leave=False,
         )
+
+        vulnerability_data = f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
 
         if turns is None:
             turns = []
@@ -182,11 +192,11 @@ class SequentialJailbreak(BaseAttack):
 
         for _ in range(self.num_turns):
             if self.attack_type == "question_bank":
-                rewrite_prompt = SequentialBreakTemplate.rewrite_question_bank_prompt(current_attack)
+                rewrite_prompt = SequentialBreakTemplate.rewrite_question_bank_prompt(current_attack, vulnerability_data)
             elif self.attack_type == "game_environment":
-                rewrite_prompt = SequentialBreakTemplate.rewrite_game_environment_prompt(current_attack)
+                rewrite_prompt = SequentialBreakTemplate.rewrite_game_environment_prompt(current_attack, vulnerability_data)
             else:
-                rewrite_prompt = SequentialBreakTemplate.rewrite_dialogue_prompt(current_attack)
+                rewrite_prompt = SequentialBreakTemplate.rewrite_dialogue_prompt(current_attack, vulnerability_data)
 
             rewritten_res: RewrittenDialogue = await a_generate(rewrite_prompt, RewrittenDialogue, self.simulator_model)
             rewritten_content = rewritten_res.paraphrased_version
@@ -213,13 +223,13 @@ class SequentialJailbreak(BaseAttack):
                 return turns
 
             if self.attack_type == "question_bank":
-                judge_prompt = SequentialBreakTemplate.question_bank_judge(original_attack, final_prompt, assistant_response)
+                judge_prompt = SequentialBreakTemplate.question_bank_judge(original_attack, final_prompt, assistant_response, vulnerability_data)
                 judge_res: QuestionBankJudge = await a_generate(judge_prompt, QuestionBankJudge, self.simulator_model)
             elif self.attack_type == "game_environment":
-                judge_prompt = SequentialBreakTemplate.game_environment_judge(original_attack, final_prompt, assistant_response)
+                judge_prompt = SequentialBreakTemplate.game_environment_judge(original_attack, final_prompt, assistant_response, vulnerability_data)
                 judge_res: GameEnvironmentJudge = await a_generate(judge_prompt, GameEnvironmentJudge, self.simulator_model)
             else:
-                judge_prompt = SequentialBreakTemplate.dialogue_judge(original_attack, final_prompt, assistant_response)
+                judge_prompt = SequentialBreakTemplate.dialogue_judge(original_attack, final_prompt, assistant_response, vulnerability_data)
                 judge_res: DialogueJudge = await a_generate(judge_prompt, DialogueJudge, self.simulator_model)
 
             pbar.update(1)
@@ -247,7 +257,7 @@ class SequentialJailbreak(BaseAttack):
         model_callback: CallbackType,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> dict:
+    ) -> Dict[VulnerabilityType, List[List[RTTurn]]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
         # Simulate and group attacks
         simulated_attacks = group_attacks_by_vulnerability_type(
@@ -301,7 +311,7 @@ class SequentialJailbreak(BaseAttack):
 
                 attack.turn_history = enhanced_turns
 
-            result[vuln_type] = attacks
+            result[vuln_type] = [attack.turn_history for attack in attacks]
 
         return result
 
@@ -311,7 +321,7 @@ class SequentialJailbreak(BaseAttack):
         model_callback: CallbackType,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> dict:
+    ) -> Dict[VulnerabilityType, List[List[RTTurn]]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 
         # Simulate and group attacks asynchronously
@@ -368,7 +378,7 @@ class SequentialJailbreak(BaseAttack):
             enhanced_attacks = await asyncio.gather(
                 *(enhance_attack(attack) for attack in attacks)
             )
-            result[vuln_type] = enhanced_attacks
+            result[vuln_type] = [enhanced_attack.turn_history for enhanced_attack in enhanced_attacks]
 
         return result
 
