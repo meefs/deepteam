@@ -292,10 +292,10 @@ class AttackSimulator:
 
             try:
                 res = attack._get_turns(
-                    model_callback=self.model_callback, 
-                    turns=turns, 
+                    model_callback=self.model_callback,
+                    turns=turns,
                     vulnerability=simulated_attack.vulnerability,
-                    vulnerability_type=simulated_attack.vulnerability_type
+                    vulnerability_type=simulated_attack.vulnerability_type,
                 )
 
                 simulated_attack.turn_history = res
@@ -308,7 +308,9 @@ class AttackSimulator:
                     raise
             except Exception as e:
                 if ignore_errors:
-                    simulated_attack.error = f"Error enhancing multi-turn attack: {str(e)}"
+                    simulated_attack.error = (
+                        f"Error enhancing multi-turn attack: {str(e)}"
+                    )
                     return simulated_attack
                 else:
                     raise
@@ -357,13 +359,14 @@ class AttackSimulator:
                 raise
         except Exception as e:
             if ignore_errors:
-                simulated_attack.error = f"Error enhancing regular attack: {str(e)}"
+                simulated_attack.error = (
+                    f"Error enhancing regular attack: {str(e)}"
+                )
                 return simulated_attack
             else:
                 raise
 
         return simulated_attack
-
 
     async def a_enhance_attack(
         self,
@@ -400,12 +403,12 @@ class AttackSimulator:
 
             try:
                 res = await attack._a_get_turns(
-                    model_callback=self.model_callback, 
-                    turns=turns, 
+                    model_callback=self.model_callback,
+                    turns=turns,
                     vulnerability=simulated_attack.vulnerability,
-                    vulnerability_type=simulated_attack.vulnerability_type
+                    vulnerability_type=simulated_attack.vulnerability_type,
                 )
-                
+
                 simulated_attack.turn_history = res
 
             except ModelRefusalError as e:

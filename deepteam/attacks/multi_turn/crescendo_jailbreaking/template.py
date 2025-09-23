@@ -5,7 +5,10 @@ class JailBreakingCrescendoTemplate:
 
     @staticmethod
     def crescendo_system_prompt(
-        conversation_objective, max_rounds, current_round, vulnerability_data: str = ""
+        conversation_objective,
+        max_rounds,
+        current_round,
+        vulnerability_data: str = "",
     ):
         return dedent(
             f"""

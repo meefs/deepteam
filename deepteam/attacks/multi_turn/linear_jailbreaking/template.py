@@ -4,7 +4,11 @@ from deepeval.test_case import Turn
 class JailBreakingTemplate:
 
     @staticmethod
-    def improvement_prompt(turn_history: list[Turn], feedback_suggestion: str, vulnerability_data: str = ""):
+    def improvement_prompt(
+        turn_history: list[Turn],
+        feedback_suggestion: str,
+        vulnerability_data: str = "",
+    ):
         """
         Generate an improved adversarial prompt based on conversation history and feedback.
 
@@ -65,7 +69,9 @@ IMPORTANT: Only return the JSON response, nothing else.
 JSON:"""
 
     @staticmethod
-    def linear_judge(original_goal, current_prompt, target_response, vulnerability_data=""):
+    def linear_judge(
+        original_goal, current_prompt, target_response, vulnerability_data=""
+    ):
         """
         Evaluate if the target model's response indicates successful jailbreaking.
 

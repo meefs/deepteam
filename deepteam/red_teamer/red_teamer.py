@@ -77,7 +77,7 @@ class RedTeamer:
                 raise ValueError(
                     "You must either provide a 'framework' or 'vulnerabilities'."
                 )
-        
+
         self.async_mode = async_mode
 
         if self.async_mode:
@@ -159,7 +159,10 @@ class RedTeamer:
                     Union[SingleTurnRTTestCase, MultiTurnRTTestCase]
                 ] = []
 
-                for vulnerability_type, attacks in vulnerability_type_to_attacks_map.items():
+                for (
+                    vulnerability_type,
+                    attacks,
+                ) in vulnerability_type_to_attacks_map.items():
                     test_cases = self._evaluate_vulnerability_type(
                         model_callback,
                         vulnerabilities,
@@ -168,7 +171,7 @@ class RedTeamer:
                         ignore_errors=ignore_errors,
                     )
                     red_teaming_test_cases.extend(test_cases)
-                    
+
                     pbar.update(len(attacks))
 
                 pbar.close()
@@ -183,7 +186,7 @@ class RedTeamer:
                     test_cases=red_teaming_test_cases
                 )
                 self._print_risk_assessment()
-                
+
                 return self.risk_assessment
 
     async def a_red_team(
@@ -301,7 +304,7 @@ class RedTeamer:
             )
             self._print_risk_assessment()
             return self.risk_assessment
-        
+
     def _attack(
         self,
         model_callback: CallbackType,
@@ -495,7 +498,7 @@ class RedTeamer:
                 else:
                     raise
             return red_teaming_test_case
-    
+
     def _evaluate_vulnerability_type(
         self,
         model_callback: CallbackType,
@@ -507,14 +510,16 @@ class RedTeamer:
         red_teaming_test_cases = []
 
         for simulated_attack in simulated_attacks:
-            red_teaming_test_cases.append(self._attack(
-                model_callback=model_callback,
-                simulated_attack=simulated_attack,
-                vulnerabilities=vulnerabilities,
-                vulnerability=simulated_attack.vulnerability,
-                vulnerability_type=vulnerability_type,
-                ignore_errors=ignore_errors,
-            ))
+            red_teaming_test_cases.append(
+                self._attack(
+                    model_callback=model_callback,
+                    simulated_attack=simulated_attack,
+                    vulnerabilities=vulnerabilities,
+                    vulnerability=simulated_attack.vulnerability,
+                    vulnerability_type=vulnerability_type,
+                    ignore_errors=ignore_errors,
+                )
+            )
 
         return red_teaming_test_cases
 

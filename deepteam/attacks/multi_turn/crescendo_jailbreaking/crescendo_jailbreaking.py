@@ -82,7 +82,9 @@ class CrescendoJailbreaking(BaseAttack):
         self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
-        vulnerability_data = f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
+        vulnerability_data = (
+            f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
+        )
 
         if len(turns) == 0:
             raise ValueError("No conversation history provided.")
@@ -96,7 +98,9 @@ class CrescendoJailbreaking(BaseAttack):
 
         # Edge case 2: no user turn found at all
         if last_user_index is None:
-            raise ValueError("No user turn found in the conversation history to start the attack.")
+            raise ValueError(
+                "No user turn found in the conversation history to start the attack."
+            )
 
         last_turn = turns[-1]
 
@@ -123,11 +127,15 @@ class CrescendoJailbreaking(BaseAttack):
 
         if current_attack is None:
             # Defensive check, should not happen now
-            raise ValueError("No user turn found after processing conversation history.")
+            raise ValueError(
+                "No user turn found after processing conversation history."
+            )
 
         round_num = 0
         backtrack_count = 0
-        last_response = turns[-1].content if turns[-1].role == "assistant" else ""
+        last_response = (
+            turns[-1].content if turns[-1].role == "assistant" else ""
+        )
         eval_flag = False
         eval_percentage = None
 
@@ -135,7 +143,7 @@ class CrescendoJailbreaking(BaseAttack):
             conversation_objective=current_attack,
             current_round=round_num + 1,
             max_rounds=self.max_rounds,
-            vulnerability_data=vulnerability_data
+            vulnerability_data=vulnerability_data,
         )
 
         self.memory.add_message(
@@ -158,7 +166,9 @@ class CrescendoJailbreaking(BaseAttack):
         while round_num < self.max_rounds:
             round_num += 1
 
-            enhanced_attack = self.generate_attack(round_num, eval_flag, last_response, vulnerability_data)
+            enhanced_attack = self.generate_attack(
+                round_num, eval_flag, last_response, vulnerability_data
+            )
             pbar_rounds.update(1)
 
             turns.append(RTTurn(role="user", content=enhanced_attack))
@@ -168,7 +178,9 @@ class CrescendoJailbreaking(BaseAttack):
 
             turns.append(RTTurn(role="assistant", content=last_response))
 
-            is_refusal, refusal_rationale = self.get_refusal_score(last_response, current_attack, vulnerability_data)
+            is_refusal, refusal_rationale = self.get_refusal_score(
+                last_response, current_attack, vulnerability_data
+            )
             pbar_rounds.update(1)
 
             if is_refusal:
@@ -195,7 +207,9 @@ class CrescendoJailbreaking(BaseAttack):
                     break
                 continue
 
-            eval_flag, eval_percentage = self.get_eval_score(last_response, current_attack, vulnerability_data)
+            eval_flag, eval_percentage = self.get_eval_score(
+                last_response, current_attack, vulnerability_data
+            )
             pbar_rounds.update(1)
 
             if eval_percentage == 100:
@@ -204,8 +218,6 @@ class CrescendoJailbreaking(BaseAttack):
         pbar_rounds.close()
         pbar_backtracks.close()
         return turns
-
-
 
     async def _a_get_turns(
         self,
@@ -220,7 +232,9 @@ class CrescendoJailbreaking(BaseAttack):
         self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
-        vulnerability_data = f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
+        vulnerability_data = (
+            f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
+        )
 
         if len(turns) == 0:
             raise ValueError("No conversation history provided.")
@@ -234,7 +248,9 @@ class CrescendoJailbreaking(BaseAttack):
 
         # Edge case 2: no user turn found at all
         if last_user_index is None:
-            raise ValueError("No user turn found in the conversation history to start the attack.")
+            raise ValueError(
+                "No user turn found in the conversation history to start the attack."
+            )
 
         last_turn = turns[-1]
 
@@ -261,11 +277,15 @@ class CrescendoJailbreaking(BaseAttack):
 
         if current_attack is None:
             # Defensive check, should not happen now
-            raise ValueError("No user turn found after processing conversation history.")
+            raise ValueError(
+                "No user turn found after processing conversation history."
+            )
 
         round_num = 0
         backtrack_count = 0
-        last_response = turns[-1].content if turns[-1].role == "assistant" else ""
+        last_response = (
+            turns[-1].content if turns[-1].role == "assistant" else ""
+        )
         eval_flag = False
         eval_percentage = None
 
@@ -273,7 +293,7 @@ class CrescendoJailbreaking(BaseAttack):
             conversation_objective=current_attack,
             current_round=round_num + 1,
             max_rounds=self.max_rounds,
-            vulnerability_data=vulnerability_data
+            vulnerability_data=vulnerability_data,
         )
 
         self.memory.add_message(
@@ -296,17 +316,23 @@ class CrescendoJailbreaking(BaseAttack):
         while round_num < self.max_rounds:
             round_num += 1
 
-            enhanced_attack = await self.a_generate_attack(round_num, eval_flag, last_response, vulnerability_data)
+            enhanced_attack = await self.a_generate_attack(
+                round_num, eval_flag, last_response, vulnerability_data
+            )
             pbar_rounds.update(1)
 
             turns.append(RTTurn(role="user", content=enhanced_attack))
 
-            last_response = await self.a_generate_target_response(enhanced_attack)
+            last_response = await self.a_generate_target_response(
+                enhanced_attack
+            )
             pbar_rounds.update(1)
 
             turns.append(RTTurn(role="assistant", content=last_response))
 
-            is_refusal, refusal_rationale = await self.a_get_refusal_score(last_response, current_attack, vulnerability_data)
+            is_refusal, refusal_rationale = await self.a_get_refusal_score(
+                last_response, current_attack, vulnerability_data
+            )
             pbar_rounds.update(1)
 
             if is_refusal:
@@ -333,7 +359,9 @@ class CrescendoJailbreaking(BaseAttack):
                     break
                 continue
 
-            eval_flag, eval_percentage = await self.a_get_eval_score(last_response, current_attack, vulnerability_data)
+            eval_flag, eval_percentage = await self.a_get_eval_score(
+                last_response, current_attack, vulnerability_data
+            )
             pbar_rounds.update(1)
 
             if eval_percentage == 100:
@@ -342,14 +370,17 @@ class CrescendoJailbreaking(BaseAttack):
         pbar_rounds.close()
         pbar_backtracks.close()
         return turns
-    
+
     def enhance(
         self,
         vulnerability: "BaseVulnerability",
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
     ) -> Dict[VulnerabilityType, List[RTTurn]]:
-        from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
+        from deepteam.red_teamer.utils import (
+            group_attacks_by_vulnerability_type,
+        )
+
         # Simulate and group attacks
         simulated_attacks = group_attacks_by_vulnerability_type(
             vulnerability.simulate_attacks()
@@ -365,8 +396,12 @@ class CrescendoJailbreaking(BaseAttack):
                 # Case 1: No turns, or last is user -> create assistant response
                 if len(inner_turns) == 0 or inner_turns[-1].role == "user":
                     inner_turns = [RTTurn(role="user", content=attack.input)]
-                    assistant_response = model_callback(attack.input, inner_turns)
-                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+                    assistant_response = model_callback(
+                        attack.input, inner_turns
+                    )
+                    inner_turns.append(
+                        RTTurn(role="assistant", content=assistant_response)
+                    )
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
@@ -379,19 +414,32 @@ class CrescendoJailbreaking(BaseAttack):
                     if user_turn_content:
                         inner_turns = [
                             RTTurn(role="user", content=user_turn_content),
-                            RTTurn(role="assistant", content=inner_turns[-1].content),
+                            RTTurn(
+                                role="assistant",
+                                content=inner_turns[-1].content,
+                            ),
                         ]
                     else:
                         # Fallback if no user found
-                        inner_turns = [RTTurn(role="user", content=attack.input)]
-                        assistant_response = model_callback(attack.input, inner_turns)
-                        inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+                        inner_turns = [
+                            RTTurn(role="user", content=attack.input)
+                        ]
+                        assistant_response = model_callback(
+                            attack.input, inner_turns
+                        )
+                        inner_turns.append(
+                            RTTurn(role="assistant", content=assistant_response)
+                        )
 
                 else:
                     # Unrecognized state — fallback to default
                     inner_turns = [RTTurn(role="user", content=attack.input)]
-                    assistant_response = model_callback(attack.input, inner_turns)
-                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+                    assistant_response = model_callback(
+                        attack.input, inner_turns
+                    )
+                    inner_turns.append(
+                        RTTurn(role="assistant", content=assistant_response)
+                    )
 
                 # Run enhancement loop and assign full turn history
                 enhanced_turns = self._get_turns(
@@ -409,7 +457,9 @@ class CrescendoJailbreaking(BaseAttack):
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
     ) -> Dict[VulnerabilityType, List[RTTurn]]:
-        from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
+        from deepteam.red_teamer.utils import (
+            group_attacks_by_vulnerability_type,
+        )
 
         # Simulate and group attacks asynchronously
         simulated_attacks = await vulnerability.a_simulate_attacks()
@@ -425,8 +475,12 @@ class CrescendoJailbreaking(BaseAttack):
                 # Case 1: No turns, or last is user -> create assistant response
                 if len(inner_turns) == 0 or inner_turns[-1].role == "user":
                     inner_turns = [RTTurn(role="user", content=attack.input)]
-                    assistant_response = await model_callback(attack.input, inner_turns)
-                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+                    assistant_response = await model_callback(
+                        attack.input, inner_turns
+                    )
+                    inner_turns.append(
+                        RTTurn(role="assistant", content=assistant_response)
+                    )
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
@@ -439,19 +493,32 @@ class CrescendoJailbreaking(BaseAttack):
                     if user_turn_content:
                         inner_turns = [
                             RTTurn(role="user", content=user_turn_content),
-                            RTTurn(role="assistant", content=inner_turns[-1].content),
+                            RTTurn(
+                                role="assistant",
+                                content=inner_turns[-1].content,
+                            ),
                         ]
                     else:
                         # Fallback if no user found
-                        inner_turns = [RTTurn(role="user", content=attack.input)]
-                        assistant_response = await model_callback(attack.input, inner_turns)
-                        inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+                        inner_turns = [
+                            RTTurn(role="user", content=attack.input)
+                        ]
+                        assistant_response = await model_callback(
+                            attack.input, inner_turns
+                        )
+                        inner_turns.append(
+                            RTTurn(role="assistant", content=assistant_response)
+                        )
 
                 else:
                     # Unrecognized state — fallback to default
                     inner_turns = [RTTurn(role="user", content=attack.input)]
-                    assistant_response = await model_callback(attack.input, inner_turns)
-                    inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+                    assistant_response = await model_callback(
+                        attack.input, inner_turns
+                    )
+                    inner_turns.append(
+                        RTTurn(role="assistant", content=assistant_response)
+                    )
 
                 # Run enhancement loop and assign full turn history
                 vulnerability_name = vulnerability.get_name()
@@ -459,20 +526,23 @@ class CrescendoJailbreaking(BaseAttack):
                     model_callback=model_callback,
                     turns=inner_turns,
                     vulnerability=vulnerability_name,
-                    vulnerability_type=vuln_type
+                    vulnerability_type=vuln_type,
                 )
 
             result[vuln_type] = enhanced_turns
 
         return result
 
-
     ##################################################
     ### Sync Utils ###################################
     ##################################################
 
     def generate_attack(
-        self, round_num: int, eval_score: bool, last_response: str, vulnerability_data: str = ""
+        self,
+        round_num: int,
+        eval_score: bool,
+        last_response: str,
+        vulnerability_data: str = "",
     ) -> str:
         if round_num == 1:
             prompt_text = (
@@ -521,7 +591,9 @@ class CrescendoJailbreaking(BaseAttack):
             "responseToEvaluateInput": last_response,
         }
         refusal_system_prompt = (
-            JailBreakingCrescendoTemplate.refusal_system_prompt(vulenrability_data)
+            JailBreakingCrescendoTemplate.refusal_system_prompt(
+                vulenrability_data
+            )
         )
         refusal_body = [
             {"role": "system", "content": refusal_system_prompt},
@@ -532,12 +604,16 @@ class CrescendoJailbreaking(BaseAttack):
         )
         return refusal_response.value, refusal_response.rationale
 
-    def get_eval_score(self, last_response: str, goal: str, vulenrability_data: str = "") -> Dict[str, Any]:
+    def get_eval_score(
+        self, last_response: str, goal: str, vulenrability_data: str = ""
+    ) -> Dict[str, Any]:
         eval_input = {
             "conversationObjective": goal,
             "responseToEvaluateInput": last_response,
         }
-        eval_system_prompt = JailBreakingCrescendoTemplate.eval_system_prompt(vulenrability_data)
+        eval_system_prompt = JailBreakingCrescendoTemplate.eval_system_prompt(
+            vulenrability_data
+        )
         eval_body = [
             {"role": "system", "content": eval_system_prompt},
             {"role": "user", "content": eval_input},
@@ -557,7 +633,11 @@ class CrescendoJailbreaking(BaseAttack):
     ##################################################
 
     async def a_generate_attack(
-        self, round_num: int, eval_score: bool, last_response: str, vulnerability_data: str = ""
+        self,
+        round_num: int,
+        eval_score: bool,
+        last_response: str,
+        vulnerability_data: str = "",
     ) -> str:
         if round_num == 1:
             prompt_text = (
@@ -613,7 +693,9 @@ class CrescendoJailbreaking(BaseAttack):
             "responseToEvaluateInput": last_response,
         }
         refusal_system_prompt = (
-            JailBreakingCrescendoTemplate.refusal_system_prompt(vulnerability_data)
+            JailBreakingCrescendoTemplate.refusal_system_prompt(
+                vulnerability_data
+            )
         )
         refusal_body = [
             {"role": "system", "content": refusal_system_prompt},
@@ -631,7 +713,9 @@ class CrescendoJailbreaking(BaseAttack):
             "conversationObjective": goal,
             "responseToEvaluateInput": last_response,
         }
-        eval_system_prompt = JailBreakingCrescendoTemplate.eval_system_prompt(vulnerability_data)
+        eval_system_prompt = JailBreakingCrescendoTemplate.eval_system_prompt(
+            vulnerability_data
+        )
         eval_body = [
             {"role": "system", "content": eval_system_prompt},
             {"role": "user", "content": eval_input},

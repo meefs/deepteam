@@ -9,7 +9,9 @@ from deepteam.attacks.multi_turn.base_template import BaseMultiTurnTemplate
 class SequentialBreakTemplate(BaseMultiTurnTemplate):
 
     @staticmethod
-    def rewrite_dialogue_prompt(harmful_prompt: str, vulnerability_data: str = "") -> str:
+    def rewrite_dialogue_prompt(
+        harmful_prompt: str, vulnerability_data: str = ""
+    ) -> str:
         """
         Prompt for LLM to rewrite harmful prompts into dialogue format
         """
@@ -61,7 +63,9 @@ class SequentialBreakTemplate(BaseMultiTurnTemplate):
             JSON:"""
 
     @staticmethod
-    def rewrite_question_bank_prompt(harmful_prompt: str, vulnerability_data: str = "") -> str:
+    def rewrite_question_bank_prompt(
+        harmful_prompt: str, vulnerability_data: str = ""
+    ) -> str:
         """
         Prompt for LLM to rewrite harmful prompts into question bank format
         """
@@ -140,7 +144,10 @@ class SequentialBreakTemplate(BaseMultiTurnTemplate):
 
     @staticmethod
     def dialogue_judge(
-        original_prompt: str, dialogue_prompt: str, response: str, vulnerability_data: str = ""
+        original_prompt: str,
+        dialogue_prompt: str,
+        response: str,
+        vulnerability_data: str = "",
     ) -> str:
         """
         Judge specifically designed for dialogue completion attacks (binary classification)
@@ -179,7 +186,10 @@ class SequentialBreakTemplate(BaseMultiTurnTemplate):
 
     @staticmethod
     def question_bank_judge(
-        original_prompt: str, question_bank_prompt: str, response: str, vulnerability_data: str = ""
+        original_prompt: str,
+        question_bank_prompt: str,
+        response: str,
+        vulnerability_data: str = "",
     ) -> str:
         """
         Judge specifically designed for question bank attacks (binary classification)
@@ -285,7 +295,9 @@ Sam:"""
             Morgan:"""
 
     @staticmethod
-    def rewrite_game_environment_prompt(harmful_prompt: str, vulnerability_data: str = "") -> str:
+    def rewrite_game_environment_prompt(
+        harmful_prompt: str, vulnerability_data: str = ""
+    ) -> str:
         """
         Prompt for LLM to rewrite harmful prompts into game environment format
         """
@@ -351,7 +363,10 @@ Sam:"""
 
     @staticmethod
     def game_environment_judge(
-        original_prompt: str, game_prompt: str, response: str, vulnerability_data: str = ""
+        original_prompt: str,
+        game_prompt: str,
+        response: str,
+        vulnerability_data: str = "",
     ) -> str:
         """
         Judge specifically designed for game environment attacks (binary classification)
