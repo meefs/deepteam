@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from tqdm import tqdm
-from typing import Optional, Union, List
+from typing import Optional, Union, List, Dict
 import asyncio
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
@@ -20,6 +20,8 @@ from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.errors import ModelRefusalError
 from deepteam.test_case.test_case import RTTurn
+from deepteam.vulnerabilities.types import VulnerabilityType
+from deepteam.vulnerabilities import BaseVulnerability
 
 
 class BadLikertJudge(BaseAttack):
@@ -28,19 +30,27 @@ class BadLikertJudge(BaseAttack):
         weight: int = 1,
         category: str = "bias",
         num_turns: int = 5,
+        enable_refinement: bool = True
     ):
         self.weight = weight
         self.category = category
         self.num_turns = num_turns
+        self.enable_refinement = enable_refinement
 
     def _get_turns(
         self,
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+        vulnerability: str = None,
+        vulnerability_type: str = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
+
+        self.simulator_model, _ = initialize_model(simulator_model)
+
+        vulnerability_data = f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
 
         pbar = tqdm(
             total=self.num_turns,
@@ -70,7 +80,7 @@ class BadLikertJudge(BaseAttack):
         for _ in range(self.num_turns):
             # Judge current assistant response
             judge_prompt = BadLikertJudgeTemplate.likert_judge(
-                original_attack, current_attack, assistant_response
+                original_attack, current_attack, assistant_response, vulnerability_data
             )
             judge_res: BLJJudge = generate(judge_prompt, BLJJudge, self.simulator_model)
 
@@ -81,7 +91,7 @@ class BadLikertJudge(BaseAttack):
 
             # Generate new prompt variation
             improvement_prompt = BadLikertJudgeTemplate.likert_generate_examples(
-                current_attack, self.category
+                current_attack, self.category, vulnerability_data
             )
             improvement_response = model_callback(improvement_prompt, turns)
 
@@ -99,8 +109,13 @@ class BadLikertJudge(BaseAttack):
 
             if refusal_res.classification == "Refusal":
                 raise ModelRefusalError(entity=self.get_name())
-
-            current_attack = next_attack
+        
+            if self.enable_refinement and self.num_turns >= 3:
+                current_attack = BadLikertJudgeTemplate.likert_refine_score_3(
+                    next_attack, vulnerability_data
+                )
+            else:
+                current_attack = next_attack
             assistant_response = model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
             turns.append(RTTurn(role="assistant", content=assistant_response))
@@ -115,9 +130,15 @@ class BadLikertJudge(BaseAttack):
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+        vulnerability: str = None,
+        vulnerability_type: str = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
+
+        self.simulator_model, _ = initialize_model(simulator_model)
+
+        vulnerability_data = f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
 
         pbar = tqdm(
             total=self.num_turns,
@@ -146,7 +167,7 @@ class BadLikertJudge(BaseAttack):
 
         for _ in range(self.num_turns):
             judge_prompt = BadLikertJudgeTemplate.likert_judge(
-                original_attack, current_attack, assistant_response
+                original_attack, current_attack, assistant_response, vulnerability_data
             )
             judge_res: BLJJudge = await a_generate(judge_prompt, BLJJudge, self.simulator_model)
 
@@ -157,7 +178,7 @@ class BadLikertJudge(BaseAttack):
 
             # Generate new attack candidate
             improvement_prompt = BadLikertJudgeTemplate.likert_generate_examples(
-                current_attack, self.category
+                current_attack, self.category, vulnerability_data
             )
             improvement_response = await model_callback(improvement_prompt, turns)
 
@@ -176,7 +197,12 @@ class BadLikertJudge(BaseAttack):
             if refusal_res.classification == "Refusal":
                 raise ModelRefusalError(entity=self.get_name())
 
-            current_attack = next_attack
+            if self.enable_refinement and self.num_turns >= 3:
+                current_attack = BadLikertJudgeTemplate.likert_refine_score_3(
+                    next_attack, vulnerability_data
+                )
+            else:
+                current_attack = next_attack
             assistant_response = await model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
             turns.append(RTTurn(role="assistant", content=assistant_response))
@@ -188,11 +214,11 @@ class BadLikertJudge(BaseAttack):
     
     def enhance(
         self,
-        vulnerability: "BaseVulnerability",
+        vulnerability: BaseVulnerability,
         model_callback: CallbackType,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> dict:
+    ) -> Dict[VulnerabilityType, List[List[RTTurn]]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
         # Simulate and group attacks
         simulated_attacks = group_attacks_by_vulnerability_type(
@@ -238,25 +264,28 @@ class BadLikertJudge(BaseAttack):
                     inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
                 # Run enhancement loop and assign full turn history
+                vulnerability_name = vulnerability.get_name()
                 enhanced_turns = self._get_turns(
                     model_callback=model_callback,
                     turns=inner_turns,
                     simulator_model=simulator_model,
+                    vulnerability=vulnerability_name,
+                    vulnerability_type=vuln_type
                 )
 
                 attack.turn_history = enhanced_turns
 
-            result[vuln_type] = attacks
+            result[vuln_type] = [attack.turn_history for attack in attacks]
 
         return result
 
     async def a_enhance(
         self,
-        vulnerability: "BaseVulnerability",
+        vulnerability: BaseVulnerability,
         model_callback: CallbackType,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> dict:
+    ) -> Dict[VulnerabilityType, List[List[RTTurn]]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 
         # Simulate and group attacks asynchronously
@@ -301,10 +330,13 @@ class BadLikertJudge(BaseAttack):
                     inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
                 # Run async enhancement and store turn history
+                vulnerability_name = vulnerability.get_name()
                 attack.turn_history = await self._a_get_turns(
                     model_callback=model_callback,
                     turns=inner_turns,
                     simulator_model=simulator_model,
+                    vulnerability=vulnerability_name,
+                    vulnerability_type=vuln_type
                 )
 
                 return attack
@@ -313,7 +345,7 @@ class BadLikertJudge(BaseAttack):
             enhanced_attacks = await asyncio.gather(
                 *(enhance_attack(attack) for attack in attacks)
             )
-            result[vuln_type] = enhanced_attacks
+            result[vuln_type] = [enhanced_attack.turn_history for enhanced_attack in enhanced_attacks]
 
         return result
 
