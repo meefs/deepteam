@@ -9,7 +9,6 @@ class TestCrescendoJailbreaking:
 
     BIAS = Bias(types=["race"])
 
-
     def test_crescendo_jailbreaking_initialization(self):
         attack = CrescendoJailbreaking()
         assert attack.weight == 1

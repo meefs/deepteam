@@ -4,6 +4,7 @@ from deepteam.attacks.multi_turn import BadLikertJudge
 from deepteam.vulnerabilities import Bias
 from deepteam.test_case.test_case import RTTurn
 
+
 class TestBadLikertJudge:
 
     BIAS = Bias(types=["gender"])
@@ -38,7 +39,8 @@ class TestBadLikertJudge:
 
         # Test for various cases:
         type_to_turns = attack.enhance(
-            TestBadLikertJudge.BIAS, mock_callback,
+            TestBadLikertJudge.BIAS,
+            mock_callback,
         )
 
         user_only_turns_result = attack._get_turns(
@@ -49,7 +51,12 @@ class TestBadLikertJudge:
         )
 
         assert len(type_to_turns.keys()) == 1
-        assert isinstance(type_to_turns.get(TestBadLikertJudge.BIAS.types[0]), list) and all(isinstance(turn, RTTurn) for turn in type_to_turns.get(TestBadLikertJudge.BIAS.types[0]))
+        assert isinstance(
+            type_to_turns.get(TestBadLikertJudge.BIAS.types[0]), list
+        ) and all(
+            isinstance(turn, RTTurn)
+            for turn in type_to_turns.get(TestBadLikertJudge.BIAS.types[0])
+        )
         assert user_only_turns_result[1].role == "assistant"
         with pytest.raises(ValueError):
             attack._get_turns(mock_callback, assistant_only_turns)
@@ -76,7 +83,8 @@ class TestBadLikertJudge:
 
         # Test for various cases:
         type_to_turns = await attack.a_enhance(
-            TestBadLikertJudge.BIAS, mock_callback,
+            TestBadLikertJudge.BIAS,
+            mock_callback,
         )
 
         user_only_turns_result = await attack._a_get_turns(
@@ -87,7 +95,12 @@ class TestBadLikertJudge:
         )
 
         assert len(type_to_turns.keys()) == 1
-        assert isinstance(type_to_turns.get(TestBadLikertJudge.BIAS.types[0]), list) and all(isinstance(turn, RTTurn) for turn in type_to_turns.get(TestBadLikertJudge.BIAS.types[0]))
+        assert isinstance(
+            type_to_turns.get(TestBadLikertJudge.BIAS.types[0]), list
+        ) and all(
+            isinstance(turn, RTTurn)
+            for turn in type_to_turns.get(TestBadLikertJudge.BIAS.types[0])
+        )
         assert user_only_turns_result[1].role == "assistant"
         with pytest.raises(ValueError):
             await attack._a_get_turns(mock_callback, assistant_only_turns)
