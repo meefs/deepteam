@@ -288,35 +288,16 @@ class AttackSimulator:
                 return simulated_attack
 
             simulated_attack.attack_method = attack.get_name()
-            sig = inspect.signature(attack.enhance)
             turns = [RTTurn(role="user", content=attack_input)]
 
             try:
-                res = None
-                if (
-                    "simulator_model" in sig.parameters
-                    and "model_callback" in sig.parameters
-                    and "turns" in sig.parameters
-                ):
-                    res = attack._get_turns(
-                        model_callback=self.model_callback, 
-                        turns=turns, 
-                        simulator_model=self.simulator_model,
-                        vulnerability=simulated_attack.vulnerability,
-                        vulnerability_type=simulated_attack.vulnerability_type
-                    )
-                elif "simulator_model" in sig.parameters:
-                    res = attack._get_turns(
-                        turns=turns, 
-                        simulator_model=self.simulator_model
-                    )
-                elif "model_callback" in sig.parameters:
-                    res = attack._get_turns(
-                        turns=turns, 
-                        model_callback=self.model_callback
-                    )
-                else:
-                    res = attack._get_turns(turns=turns)
+                res = attack._get_turns(
+                    model_callback=self.model_callback, 
+                    turns=turns, 
+                    simulator_model=self.simulator_model,
+                    vulnerability=simulated_attack.vulnerability,
+                    vulnerability_type=simulated_attack.vulnerability_type
+                )
 
                 simulated_attack.turn_history = res
 
@@ -419,32 +400,14 @@ class AttackSimulator:
             turns = [RTTurn(role="user", content=attack_input)]
 
             try:
-                res = None
-                if (
-                    "simulator_model" in sig.parameters
-                    and "model_callback" in sig.parameters
-                    and "turns" in sig.parameters
-                ):
-                    res = await attack._a_get_turns(
-                        model_callback=self.model_callback, 
-                        turns=turns, 
-                        simulator_model=self.simulator_model,
-                        vulnerability=simulated_attack.vulnerability,
-                        vulnerability_type=simulated_attack.vulnerability_type
-                    )
-                elif "simulator_model" in sig.parameters:
-                    res = await attack._a_get_turns(
-                        attack=attack_input,
-                        simulator_model=self.simulator_model,
-                    )
-                elif "model_callback" in sig.parameters:
-                    res = await attack._a_get_turns(
-                        attack=attack_input,
-                        model_callback=self.model_callback,
-                    )
-                else:
-                    res = await attack._a_get_turns(attack=attack_input)
-
+                res = await attack._a_get_turns(
+                    model_callback=self.model_callback, 
+                    turns=turns, 
+                    simulator_model=self.simulator_model,
+                    vulnerability=simulated_attack.vulnerability,
+                    vulnerability_type=simulated_attack.vulnerability_type
+                )
+                
                 simulated_attack.turn_history = res
 
             except ModelRefusalError as e:
