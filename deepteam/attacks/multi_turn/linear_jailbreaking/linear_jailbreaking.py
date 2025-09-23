@@ -210,7 +210,7 @@ class LinearJailbreaking(BaseAttack):
         model_callback: CallbackType,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> Dict[VulnerabilityType, List[RTTurn]]:
+    ) -> Dict[VulnerabilityType, List[List[RTTurn]]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
         # Simulate and group attacks
         simulated_attacks = group_attacks_by_vulnerability_type(
@@ -265,7 +265,9 @@ class LinearJailbreaking(BaseAttack):
                     vulnerability_type=vuln_type
                 )
 
-            result[vuln_type] = enhanced_turns
+                attack.turn_history = enhanced_turns
+
+            result[vuln_type] = [attack.turn_history for attack in attacks]
 
         return result
 
@@ -275,7 +277,7 @@ class LinearJailbreaking(BaseAttack):
         model_callback: CallbackType,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> Dict[VulnerabilityType, List[RTTurn]]:
+    ) -> Dict[VulnerabilityType, List[List[RTTurn]]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 
         # Simulate and group attacks asynchronously
@@ -285,7 +287,7 @@ class LinearJailbreaking(BaseAttack):
         result = {}
 
         for vuln_type, attacks in grouped_attacks.items():
-            async def get_enhance_turns(attack):
+            async def enhance_attack(attack):
                 # Defensive copy of base turns
                 inner_turns = list(turns) if turns else []
 
@@ -321,7 +323,7 @@ class LinearJailbreaking(BaseAttack):
 
                 # Run async enhancement and store turn history
                 vulnerability_name = vulnerability.get_name()
-                enhanced_turns = await self._a_get_turns(
+                attack.turn_history = await self._a_get_turns(
                     model_callback=model_callback,
                     turns=inner_turns,
                     simulator_model=simulator_model,
@@ -329,13 +331,13 @@ class LinearJailbreaking(BaseAttack):
                     vulnerability_type=vuln_type
                 )
 
-                return enhanced_turns
+                return attack
 
             # Run all attacks in this vulnerability group concurrently
-            enhanced_turns = await asyncio.gather(
-                *(get_enhance_turns(attack) for attack in attacks)
+            enhanced_attacks = await asyncio.gather(
+                *(enhance_attack(attack) for attack in attacks)
             )
-            result[vuln_type] = enhanced_turns
+            result[vuln_type] = [enhanced_attack.turn_history for enhanced_attack in enhanced_attacks]
 
         return result
 
