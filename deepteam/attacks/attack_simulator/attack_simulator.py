@@ -294,7 +294,6 @@ class AttackSimulator:
                 res = attack._get_turns(
                     model_callback=self.model_callback, 
                     turns=turns, 
-                    simulator_model=self.simulator_model,
                     vulnerability=simulated_attack.vulnerability,
                     vulnerability_type=simulated_attack.vulnerability_type
                 )
@@ -403,7 +402,6 @@ class AttackSimulator:
                 res = await attack._a_get_turns(
                     model_callback=self.model_callback, 
                     turns=turns, 
-                    simulator_model=self.simulator_model,
                     vulnerability=simulated_attack.vulnerability,
                     vulnerability_type=simulated_attack.vulnerability_type
                 )

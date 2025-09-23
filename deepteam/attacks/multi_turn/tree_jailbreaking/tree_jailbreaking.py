@@ -51,18 +51,19 @@ class TreeJailbreaking(BaseAttack):
     def __init__(
         self,
         weight: int = 1,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ):
         self.weight = weight
+        self.simulator_model = simulator_model
 
     def _get_turns(
         self,
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
-        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
     ) -> List[RTTurn]:
-        self.simulator_model, _ = initialize_model(simulator_model)
+        self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
         if turns is None:
@@ -128,11 +129,10 @@ class TreeJailbreaking(BaseAttack):
         self,
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
-        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
     ) -> List[RTTurn]:
-        self.simulator_model, _ = initialize_model(simulator_model)
+        self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
         if turns is None:
@@ -199,12 +199,11 @@ class TreeJailbreaking(BaseAttack):
         self,
         vulnerability: BaseVulnerability,
         model_callback: CallbackType,
-        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> Dict[VulnerabilityType, List[List[RTTurn]]]:
+    ) -> Dict[VulnerabilityType, List[RTTurn]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 
-        self.simulator_model, _ = initialize_model(simulator_model)
+        self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
         simulated_attacks = vulnerability.simulate_attacks()
@@ -250,14 +249,11 @@ class TreeJailbreaking(BaseAttack):
                 enhanced_turns = self._get_turns(
                     model_callback=model_callback,
                     turns=inner_turns,
-                    simulator_model=simulator_model,
                     vulnerability=vulnerability_name,
                     vulnerability_type=vuln_type
                 )
 
-                attack.turn_history = enhanced_turns
-
-            result[vuln_type] = [attack.turn_history for attack in attacks]
+            result[vuln_type] = enhanced_turns
 
         return result
 
@@ -361,12 +357,11 @@ class TreeJailbreaking(BaseAttack):
         self,
         vulnerability: BaseVulnerability,
         model_callback: CallbackType,
-        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> Dict[VulnerabilityType, List[List[RTTurn]]]:
+    ) -> Dict[VulnerabilityType, List[RTTurn]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 
-        self.simulator_model, _ = initialize_model(simulator_model)
+        self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
         simulated_attacks = await vulnerability.a_simulate_attacks()
@@ -375,51 +370,51 @@ class TreeJailbreaking(BaseAttack):
         result: Dict[VulnerabilityType, List[List[RTTurn]]] = {}
 
         for vuln_type, attacks in grouped_attacks.items():
-            async def enhance_attack(attack):
-
+            for attack in attacks:
+                # Defensive copy to avoid mutating external turns
                 inner_turns = list(turns) if turns else []
 
-                # Ensure conversation starts properly
+                # Case 1: No turns, or last is user -> create assistant response
                 if len(inner_turns) == 0 or inner_turns[-1].role == "user":
                     inner_turns = [RTTurn(role="user", content=attack.input)]
                     assistant_response = await model_callback(attack.input, inner_turns)
                     inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
+                # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
                     user_turn_content = None
                     for turn in reversed(inner_turns[:-1]):
                         if turn.role == "user":
                             user_turn_content = turn.content
                             break
+
                     if user_turn_content:
                         inner_turns = [
                             RTTurn(role="user", content=user_turn_content),
                             RTTurn(role="assistant", content=inner_turns[-1].content),
                         ]
                     else:
+                        # Fallback if no user found
                         inner_turns = [RTTurn(role="user", content=attack.input)]
                         assistant_response = await model_callback(attack.input, inner_turns)
                         inner_turns.append(RTTurn(role="assistant", content=assistant_response))
+
                 else:
+                    # Unrecognized state — fallback to default
                     inner_turns = [RTTurn(role="user", content=attack.input)]
                     assistant_response = await model_callback(attack.input, inner_turns)
                     inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
-                # Perform async tree-based jailbreaking
+                # Run enhancement loop and assign full turn history
                 vulnerability_name = vulnerability.get_name()
-                attack.turn_history = await self._a_get_turns(
+                enhanced_turns = await self._a_get_turns(
                     model_callback=model_callback,
                     turns=inner_turns,
-                    simulator_model=simulator_model,
                     vulnerability=vulnerability_name,
                     vulnerability_type=vuln_type
                 )
 
-                return attack
-
-            # Run attack enhancements concurrently
-            enhanced_attacks = await asyncio.gather(*[enhance_attack(a) for a in attacks])
-            result[vuln_type] = [enhanced_attack.turn_history for enhanced_attack in enhanced_attacks]
+            result[vuln_type] = enhanced_turns
 
         return result
 

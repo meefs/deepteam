@@ -22,7 +22,6 @@ from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.attacks.attack_simulator import AttackSimulator, SimulatedAttack
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.metrics import BaseRedTeamingMetric
-from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 from deepteam.red_teamer.risk_assessment import (
     MultiTurnRTTestCase,
     construct_risk_assessment_overview,
@@ -336,31 +335,22 @@ class RedTeamer:
             if simulated_attack.error is not None:
                 red_teaming_test_case.error = simulated_attack.error
 
-            try:
-                actual_output = model_callback(simulated_attack.input)
-                red_teaming_test_case.actual_output = actual_output
-            except Exception:
-                if ignore_errors:
-                    red_teaming_test_case.error = (
-                        "Error generating output from target LLM"
-                    )
-                else:
-                    test_case = LLMTestCase(
-                        input=simulated_attack.input,
-                        actual_output=str(simulated_attack.turn_history),
-                    )
+            test_case = LLMTestCase(
+                input=simulated_attack.input,
+                actual_output=str(simulated_attack.turn_history),
+            )
 
-                try:
-                    metric.measure(test_case)
-                    red_teaming_test_case.score = metric.score
-                    red_teaming_test_case.reason = metric.reason
-                except:
-                    if ignore_errors:
-                        red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability type"
-                        return red_teaming_test_case
-                    else:
-                        raise
-                return red_teaming_test_case
+            try:
+                metric.measure(test_case)
+                red_teaming_test_case.score = metric.score
+                red_teaming_test_case.reason = metric.reason
+            except:
+                if ignore_errors:
+                    red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability type"
+                    return red_teaming_test_case
+                else:
+                    raise
+            return red_teaming_test_case
         else:
             red_teaming_test_case = SingleTurnRTTestCase(
                 input=simulated_attack.input,
@@ -442,31 +432,22 @@ class RedTeamer:
             if simulated_attack.error is not None:
                 red_teaming_test_case.error = simulated_attack.error
 
-            try:
-                actual_output = await model_callback(simulated_attack.input)
-                red_teaming_test_case.actual_output = actual_output
-            except Exception:
-                if ignore_errors:
-                    red_teaming_test_case.error = (
-                        "Error generating output from target LLM"
-                    )
-                else:
-                    test_case = LLMTestCase(
-                        input=simulated_attack.input,
-                        actual_output=str(simulated_attack.turn_history),
-                    )
+            test_case = LLMTestCase(
+                input=simulated_attack.input,
+                actual_output=str(simulated_attack.turn_history),
+            )
 
-                try:
-                    await metric.a_measure(test_case)
-                    red_teaming_test_case.score = metric.score
-                    red_teaming_test_case.reason = metric.reason
-                except:
-                    if ignore_errors:
-                        red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability type"
-                        return red_teaming_test_case
-                    else:
-                        raise
-                return red_teaming_test_case
+            try:
+                await metric.a_measure(test_case)
+                red_teaming_test_case.score = metric.score
+                red_teaming_test_case.reason = metric.reason
+            except:
+                if ignore_errors:
+                    red_teaming_test_case.error = f"Error evaluating target LLM output for the '{vulnerability_type.value}' vulnerability type"
+                    return red_teaming_test_case
+                else:
+                    raise
+            return red_teaming_test_case
         else:
             red_teaming_test_case = SingleTurnRTTestCase(
                 input=simulated_attack.input,

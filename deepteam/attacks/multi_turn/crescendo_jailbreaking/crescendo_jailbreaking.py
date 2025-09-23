@@ -58,6 +58,7 @@ class CrescendoJailbreaking(BaseAttack):
         weight: int = 1,
         max_rounds: int = 10,
         max_backtracks: int = 10,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ):
         self.weight = weight
 
@@ -66,19 +67,19 @@ class CrescendoJailbreaking(BaseAttack):
         self.red_teaming_chat_conversation_id = str(uuid4())
         self.max_rounds = max_rounds
         self.max_backtracks = max_backtracks
+        self.simulator_model = simulator_model
 
     def _get_turns(
         self,
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
-        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
 
-        self.simulator_model, _ = initialize_model(simulator_model)
+        self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
         vulnerability_data = f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
@@ -210,14 +211,13 @@ class CrescendoJailbreaking(BaseAttack):
         self,
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
-        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
 
-        self.simulator_model, _ = initialize_model(simulator_model)
+        self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
         vulnerability_data = f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
@@ -347,9 +347,8 @@ class CrescendoJailbreaking(BaseAttack):
         self,
         vulnerability: "BaseVulnerability",
         model_callback: CallbackType,
-        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> Dict[VulnerabilityType, List[List[RTTurn]]]:
+    ) -> Dict[VulnerabilityType, List[RTTurn]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
         # Simulate and group attacks
         simulated_attacks = group_attacks_by_vulnerability_type(
@@ -398,12 +397,9 @@ class CrescendoJailbreaking(BaseAttack):
                 enhanced_turns = self._get_turns(
                     model_callback=model_callback,
                     turns=inner_turns,
-                    simulator_model=simulator_model,
                 )
 
-                attack.turn_history = enhanced_turns
-
-            result[vuln_type] = [attack.turn_history for attack in attacks]
+            result[vuln_type] = enhanced_turns
 
         return result
 
@@ -411,9 +407,8 @@ class CrescendoJailbreaking(BaseAttack):
         self,
         vulnerability: "BaseVulnerability",
         model_callback: CallbackType,
-        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
         turns: Optional[List[RTTurn]] = None,
-    ) -> Dict[VulnerabilityType, List[List[RTTurn]]]:
+    ) -> Dict[VulnerabilityType, List[RTTurn]]:
         from deepteam.red_teamer.utils import group_attacks_by_vulnerability_type
 
         # Simulate and group attacks asynchronously
@@ -423,17 +418,17 @@ class CrescendoJailbreaking(BaseAttack):
         result = {}
 
         for vuln_type, attacks in grouped_attacks.items():
-            async def enhance_attack(attack):
-                # Defensive copy of base turns
+            for attack in attacks:
+                # Defensive copy to avoid mutating external turns
                 inner_turns = list(turns) if turns else []
 
-                # Case 1: No turns or ends in user — generate assistant response
+                # Case 1: No turns, or last is user -> create assistant response
                 if len(inner_turns) == 0 or inner_turns[-1].role == "user":
                     inner_turns = [RTTurn(role="user", content=attack.input)]
                     assistant_response = await model_callback(attack.input, inner_turns)
                     inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
-                # Case 2: Ends in assistant — rebuild last user+assistant pair
+                # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
                     user_turn_content = None
                     for turn in reversed(inner_turns[:-1]):
@@ -447,30 +442,27 @@ class CrescendoJailbreaking(BaseAttack):
                             RTTurn(role="assistant", content=inner_turns[-1].content),
                         ]
                     else:
+                        # Fallback if no user found
                         inner_turns = [RTTurn(role="user", content=attack.input)]
                         assistant_response = await model_callback(attack.input, inner_turns)
                         inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
                 else:
-                    # Fallback for unexpected structure
+                    # Unrecognized state — fallback to default
                     inner_turns = [RTTurn(role="user", content=attack.input)]
                     assistant_response = await model_callback(attack.input, inner_turns)
                     inner_turns.append(RTTurn(role="assistant", content=assistant_response))
 
-                # Run async enhancement and store turn history
-                attack.turn_history = await self._a_get_turns(
+                # Run enhancement loop and assign full turn history
+                vulnerability_name = vulnerability.get_name()
+                enhanced_turns = await self._a_get_turns(
                     model_callback=model_callback,
                     turns=inner_turns,
-                    simulator_model=simulator_model,
+                    vulnerability=vulnerability_name,
+                    vulnerability_type=vuln_type
                 )
 
-                return attack
-
-            # Run all attacks in this vulnerability group concurrently
-            enhanced_attacks = await asyncio.gather(
-                *(enhance_attack(attack) for attack in attacks)
-            )
-            result[vuln_type] = [enhanced_attack.turn_history for enhanced_attack in enhanced_attacks]
+            result[vuln_type] = enhanced_turns
 
         return result
 
