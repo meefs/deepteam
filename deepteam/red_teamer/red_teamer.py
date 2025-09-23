@@ -10,7 +10,7 @@ from rich import box
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 from deepeval.dataset.golden import Golden
-from deepeval.test_case import LLMTestCase, ConversationalTestCase, Turn
+from deepteam.test_case import RTTestCase
 from deepeval.utils import get_or_create_event_loop
 
 from deepteam.frameworks.frameworks import AISafetyFramework
@@ -65,7 +65,6 @@ class RedTeamer:
         framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
-        async_mode: bool = True,
         reuse_simulated_attacks: bool = False,
         metadata: Optional[dict] = None,
     ):
@@ -77,8 +76,6 @@ class RedTeamer:
                 raise ValueError(
                     "You must either provide a 'framework' or 'vulnerabilities'."
                 )
-
-        self.async_mode = async_mode
 
         if self.async_mode:
             validate_model_callback_signature(
@@ -338,9 +335,9 @@ class RedTeamer:
             if simulated_attack.error is not None:
                 red_teaming_test_case.error = simulated_attack.error
 
-            test_case = LLMTestCase(
+            test_case = RTTestCase(
                 input=simulated_attack.input,
-                actual_output=str(simulated_attack.turn_history),
+                turns=simulated_attack.turn_history,
             )
 
             try:
@@ -384,7 +381,7 @@ class RedTeamer:
                     return red_teaming_test_case
                 else:
                     raise
-            test_case = LLMTestCase(
+            test_case = RTTestCase(
                 input=simulated_attack.input,
                 actual_output=actual_output,
             )
@@ -435,9 +432,9 @@ class RedTeamer:
             if simulated_attack.error is not None:
                 red_teaming_test_case.error = simulated_attack.error
 
-            test_case = LLMTestCase(
+            test_case = RTTestCase(
                 input=simulated_attack.input,
-                actual_output=str(simulated_attack.turn_history),
+                turns=simulated_attack.turn_history,
             )
 
             try:
@@ -481,7 +478,7 @@ class RedTeamer:
                     return red_teaming_test_case
                 else:
                     raise
-            test_case = LLMTestCase(
+            test_case = RTTestCase(
                 input=simulated_attack.input,
                 actual_output=actual_output,
             )
