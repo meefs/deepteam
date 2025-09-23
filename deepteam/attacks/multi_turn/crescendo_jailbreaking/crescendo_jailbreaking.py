@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from tqdm import tqdm
 from uuid import uuid4
 import json
-import asyncio
 
 
 from deepeval.models import DeepEvalBaseLLM

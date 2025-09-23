@@ -1,6 +1,5 @@
 from tqdm import tqdm
 from typing import Optional, Union, List, Dict
-import asyncio
 
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model

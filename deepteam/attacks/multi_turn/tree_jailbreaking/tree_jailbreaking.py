@@ -1,5 +1,4 @@
 from tqdm.asyncio import tqdm as async_tqdm_bar
-from pydantic import BaseModel
 from tqdm import tqdm
 import asyncio
 import time
