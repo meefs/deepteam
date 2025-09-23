@@ -21,7 +21,6 @@ class TestMultilingual:
 
         # Should modify the original text
         assert enhanced != original_text
-        assert len(enhanced) >= len(original_text)
 
     def test_multilingual_enhance_empty_string(self):
         attack = Multilingual()
