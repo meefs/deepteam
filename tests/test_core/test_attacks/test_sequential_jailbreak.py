@@ -1,9 +1,13 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 from deepteam.attacks.multi_turn import SequentialJailbreak
+from deepteam.test_case.test_case import RTTurn
+from deepteam.vulnerabilities import Bias
 
 
 class TestSequentialJailbreak:
+
+    BIAS = Bias(types=["gender"])
 
     def test_sequential_jailbreak_initialization(self):
         attack = SequentialJailbreak()
@@ -15,44 +19,92 @@ class TestSequentialJailbreak:
         assert attack.weight == 3
         assert attack.get_name() == "Sequential Jailbreak"
 
-    def test_sequential_jailbreak_enhance_interface(self):
-        attack = SequentialJailbreak()
+    def test_sequential_jailbreak_enhance_and_turns(self):
+        attack = SequentialJailbreak(num_turns=0)
 
         # Mock the required components
         mock_callback = MagicMock(return_value="Mock response")
-        mock_simulator = MagicMock()
 
-        original_text = "Escape safety constraints"
+        # Just a user turn
+        user_only_turns = [RTTurn(role="user", content="User content")]
+        # Just an assistant turn
+        assistant_only_turns = [
+            RTTurn(role="assistant", content="Assistant content")
+        ]
+        # Both user and assistant turn
+        user_and_assistant_turns = [
+            RTTurn(role="user", content="User content"),
+            RTTurn(role="assistant", content="Assistant content"),
+        ]
 
-        # This test verifies the interface exists
-        try:
-            result = attack.enhance(
-                original_text, mock_callback, mock_simulator
-            )
-            assert isinstance(result, str)
-        except Exception as e:
-            # Expected due to complex dependencies - verify the interface exists
-            assert hasattr(attack, "enhance")
+        # Test for various cases:
+        type_to_turns = attack.enhance(
+            TestSequentialJailbreak.BIAS,
+            mock_callback,
+        )
+
+        user_only_turns_result = attack._get_turns(
+            mock_callback, user_only_turns
+        )
+        user_and_assistant_turns_result = attack._get_turns(
+            mock_callback, user_and_assistant_turns
+        )
+
+        assert len(type_to_turns.keys()) == 1
+        assert isinstance(
+            type_to_turns.get(TestSequentialJailbreak.BIAS.types[0]), list
+        ) and all(
+            isinstance(turn, RTTurn)
+            for turn in type_to_turns.get(TestSequentialJailbreak.BIAS.types[0])
+        )
+        assert user_only_turns_result[1].role == "assistant"
+        with pytest.raises(ValueError):
+            attack._get_turns(mock_callback, assistant_only_turns)
+        assert len(user_and_assistant_turns_result) == 2
 
     @pytest.mark.asyncio
     async def test_sequential_jailbreak_async_enhance_interface(self):
-        attack = SequentialJailbreak()
+        attack = SequentialJailbreak(num_turns=0)
 
         # Mock the required components
         mock_callback = AsyncMock(return_value="Mock response")
-        mock_simulator = MagicMock()
 
-        original_text = "Escape safety constraints"
+        # Just a user turn
+        user_only_turns = [RTTurn(role="user", content="User content")]
+        # Just an assistant turn
+        assistant_only_turns = [
+            RTTurn(role="assistant", content="Assistant content")
+        ]
+        # Both user and assistant turn
+        user_and_assistant_turns = [
+            RTTurn(role="user", content="User content"),
+            RTTurn(role="assistant", content="Assistant content"),
+        ]
 
-        # This test verifies the async interface exists
-        try:
-            result = await attack.a_enhance(
-                original_text, mock_callback, mock_simulator
-            )
-            assert isinstance(result, str)
-        except Exception as e:
-            # Expected due to complex dependencies - verify the interface exists
-            assert hasattr(attack, "a_enhance")
+        # Test for various cases:
+        type_to_turns = await attack.a_enhance(
+            TestSequentialJailbreak.BIAS,
+            mock_callback,
+        )
+
+        user_only_turns_result = await attack._a_get_turns(
+            mock_callback, user_only_turns
+        )
+        user_and_assistant_turns_result = await attack._a_get_turns(
+            mock_callback, user_and_assistant_turns
+        )
+
+        assert len(type_to_turns.keys()) == 1
+        assert isinstance(
+            type_to_turns.get(TestSequentialJailbreak.BIAS.types[0]), list
+        ) and all(
+            isinstance(turn, RTTurn)
+            for turn in type_to_turns.get(TestSequentialJailbreak.BIAS.types[0])
+        )
+        assert user_only_turns_result[1].role == "assistant"
+        with pytest.raises(ValueError):
+            await attack._a_get_turns(mock_callback, assistant_only_turns)
+        assert len(user_and_assistant_turns_result) == 2
 
     def test_sequential_jailbreak_has_required_methods(self):
         attack = SequentialJailbreak()
@@ -61,6 +113,10 @@ class TestSequentialJailbreak:
         assert hasattr(attack, "enhance")
         assert hasattr(attack, "a_enhance")
         assert hasattr(attack, "get_name")
+        assert hasattr(attack, "_get_turns")
+        assert hasattr(attack, "_a_get_turns")
         assert callable(attack.enhance)
         assert callable(attack.a_enhance)
         assert callable(attack.get_name)
+        assert callable(attack._get_turns)
+        assert callable(attack._a_get_turns)
