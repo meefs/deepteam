@@ -3,12 +3,12 @@ from pydantic import BaseModel
 from tqdm import tqdm
 from uuid import uuid4
 import json
-
+import random
 
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
-
+from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
 from deepteam.attacks import BaseAttack
 from deepteam.attacks.multi_turn.crescendo_jailbreaking.template import (
     JailBreakingCrescendoTemplate,
@@ -57,16 +57,22 @@ class CrescendoJailbreaking(BaseAttack):
         weight: int = 1,
         max_rounds: int = 10,
         max_backtracks: int = 10,
+        attacks: Optional[List[BaseAttack]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ):
         self.weight = weight
-
+        self.multi_turn = True
         self.memory = MemorySystem()
         self.target_conversation_id = str(uuid4())
         self.red_teaming_chat_conversation_id = str(uuid4())
         self.max_rounds = max_rounds
         self.max_backtracks = max_backtracks
         self.simulator_model = simulator_model
+        self.attacks = attacks
+
+        if self.attacks is not None:
+            if not isinstance(self.attacks, list) or not all(attack.multi_turn == False for attack in self.attacks):
+                raise ValueError("The 'attacks' passed must be a list of single-turn attacks")
 
     def _get_turns(
         self,
@@ -165,14 +171,19 @@ class CrescendoJailbreaking(BaseAttack):
         while round_num < self.max_rounds:
             round_num += 1
 
-            enhanced_attack = self.generate_attack(
+            current_attack = self.generate_attack(
                 round_num, eval_flag, last_response, vulnerability_data
             )
             pbar_rounds.update(1)
 
-            turns.append(RTTurn(role="user", content=enhanced_attack))
+            # Randomly enhancing a turn attack
+            if self.attacks and random.random() < 0.5:
+                attack = random.choice(self.attacks)
+                current_attack = enhance_attack(attack, current_attack, self.simulator_model)
 
-            last_response = self.generate_target_response(enhanced_attack)
+            turns.append(RTTurn(role="user", content=current_attack))
+
+            last_response = self.generate_target_response(current_attack)
             pbar_rounds.update(1)
 
             turns.append(RTTurn(role="assistant", content=last_response))
@@ -315,15 +326,20 @@ class CrescendoJailbreaking(BaseAttack):
         while round_num < self.max_rounds:
             round_num += 1
 
-            enhanced_attack = await self.a_generate_attack(
+            current_attack = await self.a_generate_attack(
                 round_num, eval_flag, last_response, vulnerability_data
             )
             pbar_rounds.update(1)
 
-            turns.append(RTTurn(role="user", content=enhanced_attack))
+            # Randomly enhancing a turn attack
+            if self.attacks and random.random() < 0.5:
+                attack = random.choice(self.attacks)
+                current_attack = await a_enhance_attack(attack, current_attack, self.simulator_model)
+
+            turns.append(RTTurn(role="user", content=current_attack))
 
             last_response = await self.a_generate_target_response(
-                enhanced_attack
+                current_attack
             )
             pbar_rounds.update(1)
 
