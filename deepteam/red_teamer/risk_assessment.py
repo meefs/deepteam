@@ -7,29 +7,7 @@ from enum import Enum
 
 from deepeval.test_case import Turn
 from deepteam.vulnerabilities.types import VulnerabilityType
-
-
-class RTTestCase(BaseModel):
-    vulnerability: str
-    vulnerability_type: Union[VulnerabilityType, Enum]
-    risk_category: str = Field(alias="riskCategory")
-    attack_method: Optional[str] = Field(None, alias="attackMethod")
-    score: Optional[float] = None
-    reason: Optional[str] = None
-    error: Optional[str] = None
-
-    metadata: Optional[Dict[str, Any]] = None
-
-
-class SingleTurnRTTestCase(RTTestCase):
-    input: Optional[str] = None
-    actual_output: Optional[str] = Field(
-        None, serialization_alias="actualOutput"
-    )
-
-
-class MultiTurnRTTestCase(RTTestCase):
-    turns: List[Turn]
+from deepteam.test_case import RTTestCase
 
 
 class TestCasesList(list):
@@ -111,12 +89,12 @@ class EnumEncoder(json.JSONEncoder):
 
 class RiskAssessment(BaseModel):
     overview: RedTeamingOverview
-    test_cases: List[Union[SingleTurnRTTestCase, MultiTurnRTTestCase]]
+    test_cases: List[RTTestCase]
 
     def __init__(self, **data):
         super().__init__(**data)
         self.test_cases: TestCasesList = TestCasesList[
-            Union[SingleTurnRTTestCase, MultiTurnRTTestCase]
+            RTTestCase
         ](self.test_cases)
 
     def save(self, to: str) -> str:
@@ -149,17 +127,15 @@ class RiskAssessment(BaseModel):
 
 
 def construct_risk_assessment_overview(
-    red_teaming_test_cases: List[
-        Union[SingleTurnRTTestCase, MultiTurnRTTestCase]
-    ],
+    red_teaming_test_cases: List[RTTestCase],
 ) -> RedTeamingOverview:
     # Group test cases by vulnerability type
     vulnerability_type_to_cases: Dict[
         VulnerabilityType,
-        List[Union[SingleTurnRTTestCase, MultiTurnRTTestCase]],
+        List[RTTestCase],
     ] = {}
     attack_method_to_cases: Dict[
-        str, List[Union[SingleTurnRTTestCase, MultiTurnRTTestCase]]
+        str, List[RTTestCase]
     ] = {}
 
     errored = 0

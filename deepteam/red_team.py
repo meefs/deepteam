@@ -14,12 +14,12 @@ def red_team(
     framework: Optional[AISafetyFramework] = None,
     attacks_per_vulnerability_type: int = 1,
     ignore_errors: bool = False,
-    run_async: bool = True,
+    async_mode: bool = True,
     max_concurrent: int = 10,
     target_purpose: Optional[str] = None,
 ):
     red_teamer = RedTeamer(
-        async_mode=run_async,
+        async_mode=async_mode,
         max_concurrent=max_concurrent,
         target_purpose=target_purpose,
     )

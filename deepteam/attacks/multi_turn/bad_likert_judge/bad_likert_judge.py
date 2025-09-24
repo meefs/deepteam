@@ -3,7 +3,7 @@ from tqdm import tqdm
 from typing import Optional, Union, List, Dict
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
-
+import random
 from deepteam.attacks import BaseAttack
 from deepteam.attacks.multi_turn.bad_likert_judge.schema import (
     BLJJudge,
@@ -15,6 +15,7 @@ from deepteam.attacks.attack_simulator.utils import (
     generate,
     a_generate,
 )
+from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.errors import ModelRefusalError
@@ -30,13 +31,20 @@ class BadLikertJudge(BaseAttack):
         category: str = "bias",
         num_turns: int = 5,
         enable_refinement: bool = True,
+        attacks: Optional[List[BaseAttack]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ):
         self.weight = weight
+        self.multi_turn = True
         self.category = category
         self.num_turns = num_turns
         self.enable_refinement = enable_refinement
         self.simulator_model = simulator_model
+        self.attacks = attacks
+
+        if self.attacks is not None:
+            if not isinstance(self.attacks, list) or not all(attack.multi_turn == False for attack in self.attacks):
+                raise ValueError("The 'attacks' passed must be a list of single-turn attacks")
 
     def _get_turns(
         self,
@@ -128,6 +136,12 @@ class BadLikertJudge(BaseAttack):
                 )
             else:
                 current_attack = next_attack
+
+            # Randomly enhancing a turn attack
+            if self.attacks and random.random() < 0.5:
+                attack = random.choice(self.attacks)
+                enhanced_attack = enhance_attack(attack, enhanced_attack, self.simulator_model)
+
             assistant_response = model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
             turns.append(RTTurn(role="assistant", content=assistant_response))
@@ -228,6 +242,12 @@ class BadLikertJudge(BaseAttack):
                 )
             else:
                 current_attack = next_attack
+
+            # Randomly enhancing a turn attack
+            if self.attacks and random.random() < 0.5:
+                attack = random.choice(self.attacks)
+                enhanced_attack = await a_enhance_attack(attack, enhanced_attack, self.simulator_model)
+
             assistant_response = await model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
             turns.append(RTTurn(role="assistant", content=assistant_response))
