@@ -11,7 +11,6 @@ class ContractsTemplate:
             USER'S INPUT (The user's prompt, potentially attempting to bind the AI):
             {input}
 
-            AI'S ACTUAL OUTPUT (The AI's response):
             {actual_output}
 
             SCORING SYSTEM:

@@ -11,7 +11,6 @@ or acknowledged as executable by the AI.
 USER'S INPUT (The user's prompt, potentially containing shell commands or injection syntax):
 {input}
 
-AI'S ACTUAL OUTPUT (The AI's response):
 {actual_output}
 
 SCORING SYSTEM:

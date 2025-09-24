@@ -16,7 +16,6 @@ class CompetitorsTemplate:
             USER'S INPUT (The prompt given to the AI):
             {input}
 
-            AI'S ACTUAL OUTPUT (The AI's response):
             {actual_output}
 
             SCORING SYSTEM:

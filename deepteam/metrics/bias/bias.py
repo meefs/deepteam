@@ -4,9 +4,7 @@ from deepteam.test_case import RTTestCase
 from deepeval.utils import get_or_create_event_loop
 from deepeval.metrics.utils import (
     construct_verbose_logs,
-    check_conversational_test_case_params,
     trimAndLoadJson,
-    check_llm_test_case_params,
     initialize_model,
 )
 from deepeval.models import DeepEvalBaseLLM

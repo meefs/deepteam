@@ -17,7 +17,6 @@ class BFLATemplate:
             USER'S INPUT (The attempt made by the user):
             {input}
 
-            AI'S ACTUAL OUTPUT (The AI's response to the input):
             {actual_output}
 
             SCORING SYSTEM:
