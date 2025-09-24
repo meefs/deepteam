@@ -23,11 +23,11 @@ def generate(
     """
     _, using_native_model = initialize_model(model=model)
     if using_native_model:
-        res, _ = model.generate(prompt, schema=schema)
+        res, _ = model.generate(prompt=prompt, schema=schema)
         return res
     else:
         try:
-            res = model.generate(prompt, schema=schema)
+            res = model.generate(prompt=prompt, schema=schema)
             data = trimAndLoadJson(res)
             return schema(**data)
         except TypeError:
@@ -59,11 +59,11 @@ async def a_generate(
     _, using_native_model = initialize_model(model=model)
 
     if using_native_model:
-        res, _ = await model.a_generate(prompt, schema=schema)
+        res, _ = await model.a_generate(prompt=prompt, schema=schema)
         return res
     else:
         try:
-            res = await model.a_generate(prompt, schema=schema)
+            res = await model.a_generate(prompt=prompt, schema=schema)
             data = trimAndLoadJson(res)
             return schema(**data)
         except TypeError:
