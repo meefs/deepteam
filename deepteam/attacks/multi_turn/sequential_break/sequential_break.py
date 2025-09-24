@@ -77,18 +77,25 @@ class SequentialJailbreak(BaseAttack):
             f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
         )
 
+        # Get current attack from last user turn (simple reverse search)
+        current_attack = None
         original_attack = None
         for turn in reversed(turns):
             if turn.role == "user":
+                current_attack = turn.content
                 original_attack = turn.content
                 break
 
-        if original_attack is None:
-            raise ValueError(
-                "No user turn found in the conversation history to start the attack."
-            )
+        if current_attack is None:
+            raise ValueError("No user turns found in conversation history")
 
-        current_attack = original_attack
+        # If the last turn is from user, we need a model response before simulation
+        if len(turns) == 0 or turns[-1].role == "user":
+            target_response = model_callback(current_attack, turns)
+            turns.append(RTTurn(role="assistant", content=target_response))
+        else:
+            target_response = turns[-1].content
+
         eval_flag = False
         eval_percentage = 0
 
@@ -233,18 +240,25 @@ class SequentialJailbreak(BaseAttack):
         if turns is None:
             turns = []
 
+        # Get current attack from last user turn (simple reverse search)
+        current_attack = None
         original_attack = None
         for turn in reversed(turns):
             if turn.role == "user":
+                current_attack = turn.content
                 original_attack = turn.content
                 break
 
-        if original_attack is None:
-            raise ValueError(
-                "No user turn found in the conversation history to start the attack."
-            )
+        if current_attack is None:
+            raise ValueError("No user turns found in conversation history")
 
-        current_attack = original_attack
+        # If last turn is user, generate a model response before the loop
+        if len(turns) == 0 or turns[-1].role == "user":
+            target_response = await model_callback(current_attack, turns)
+            turns.append(RTTurn(role="assistant", content=target_response))
+        else:
+            target_response = turns[-1].content
+
         eval_flag = False
         eval_percentage = 0
 
@@ -320,6 +334,7 @@ class SequentialJailbreak(BaseAttack):
                 judge_res: QuestionBankJudge = await a_generate(
                     judge_prompt, QuestionBankJudge, self.simulator_model
                 )
+                eval_flag = judge_res.classification == "Harmful"
             elif self.attack_type == "game_environment":
                 judge_prompt = SequentialBreakTemplate.game_environment_judge(
                     original_attack,
@@ -330,6 +345,7 @@ class SequentialJailbreak(BaseAttack):
                 judge_res: GameEnvironmentJudge = await a_generate(
                     judge_prompt, GameEnvironmentJudge, self.simulator_model
                 )
+                eval_flag = judge_res.classification == "Harmful"
             else:
                 judge_prompt = SequentialBreakTemplate.dialogue_judge(
                     original_attack,
@@ -340,10 +356,11 @@ class SequentialJailbreak(BaseAttack):
                 judge_res: DialogueJudge = await a_generate(
                     judge_prompt, DialogueJudge, self.simulator_model
                 )
+                eval_flag = judge_res.classification == "Harmful"
 
             pbar.update(1)
 
-            if judge_res.classification == "Harmful":
+            if eval_flag == "Harmful":
                 pbar.close()
                 return turns
 

@@ -1,9 +1,13 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 from deepteam.attacks.multi_turn import TreeJailbreaking
+from deepteam.test_case.test_case import RTTurn
+from deepteam.vulnerabilities import Bias
 
 
 class TestTreeJailbreaking:
+
+    BIAS = Bias(types=["gender"])
 
     def test_tree_jailbreaking_initialization(self):
         attack = TreeJailbreaking()
@@ -20,19 +24,33 @@ class TestTreeJailbreaking:
 
         # Mock the required components
         mock_callback = MagicMock(return_value="Mock response")
-        mock_simulator = MagicMock()
 
-        original_text = "Bypass content policies"
+        # Just a user turn
+        user_only_turns = [RTTurn(role="user", content="User content")]
+        # Just an assistant turn
+        assistant_only_turns = [
+            RTTurn(role="assistant", content="Assistant content")
+        ]
+        # Both user and assistant turn
+        # user_and_assistant_turns = [
+        #     RTTurn(role="user", content="User content"),
+        #     RTTurn(role="assistant", content="Assistant content"),
+        # ]
 
-        # This test verifies the interface exists
-        try:
-            result = attack.enhance(
-                original_text, mock_callback, mock_simulator
-            )
-            assert isinstance(result, str)
-        except Exception as e:
-            # Expected due to complex dependencies - verify the interface exists
-            assert hasattr(attack, "enhance")
+        # # Test for various cases:
+        # type_to_turns = attack.enhance(
+        #     TestTreeJailbreaking.BIAS, mock_callback,
+        # )
+
+        # user_only_turns_result = attack._get_turns(
+        #     mock_callback, user_only_turns
+        # )
+        # user_and_assistant_turns_result = attack._get_turns(
+        #     mock_callback, user_and_assistant_turns
+        # )
+
+        with pytest.raises(ValueError):
+            attack._get_turns(mock_callback, assistant_only_turns)
 
     @pytest.mark.asyncio
     async def test_tree_jailbreaking_async_enhance_interface(self):
@@ -40,19 +58,33 @@ class TestTreeJailbreaking:
 
         # Mock the required components
         mock_callback = AsyncMock(return_value="Mock response")
-        mock_simulator = MagicMock()
 
-        original_text = "Bypass content policies"
+        # Just a user turn
+        user_only_turns = [RTTurn(role="user", content="User content")]
+        # Just an assistant turn
+        assistant_only_turns = [
+            RTTurn(role="assistant", content="Assistant content")
+        ]
+        # Both user and assistant turn
+        # user_and_assistant_turns = [
+        #     RTTurn(role="user", content="User content"),
+        #     RTTurn(role="assistant", content="Assistant content"),
+        # ]
 
-        # This test verifies the async interface exists
-        try:
-            result = await attack.a_enhance(
-                original_text, mock_callback, mock_simulator
-            )
-            assert isinstance(result, str)
-        except Exception as e:
-            # Expected due to complex dependencies - verify the interface exists
-            assert hasattr(attack, "a_enhance")
+        # # Test for various cases:
+        # type_to_turns = await attack.a_enhance(
+        #     TestTreeJailbreaking.BIAS, mock_callback,
+        # )
+
+        # user_only_turns_result = await attack._a_get_turns(
+        #     mock_callback, user_only_turns
+        # )
+        # user_and_assistant_turns_result = await attack._a_get_turns(
+        #     mock_callback, user_and_assistant_turns
+        # )
+
+        with pytest.raises(ValueError):
+            await attack._a_get_turns(mock_callback, assistant_only_turns)
 
     def test_tree_jailbreaking_has_required_methods(self):
         attack = TreeJailbreaking()
@@ -61,6 +93,10 @@ class TestTreeJailbreaking:
         assert hasattr(attack, "enhance")
         assert hasattr(attack, "a_enhance")
         assert hasattr(attack, "get_name")
+        assert hasattr(attack, "_get_turns")
+        assert hasattr(attack, "_a_get_turns")
         assert callable(attack.enhance)
         assert callable(attack.a_enhance)
         assert callable(attack.get_name)
+        assert callable(attack._get_turns)
+        assert callable(attack._a_get_turns)
