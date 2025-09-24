@@ -19,7 +19,7 @@ from deepteam.attacks import BaseAttack
 from deepteam.utils import validate_model_callback_signature
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.types import VulnerabilityType
-from deepteam.attacks.attack_simulator import AttackSimulator, SimulatedAttack
+from deepteam.attacks.attack_simulator import AttackSimulator
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.metrics import BaseRedTeamingMetric
 from deepteam.red_teamer.risk_assessment import (
@@ -31,7 +31,7 @@ from deepteam.risks import getRiskCategory
 
 class RedTeamer:
     risk_assessment: Optional[RiskAssessment] = None
-    simulated_attacks: Optional[List[SimulatedAttack]] = None
+    simulated_test_cases: Optional[List[RTTestCase]] = None
 
     def __init__(
         self,
@@ -63,7 +63,7 @@ class RedTeamer:
         framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
-        reuse_simulated_attacks: bool = False,
+        reuse_simulated_test_cases: bool = False,
         metadata: Optional[dict] = None,
     ):
         if framework:
@@ -88,7 +88,7 @@ class RedTeamer:
                     vulnerabilities=vulnerabilities,
                     attacks=attacks,
                     ignore_errors=ignore_errors,
-                    reuse_simulated_attacks=reuse_simulated_attacks,
+                    reuse_simulated_test_cases=reuse_simulated_test_cases,
                     metadata=metadata,
                 )
             )
@@ -102,16 +102,16 @@ class RedTeamer:
             ):
                 # Generate attacks
                 if (
-                    reuse_simulated_attacks
+                    reuse_simulated_test_cases
                     and self.test_cases is not None
                     and len(self.test_cases) > 0
                 ):
-                    simulated_attacks: List[SimulatedAttack] = (
+                    simulated_test_cases: List[RTTestCase] = (
                         self.test_cases
                     )
                 else:
                     self.attack_simulator.model_callback = model_callback
-                    simulated_attacks: List[SimulatedAttack] = (
+                    simulated_test_cases: List[RTTestCase] = (
                         self.attack_simulator.simulate(
                             attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                             vulnerabilities=vulnerabilities,
@@ -123,20 +123,20 @@ class RedTeamer:
 
                 # Create a mapping of vulnerabilities to attacks
                 vulnerability_type_to_attacks_map: Dict[
-                    VulnerabilityType, List[SimulatedAttack]
+                    VulnerabilityType, List[RTTestCase]
                 ] = {}
-                for simulated_attack in simulated_attacks:
+                for simulated_test_case in simulated_test_cases:
                     if (
-                        simulated_attack.vulnerability_type
+                        simulated_test_case.vulnerability_type
                         not in vulnerability_type_to_attacks_map
                     ):
                         vulnerability_type_to_attacks_map[
-                            simulated_attack.vulnerability_type
-                        ] = [simulated_attack]
+                            simulated_test_case.vulnerability_type
+                        ] = [simulated_test_case]
                     else:
                         vulnerability_type_to_attacks_map[
-                            simulated_attack.vulnerability_type
-                        ].append(simulated_attack)
+                            simulated_test_case.vulnerability_type
+                        ].append(simulated_test_case)
 
                 total_attacks = sum(
                     len(attacks)
@@ -188,7 +188,7 @@ class RedTeamer:
         framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
-        reuse_simulated_attacks: bool = False,
+        reuse_simulated_test_cases: bool = False,
         metadata: Optional[dict] = None,
     ):
         if framework:
@@ -206,16 +206,16 @@ class RedTeamer:
         ):
             # Generate attacks
             if (
-                reuse_simulated_attacks
+                reuse_simulated_test_cases
                 and self.test_cases is not None
                 and len(self.test_cases) > 0
             ):
-                simulated_attacks: List[SimulatedAttack] = (
+                simulated_test_cases: List[RTTestCase] = (
                     self.test_cases
                 )
             else:
                 self.attack_simulator.model_callback = model_callback
-                simulated_attacks: List[SimulatedAttack] = (
+                simulated_test_cases: List[RTTestCase] = (
                     await self.attack_simulator.a_simulate(
                         attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                         vulnerabilities=vulnerabilities,
@@ -225,23 +225,23 @@ class RedTeamer:
                     )
                 )
 
-            print(len(simulated_attacks))
+            print(len(simulated_test_cases))
             # Create a mapping of vulnerabilities to attacks
             vulnerability_type_to_attacks_map: Dict[
-                VulnerabilityType, List[SimulatedAttack]
+                VulnerabilityType, List[RTTestCase]
             ] = {}
-            for simulated_attack in simulated_attacks:
+            for simulated_test_case in simulated_test_cases:
                 if (
-                    simulated_attack.vulnerability_type
+                    simulated_test_case.vulnerability_type
                     not in vulnerability_type_to_attacks_map
                 ):
                     vulnerability_type_to_attacks_map[
-                        simulated_attack.vulnerability_type
-                    ] = [simulated_attack]
+                        simulated_test_case.vulnerability_type
+                    ] = [simulated_test_case]
                 else:
                     vulnerability_type_to_attacks_map[
-                        simulated_attack.vulnerability_type
-                    ].append(simulated_attack)
+                        simulated_test_case.vulnerability_type
+                    ].append(simulated_test_case)
 
             semaphore = asyncio.Semaphore(self.max_concurrent)
             total_attacks = sum(
@@ -295,15 +295,15 @@ class RedTeamer:
     def _attack(
         self,
         model_callback: CallbackType,
-        simulated_attack: SimulatedAttack,
+        simulated_test_case: RTTestCase,
         vulnerability: str,
         vulnerability_type: VulnerabilityType,
         vulnerabilities: List[BaseVulnerability],
         ignore_errors: bool,
     ) -> RTTestCase:
         multi_turn = (
-            simulated_attack.turn_history is not None
-            and len(simulated_attack.turn_history) > 0
+            simulated_test_case.turns is not None
+            and len(simulated_test_case.turns) > 0
         )
 
         for _vulnerability in vulnerabilities:
@@ -314,17 +314,10 @@ class RedTeamer:
                 break
 
         if multi_turn:
-            red_teaming_test_case = RTTestCase(
-                input=simulated_attack.input,
-                turns=simulated_attack.turn_history,
-                vulnerability=vulnerability,
-                vulnerability_type=vulnerability_type,
-                attackMethod=simulated_attack.attack_method,
-                riskCategory=getRiskCategory(vulnerability_type),
-                metadata=simulated_attack.metadata,
-            )
-            if simulated_attack.error is not None:
-                red_teaming_test_case.error = simulated_attack.error
+            red_teaming_test_case = simulated_test_case
+
+            if simulated_test_case.error is not None:
+                return red_teaming_test_case
 
             try:
                 metric.measure(red_teaming_test_case)
@@ -338,27 +331,19 @@ class RedTeamer:
                     raise
             return red_teaming_test_case
         else:
-            red_teaming_test_case = RTTestCase(
-                input=simulated_attack.input,
-                vulnerability=vulnerability,
-                vulnerability_type=vulnerability_type,
-                attackMethod=simulated_attack.attack_method,
-                riskCategory=getRiskCategory(vulnerability_type),
-                metadata=simulated_attack.metadata,
-            )
+            red_teaming_test_case = simulated_test_case
 
-            if simulated_attack.error is not None:
-                red_teaming_test_case.error = simulated_attack.error
+            if red_teaming_test_case.error is not None:
                 return red_teaming_test_case
 
             try:
                 sig = inspect.signature(model_callback)
-                if "turn_history" in sig.parameters:
+                if "turns" in sig.parameters:
                     actual_output = model_callback(
-                        simulated_attack.input, simulated_attack.turn_history
+                        simulated_test_case.input, simulated_test_case.turns
                     )
                 else:
-                    actual_output = model_callback(simulated_attack.input)
+                    actual_output = model_callback(simulated_test_case.input)
             except Exception:
                 if ignore_errors:
                     red_teaming_test_case.error = (
@@ -384,15 +369,15 @@ class RedTeamer:
     async def _a_attack(
         self,
         model_callback: CallbackType,
-        simulated_attack: SimulatedAttack,
+        simulated_test_case: RTTestCase,
         vulnerability: str,
         vulnerability_type: VulnerabilityType,
         vulnerabilities: List[BaseVulnerability],
         ignore_errors: bool,
     ) -> RTTestCase:
         multi_turn = (
-            simulated_attack.turn_history is not None
-            and len(simulated_attack.turn_history) > 0
+            simulated_test_case.turns is not None
+            and len(simulated_test_case.turns) > 0
         )
 
         for _vulnerability in vulnerabilities:
@@ -403,17 +388,10 @@ class RedTeamer:
                 break
 
         if multi_turn:
-            red_teaming_test_case = RTTestCase(
-                input=simulated_attack.input,
-                turns=simulated_attack.turn_history,
-                vulnerability=vulnerability,
-                vulnerability_type=vulnerability_type,
-                attackMethod=simulated_attack.attack_method,
-                riskCategory=getRiskCategory(vulnerability_type),
-                metadata=simulated_attack.metadata,
-            )
-            if simulated_attack.error is not None:
-                red_teaming_test_case.error = simulated_attack.error
+            red_teaming_test_case = simulated_test_case
+
+            if red_teaming_test_case.error is not None:
+                return red_teaming_test_case
 
             try:
                 await metric.a_measure(red_teaming_test_case)
@@ -427,27 +405,19 @@ class RedTeamer:
                     raise
             return red_teaming_test_case
         else:
-            red_teaming_test_case = RTTestCase(
-                input=simulated_attack.input,
-                vulnerability=vulnerability,
-                vulnerability_type=vulnerability_type,
-                attackMethod=simulated_attack.attack_method,
-                riskCategory=getRiskCategory(vulnerability_type),
-                metadata=simulated_attack.metadata,
-            )
+            red_teaming_test_case = simulated_test_case
 
-            if simulated_attack.error is not None:
-                red_teaming_test_case.error = simulated_attack.error
+            if red_teaming_test_case.error is not None:
                 return red_teaming_test_case
 
             try:
                 sig = inspect.signature(model_callback)
-                if "turn_history" in sig.parameters:
+                if "turns" in sig.parameters:
                     actual_output = await model_callback(
-                        simulated_attack.input, simulated_attack.turn_history
+                        simulated_test_case.input, simulated_test_case.turns
                     )
                 else:
-                    actual_output = await model_callback(simulated_attack.input)
+                    actual_output = await model_callback(simulated_test_case.input)
             except Exception:
                 if ignore_errors:
                     red_teaming_test_case.error = (
@@ -475,18 +445,18 @@ class RedTeamer:
         model_callback: CallbackType,
         vulnerabilities: List[BaseVulnerability],
         vulnerability_type: VulnerabilityType,
-        simulated_attacks: List[SimulatedAttack],
+        simulated_test_cases: List[RTTestCase],
         ignore_errors: bool,
     ) -> List[RTTestCase]:
         red_teaming_test_cases = []
 
-        for simulated_attack in simulated_attacks:
+        for simulated_test_case in simulated_test_cases:
             red_teaming_test_cases.append(
                 self._attack(
                     model_callback=model_callback,
-                    simulated_attack=simulated_attack,
+                    simulated_test_case=simulated_test_case,
                     vulnerabilities=vulnerabilities,
-                    vulnerability=simulated_attack.vulnerability,
+                    vulnerability=simulated_test_case.vulnerability,
                     vulnerability_type=vulnerability_type,
                     ignore_errors=ignore_errors,
                 )
@@ -499,20 +469,20 @@ class RedTeamer:
         model_callback: CallbackType,
         vulnerabilities: List[BaseVulnerability],
         vulnerability_type: VulnerabilityType,
-        simulated_attacks: List[SimulatedAttack],
+        simulated_test_cases: List[RTTestCase],
         ignore_errors: bool,
     ) -> List[RTTestCase]:
         red_teaming_test_cases = await asyncio.gather(
             *[
                 self._a_attack(
                     model_callback=model_callback,
-                    simulated_attack=simulated_attack,
+                    simulated_test_case=simulated_test_case,
                     vulnerabilities=vulnerabilities,
-                    vulnerability=simulated_attack.vulnerability,
+                    vulnerability=simulated_test_case.vulnerability,
                     vulnerability_type=vulnerability_type,
                     ignore_errors=ignore_errors,
                 )
-                for simulated_attack in simulated_attacks
+                for simulated_test_case in simulated_test_cases
             ]
         )
         return red_teaming_test_cases
