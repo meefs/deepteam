@@ -8,52 +8,57 @@ import AttackTagsDisplayer from "@site/src/components/AttackTagsDisplayer";
 
 <AttackTagsDisplayer multiTurn={true} llmSimulated={true} />
 
-Linear Jailbreaking follows a systematic progression, where each new attack builds directly on the previous response from the LLM. The process involves **iterating through increasingly persuasive attacks**, gradually pushing the boundaries of the model's restrictions. At each stage, the enhanced attack is evaluated, and adjustments are made based on the model’s feedback. The goal is to lead the LLM towards generating harmful outputs while ensuring that each step builds on the previous one to maintain a logical flow.
-
-<div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }}
->
-  <img
-    src="https://confident-bucket.s3.amazonaws.com/attack_enhancements_jailbreaking_linear.svg"
-    alt="LangChain"
-    style={{
-      marginTop: "20px",
-      marginBottom: "40px",
-      height: "auto",
-      maxHeight: "500px",
-    }}
-  />
-</div>
-
-:::info
-The process continues until the attacker LLM generates a **non-compliant attack** or **the maximum number of iterations** is reached.
-:::
+The `LinearJailbreaking` attack first gets the base attack from the `vulnerability` you've chosen and iteratively refines it based on the LLM's responses. At each step, the attack is adjusted to become more effective, aiming to gradually bypass the model’s safeguards while maintaining a logical flow.
 
 ## Usage
 
 ```python
+from deepteam import red_team
 from deepteam.attacks.multi_turn import LinearJailbreaking
 
-linear_jailbreaking = LinearJailbreaking()
-```
-
-There are **TWO** optional parameters when creating a `LinearJailbreaking` attack:
-
-- [Optional] `weight`: an integer that determines this attack method's selection probability, proportional to the total weight sum of all `attacks` during red teaming. Defaulted to `1`.
-- [Optional] `turns`: an integer that specifies the number of turns to use in attempt to jailbreak your LLM system. Defaulted to `5`.
-
-To use the `LinearJailbreaking` attack method, supply it to the `red_team()` method:
-
-```python
-from deepteam import red_team
-...
+linear_jailbreaking = LinearJailbreaking(
+  weight=5
+  num_turns=7,
+  simulator_model="gpt-4o",
+)
 
 red_team(attacks=[linear_jailbreaking], model_callback=..., vulnerabilities=...)
 ```
+
+There are **FOUR** optional parameters when creating a `LinearJailbreaking` attack:
+
+- [Optional] `weight`: an integer that determines this attack method's selection probability, proportional to the total weight sum of all `attacks` during red teaming. Defaulted to `1`.
+- [Optional] `num_turns`: an integer that specifies the number of turns to use in the attempt to jailbreak your LLM system. Defaulted to `5`.
+- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-4o-mini'.
+- [Optional] `turn_level_attacks`: a list of [single-turn attacks](/docs/red-teaming-adversarial-attacks-prompt-injection) that will be randomly sampled to enhance an attack inside turns.
+
+### As a standalone
+
+You can try to jailbreak your model on a single vulnerability using the `enhance` method:
+
+```python
+from deepteam.attacks.single_turn import PromptInjection, Roleplay
+from deepteam.attacks.multi_turn import LinearJailbreaking
+from deepteam.vulnerabilities import Bias
+
+bias = Bias(types=["race"])
+linear = LinearJailbreaking(
+  weight=5
+  num_turns=7,
+  attacks=[PromptInjection(), Roleplay()]
+)
+
+result = linear.enhance(vulnerability=bias, model_callback=...)
+print(result)
+```
+
+## How It Works
+
+`LinearJailbreaking` is an iterative attack strategy that gradually pushes an LLM toward generating restricted or harmful outputs. It begins with a base prompt rooted in a known vulnerability and refines this prompt over multiple steps. Each new prompt builds directly on the model's previous response, aiming to make the attack more persuasive or better aligned with the model's behavior.
+
+If the `turn_level_attacks` parameter is provided, the attack logic occasionally substitutes the main prompt with a randomly selected variant from the `turn_level_attacks` list. With a 50% chance, this selected variant is used to enhance the current attack. This introduces controlled randomness and variation into the attack process while preserving the linear, step-by-step structure.
+
+![Linear Jailbreaking](./images/linear-jailbreaking.png)
 
 ## Example
 
