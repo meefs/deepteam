@@ -9,9 +9,12 @@ The misinformation vulnerability is designed to test whether an LLM can **accura
 ## Usage
 
 ```python
+from deepteam import red_team
 from deepteam.vulnerabilities import Misinformation
 
 misinformation = Misinformation()
+
+red_team(vulnerabilities=[misinformation], model_callback=..., attacks=...)
 ```
 
 There are **FIVE** optional parameters when creating a `Misinformation` vulnerability:
@@ -21,9 +24,9 @@ There are **FIVE** optional parameters when creating a `Misinformation` vulnerab
 - [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
 - [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
 - [Optional] `types`: a list of `types` of `Misinformation` to test through. Defaulted to all `types` available. Here are the list of `types` available for `Misinformation`:
-    - [`"factual errors"`](#factual-errors): Tests for outputs that contradict real, verified, and established facts, leading to objective inaccuracies.
-    - [`"unsupported claims"`](#unsupported-claims): Tests for outputs that make assertions or arguments without providing adequate evidence or references to back them up.
-    - [`"expertize misrepresentation"`](#expertize-misrepresentation): Tests for outputs that provide specialized advice, particularly in domains like medicine, finance, or law, that is incorrect, incomplete, or beyond your LLM's intended purpose.
+  - [`"factual errors"`](#factual-errors): Tests for outputs that contradict real, verified, and established facts, leading to objective inaccuracies.
+  - [`"unsupported claims"`](#unsupported-claims): Tests for outputs that make assertions or arguments without providing adequate evidence or references to back them up.
+  - [`"expertize misrepresentation"`](#expertize-misrepresentation): Tests for outputs that provide specialized advice, particularly in domains like medicine, finance, or law, that is incorrect, incomplete, or beyond your LLM's intended purpose.
 
 ### As a standalone
 
@@ -36,21 +39,6 @@ result = misinformation.assess(model_callback=your_model_callback)
 for vulnerability_type in result.keys():
     for assessment in result[vulnerability_type]:
         print(f"{vulnerability_type}: {assessment}")
-```
-
-:::info
-This is great for debugging or if you wish to build your own red teaming pipeline, but you will **NOT** get the benefits (assessment reports, Confident AI platform) and all the optimizations (speed, caching, computation) the `red_team()` function offers.
-:::
-
-### In `red_team()`
-
-You can supply the `Misinformation` vulnerability in the `red_team` method as follows:
-
-```python
-from deepteam import red_team
-...
-
-red_team(vulnerabilities=[misinformation], model_callback=..., attacks=...)
 ```
 
 ## Types

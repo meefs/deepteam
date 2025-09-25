@@ -1,8 +1,10 @@
 ---
 id: red-teaming-vulnerabilities
-title: Introduction
+title: Vulnerability Introduction
 sidebar_label: Introduction
 ---
+
+`deepteam` offers 50+ read-to-use vulnerabilities for you to quickly get started with red teaming. While an attack specifies the means to breach your LLM app, a vulnerability represents the unsafe behavior your LLM app is susceptible to.
 
 ## Quick Summary
 
@@ -66,11 +68,11 @@ You can also create [custom vulnerabilities](/docs/red-teaming-custom-vulnerabil
 
 LLM vulnerabilities can be categorized into 6 major LLM risk categories. Think of these categories simply as collections of vulnerabilities.
 
-| LLM Risk Category   | Vulnerabilities                                                                          | Description                                                                                                                                                                                                                                                                   |
-| ------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Data Privacy        | `PIILeakage`, `PromptLeakage`                                                   | Involves exposure of personal or sensitive information through LLM outputs, leading to privacy breaches or regulatory violations.                                                                   |
-| Responsible AI      | `Bias`, `Toxicity`                                                              | Ensures ethical and non-harmful behavior of models. Risks include offensive, discriminatory, or unfair content.                                                                                     |
-| Security            | `BFLA`, `BOLA`, `RBAC`, `DebugAccess`, `ShellInjection`, `SQLInjection`, `SSRF` | Concerns related to system-level attacks or misuse, such as bypassing controls, code injection, or unauthorized access to internal systems.                                                         |
-| Safety              | `IllegalActivity`, `GraphicContent`, `PersonalSafety`                           | Covers risks where the model may generate or encourage illegal, violent, or harmful behaviors affecting people or public safety.                                                                    |
-| Business            | `Misinformation`, `IntellectualProperty`, `Competition`                         | Threats to organizational integrity, reputation, legal standing, and competitive positioning. Includes IP leakage, false information, and competitive data exposure.                                |
-| Agentic             | `GoalTheft`, `RecursiveHijacking`, `ExcessiveAgency`, `Robustness`              | Emergent behaviors and control issues when LLMs or agents act autonomously. Includes risks of agents acting outside of their intended scope or being hijacked through indirect prompt manipulation. |
+| LLM Risk Category | Vulnerabilities                                                                 | Description                                                                                                                                                                                         |
+| ----------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Data Privacy      | `PIILeakage`, `PromptLeakage`                                                   | Involves exposure of personal or sensitive information through LLM outputs, leading to privacy breaches or regulatory violations.                                                                   |
+| Responsible AI    | `Bias`, `Toxicity`                                                              | Ensures ethical and non-harmful behavior of models. Risks include offensive, discriminatory, or unfair content.                                                                                     |
+| Security          | `BFLA`, `BOLA`, `RBAC`, `DebugAccess`, `ShellInjection`, `SQLInjection`, `SSRF` | Concerns related to system-level attacks or misuse, such as bypassing controls, code injection, or unauthorized access to internal systems.                                                         |
+| Safety            | `IllegalActivity`, `GraphicContent`, `PersonalSafety`                           | Covers risks where the model may generate or encourage illegal, violent, or harmful behaviors affecting people or public safety.                                                                    |
+| Business          | `Misinformation`, `IntellectualProperty`, `Competition`                         | Threats to organizational integrity, reputation, legal standing, and competitive positioning. Includes IP leakage, false information, and competitive data exposure.                                |
+| Agentic           | `GoalTheft`, `RecursiveHijacking`, `ExcessiveAgency`, `Robustness`              | Emergent behaviors and control issues when LLMs or agents act autonomously. Includes risks of agents acting outside of their intended scope or being hijacked through indirect prompt manipulation. |

@@ -9,9 +9,12 @@ The intellectual property vulnerability is designed to test whether an LLM can *
 ## Usage
 
 ```python
+from deepteam import red_team
 from deepteam.vulnerabilities import IntellectualProperty
 
 intellectual_property = IntellectualProperty()
+
+red_team(vulnerabilities=[intellectual_property], model_callback=..., attacks=...)
 ```
 
 There are **FIVE** optional parameters when creating a `IntellectualProperty` vulnerability:
@@ -21,10 +24,10 @@ There are **FIVE** optional parameters when creating a `IntellectualProperty` vu
 - [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
 - [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
 - [Optional] `types`: a list of `types` of `IntellectualProperty` to test through. Defaulted to all `types` available. Here are the list of `types` available for `IntellectualProperty`:
-    - [`"copyright violations"`](#copyright-violations): Tests for outputs that generate content infringing on copyrighted material or intellectual property rights.
-    - [`"trademark infringement"`](#trademark-infringement): Tests for outputs that misuse or replicate trademarks without proper authorization.
-    - [`"patent disclosure"`](#patent-disclosure): Tests for outputs that reveal details about patented inventions or processes without rights or authorization.
-    - [`"imitation"`](#imitation): Tests for outputs that closely imitate proprietary works, creating potential ethical or legal risks.
+  - [`"copyright violations"`](#copyright-violations): Tests for outputs that generate content infringing on copyrighted material or intellectual property rights.
+  - [`"trademark infringement"`](#trademark-infringement): Tests for outputs that misuse or replicate trademarks without proper authorization.
+  - [`"patent disclosure"`](#patent-disclosure): Tests for outputs that reveal details about patented inventions or processes without rights or authorization.
+  - [`"imitation"`](#imitation): Tests for outputs that closely imitate proprietary works, creating potential ethical or legal risks.
 
 ### As a standalone
 
@@ -37,21 +40,6 @@ result = intellectual_property.assess(model_callback=your_model_callback)
 for vulnerability_type in result.keys():
     for assessment in result[vulnerability_type]:
         print(f"{vulnerability_type}: {assessment}")
-```
-
-:::info
-This is great for debugging or if you wish to build your own red teaming pipeline, but you will **NOT** get the benefits (assessment reports, Confident AI platform) and all the optimizations (speed, caching, computation) the `red_team()` function offers.
-:::
-
-### In `red_team()`
-
-You can supply the `IntellectualProperty` vulnerability in the `red_team` method as follows:
-
-```python
-from deepteam import red_team
-...
-
-red_team(vulnerabilities=[intellectual_property], model_callback=..., attacks=...)
 ```
 
 ## Types
