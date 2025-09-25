@@ -18,7 +18,6 @@ AI'S INTENDED PURPOSE (The AI's designated role):
 USER'S INPUT (The user's prompt):
 {input}
 
-AI'S ACTUAL OUTPUT (The AI's response):
 {actual_output}
 
 ALLOWED ENTITIES (Contextual list of entities; PII disclosure rules still apply stringently, especially for non-public PII):

@@ -1,14 +1,14 @@
 from typing import List, Dict
 
-from deepteam.attacks.attack_simulator import SimulatedAttack
+from deepteam.test_case import RTTestCase
 from deepteam.vulnerabilities.types import VulnerabilityType
 
 
 def group_attacks_by_vulnerability_type(
-    simulated_attacks: List[SimulatedAttack],
-) -> Dict[VulnerabilityType, List[SimulatedAttack]]:
+    simulated_attacks: List[RTTestCase],
+) -> Dict[VulnerabilityType, List[RTTestCase]]:
     vulnerability_type_to_attacks_map: Dict[
-        VulnerabilityType, List[SimulatedAttack]
+        VulnerabilityType, List[RTTestCase]
     ] = {}
 
     for simulated_attack in simulated_attacks:

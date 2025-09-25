@@ -4,29 +4,16 @@ from tqdm import tqdm
 from pydantic import BaseModel
 from typing import List, Optional, Union
 import inspect
-from enum import Enum
-
 
 from deepeval.models import DeepEvalBaseLLM
-from deepeval.metrics.utils import initialize_model, trimAndLoadJson
-from deepeval.test_case import Turn
+from deepeval.metrics.utils import initialize_model
 from deepeval.metrics.utils import initialize_model
 
 from deepteam.attacks import BaseAttack
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.errors import ModelRefusalError
-
-
-class SimulatedAttack(BaseModel):
-    vulnerability: str
-    vulnerability_type: Union[Enum, VulnerabilityType]
-    input: Optional[str] = None
-    attack_method: Optional[str] = None
-    error: Optional[str] = None
-    metadata: Optional[dict] = None
-    turn_history: Optional[List[Turn]] = None
+from deepteam.test_case import RTTestCase
 
 
 class BaselineAttack:
@@ -52,7 +39,7 @@ class AttackSimulator:
             simulator_model
         )
         # Define list of attacks and unaligned vulnerabilities
-        self.simulated_attacks: List[SimulatedAttack] = []
+        self.test_cases: List[RTTestCase] = []
         self.max_concurrent = max_concurrent
 
     ##################################################
@@ -66,9 +53,9 @@ class AttackSimulator:
         attacks: List[BaseAttack],
         ignore_errors: bool,
         metadata: Optional[dict] = None,
-    ) -> List[SimulatedAttack]:
+    ) -> List[RTTestCase]:
         # Simulate unenhanced attacks for each vulnerability
-        baseline_attacks: List[SimulatedAttack] = []
+        test_cases: List[RTTestCase] = []
         num_vulnerability_types = sum(
             len(v.get_types()) for v in vulnerabilities
         )
@@ -77,7 +64,7 @@ class AttackSimulator:
             desc=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
         )
         for vulnerability in pbar:
-            baseline_attacks.extend(
+            test_cases.extend(
                 self.simulate_baseline_attacks(
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerability=vulnerability,
@@ -86,9 +73,9 @@ class AttackSimulator:
                 )
             )
         # Enhance attacks by sampling from the provided distribution
-        simulated_attacks: List[SimulatedAttack] = []
+        enhanced_test_cases: List[RTTestCase] = []
         pbar = tqdm(
-            baseline_attacks,
+            test_cases,
             desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
         )
         attack_weights = [attack.weight for attack in attacks]
@@ -98,15 +85,15 @@ class AttackSimulator:
             sampled_attack = random.choices(
                 attacks, weights=attack_weights, k=1
             )[0]
-            enhanced_attack = self.enhance_attack(
+            test_case = self.enhance_attack(
                 attack=sampled_attack,
-                simulated_attack=baseline_attack,
+                test_case=baseline_attack,
                 ignore_errors=ignore_errors,
             )
-            simulated_attacks.append(enhanced_attack)
+            enhanced_test_cases.append(test_case)
 
-        self.simulated_attacks.extend(simulated_attacks)
-        return simulated_attacks
+        self.test_cases.extend(enhanced_test_cases)
+        return test_cases
 
     async def a_simulate(
         self,
@@ -115,12 +102,12 @@ class AttackSimulator:
         ignore_errors: bool,
         metadata: Optional[dict] = None,
         attacks: Optional[List[BaseAttack]] = None,
-    ) -> List[SimulatedAttack]:
+    ) -> List[RTTestCase]:
         # Create a semaphore to control the number of concurrent tasks
         semaphore = asyncio.Semaphore(self.max_concurrent)
 
         # Simulate unenhanced attacks for each vulnerability
-        baseline_attacks: List[SimulatedAttack] = []
+        test_cases: List[RTTestCase] = []
         num_vulnerability_types = sum(
             len(v.get_types()) for v in vulnerabilities
         )
@@ -149,18 +136,18 @@ class AttackSimulator:
 
         attack_results = await asyncio.gather(*simulate_tasks)
         for result in attack_results:
-            baseline_attacks.extend(result)
+            test_cases.extend(result)
         pbar.close()
 
         # Enhance attacks by sampling from the provided distribution
-        enhanced_attacks: List[SimulatedAttack] = []
+        enhanced_test_cases: List[RTTestCase] = []
         pbar = tqdm(
-            total=len(baseline_attacks),
+            total=len(test_cases),
             desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
         )
 
         async def throttled_attack_method(
-            baseline_attack: SimulatedAttack,
+            baseline_attack: RTTestCase,
         ):
             async with semaphore:  # Throttling applied here
                 # Randomly sample an enhancement based on the distribution
@@ -174,26 +161,24 @@ class AttackSimulator:
 
                 result = await self.a_enhance_attack(
                     attack=attack,
-                    simulated_attack=baseline_attack,
+                    test_case=baseline_attack,
                     ignore_errors=ignore_errors,
                 )
                 pbar.update(1)
                 return result
 
-        enhanced_attacks.extend(
+        enhanced_test_cases.extend(
             await asyncio.gather(
                 *[
-                    asyncio.create_task(
-                        throttled_attack_method(baseline_attack)
-                    )
-                    for baseline_attack in baseline_attacks
+                    asyncio.create_task(throttled_attack_method(test_case))
+                    for test_case in test_cases
                 ]
             )
         )
         pbar.close()
 
-        self.simulated_attacks.extend(enhanced_attacks)
-        return enhanced_attacks
+        self.test_cases.extend(enhanced_test_cases)
+        return test_cases
 
     ##################################################
     ### Simulating Base (Unenhanced) Attacks #########
@@ -205,7 +190,7 @@ class AttackSimulator:
         vulnerability: BaseVulnerability,
         ignore_errors: bool,
         metadata: Optional[dict] = None,
-    ) -> List[SimulatedAttack]:
+    ) -> List[RTTestCase]:
         try:
             return vulnerability.simulate_attacks(
                 purpose=self.purpose,
@@ -214,7 +199,7 @@ class AttackSimulator:
         except Exception as e:
             if ignore_errors:
                 return [
-                    SimulatedAttack(
+                    RTTestCase(
                         vulnerability=vulnerability.get_name(),
                         vulnerability_type=vulnerability_type,
                         error=f"Error simulating adversarial attacks: {str(e)}",
@@ -232,7 +217,7 @@ class AttackSimulator:
         vulnerability: BaseVulnerability,
         ignore_errors: bool,
         metadata: Optional[dict] = None,
-    ) -> List[SimulatedAttack]:
+    ) -> List[RTTestCase]:
         try:
             return await vulnerability.a_simulate_attacks(
                 purpose=self.purpose,
@@ -241,7 +226,7 @@ class AttackSimulator:
         except Exception as e:
             if ignore_errors:
                 return [
-                    SimulatedAttack(
+                    RTTestCase(
                         vulnerability=vulnerability.get_name(),
                         vulnerability_type=vulnerability_type,
                         error=f"Error simulating adversarial attacks: {str(e)}",
@@ -260,7 +245,7 @@ class AttackSimulator:
     def enhance_attack(
         self,
         attack: BaseAttack,
-        simulated_attack: SimulatedAttack,
+        test_case: RTTestCase,
         ignore_errors: bool,
     ):
         from deepteam.attacks.multi_turn import (
@@ -283,46 +268,46 @@ class AttackSimulator:
         # Check if the attack is a multi-turn attack
         if type(attack) in MULTI_TURN_ATTACKS:
             # This is a multi-turn attack
-            attack_input = simulated_attack.input
+            attack_input = test_case.input
             if attack_input is None:
-                return simulated_attack
+                return test_case
 
-            simulated_attack.attack_method = attack.get_name()
+            test_case.attack_method = attack.get_name()
             turns = [RTTurn(role="user", content=attack_input)]
 
             try:
                 res = attack._get_turns(
                     model_callback=self.model_callback,
                     turns=turns,
-                    vulnerability=simulated_attack.vulnerability,
-                    vulnerability_type=simulated_attack.vulnerability_type,
+                    vulnerability=test_case.vulnerability,
+                    vulnerability_type=test_case.vulnerability_type,
                 )
 
-                simulated_attack.turn_history = res
+                test_case.turns = res
 
             except ModelRefusalError as e:
                 if ignore_errors:
-                    simulated_attack.error = e.message
-                    return simulated_attack
+                    test_case.error = e.message
+                    return test_case
                 else:
                     raise
             except Exception as e:
                 if ignore_errors:
-                    simulated_attack.error = (
+                    test_case.error = (
                         f"Error enhancing multi-turn attack: {str(e)}"
                     )
-                    return simulated_attack
+                    return test_case
                 else:
                     raise
 
-            return simulated_attack
+            return test_case
 
         # Regular attack handling (non-multi-turn)
-        attack_input = simulated_attack.input
+        attack_input = test_case.input
         if attack_input is None:
-            return simulated_attack
+            return test_case
 
-        simulated_attack.attack_method = attack.get_name()
+        test_case.attack_method = attack.get_name()
         sig = inspect.signature(attack.enhance)
 
         try:
@@ -349,29 +334,27 @@ class AttackSimulator:
             else:
                 res = attack.enhance(attack=attack_input)
 
-            simulated_attack.input = res
+            test_case.input = res
 
         except ModelRefusalError as e:
             if ignore_errors:
-                simulated_attack.error = e.message
-                return simulated_attack
+                test_case.error = e.message
+                return test_case
             else:
                 raise
         except Exception as e:
             if ignore_errors:
-                simulated_attack.error = (
-                    f"Error enhancing regular attack: {str(e)}"
-                )
-                return simulated_attack
+                test_case.error = f"Error enhancing regular attack: {str(e)}"
+                return test_case
             else:
                 raise
 
-        return simulated_attack
+        return test_case
 
     async def a_enhance_attack(
         self,
         attack: BaseAttack,
-        simulated_attack: SimulatedAttack,
+        test_case: RTTestCase,
         ignore_errors: bool,
     ):
         from deepteam.attacks.multi_turn import (
@@ -393,11 +376,11 @@ class AttackSimulator:
 
         if type(attack) in MULTI_TURN_ATTACKS:
             # This is multi-turn attack
-            attack_input = simulated_attack.input
+            attack_input = test_case.input
             if attack_input is None:
-                return simulated_attack
+                return test_case
 
-            simulated_attack.attack_method = attack.get_name()
+            test_case.attack_method = attack.get_name()
             sig = inspect.signature(attack.a_enhance)
             turns = [RTTurn(role="user", content=attack_input)]
 
@@ -405,32 +388,32 @@ class AttackSimulator:
                 res = await attack._a_get_turns(
                     model_callback=self.model_callback,
                     turns=turns,
-                    vulnerability=simulated_attack.vulnerability,
-                    vulnerability_type=simulated_attack.vulnerability_type,
+                    vulnerability=test_case.vulnerability,
+                    vulnerability_type=test_case.vulnerability_type,
                 )
 
-                simulated_attack.turn_history = res
+                test_case.turns = res
 
             except ModelRefusalError as e:
                 if ignore_errors:
-                    simulated_attack.error = e.message
-                    return simulated_attack
+                    test_case.error = e.message
+                    return test_case
                 else:
                     raise
             except:
                 if ignore_errors:
-                    simulated_attack.error = "Error enhancing attack"
-                    return simulated_attack
+                    test_case.error = "Error enhancing attack"
+                    return test_case
                 else:
                     raise
 
-            return simulated_attack
+            return test_case
 
-        attack_input = simulated_attack.input
+        attack_input = test_case.input
         if attack_input is None:
-            return simulated_attack
+            return test_case
 
-        simulated_attack.attack_method = attack.get_name()
+        test_case.attack_method = attack.get_name()
         sig = inspect.signature(attack.a_enhance)
 
         try:
@@ -457,19 +440,19 @@ class AttackSimulator:
             else:
                 res = await attack.a_enhance(attack=attack_input)
 
-            simulated_attack.input = res
+            test_case.input = res
 
         except ModelRefusalError as e:
             if ignore_errors:
-                simulated_attack.error = e.message
-                return simulated_attack
+                test_case.error = e.message
+                return test_case
             else:
                 raise
         except:
             if ignore_errors:
-                simulated_attack.error = "Error enhancing attack"
-                return simulated_attack
+                test_case.error = "Error enhancing attack"
+                return test_case
             else:
                 raise
 
-        return simulated_attack
+        return test_case

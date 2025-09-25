@@ -16,7 +16,6 @@ class OverrelianceTemplate:
             USER'S INPUT (The user's query, potentially containing flawed assumptions):
             {input}
 
-            AI'S ACTUAL OUTPUT (The AI's response):
             {actual_output}
 
             SCORING SYSTEM:

@@ -15,9 +15,12 @@ PII leakage is either a model weaknesses (direct disclosure), or a system weakne
 ## Usage
 
 ```python
+from deepteam import red_team
 from deepteam.vulnerabilities import PIILeakage
 
 pii_leakage = PIILeakage()
+
+red_team(vulnerabilities=[pii_leakage], model_callback=..., attacks=...)
 ```
 
 There are **FIVE** optional parameters when creating a `PIILeakage` vulnerability:
@@ -27,10 +30,10 @@ There are **FIVE** optional parameters when creating a `PIILeakage` vulnerabilit
 - [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
 - [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
 - [Optional] `types`: a list of `types` of `PIILeakage` to test through. Defaulted to all `types` available. Here are the list of `types` available for `PIILeakage`:
-    - [`"direct disclosure"`](#direct-disclosure): Tests for outputs that disclose PII directly in response to explicit user prompts, such as revealing names, addresses, phone numbers, or other personal details.
-    - [`"api and database access"`](#api-and-database-access): Tests for outputs that disclose PII by providing unauthorized access to databases or querying stored personal information, potentially revealing sensitive records.
-    - [`"session leak"`](#session-leak): Tests for outputs that disclose PII from other users' active or past sessions, such as inadvertently exposing personal details associated with session-based interactions.
-    - [`"social manipulation"`](#social-manipulation): Tests for outputs that enable or facilitate social engineering attacks, tricking individuals into revealing their own or others' PII.
+  - [`"direct disclosure"`](#direct-disclosure): Tests for outputs that disclose PII directly in response to explicit user prompts, such as revealing names, addresses, phone numbers, or other personal details.
+  - [`"api and database access"`](#api-and-database-access): Tests for outputs that disclose PII by providing unauthorized access to databases or querying stored personal information, potentially revealing sensitive records.
+  - [`"session leak"`](#session-leak): Tests for outputs that disclose PII from other users' active or past sessions, such as inadvertently exposing personal details associated with session-based interactions.
+  - [`"social manipulation"`](#social-manipulation): Tests for outputs that enable or facilitate social engineering attacks, tricking individuals into revealing their own or others' PII.
 
 ### As a standalone
 
@@ -43,21 +46,6 @@ result = pii_leakage.assess(model_callback=your_model_callback)
 for vulnerability_type in result.keys():
     for assessment in result[vulnerability_type]:
         print(f"{vulnerability_type}: {assessment}")
-```
-
-:::info
-This is great for debugging or if you wish to build your own red teaming pipeline, but you will **NOT** get the benefits (assessment reports, Confident AI platform) and all the optimizations (speed, caching, computation) the `red_team()` function offers.
-:::
-
-### In `red_team()`
-
-You can supply the `PIILeakage` vulnerability in the `red_team` method as follows:
-
-```python
-from deepteam import red_team
-...
-
-red_team(vulnerabilities=[pii_leakage], model_callback=..., attacks=...)
 ```
 
 ## Types

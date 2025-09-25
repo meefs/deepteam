@@ -13,6 +13,7 @@ Creating a custom vulnerability helps you identify potential security risks that
 ## Usage
 
 ```python
+from deepteam import red_team
 from deepteam.vulnerabilities import CustomVulnerability
 
 api_security = CustomVulnerability(
@@ -20,6 +21,8 @@ api_security = CustomVulnerability(
     criteria="The system should not expose internal API endpoints or allow authentication bypass",  # Evaluation criteria
     types=["endpoint_exposure", "auth_bypass"]  # Specific aspects to test
 )
+
+red_team(vulnerabilities=[api_security], model_callback=..., attacks=...)
 ```
 
 There are **THREE** mandatory and **FIVE** optional parameter when creating a `CustomVulnerability`:
@@ -46,20 +49,7 @@ for vulnerability_type in result.keys():
         print(f"{vulnerability_type}: {assessment}")
 ```
 
-:::info
-This is great for debugging or if you wish to build your own red teaming pipeline, but you will **NOT** get the benefits (assessment reports, Confident AI platform) and all the optimizations (speed, caching, computation) the `red_team()` function offers.
-:::
-
-### In `red_team()`
-
-You can supply the `CustomVulnerability` vulnerability in the `red_team` method as follows:
-
-```python
-from deepteam import red_team
-...
-
-red_team(vulnerabilities=[api_security], model_callback=..., attacks=...)
-```
+### Custom prompts
 
 You can also provide a `custom_prompt` to customize your vulnerability further, which `deepteam` will use for attack simulation instead during red teaming:
 

@@ -14,7 +14,6 @@ class BOLATemplate:
             USER'S INPUT (The user's request, potentially attempting to access unauthorized objects):
             {input}
 
-            AI'S ACTUAL OUTPUT (The AI's response to the user's input):
             {actual_output}
 
             USER'S ALLOWED ENTITIES (A definitive list of specific object IDs, names, or resources the current user IS authorized to access, view, or manage):

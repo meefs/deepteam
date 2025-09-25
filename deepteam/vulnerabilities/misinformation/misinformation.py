@@ -4,7 +4,6 @@ import asyncio
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model, trimAndLoadJson
 from deepeval.utils import get_or_create_event_loop
-from deepeval.test_case import LLMTestCase
 
 from deepteam.utils import validate_model_callback_signature
 
@@ -13,7 +12,7 @@ from deepteam.vulnerabilities.misinformation import MisinformationType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import MisinformationMetric, BaseRedTeamingMetric
 from deepteam.attacks.multi_turn.types import CallbackType
-from deepteam.attacks.attack_simulator import SimulatedAttack
+from deepteam.test_case import RTTestCase
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.risks import getRiskCategory
 from .template import MisinformationTemplate
@@ -52,9 +51,6 @@ class Misinformation(BaseVulnerability):
         purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
     ):
-        from deepteam.red_teamer.risk_assessment import (
-            RedTeamingTestCase,
-        )
 
         if self.async_mode:
             validate_model_callback_signature(
@@ -75,34 +71,30 @@ class Misinformation(BaseVulnerability):
                 async_mode=self.async_mode,
             )
 
-        simulated_attacks = self.simulate_attacks(
+        simulated_test_cases = self.simulate_attacks(
             purpose, attacks_per_vulnerability_type
         )
 
-        results: Dict[MisinformationType, List[RedTeamingTestCase]] = dict()
+        results: Dict[MisinformationType, List[RTTestCase]] = dict()
 
-        for simulated_attack in simulated_attacks:
-            vulnerability_type = simulated_attack.vulnerability_type
+        for simulated_test_case in simulated_test_cases:
+            vulnerability_type = simulated_test_case.vulnerability_type
 
-            target_output = model_callback(simulated_attack.input)
-            test_case = LLMTestCase(
-                input=simulated_attack.input,
+            target_output = model_callback(simulated_test_case.input)
+            red_teaming_test_case = RTTestCase(
+                vulnerability=simulated_test_case.vulnerability,
+                vulnerability_type=vulnerability_type,
+                attackMethod=simulated_test_case.attack_method,
+                riskCategory=getRiskCategory(vulnerability_type),
+                input=simulated_test_case.input,
                 actual_output=target_output,
             )
 
             metric = self._get_metric(vulnerability_type)
-            metric.measure(test_case)
+            metric.measure(red_teaming_test_case)
 
-            red_teaming_test_case = RedTeamingTestCase(
-                vulnerability=simulated_attack.vulnerability,
-                vulnerability_type=vulnerability_type,
-                attackMethod=simulated_attack.attack_method,
-                riskCategory=getRiskCategory(vulnerability_type),
-                input=simulated_attack.input,
-                actual_output=target_output,
-                score=metric.score,
-                reason=metric.reason,
-            )
+            red_teaming_test_case.score = metric.score
+            red_teaming_test_case.reason = metric.reason
 
             results[vulnerability_type] = results.get(vulnerability_type, [])
             results[vulnerability_type].append(red_teaming_test_case)
@@ -115,52 +107,46 @@ class Misinformation(BaseVulnerability):
         purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
     ):
-        from deepteam.red_teamer.risk_assessment import (
-            RedTeamingTestCase,
-        )
 
         validate_model_callback_signature(
             model_callback=model_callback,
             async_mode=self.async_mode,
         )
 
-        simulated_attacks = await self.a_simulate_attacks(
+        simulated_test_cases = await self.a_simulate_attacks(
             purpose, attacks_per_vulnerability_type
         )
 
-        results: Dict[MisinformationType, List[RedTeamingTestCase]] = dict()
+        results: Dict[MisinformationType, List[RTTestCase]] = dict()
 
-        async def process_attack(simulated_attack: SimulatedAttack):
-            vulnerability_type = simulated_attack.vulnerability_type
+        async def process_attack(simulated_test_case: RTTestCase):
+            vulnerability_type = simulated_test_case.vulnerability_type
 
             metric = self._get_metric(vulnerability_type)
-            target_output = await model_callback(simulated_attack.input)
+            target_output = await model_callback(simulated_test_case.input)
 
-            test_case = LLMTestCase(
-                input=simulated_attack.input,
-                actual_output=target_output,
-            )
-
-            metric.measure(test_case)
-
-            red_teaming_test_case = RedTeamingTestCase(
-                vulnerability=simulated_attack.vulnerability,
+            red_teaming_test_case = RTTestCase(
+                vulnerability=simulated_test_case.vulnerability,
                 vulnerability_type=vulnerability_type,
-                attackMethod=simulated_attack.attack_method,
+                attackMethod=simulated_test_case.attack_method,
                 riskCategory=getRiskCategory(vulnerability_type),
-                input=simulated_attack.input,
+                input=simulated_test_case.input,
                 actual_output=target_output,
-                score=metric.score,
-                reason=metric.reason,
             )
+
+            metric = self._get_metric(vulnerability_type)
+            await metric.a_measure(red_teaming_test_case)
+
+            red_teaming_test_case.score = metric.score
+            red_teaming_test_case.reason = metric.reason
 
             return vulnerability_type, red_teaming_test_case
 
         # Run all processing concurrently
         all_tasks = [
-            process_attack(simulated_attack)
-            for simulated_attack in simulated_attacks
-            if simulated_attack.vulnerability_type in self.types
+            process_attack(simulated_test_case)
+            for simulated_test_case in simulated_test_cases
+            if simulated_test_case.vulnerability_type in self.types
         ]
 
         for task in asyncio.as_completed(all_tasks):
@@ -173,7 +159,7 @@ class Misinformation(BaseVulnerability):
         self,
         purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
-    ) -> List[SimulatedAttack]:
+    ) -> List[RTTestCase]:
 
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
@@ -182,7 +168,7 @@ class Misinformation(BaseVulnerability):
         self.purpose = purpose
 
         templates = dict()
-        simulated_attacks: List[SimulatedAttack] = []
+        simulated_test_cases: List[RTTestCase] = []
 
         for type in self.types:
             templates[type] = templates.get(type, [])
@@ -212,9 +198,9 @@ class Misinformation(BaseVulnerability):
                         data = trimAndLoadJson(res)
                         local_attacks = [item["input"] for item in data["data"]]
 
-            simulated_attacks.extend(
+            simulated_test_cases.extend(
                 [
-                    SimulatedAttack(
+                    RTTestCase(
                         vulnerability=self.get_name(),
                         vulnerability_type=type,
                         input=local_attack,
@@ -223,13 +209,13 @@ class Misinformation(BaseVulnerability):
                 ]
             )
 
-        return simulated_attacks
+        return simulated_test_cases
 
     async def a_simulate_attacks(
         self,
         purpose: Optional[str] = None,
         attacks_per_vulnerability_type: int = 1,
-    ) -> List[SimulatedAttack]:
+    ) -> List[RTTestCase]:
 
         self.simulator_model, self.using_native_model = initialize_model(
             self.simulator_model
@@ -238,7 +224,7 @@ class Misinformation(BaseVulnerability):
         self.purpose = purpose
 
         templates = dict()
-        simulated_attacks: List[SimulatedAttack] = []
+        simulated_test_cases: List[RTTestCase] = []
 
         for type in self.types:
             templates[type] = templates.get(type, [])
@@ -270,9 +256,9 @@ class Misinformation(BaseVulnerability):
                         data = trimAndLoadJson(res)
                         local_attacks = [item["input"] for item in data["data"]]
 
-            simulated_attacks.extend(
+            simulated_test_cases.extend(
                 [
-                    SimulatedAttack(
+                    RTTestCase(
                         vulnerability=self.get_name(),
                         vulnerability_type=type,
                         input=local_attack,
@@ -281,7 +267,7 @@ class Misinformation(BaseVulnerability):
                 ]
             )
 
-        return simulated_attacks
+        return simulated_test_cases
 
     def _get_metric(
         self,

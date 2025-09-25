@@ -1,1 +1,1 @@
-from .attack_simulator import AttackSimulator, SimulatedAttack
+from .attack_simulator import AttackSimulator

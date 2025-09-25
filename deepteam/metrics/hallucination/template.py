@@ -10,7 +10,6 @@ class HallucinationTemplate:
             AI'S INTENDED PURPOSE (What the AI is designed to achieve, e.g., provide factual answers, summarize text, generate creative content):
             {purpose}
 
-            AI'S ACTUAL OUTPUT (The content produced by the AI):
             {actual_output}
 
             SCORING SYSTEM:
