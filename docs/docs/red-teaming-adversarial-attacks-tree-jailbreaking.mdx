@@ -8,21 +8,39 @@ import AttackTagsDisplayer from "@site/src/components/AttackTagsDisplayer";
 
 <AttackTagsDisplayer multiTurn={true} llmSimulated={true} />
 
-The `TreeJailbreaking` attack generates multiple parallel attack paths from a base `vulnerability`, exploring different variations to bypass the model’s safeguards. Instead of refining a single prompt, it branches out into several, evaluating and expanding only the most promising ones to increase the chances of a successful jailbreak.
+The `TreeJailbreaking` attack generates multiple parallel attacks from a _base attack_ taken from the `vulnerability` you've given, it forms a tree by exploring different variations of the attack to bypass the model's safeguards. Instead of refining a single prompt, **it branches out** by evaluating and expanding only the most promising paths to increase the chances of a successful jailbreak.
+
+![Tree Jailbreaking Intro](./images/tree-jailbreaking-intro.png)
+
+:::caution IMPORTANT
+**Pruning is critical in Tree Jailbreaking**, as it ensures the system focuses resources on the most effective branches.
+:::
 
 ## Usage
 
-```python
+```python title="main.py" {11-15}
 from deepteam import red_team
+from deepteam.vulnerabilities import Bias, BFLA
+from deepteam.attacks.single_turn import PromptInjection, Roleplay
 from deepteam.attacks.multi_turn import TreeJailbreaking
+from your_model import your_callback
 
+# Define your vulnerabilities and their types here
+vulnerabilities = [BFLA(), Bias()]
+
+# Define the Tree Jailbreaking attack with your configuration
 tree_jalbreaking = TreeJailbreaking(
     weight=5,
     max_depth=7,
-    simulator_model="gpt-4o",
+    turn_level_attacks=[PromptInjection(), Roleplay()]
 )
 
-red_team(attacks=[tree_jalbreaking], model_callback=..., vulnerabilities=...)
+# Call the red_team method with your attacks, vulnerabilites and your model callback
+red_team(
+    attacks=[tree_jalbreaking],
+    vulnerabilities=vulnerabilities,
+    model_callback=your_callback
+)
 ```
 
 There are **FOUR** optional parameters when creating a `LinearJailbreaking` attack:
@@ -40,28 +58,39 @@ You can try to jailbreak your model on a single vulnerability using the `enhance
 from deepteam.attacks.single_turn import PromptInjection, Roleplay
 from deepteam.attacks.multi_turn import TreeJailbreaking
 from deepteam.vulnerabilities import Bias
+from your_model import your_callback
 
-bias = Bias(types=["race"])
+bias = Bias()
 tree_jalbreaking = TreeJailbreaking(
     weight=5, 
     max_depth=7, 
     turn_level_attacks=[PromptInjection(), Roleplay()]
 )
 
-result = tree_jalbreaking.enhance(vulnerability=bias, model_callback=...)
+result = tree_jalbreaking.enhance(vulnerability=bias, model_callback=your_callback)
 print(result)
 ```
 
 ## How It Works
 
-`TreeJailbreaking` is a branching attack strategy that explores multiple prompt variations in parallel. It starts from a base prompt tied to a known vulnerability and generates several alternative prompts ("branches"), each representing a different jailbreak attempt. These branches are scored based on the model’s responses, and only the most promising ones are expanded in future iterations, while weaker paths are pruned.
+`TreeJailbreaking` is a **branching attack strategy** that explores multiple parallel paths to push a target LLM toward generating restricted or harmful outputs. It works in the following steps:
 
-If the `turn_level_attacks` parameter is provided, a branch may occasionally be enhanced using a randomly selected variant from the `turn_level_attacks` list, with a 50% chance of applying the enhancement. This adds controlled randomness and expands the search space.
+1. **Start from a base vulnerability** — a prompt crafted to exploit a known weakness in the model (e.g. refusal behavior, prompt handling).
+2. **Generate multiple branches**, each representing a different variation of the base attack.
+3. **Get responses from the target LLM** for each branch.
+4. **Score and select** the most promising branches based on how close they get to a successful jailbreak.
+5. **Expand** only the top-performing branches with new variations.
+6. **Repeat** this process for a fixed number of iterations or until a harmful output is produced or max depth is reached.
+
+Instead of refining a single prompt, TreeJailbreaking **diverges** into multiple candidates at each step — retaining only the most effective ones and pruning weaker paths — creating a dynamic, exploratory attack tree.
 
 ![Tree Jailbreaking](./images/tree-jailbreaking.png)
 
-:::caution IMPORTANT
-**Pruning is critical in Tree Jailbreaking**, as it ensures the system focuses resources on the most effective branches.
-:::
+If the `turn_level_attacks` is supplied with a list of single-turn attacks, `TreeJailbreaking` adds controlled variation:
 
-The process continues until a successful path is found or a time limit is reached. By exploring diverse attack paths in parallel and focusing on the most effective ones, TreeJailbreaking increases the chances of bypassing model safeguards efficiently.
+- At each branch expansion step, there's a **50% chance** of enhancing the prompt with a **randomly selected attack** from the `turn_level_attacks` list (e.g., [`Roleplay`](/docs/red-teaming-adversarial-attacks-roleplay), [`PromptInjection`](/docs/red-teaming-adversarial-attacks-prompt-injection)).
+- These injected attacks introduce **diverse angles** within each branch, increasing coverage without breaking the overall branching structure.
+
+:::note
+This hybrid approach combines **broad parallel exploration** with **targeted refinement**, boosting the likelihood of bypassing safety filters through multiple diverse jailbreak attempts.
+:::
