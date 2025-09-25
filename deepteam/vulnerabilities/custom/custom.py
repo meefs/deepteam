@@ -179,7 +179,7 @@ class CustomVulnerability(BaseVulnerability):
         purpose: str = None,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[RTTestCase]:
-        
+
         self.purpose = purpose
 
         self.simulator_model, self.using_native_model = initialize_model(
@@ -197,7 +197,7 @@ class CustomVulnerability(BaseVulnerability):
                     type,
                     attacks_per_vulnerability_type,
                     self.custom_prompt,
-                    self.purpose
+                    self.purpose,
                 )
             )
 
@@ -237,7 +237,7 @@ class CustomVulnerability(BaseVulnerability):
         purpose: str = None,
         attacks_per_vulnerability_type: int = 1,
     ) -> List[RTTestCase]:
-        
+
         self.purpose = purpose
 
         self.simulator_model, self.using_native_model = initialize_model(
@@ -255,7 +255,7 @@ class CustomVulnerability(BaseVulnerability):
                     type,
                     attacks_per_vulnerability_type,
                     self.custom_prompt,
-                    self.purpose
+                    self.purpose,
                 )
             )
 

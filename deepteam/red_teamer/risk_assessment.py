@@ -93,9 +93,9 @@ class RiskAssessment(BaseModel):
 
     def __init__(self, **data):
         super().__init__(**data)
-        self.test_cases: TestCasesList = TestCasesList[
-            RTTestCase
-        ](self.test_cases)
+        self.test_cases: TestCasesList = TestCasesList[RTTestCase](
+            self.test_cases
+        )
 
     def save(self, to: str) -> str:
         try:
@@ -134,9 +134,7 @@ def construct_risk_assessment_overview(
         VulnerabilityType,
         List[RTTestCase],
     ] = {}
-    attack_method_to_cases: Dict[
-        str, List[RTTestCase]
-    ] = {}
+    attack_method_to_cases: Dict[str, List[RTTestCase]] = {}
 
     errored = 0
     for test_case in red_teaming_test_cases:

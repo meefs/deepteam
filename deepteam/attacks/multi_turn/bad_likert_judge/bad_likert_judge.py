@@ -43,8 +43,12 @@ class BadLikertJudge(BaseAttack):
         self.attacks = attacks
 
         if self.attacks is not None:
-            if not isinstance(self.attacks, list) or not all(attack.multi_turn == False for attack in self.attacks):
-                raise ValueError("The 'attacks' passed must be a list of single-turn attacks")
+            if not isinstance(self.attacks, list) or not all(
+                attack.multi_turn == False for attack in self.attacks
+            ):
+                raise ValueError(
+                    "The 'attacks' passed must be a list of single-turn attacks"
+                )
 
     def _get_turns(
         self,
@@ -140,7 +144,9 @@ class BadLikertJudge(BaseAttack):
             # Randomly enhancing a turn attack
             if self.attacks and random.random() < 0.5:
                 attack = random.choice(self.attacks)
-                enhanced_attack = enhance_attack(attack, enhanced_attack, self.simulator_model)
+                enhanced_attack = enhance_attack(
+                    attack, enhanced_attack, self.simulator_model
+                )
 
             assistant_response = model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
@@ -246,7 +252,9 @@ class BadLikertJudge(BaseAttack):
             # Randomly enhancing a turn attack
             if self.attacks and random.random() < 0.5:
                 attack = random.choice(self.attacks)
-                enhanced_attack = await a_enhance_attack(attack, enhanced_attack, self.simulator_model)
+                enhanced_attack = await a_enhance_attack(
+                    attack, enhanced_attack, self.simulator_model
+                )
 
             assistant_response = await model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))

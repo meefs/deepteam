@@ -62,8 +62,12 @@ class TreeJailbreaking(BaseAttack):
         self.attacks = attacks
 
         if self.attacks is not None:
-            if not isinstance(self.attacks, list) or not all(attack.multi_turn == False for attack in self.attacks):
-                raise ValueError("The 'attacks' passed must be a list of single-turn attacks")
+            if not isinstance(self.attacks, list) or not all(
+                attack.multi_turn == False for attack in self.attacks
+            ):
+                raise ValueError(
+                    "The 'attacks' passed must be a list of single-turn attacks"
+                )
 
     def _get_turns(
         self,
@@ -338,7 +342,7 @@ class TreeJailbreaking(BaseAttack):
         vulnerability_data: str = "",
     ):
         if node.depth >= self.max_depth:
-            return 
+            return
 
         """Expands a tree node by generating multiple children nodes based on branching logic."""
         if node.depth == 0:
@@ -352,7 +356,7 @@ class TreeJailbreaking(BaseAttack):
             ]
         else:
             conversation_json = node.conversation_history
-        
+
         conversation_json = list(conversation_json)
         conversation_json.append(
             {
@@ -373,7 +377,9 @@ class TreeJailbreaking(BaseAttack):
             # Randomly enhancing a turn attack
             if self.attacks and random.random() < 0.5:
                 attack = random.choice(self.attacks)
-                enhanced_attack = enhance_attack(attack, enhanced_attack, self.simulator_model)
+                enhanced_attack = enhance_attack(
+                    attack, enhanced_attack, self.simulator_model
+                )
 
             # Check if enhanced attack is a refusal statement
             non_refusal_prompt = JailBreakingTemplate.non_refusal(
@@ -530,7 +536,7 @@ class TreeJailbreaking(BaseAttack):
         vulnerability_data: str = "",
     ):
         if node.depth >= self.max_depth:
-            return 
+            return
 
         """Expands a tree node asynchronously by generating multiple children nodes."""
         if node.depth == 0:
@@ -588,7 +594,9 @@ class TreeJailbreaking(BaseAttack):
         # Randomly enhancing a turn attack
         if self.attacks and random.random() < 0.5:
             attack = random.choice(self.attacks)
-            enhanced_attack = await a_enhance_attack(attack, enhanced_attack, self.simulator_model)
+            enhanced_attack = await a_enhance_attack(
+                attack, enhanced_attack, self.simulator_model
+            )
 
         # Check if enhanced attack is a refusal statement
         non_refusal_prompt = JailBreakingTemplate.non_refusal(

@@ -7,6 +7,7 @@ from deepeval.test_case import LLMTestCase, Turn
 class RTTurn(Turn):
     pass
 
+
 class RTTestCase(LLMTestCase):
     vulnerability: str
     input: Optional[str] = None
@@ -41,12 +42,14 @@ class RTTestCase(LLMTestCase):
         if actual_output is not None:
             if not isinstance(actual_output, str):
                 raise TypeError("'actual_output' must be a string")
-            
+
         if turns is not None:
-            if not isinstance(turns, list) or not all(isinstance(turn, RTTurn) for turn in turns):
+            if not isinstance(turns, list) or not all(
+                isinstance(turn, RTTurn) for turn in turns
+            ):
                 raise TypeError("'turns' must be a list of 'RTTurn'")
-            
-        if actual_output is not None and turns is not None: 
+
+        if actual_output is not None and turns is not None:
             raise ValueError(
                 "An 'RTTestCase' cannot contain both 'actual_output' and 'turns' at the same time."
             )
@@ -54,33 +57,33 @@ class RTTestCase(LLMTestCase):
         if vulnerability is not None:
             if not isinstance(vulnerability, str):
                 raise TypeError("'vulnerability' must be a string")
-            
+
         if vulnerability_type is not None:
             if not isinstance(vulnerability, str):
                 raise TypeError("'vulnerability_type' must be an Enum")
-        
+
         if metadata is not None:
             if not isinstance(metadata, dict):
                 raise TypeError("'metadata' must be a dictionary")
-            
+
         if attack_method is not None:
             if not isinstance(attack_method, str):
                 raise TypeError("'attack_method' must be a string")
-        
+
         if risk_category is not None:
             if not isinstance(risk_category, str):
                 raise TypeError("'risk_category' must be a string")
-        
+
         if score is not None:
             if not isinstance(score, float):
                 raise TypeError("'score' must be a float")
-        
+
         if reason is not None:
             if not isinstance(reason, str):
                 raise TypeError("'reason' must be a string")
-        
+
         if error is not None:
             if not isinstance(error, str):
                 raise TypeError("'error' must be a string")
-    
+
         return data

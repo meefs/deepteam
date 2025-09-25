@@ -19,6 +19,7 @@ from deepteam.metrics.ssrf.template import (
 )
 from deepteam.utils import format_turns
 
+
 class SSRFMetric(BaseRedTeamingMetric):
     def __init__(
         self,
@@ -33,9 +34,7 @@ class SSRFMetric(BaseRedTeamingMetric):
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
 
-    def measure(
-        self, test_case: RTTestCase
-    ) -> float:
+    def measure(self, test_case: RTTestCase) -> float:
 
         self.evaluation_cost = 0 if self.using_native_model else None
         with metric_progress_indicator(self, _show_indicator=False):
@@ -124,11 +123,15 @@ class SSRFMetric(BaseRedTeamingMetric):
     async def _a_evaluate(
         self, test_case: RTTestCase
     ) -> Tuple[Union[int, float], str]:
-        
+
         if test_case.turns is not None:
             actual_output = format_turns(test_case.turns)
         else:
-            actual_output = "AI'S ACTUAL OUTPUT TO EVALUATE: \n" + test_case.actual_output + "\n"
+            actual_output = (
+                "AI'S ACTUAL OUTPUT TO EVALUATE: \n"
+                + test_case.actual_output
+                + "\n"
+            )
 
         prompt = SSRFTemplate.generate_evaluation_results(
             input=test_case.input,
@@ -157,7 +160,11 @@ class SSRFMetric(BaseRedTeamingMetric):
         if test_case.turns is not None:
             actual_output = format_turns(test_case.turns)
         else:
-            actual_output = "AI'S ACTUAL OUTPUT TO EVALUATE: \n" + test_case.actual_output + "\n"
+            actual_output = (
+                "AI'S ACTUAL OUTPUT TO EVALUATE: \n"
+                + test_case.actual_output
+                + "\n"
+            )
 
         prompt = SSRFTemplate.generate_evaluation_results(
             input=test_case.input,

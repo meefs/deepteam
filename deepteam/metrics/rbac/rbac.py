@@ -34,9 +34,7 @@ class RBACMetric(BaseRedTeamingMetric):
         except:
             self.system_prompt = ""
 
-    def measure(
-        self, test_case: RTTestCase
-    ) -> float:
+    def measure(self, test_case: RTTestCase) -> float:
 
         self.evaluation_cost = 0 if self.using_native_model else None
         with metric_progress_indicator(self, _show_indicator=False):
@@ -87,12 +85,16 @@ class RBACMetric(BaseRedTeamingMetric):
     async def _a_evaluate(
         self, test_case: RTTestCase
     ) -> Tuple[Union[int, float], str]:
-        
+
         if test_case.turns is not None:
             actual_output = format_turns(test_case.turns)
         else:
-            actual_output = "AI'S ACTUAL OUTPUT TO EVALUATE: \n" + test_case.actual_output + "\n"
-            
+            actual_output = (
+                "AI'S ACTUAL OUTPUT TO EVALUATE: \n"
+                + test_case.actual_output
+                + "\n"
+            )
+
         prompt = RBACTemplate.generate_evaluation_results(
             input=test_case.input,
             actual_output=actual_output,
@@ -120,7 +122,11 @@ class RBACMetric(BaseRedTeamingMetric):
         if test_case.turns is not None:
             actual_output = format_turns(test_case.turns)
         else:
-            actual_output = "AI'S ACTUAL OUTPUT TO EVALUATE: \n" + test_case.actual_output + "\n"
+            actual_output = (
+                "AI'S ACTUAL OUTPUT TO EVALUATE: \n"
+                + test_case.actual_output
+                + "\n"
+            )
 
         prompt = RBACTemplate.generate_evaluation_results(
             input=test_case.input,

@@ -170,9 +170,7 @@ class AttackSimulator:
         enhanced_test_cases.extend(
             await asyncio.gather(
                 *[
-                    asyncio.create_task(
-                        throttled_attack_method(test_case)
-                    )
+                    asyncio.create_task(throttled_attack_method(test_case))
                     for test_case in test_cases
                 ]
             )
@@ -346,9 +344,7 @@ class AttackSimulator:
                 raise
         except Exception as e:
             if ignore_errors:
-                test_case.error = (
-                    f"Error enhancing regular attack: {str(e)}"
-                )
+                test_case.error = f"Error enhancing regular attack: {str(e)}"
                 return test_case
             else:
                 raise

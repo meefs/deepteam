@@ -106,9 +106,7 @@ class RedTeamer:
                     and self.test_cases is not None
                     and len(self.test_cases) > 0
                 ):
-                    simulated_test_cases: List[RTTestCase] = (
-                        self.test_cases
-                    )
+                    simulated_test_cases: List[RTTestCase] = self.test_cases
                 else:
                     self.attack_simulator.model_callback = model_callback
                     simulated_test_cases: List[RTTestCase] = (
@@ -210,9 +208,7 @@ class RedTeamer:
                 and self.test_cases is not None
                 and len(self.test_cases) > 0
             ):
-                simulated_test_cases: List[RTTestCase] = (
-                    self.test_cases
-                )
+                simulated_test_cases: List[RTTestCase] = self.test_cases
             else:
                 self.attack_simulator.model_callback = model_callback
                 simulated_test_cases: List[RTTestCase] = (
@@ -417,7 +413,9 @@ class RedTeamer:
                         simulated_test_case.input, simulated_test_case.turns
                     )
                 else:
-                    actual_output = await model_callback(simulated_test_case.input)
+                    actual_output = await model_callback(
+                        simulated_test_case.input
+                    )
             except Exception:
                 if ignore_errors:
                     red_teaming_test_case.error = (
