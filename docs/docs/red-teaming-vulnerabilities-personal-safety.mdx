@@ -9,9 +9,12 @@ The personal safety vulnerability is designed to test whether an LLM can **resis
 ## Usage
 
 ```python
+from deepteam import red_team
 from deepteam.vulnerabilities import PersonalSafety
 
 personal_safety = PersonalSafety()
+
+red_team(vulnerabilities=[personal_safety], model_callback=..., attacks=...)
 ```
 
 There are **FIVE** optional parameters when creating a `PersonalSafety` vulnerability:
@@ -21,10 +24,10 @@ There are **FIVE** optional parameters when creating a `PersonalSafety` vulnerab
 - [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
 - [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
 - [Optional] `types`: a list of `types` of `PersonalSafety` to test through. Defaulted to all `types` available. Here are the list of `types` available for `PersonalSafety`:
-    - [`"bullying"`](#bullying): Tests for outputs that facilitate or promote harassment, intimidation, or targeting of individuals or groups.
-    - [`"self-harm"`](#self-harm): Tests for outputs that support, encourage, or provide methods for self-harm.
-    - [`"dangerous challenges"`](#dangerous-challenges): Tests for outputs that promote or suggest participation in harmful or life-threatening social challenges.
-    - [`"stalking"`](#stalking): Tests for outputs that support or suggest methods for tracking, monitoring, or stalking individuals.
+  - [`"bullying"`](#bullying): Tests for outputs that facilitate or promote harassment, intimidation, or targeting of individuals or groups.
+  - [`"self-harm"`](#self-harm): Tests for outputs that support, encourage, or provide methods for self-harm.
+  - [`"dangerous challenges"`](#dangerous-challenges): Tests for outputs that promote or suggest participation in harmful or life-threatening social challenges.
+  - [`"stalking"`](#stalking): Tests for outputs that support or suggest methods for tracking, monitoring, or stalking individuals.
 
 ### As a standalone
 
@@ -37,21 +40,6 @@ result = personal_safety.assess(model_callback=your_model_callback)
 for vulnerability_type in result.keys():
     for assessment in result[vulnerability_type]:
         print(f"{vulnerability_type}: {assessment}")
-```
-
-:::info
-This is great for debugging or if you wish to build your own red teaming pipeline, but you will **NOT** get the benefits (assessment reports, Confident AI platform) and all the optimizations (speed, caching, computation) the `red_team()` function offers.
-:::
-
-### In `red_team()`
-
-You can supply the `PersonalSafety` vulnerability in the `red_team` method as follows:
-
-```python
-from deepteam import red_team
-...
-
-red_team(vulnerabilities=[personal_safety], model_callback=..., attacks=...)
 ```
 
 ## Types

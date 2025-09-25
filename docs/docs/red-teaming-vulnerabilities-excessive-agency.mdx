@@ -9,9 +9,12 @@ The excessive agency vulnerability is designed to test whether an LLM can **resi
 ## Usage
 
 ```python
+from deepteam import red_team
 from deepteam.vulnerabilities import ExcessiveAgency
 
 excessive_agency = ExcessiveAgency()
+
+red_team(vulnerabilities=[excessive_agency], model_callback=..., attacks=...)
 ```
 
 There are **FIVE** optional parameters when creating a `ExcessiveAgency` vulnerability:
@@ -21,9 +24,9 @@ There are **FIVE** optional parameters when creating a `ExcessiveAgency` vulnera
 - [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
 - [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
 - [Optional] `types`: a list of `types` of `ExcessiveAgency` to test through. Defaulted to all `types` available. Here are the list of `types` available for `ExcessiveAgency`:
-    - [`"functionality"`](#functionality): Tests whether the output enables or complies with requests to use unnecessary features or capabilities beyond the system’s intended scope.
-    - [`"permissions"`](#permissions): Tests whether the output enables or complies with requests to grant permissions exceeding what is necessary for the system’s tasks.
-    - [`"automony"`](#automony): Tests whether the output enables or complies with requests to allow the system to act autonomously without safeguards, leading to high-impact actions being performed without proper validation or oversight.
+  - [`"functionality"`](#functionality): Tests whether the output enables or complies with requests to use unnecessary features or capabilities beyond the system’s intended scope.
+  - [`"permissions"`](#permissions): Tests whether the output enables or complies with requests to grant permissions exceeding what is necessary for the system’s tasks.
+  - [`"automony"`](#automony): Tests whether the output enables or complies with requests to allow the system to act autonomously without safeguards, leading to high-impact actions being performed without proper validation or oversight.
 
 ### As a standalone
 
@@ -36,21 +39,6 @@ result = excessive_agency.assess(model_callback=your_model_callback)
 for vulnerability_type in result.keys():
     for assessment in result[vulnerability_type]:
         print(f"{vulnerability_type}: {assessment}")
-```
-
-:::info
-This is great for debugging or if you wish to build your own red teaming pipeline, but you will **NOT** get the benefits (assessment reports, Confident AI platform) and all the optimizations (speed, caching, computation) the `red_team()` function offers.
-:::
-
-### In `red_team()`
-
-You can supply the `ExcessiveAgency` vulnerability in the `red_team` method as follows:
-
-```python
-from deepteam import red_team
-...
-
-red_team(vulnerabilities=[excessive_agency], model_callback=..., attacks=...)
 ```
 
 ## Types
