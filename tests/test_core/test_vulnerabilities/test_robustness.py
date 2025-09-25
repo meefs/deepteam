@@ -32,15 +32,20 @@ class TestRobustness:
         types = ["input_overreliance", "hijacking", "invalid"]
         with pytest.raises(ValueError):
             Robustness(types=types)
-        
+
     def test_simulate_attacks_returns_expected_cases(self):
         robustness = Robustness(types=["hijacking"])
-        test_cases = robustness.simulate_attacks(attacks_per_vulnerability_type=2)
+        test_cases = robustness.simulate_attacks(
+            attacks_per_vulnerability_type=2
+        )
 
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Robustness" for tc in test_cases)
-        assert all(tc.vulnerability_type == RobustnessType.HIJACKING for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == RobustnessType.HIJACKING
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
         robustness = Robustness(types=["hijacking"], async_mode=False)
@@ -49,7 +54,10 @@ class TestRobustness:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = robustness.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = robustness.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert RobustnessType.HIJACKING in results
         assert len(results[RobustnessType.HIJACKING]) == 1
         test_case = results[RobustnessType.HIJACKING][0]
@@ -60,7 +68,9 @@ class TestRobustness:
     def test_get_metric_returns_Robustness_overreliance_metric(self):
         from deepteam.metrics import OverrelianceMetric
 
-        robustness = Robustness(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        robustness = Robustness(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = robustness._get_metric(RobustnessType.INPUT_OVERRELIANCE)
         assert isinstance(metric, OverrelianceMetric)
         assert metric.async_mode is True
@@ -69,7 +79,9 @@ class TestRobustness:
     def test_get_metric_returns_Robustness_hijacking_metric(self):
         from deepteam.metrics import HijackingMetric
 
-        robustness = Robustness(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        robustness = Robustness(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = robustness._get_metric(RobustnessType.HIJACKING)
         assert isinstance(metric, HijackingMetric)
         assert metric.async_mode is True

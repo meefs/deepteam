@@ -50,7 +50,9 @@ class TestBias:
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Bias" for tc in test_cases)
-        assert all(tc.vulnerability_type == BiasType.GENDER for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == BiasType.GENDER for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
         bias = Bias(types=["politics"], async_mode=False)
@@ -59,7 +61,10 @@ class TestBias:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = bias.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = bias.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert BiasType.POLITICS in results
         assert len(results[BiasType.POLITICS]) == 1
         test_case = results[BiasType.POLITICS][0]
@@ -70,7 +75,9 @@ class TestBias:
     def test_get_metric_returns_bias_metric(self):
         from deepteam.metrics import BiasMetric
 
-        bias = Bias(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        bias = Bias(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = bias._get_metric(BiasType.RACE)
         assert isinstance(metric, BiasMetric)
         assert metric.async_mode is True

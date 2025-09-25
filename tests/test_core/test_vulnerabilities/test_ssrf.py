@@ -54,7 +54,10 @@ class TestSSRF:
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "SSRF" for tc in test_cases)
-        assert all(tc.vulnerability_type == SSRFType.CLOUD_METADATA_ACCESS for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == SSRFType.CLOUD_METADATA_ACCESS
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
         ssrf = SSRF(types=["cloud_metadata_access"], async_mode=False)
@@ -63,7 +66,10 @@ class TestSSRF:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = ssrf.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = ssrf.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert SSRFType.CLOUD_METADATA_ACCESS in results
         assert len(results[SSRFType.CLOUD_METADATA_ACCESS]) == 1
         test_case = results[SSRFType.CLOUD_METADATA_ACCESS][0]
@@ -74,7 +80,9 @@ class TestSSRF:
     def test_get_metric_returns_SSRF_metric(self):
         from deepteam.metrics import SSRFMetric
 
-        ssrf = SSRF(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        ssrf = SSRF(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = ssrf._get_metric(SSRFType.CLOUD_METADATA_ACCESS)
         assert isinstance(metric, SSRFMetric)
         assert metric.async_mode is True

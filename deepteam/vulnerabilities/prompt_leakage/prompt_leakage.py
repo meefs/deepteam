@@ -37,7 +37,7 @@ class PromptLeakage(BaseVulnerability):
         types: Optional[List[PromptLeakageLiteral]] = [
             type.value for type in PromptLeakageType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=PromptLeakageType

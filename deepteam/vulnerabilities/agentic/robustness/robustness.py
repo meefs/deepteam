@@ -35,7 +35,7 @@ class Robustness(BaseVulnerability):
         types: Optional[List[RobustnessLiteral]] = [
             type.value for type in RobustnessType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=RobustnessType

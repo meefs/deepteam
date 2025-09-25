@@ -36,7 +36,7 @@ class GoalTheft(BaseVulnerability):
         types: Optional[List[GoalTheftLiteralType]] = [
             type.value for type in GoalTheftType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=GoalTheftType

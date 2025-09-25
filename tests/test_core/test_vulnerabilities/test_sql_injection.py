@@ -57,21 +57,31 @@ class TestSQLInjection:
 
     def test_simulate_attacks_returns_expected_cases(self):
         sql_injection = SQLInjection(types=["blind_sql_injection"])
-        test_cases = sql_injection.simulate_attacks(attacks_per_vulnerability_type=2)
+        test_cases = sql_injection.simulate_attacks(
+            attacks_per_vulnerability_type=2
+        )
 
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "SQL Injection" for tc in test_cases)
-        assert all(tc.vulnerability_type == SQLInjectionType.BLIND_SQL_INJECTION for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == SQLInjectionType.BLIND_SQL_INJECTION
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
-        sql_injection = SQLInjection(types=["blind_sql_injection"], async_mode=False)
+        sql_injection = SQLInjection(
+            types=["blind_sql_injection"], async_mode=False
+        )
 
         def dummy_model_callback(prompt):
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = sql_injection.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = sql_injection.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert SQLInjectionType.BLIND_SQL_INJECTION in results
         assert len(results[SQLInjectionType.BLIND_SQL_INJECTION]) == 1
         test_case = results[SQLInjectionType.BLIND_SQL_INJECTION][0]
@@ -82,7 +92,9 @@ class TestSQLInjection:
     def test_get_metric_returns_SQLInjection_metric(self):
         from deepteam.metrics import SQLInjectionMetric
 
-        sql_injection = SQLInjection(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        sql_injection = SQLInjection(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = sql_injection._get_metric(SQLInjectionType.BLIND_SQL_INJECTION)
         assert isinstance(metric, SQLInjectionMetric)
         assert metric.async_mode is True
@@ -90,7 +102,9 @@ class TestSQLInjection:
 
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
-        sql_injection = SQLInjection(types=["cooperative_dialogue"], async_mode=True)
+        sql_injection = SQLInjection(
+            types=["cooperative_dialogue"], async_mode=True
+        )
 
         async def dummy_model_callback(prompt):
             return prompt

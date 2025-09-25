@@ -57,21 +57,31 @@ class TestShellInjection:
 
     def test_simulate_attacks_returns_expected_cases(self):
         shell_injection = ShellInjection(types=["command_injection"])
-        test_cases = shell_injection.simulate_attacks(attacks_per_vulnerability_type=2)
+        test_cases = shell_injection.simulate_attacks(
+            attacks_per_vulnerability_type=2
+        )
 
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Shell Injection" for tc in test_cases)
-        assert all(tc.vulnerability_type == ShellInjectionType.COMMAND_INJECTION for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == ShellInjectionType.COMMAND_INJECTION
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
-        shell_injection = ShellInjection(types=["command_injection"], async_mode=False)
+        shell_injection = ShellInjection(
+            types=["command_injection"], async_mode=False
+        )
 
         def dummy_model_callback(prompt):
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = shell_injection.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = shell_injection.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert ShellInjectionType.COMMAND_INJECTION in results
         assert len(results[ShellInjectionType.COMMAND_INJECTION]) == 1
         test_case = results[ShellInjectionType.COMMAND_INJECTION][0]
@@ -82,15 +92,21 @@ class TestShellInjection:
     def test_get_metric_returns_ShellInjection_metric(self):
         from deepteam.metrics import ShellInjectionMetric
 
-        shell_injection = ShellInjection(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
-        metric = shell_injection._get_metric(ShellInjectionType.COMMAND_INJECTION)
+        shell_injection = ShellInjection(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
+        metric = shell_injection._get_metric(
+            ShellInjectionType.COMMAND_INJECTION
+        )
         assert isinstance(metric, ShellInjectionMetric)
         assert metric.async_mode is True
         assert metric.verbose_mode is True
 
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
-        shell_injection = ShellInjection(types=["cooperative_dialogue"], async_mode=True)
+        shell_injection = ShellInjection(
+            types=["cooperative_dialogue"], async_mode=True
+        )
 
         async def dummy_model_callback(prompt):
             return prompt

@@ -50,12 +50,17 @@ class TestExcessiveAgency:
 
     def test_simulate_attacks_returns_expected_cases(self):
         excessive_agency = ExcessiveAgency(types=["autonomy"])
-        test_cases = excessive_agency.simulate_attacks(attacks_per_vulnerability_type=2)
+        test_cases = excessive_agency.simulate_attacks(
+            attacks_per_vulnerability_type=2
+        )
 
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Excessive Agency" for tc in test_cases)
-        assert all(tc.vulnerability_type == ExcessiveAgencyType.AUTONOMY for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == ExcessiveAgencyType.AUTONOMY
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
         excessive_agency = ExcessiveAgency(types=["autonomy"], async_mode=False)
@@ -64,7 +69,10 @@ class TestExcessiveAgency:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = excessive_agency.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = excessive_agency.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert ExcessiveAgencyType.AUTONOMY in results
         assert len(results[ExcessiveAgencyType.AUTONOMY]) == 1
         test_case = results[ExcessiveAgencyType.AUTONOMY][0]
@@ -75,7 +83,9 @@ class TestExcessiveAgency:
     def test_get_metric_returns_ExcessiveAgency_metric(self):
         from deepteam.metrics import ExcessiveAgencyMetric
 
-        excessive_agency = ExcessiveAgency(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        excessive_agency = ExcessiveAgency(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = excessive_agency._get_metric(ExcessiveAgencyType.AUTONOMY)
         assert isinstance(metric, ExcessiveAgencyMetric)
         assert metric.async_mode is True

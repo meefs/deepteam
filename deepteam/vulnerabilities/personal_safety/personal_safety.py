@@ -38,7 +38,7 @@ class PersonalSafety(BaseVulnerability):
         types: Optional[List[PersonalSafetyLiteral]] = [
             type.value for type in PersonalSafetyType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=PersonalSafetyType

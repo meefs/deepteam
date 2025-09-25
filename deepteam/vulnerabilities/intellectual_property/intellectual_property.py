@@ -39,7 +39,7 @@ class IntellectualProperty(BaseVulnerability):
         types: Optional[List[IntellectualPropertyLiteral]] = [
             type.value for type in IntellectualPropertyType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=IntellectualPropertyType

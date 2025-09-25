@@ -67,21 +67,31 @@ class TestMisinformation:
 
     def test_simulate_attacks_returns_expected_cases(self):
         misinformation = Misinformation(types=["factual_errors"])
-        test_cases = misinformation.simulate_attacks(attacks_per_vulnerability_type=2)
+        test_cases = misinformation.simulate_attacks(
+            attacks_per_vulnerability_type=2
+        )
 
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Misinformation" for tc in test_cases)
-        assert all(tc.vulnerability_type == MisinformationType.FACTUAL_ERRORS for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == MisinformationType.FACTUAL_ERRORS
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
-        misinformation = Misinformation(types=["factual_errors"], async_mode=False)
+        misinformation = Misinformation(
+            types=["factual_errors"], async_mode=False
+        )
 
         def dummy_model_callback(prompt):
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = misinformation.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = misinformation.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert MisinformationType.FACTUAL_ERRORS in results
         assert len(results[MisinformationType.FACTUAL_ERRORS]) == 1
         test_case = results[MisinformationType.FACTUAL_ERRORS][0]
@@ -92,7 +102,9 @@ class TestMisinformation:
     def test_get_metric_returns_Misinformation_metric(self):
         from deepteam.metrics.agentic import MisinterpretationMetric
 
-        misinformation = Misinformation(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        misinformation = Misinformation(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = misinformation._get_metric(MisinformationType.FACTUAL_ERRORS)
         assert isinstance(metric, MisinterpretationMetric)
         assert metric.async_mode is True
@@ -100,7 +112,9 @@ class TestMisinformation:
 
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
-        misinformation = Misinformation(types=["cooperative_dialogue"], async_mode=True)
+        misinformation = Misinformation(
+            types=["cooperative_dialogue"], async_mode=True
+        )
 
         async def dummy_model_callback(prompt):
             return prompt

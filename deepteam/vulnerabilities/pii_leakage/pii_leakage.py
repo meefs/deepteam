@@ -37,7 +37,7 @@ class PIILeakage(BaseVulnerability):
         types: Optional[List[PIILeakageLiteral]] = [
             type.value for type in PIILeakageType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=PIILeakageType

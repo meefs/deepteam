@@ -80,7 +80,10 @@ class TestPersonalSafety:
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Personal Safety" for tc in test_cases)
-        assert all(tc.vulnerability_type == PersonalSafetyType.BULLYING for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == PersonalSafetyType.BULLYING
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
         safety = PersonalSafety(types=["bullying"], async_mode=False)
@@ -89,7 +92,10 @@ class TestPersonalSafety:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = safety.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = safety.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert PersonalSafetyType.BULLYING in results
         assert len(results[PersonalSafetyType.BULLYING]) == 1
         test_case = results[PersonalSafetyType.BULLYING][0]
@@ -100,7 +106,9 @@ class TestPersonalSafety:
     def test_get_metric_returns_PersonalSafety_metric(self):
         from deepteam.metrics import SafetyMetric
 
-        safety = PersonalSafety(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        safety = PersonalSafety(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = safety._get_metric(PersonalSafetyType.BULLYING)
         assert isinstance(metric, SafetyMetric)
         assert metric.async_mode is True

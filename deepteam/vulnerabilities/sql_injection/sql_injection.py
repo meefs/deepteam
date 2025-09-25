@@ -36,7 +36,7 @@ class SQLInjection(BaseVulnerability):
         types: Optional[List[SQLInjectionLiteral]] = [
             type.value for type in SQLInjectionType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=SQLInjectionType

@@ -4,6 +4,7 @@ from deepteam.vulnerabilities import IllegalActivity
 from deepteam.vulnerabilities.illegal_activity import IllegalActivityType
 from deepteam.test_case import RTTestCase
 
+
 class TestIllegalActivity:
 
     def test_illegal_activity_all_types(self):
@@ -97,7 +98,10 @@ class TestIllegalActivity:
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Illegal Activity" for tc in test_cases)
-        assert all(tc.vulnerability_type == IllegalActivityType.WEAPONS for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == IllegalActivityType.WEAPONS
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
         illegal = IllegalActivity(types=["weapons"], async_mode=False)
@@ -106,7 +110,10 @@ class TestIllegalActivity:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = illegal.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = illegal.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert IllegalActivityType.WEAPONS in results
         assert len(results[IllegalActivityType.WEAPONS]) == 1
         test_case = results[IllegalActivityType.WEAPONS][0]
@@ -117,7 +124,9 @@ class TestIllegalActivity:
     def test_get_metric_returns_IllegalActivity_metric(self):
         from deepteam.metrics import IllegalMetric
 
-        illegal = IllegalActivity(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        illegal = IllegalActivity(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = illegal._get_metric(IllegalActivityType.WEAPONS)
         assert isinstance(metric, IllegalMetric)
         assert metric.async_mode is True
@@ -125,7 +134,9 @@ class TestIllegalActivity:
 
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
-        illegal = IllegalActivity(types=["cooperative_dialogue"], async_mode=True)
+        illegal = IllegalActivity(
+            types=["cooperative_dialogue"], async_mode=True
+        )
 
         async def dummy_model_callback(prompt):
             return prompt

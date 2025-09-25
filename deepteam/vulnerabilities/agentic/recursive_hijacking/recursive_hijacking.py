@@ -40,7 +40,7 @@ class RecursiveHijacking(BaseVulnerability):
         types: Optional[List[RecursiveHijackingLiteralType]] = [
             type.value for type in RecursiveHijackingType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=RecursiveHijackingType

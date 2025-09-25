@@ -54,7 +54,10 @@ class TestBOLA:
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "BOLA" for tc in test_cases)
-        assert all(tc.vulnerability_type == BOLAType.CROSS_CUSTOMER_ACCESS for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == BOLAType.CROSS_CUSTOMER_ACCESS
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
         bola = BOLA(types=["cross_customer_access"], async_mode=False)
@@ -63,7 +66,10 @@ class TestBOLA:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = bola.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = bola.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert BOLAType.CROSS_CUSTOMER_ACCESS in results
         assert len(results[BOLAType.CROSS_CUSTOMER_ACCESS]) == 1
         test_case = results[BOLAType.CROSS_CUSTOMER_ACCESS][0]
@@ -74,7 +80,9 @@ class TestBOLA:
     def test_get_metric_returns_BOLA_metric(self):
         from deepteam.metrics import BOLAMetric
 
-        bola = BOLA(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        bola = BOLA(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = bola._get_metric(BOLAType.CROSS_CUSTOMER_ACCESS)
         assert isinstance(metric, BOLAMetric)
         assert metric.async_mode is True

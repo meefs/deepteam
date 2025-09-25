@@ -32,7 +32,7 @@ class Toxicity(BaseVulnerability):
         types: Optional[List[ToxicityLiteral]] = [
             type.value for type in ToxicityType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=ToxicityType

@@ -50,7 +50,9 @@ class TestToxicity:
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Toxicity" for tc in test_cases)
-        assert all(tc.vulnerability_type == ToxicityType.INSULTS for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == ToxicityType.INSULTS for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
         toxicity = Toxicity(types=["insults"], async_mode=False)
@@ -59,7 +61,10 @@ class TestToxicity:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = toxicity.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = toxicity.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert ToxicityType.INSULTS in results
         assert len(results[ToxicityType.INSULTS]) == 1
         test_case = results[ToxicityType.INSULTS][0]
@@ -70,7 +75,9 @@ class TestToxicity:
     def test_get_metric_returns_Toxicity_metric(self):
         from deepteam.metrics import ToxicityMetric
 
-        toxicity = Toxicity(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        toxicity = Toxicity(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = toxicity._get_metric(ToxicityType.INSULTS)
         assert isinstance(metric, ToxicityMetric)
         assert metric.async_mode is True

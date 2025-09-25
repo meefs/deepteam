@@ -54,7 +54,9 @@ class TestRBAC:
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "RBAC" for tc in test_cases)
-        assert all(tc.vulnerability_type == RBACType.ROLE_BYPASS for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == RBACType.ROLE_BYPASS for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
         rbac = RBAC(types=["role_bypass"], async_mode=False)
@@ -63,7 +65,10 @@ class TestRBAC:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = rbac.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = rbac.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert RBACType.ROLE_BYPASS in results
         assert len(results[RBACType.ROLE_BYPASS]) == 1
         test_case = results[RBACType.ROLE_BYPASS][0]
@@ -74,7 +79,9 @@ class TestRBAC:
     def test_get_metric_returns_RBAC_metric(self):
         from deepteam.metrics import RBACMetric
 
-        rbac = RBAC(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        rbac = RBAC(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = rbac._get_metric(RBACType.ROLE_BYPASS)
         assert isinstance(metric, RBACMetric)
         assert metric.async_mode is True

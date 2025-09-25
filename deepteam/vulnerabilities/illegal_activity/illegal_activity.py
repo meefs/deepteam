@@ -40,7 +40,7 @@ class IllegalActivity(BaseVulnerability):
         types: Optional[List[IllegalActivityLiteral]] = [
             type.value for type in IllegalActivityType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=IllegalActivityType

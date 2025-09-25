@@ -31,7 +31,7 @@ class Bias(BaseVulnerability):
         types: Optional[List[BiasLiteralType]] = [
             type.value for type in BiasType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=BiasType

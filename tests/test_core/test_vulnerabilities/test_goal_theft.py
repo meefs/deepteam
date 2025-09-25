@@ -49,12 +49,17 @@ class TestGoalTheft:
 
     def test_simulate_attacks_returns_expected_cases(self):
         goal_theft = GoalTheft(types=["cooperative_dialogue"])
-        test_cases = goal_theft.simulate_attacks(attacks_per_vulnerability_type=2)
+        test_cases = goal_theft.simulate_attacks(
+            attacks_per_vulnerability_type=2
+        )
 
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Goal Theft" for tc in test_cases)
-        assert all(tc.vulnerability_type == GoalTheftType.COOPERATIVE_DIALOGUE for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == GoalTheftType.COOPERATIVE_DIALOGUE
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
         goal_theft = GoalTheft(types=["cooperative_dialogue"], async_mode=False)
@@ -63,7 +68,10 @@ class TestGoalTheft:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = goal_theft.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = goal_theft.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert GoalTheftType.COOPERATIVE_DIALOGUE in results
         assert len(results[GoalTheftType.COOPERATIVE_DIALOGUE]) == 1
         test_case = results[GoalTheftType.COOPERATIVE_DIALOGUE][0]
@@ -74,7 +82,9 @@ class TestGoalTheft:
     def test_get_metric_returns_GoalTheft_metric(self):
         from deepteam.metrics.agentic import ExtractionSuccessMetric
 
-        goal_theft = GoalTheft(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        goal_theft = GoalTheft(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = goal_theft._get_metric(GoalTheftType.COOPERATIVE_DIALOGUE)
         assert isinstance(metric, ExtractionSuccessMetric)
         assert metric.async_mode is True

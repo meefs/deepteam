@@ -54,7 +54,10 @@ class TestBFLA:
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "BFLA" for tc in test_cases)
-        assert all(tc.vulnerability_type == BFLAType.AUTHORIZATION_BYPASS for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == BFLAType.AUTHORIZATION_BYPASS
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
         bfla = BFLA(types=["authorization_bypass"], async_mode=False)
@@ -63,7 +66,10 @@ class TestBFLA:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = bfla.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = bfla.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert BFLAType.AUTHORIZATION_BYPASS in results
         assert len(results[BFLAType.AUTHORIZATION_BYPASS]) == 1
         test_case = results[BFLAType.AUTHORIZATION_BYPASS][0]
@@ -74,7 +80,9 @@ class TestBFLA:
     def test_get_metric_returns_BFLA_metric(self):
         from deepteam.metrics import BFLAMetric
 
-        bfla = BFLA(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        bfla = BFLA(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = bfla._get_metric(BFLAType.AUTHORIZATION_BYPASS)
         assert isinstance(metric, BFLAMetric)
         assert metric.async_mode is True

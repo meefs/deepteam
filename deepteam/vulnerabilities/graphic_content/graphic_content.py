@@ -34,7 +34,7 @@ class GraphicContent(BaseVulnerability):
         types: Optional[List[GraphicContentLiteral]] = [
             type.value for type in GraphicContentType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=GraphicContentType

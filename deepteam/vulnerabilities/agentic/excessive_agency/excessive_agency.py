@@ -34,7 +34,7 @@ class ExcessiveAgency(BaseVulnerability):
         types: Optional[List[ExcessiveAgencyLiteral]] = [
             type.value for type in ExcessiveAgencyType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=ExcessiveAgencyType

@@ -39,7 +39,7 @@ class Competition(BaseVulnerability):
         types: Optional[List[CompetitionLiteralType]] = [
             type.value for type in CompetitionType
         ],
-        purpose: Optional[str] = None
+        purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=CompetitionType

@@ -56,21 +56,31 @@ class TestCompetition:
 
     def test_simulate_attacks_returns_expected_cases(self):
         competition = Competition(types=["competitor mention"])
-        test_cases = competition.simulate_attacks(attacks_per_vulnerability_type=2)
+        test_cases = competition.simulate_attacks(
+            attacks_per_vulnerability_type=2
+        )
 
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Competition" for tc in test_cases)
-        assert all(tc.vulnerability_type == CompetitionType.COMPETITOR_MENTION for tc in test_cases)
+        assert all(
+            tc.vulnerability_type == CompetitionType.COMPETITOR_MENTION
+            for tc in test_cases
+        )
 
     def test_assess_returns_results(self):
-        competition = Competition(types=["competitor_mention"], async_mode=False)
+        competition = Competition(
+            types=["competitor_mention"], async_mode=False
+        )
 
         def dummy_model_callback(prompt):
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = competition.assess(model_callback=dummy_model_callback, attacks_per_vulnerability_type=1)
+        results = competition.assess(
+            model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
+        )
         assert CompetitionType.COMPETITOR_MENTION in results
         assert len(results[CompetitionType.COMPETITOR_MENTION]) == 1
         test_case = results[CompetitionType.COMPETITOR_MENTION][0]
@@ -81,7 +91,9 @@ class TestCompetition:
     def test_get_metric_returns_Competition_metric(self):
         from deepteam.metrics import CompetitorsMetric
 
-        competition = Competition(async_mode=True, verbose_mode=True, evaluation_model="gpt-4o")
+        competition = Competition(
+            async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
+        )
         metric = competition._get_metric(CompetitionType.COMPETITOR_MENTION)
         assert isinstance(metric, CompetitorsMetric)
         assert metric.async_mode is True
