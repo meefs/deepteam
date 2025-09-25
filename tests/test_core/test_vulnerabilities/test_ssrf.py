@@ -90,7 +90,7 @@ class TestSSRF:
 
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
-        ssrf = SSRF(types=["cooperative_dialogue"], async_mode=True)
+        ssrf = SSRF(types=["cloud_metadata_access"], async_mode=True)
 
         async def dummy_model_callback(prompt):
             return prompt

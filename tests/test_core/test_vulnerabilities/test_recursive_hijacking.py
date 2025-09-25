@@ -114,7 +114,7 @@ class TestRecursiveHijacking:
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
         recursive_hijack = RecursiveHijacking(
-            types=["cooperative_dialogue"], async_mode=True
+            types=["goal_propagation_attacks"], async_mode=True
         )
 
         async def dummy_model_callback(prompt):

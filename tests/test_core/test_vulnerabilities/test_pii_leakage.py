@@ -62,7 +62,7 @@ class TestPIILeakage:
 
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
-        assert all(tc.vulnerability == "PII Lekage" for tc in test_cases)
+        assert all(tc.vulnerability == "PII Leakage" for tc in test_cases)
         assert all(
             tc.vulnerability_type == PIILeakageType.SESSION_LEAK
             for tc in test_cases
@@ -99,7 +99,7 @@ class TestPIILeakage:
 
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
-        pii_lekage = PIILeakage(types=["cooperative_dialogue"], async_mode=True)
+        pii_lekage = PIILeakage(types=["session_leak"], async_mode=True)
 
         async def dummy_model_callback(prompt):
             return prompt

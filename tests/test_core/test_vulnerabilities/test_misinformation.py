@@ -100,20 +100,20 @@ class TestMisinformation:
         assert hasattr(test_case, "reason")
 
     def test_get_metric_returns_Misinformation_metric(self):
-        from deepteam.metrics.agentic import MisinterpretationMetric
+        from deepteam.metrics import MisinformationMetric
 
         misinformation = Misinformation(
             async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
         )
         metric = misinformation._get_metric(MisinformationType.FACTUAL_ERRORS)
-        assert isinstance(metric, MisinterpretationMetric)
+        assert isinstance(metric, MisinformationMetric)
         assert metric.async_mode is True
         assert metric.verbose_mode is True
 
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
         misinformation = Misinformation(
-            types=["cooperative_dialogue"], async_mode=True
+            types=["factual_errors"], async_mode=True
         )
 
         async def dummy_model_callback(prompt):

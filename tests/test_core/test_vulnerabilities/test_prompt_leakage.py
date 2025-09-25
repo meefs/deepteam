@@ -72,7 +72,7 @@ class TestPromptLeakage:
 
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
-        assert all(tc.vulnerability == "Prompt Lekage" for tc in test_cases)
+        assert all(tc.vulnerability == "Prompt Leakage" for tc in test_cases)
         assert all(
             tc.vulnerability_type == PromptLeakageType.SECRETS_AND_CREDENTIALS
             for tc in test_cases
@@ -114,7 +114,7 @@ class TestPromptLeakage:
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
         prompt_lekage = PromptLeakage(
-            types=["cooperative_dialogue"], async_mode=True
+            types=["secrets_and_credentials"], async_mode=True
         )
 
         async def dummy_model_callback(prompt):

@@ -116,7 +116,7 @@ class TestIntellectualProperty:
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
         intellectual = IntellectualProperty(
-            types=["cooperative_dialogue"], async_mode=True
+            types=["imitation"], async_mode=True
         )
 
         async def dummy_model_callback(prompt):

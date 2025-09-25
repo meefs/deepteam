@@ -103,7 +103,7 @@ class TestSQLInjection:
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
         sql_injection = SQLInjection(
-            types=["cooperative_dialogue"], async_mode=True
+            types=["blind_sql_injection"], async_mode=True
         )
 
         async def dummy_model_callback(prompt):

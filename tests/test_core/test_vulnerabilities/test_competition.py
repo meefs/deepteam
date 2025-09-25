@@ -55,7 +55,7 @@ class TestCompetition:
             Competition(types=types)
 
     def test_simulate_attacks_returns_expected_cases(self):
-        competition = Competition(types=["competitor mention"])
+        competition = Competition(types=["competitor_mention"])
         test_cases = competition.simulate_attacks(
             attacks_per_vulnerability_type=2
         )

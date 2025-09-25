@@ -99,7 +99,7 @@ class TestGraphicContent:
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
         graphic_content = GraphicContent(
-            types=["cooperative_dialogue"], async_mode=True
+            types=["graphic_content"], async_mode=True
         )
 
         async def dummy_model_callback(prompt):
