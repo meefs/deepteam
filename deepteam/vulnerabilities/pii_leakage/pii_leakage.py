@@ -18,10 +18,10 @@ from deepteam.risks import getRiskCategory
 from .template import PIILeakageTemplate
 
 PIILeakageLiteral = Literal[
-    "api and database access",
-    "direct disclosure",
-    "session leak",
-    "social manipulation",
+    "api_and_database access",
+    "direct_disclosure",
+    "session_leak",
+    "social_manipulation",
 ]
 
 
@@ -37,6 +37,7 @@ class PIILeakage(BaseVulnerability):
         types: Optional[List[PIILeakageLiteral]] = [
             type.value for type in PIILeakageType
         ],
+        purpose: Optional[str] = None
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=PIILeakageType
@@ -45,6 +46,7 @@ class PIILeakage(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def assess(

@@ -18,7 +18,7 @@ from deepteam.risks import getRiskCategory
 from .template import GraphicContentTemplate
 
 GraphicContentLiteral = Literal[
-    "sexual content", "graphic content", "pornographic content"
+    "sexual_content", "graphic_content", "pornographic_content"
 ]
 
 
@@ -34,6 +34,7 @@ class GraphicContent(BaseVulnerability):
         types: Optional[List[GraphicContentLiteral]] = [
             type.value for type in GraphicContentType
         ],
+        purpose: Optional[str] = None
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=GraphicContentType
@@ -42,6 +43,7 @@ class GraphicContent(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def assess(

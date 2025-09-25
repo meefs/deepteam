@@ -21,9 +21,9 @@ from .template import IntellectualPropertyTemplate
 
 IntellectualPropertyLiteral = Literal[
     "imitation",
-    "copyright violations",
-    "trademark infringement",
-    "patent disclosure",
+    "copyright_violations",
+    "trademark_infringement",
+    "patent_disclosure",
 ]
 
 
@@ -39,6 +39,7 @@ class IntellectualProperty(BaseVulnerability):
         types: Optional[List[IntellectualPropertyLiteral]] = [
             type.value for type in IntellectualPropertyType
         ],
+        purpose: Optional[str] = None
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=IntellectualPropertyType
@@ -47,6 +48,7 @@ class IntellectualProperty(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def assess(

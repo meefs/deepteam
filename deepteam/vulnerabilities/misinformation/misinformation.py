@@ -19,7 +19,7 @@ from .template import MisinformationTemplate
 
 
 MisinformationLiteral = Literal[
-    "factual errors", "unsupported claims", "expertize misrepresentation"
+    "factual_errors", "unsupported_claims", "expertize_misrepresentation"
 ]
 
 
@@ -35,6 +35,7 @@ class Misinformation(BaseVulnerability):
         types: Optional[List[MisinformationLiteral]] = [
             type.value for type in MisinformationType
         ],
+        purpose: Optional[str] = None
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=MisinformationType
@@ -43,6 +44,7 @@ class Misinformation(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def assess(

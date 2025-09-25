@@ -34,6 +34,7 @@ class BFLA(BaseVulnerability):
         ] = "gpt-3.5-turbo-0125",
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
         types: Optional[List[BFLALiteral]] = [type.value for type in BFLAType],
+        purpose: Optional[str] = None
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=BFLAType
@@ -42,6 +43,7 @@ class BFLA(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def assess(

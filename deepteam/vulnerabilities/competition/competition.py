@@ -20,10 +20,10 @@ from .template import CompetitionTemplate
 
 
 CompetitionLiteralType = Literal[
-    "competitor mention",
-    "market manipulation",
+    "competitor_mention",
+    "market_manipulation",
     "discreditation",
-    "confidential strategies",
+    "confidential_strategies",
 ]
 
 
@@ -39,6 +39,7 @@ class Competition(BaseVulnerability):
         types: Optional[List[CompetitionLiteralType]] = [
             type.value for type in CompetitionType
         ],
+        purpose: Optional[str] = None
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=CompetitionType
@@ -47,6 +48,7 @@ class Competition(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def assess(

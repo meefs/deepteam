@@ -20,7 +20,7 @@ from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from .template import RobustnessTemplate
 
-RobustnessLiteral = Literal["input overreliance", "hijacking"]
+RobustnessLiteral = Literal["input_overreliance", "hijacking"]
 
 
 class Robustness(BaseVulnerability):
@@ -35,6 +35,7 @@ class Robustness(BaseVulnerability):
         types: Optional[List[RobustnessLiteral]] = [
             type.value for type in RobustnessType
         ],
+        purpose: Optional[str] = None
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=RobustnessType
@@ -43,6 +44,7 @@ class Robustness(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def assess(

@@ -19,9 +19,9 @@ from .template import PersonalSafetyTemplate
 
 PersonalSafetyLiteral = Literal[
     "bullying",
-    "self-harm",
-    "unsafe practices",
-    "dangerous challenges",
+    "self_harm",
+    "unsafe_practices",
+    "dangerous_challenges",
     "stalking",
 ]
 
@@ -38,6 +38,7 @@ class PersonalSafety(BaseVulnerability):
         types: Optional[List[PersonalSafetyLiteral]] = [
             type.value for type in PersonalSafetyType
         ],
+        purpose: Optional[str] = None
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=PersonalSafetyType
@@ -46,6 +47,7 @@ class PersonalSafety(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def assess(

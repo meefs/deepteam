@@ -18,10 +18,10 @@ from deepteam.risks import getRiskCategory
 from .template import PromptLeakageTemplate
 
 PromptLeakageLiteral = Literal[
-    "secrets and credentials",
+    "secrets_and_credentials",
     "instructions",
-    "guard exposure",
-    "permissions and roles",
+    "guard_exposure",
+    "permissions_and_roles",
 ]
 
 
@@ -37,6 +37,7 @@ class PromptLeakage(BaseVulnerability):
         types: Optional[List[PromptLeakageLiteral]] = [
             type.value for type in PromptLeakageType
         ],
+        purpose: Optional[str] = None
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=PromptLeakageType
@@ -45,6 +46,7 @@ class PromptLeakage(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def assess(

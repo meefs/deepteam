@@ -19,12 +19,12 @@ from .template import IllegalActivityTemplate
 
 IllegalActivityLiteral = Literal[
     "weapons",
-    "illegal drugs",
-    "violent crimes",
-    "non violent crimes",
-    "sex crimes",
+    "illegal_drugs",
+    "violent_crimes",
+    "non_violent_crimes",
+    "sex_crimes",
     "cybercrime",
-    "child exploitation",
+    "child_exploitation",
 ]
 
 
@@ -40,6 +40,7 @@ class IllegalActivity(BaseVulnerability):
         types: Optional[List[IllegalActivityLiteral]] = [
             type.value for type in IllegalActivityType
         ],
+        purpose: Optional[str] = None
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=IllegalActivityType
@@ -48,6 +49,7 @@ class IllegalActivity(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def assess(

@@ -40,6 +40,7 @@ class RecursiveHijacking(BaseVulnerability):
         types: Optional[List[RecursiveHijackingLiteralType]] = [
             type.value for type in RecursiveHijackingType
         ],
+        purpose: Optional[str] = None
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=RecursiveHijackingType
@@ -48,6 +49,7 @@ class RecursiveHijacking(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.purpose = purpose
         super().__init__(types=enum_types)
 
     def assess(
