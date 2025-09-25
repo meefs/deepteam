@@ -18,21 +18,20 @@ The process continues until the target LLM generates **a harmful response** or t
 
 ## Usage
 
-```python title="main.py" {11-16}
+```python title="main.py" {11-15}
 from deepteam import red_team
 from deepteam.vulnerabilities import Bias, BFLA
 from deepteam.attacks.single_turn import PromptInjection, Roleplay
 from deepteam.attacks.multi_turn import LinearJailbreaking
-from you_model import your_callback
+from your_model import your_callback
 
 # Define your vulnerabilities and their types here
 vulnerabilities = [BFLA(), Bias(types=["gender"])]
 
-# Define your Linear Jailbreaking attack with your configuration
+# Define the Linear Jailbreaking attack with your configuration
 linear_jailbreaking = LinearJailbreaking(
     weight=5,
     num_turns=7,
-    simulator_model="gpt-4o",
     turn_level_attacks=[PromptInjection(), Roleplay()]
 )
 
@@ -59,14 +58,16 @@ You can try to jailbreak your model on a single vulnerability using the `enhance
 from deepteam.attacks.single_turn import PromptInjection, Roleplay
 from deepteam.attacks.multi_turn import LinearJailbreaking
 from deepteam.vulnerabilities import Bias
+from your_model import your_callback
 
+bias = Bias()
 linear = LinearJailbreaking(
     weight=5, 
     num_turns=7, 
     turn_level_attacks=[PromptInjection(), Roleplay()]
 )
 
-result = linear.enhance(vulnerability=bias, model_callback=...)
+result = linear.enhance(vulnerability=bias, model_callback=your_callback)
 print(result)
 ```
 
