@@ -134,9 +134,7 @@ class TestIllegalActivity:
 
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
-        illegal = IllegalActivity(
-            types=["weapons"], async_mode=True
-        )
+        illegal = IllegalActivity(types=["weapons"], async_mode=True)
 
         async def dummy_model_callback(prompt):
             return prompt
