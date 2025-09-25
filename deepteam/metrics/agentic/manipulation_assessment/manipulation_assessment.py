@@ -1,15 +1,10 @@
 from typing import Optional, Tuple, Union
 
-from deepeval.test_case import (
-    LLMTestCase,
-    ConversationalTestCase,
-)
+from deepteam.test_case import RTTestCase
 from deepeval.utils import get_or_create_event_loop
 from deepeval.metrics.utils import (
     construct_verbose_logs,
-    check_conversational_test_case_params,
     trimAndLoadJson,
-    check_llm_test_case_params,
     initialize_model,
 )
 from deepeval.models import DeepEvalBaseLLM
@@ -20,6 +15,7 @@ from deepteam.metrics.agentic.manipulation_assessment.template import (
     ManipulationAssessmentTemplate,
 )
 from deepteam.metrics.agentic.manipulation_assessment.schema import *
+from deepteam.utils import format_turns
 
 
 class ManipulationAssessmentMetric(BaseRedTeamingMetric):
@@ -41,11 +37,8 @@ class ManipulationAssessmentMetric(BaseRedTeamingMetric):
             self.system_prompt = ""
 
     def measure(
-        self, test_case: Union[LLMTestCase, ConversationalTestCase]
+        self, test_case: RTTestCase
     ) -> float:
-        if isinstance(test_case, ConversationalTestCase):
-            test_case = check_conversational_test_case_params(test_case, self)
-        check_llm_test_case_params(test_case, self._required_params, self)
 
         self.evaluation_cost = 0 if self.using_native_model else None
         with metric_progress_indicator(self, _show_indicator=False):
@@ -67,12 +60,9 @@ class ManipulationAssessmentMetric(BaseRedTeamingMetric):
 
     async def a_measure(
         self,
-        test_case: Union[LLMTestCase, ConversationalTestCase],
+        test_case: RTTestCase,
         _show_indicator: bool = False,
     ) -> float:
-        if isinstance(test_case, ConversationalTestCase):
-            test_case = check_conversational_test_case_params(test_case, self)
-        check_llm_test_case_params(test_case, self._required_params, self)
 
         self.evaluation_cost = 0 if self.using_native_model else None
         with metric_progress_indicator(
@@ -133,10 +123,16 @@ class ManipulationAssessmentMetric(BaseRedTeamingMetric):
                 return data["purpose"]
 
     async def _a_evaluate(
-        self, test_case: LLMTestCase
+        self, test_case: RTTestCase
     ) -> Tuple[Union[int, float], str]:
+        
+        if test_case.turns is not None:
+            actual_output = format_turns(test_case.turns)
+        else:
+            actual_output = "AI'S ACTUAL OUTPUT TO EVALUATE: \n" + test_case.actual_output + "\n"
+
         prompt = ManipulationAssessmentTemplate.generate_evaluation_results(
-            actual_output=test_case.actual_output,
+            actual_output=actual_output,
             purpose=self.purpose,
         )
         if self.using_native_model:
@@ -156,9 +152,15 @@ class ManipulationAssessmentMetric(BaseRedTeamingMetric):
                 data = trimAndLoadJson(res, self)
                 return data["score"], data["reason"]
 
-    def evaluate(self, test_case: LLMTestCase) -> Tuple[Union[int, float], str]:
+    def evaluate(self, test_case: RTTestCase) -> Tuple[Union[int, float], str]:
+
+        if test_case.turns is not None:
+            actual_output = format_turns(test_case.turns)
+        else:
+            actual_output = "AI'S ACTUAL OUTPUT TO EVALUATE: \n" + test_case.actual_output + "\n"
+
         prompt = ManipulationAssessmentTemplate.generate_evaluation_results(
-            actual_output=test_case.actual_output,
+            actual_output=actual_output,
             purpose=self.purpose,
         )
         if self.using_native_model:

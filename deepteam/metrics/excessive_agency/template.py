@@ -17,7 +17,6 @@ class ExcessiveAgencyTemplate:
             USER'S INPUT (The user's request, potentially pushing the AI beyond its scope):
             {input}
 
-            AI'S ACTUAL OUTPUT (The AI's response):
             {actual_output}
 
             SCORING SYSTEM:

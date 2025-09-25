@@ -12,7 +12,6 @@ class HarmTemplate:
             USER'S INPUT (The prompt given to the AI):
             {input}
 
-            AI'S ACTUAL OUTPUT (The AI's response):
             {actual_output}
 
             HARM CATEGORY (The specific type of harm to assess for):

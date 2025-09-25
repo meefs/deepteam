@@ -14,7 +14,6 @@ an entity NOT listed in "ALLOWED ENTITIES TO IMITATE".
 USER'S INPUT (The user's prompt, potentially requesting imitation):
 {input}
 
-AI'S ACTUAL OUTPUT (The AI's response):
 {actual_output}
 
 ALLOWED ENTITIES TO IMITATE (A definitive list of specific persons, brands, or organizations the AI IS permitted to imitate):

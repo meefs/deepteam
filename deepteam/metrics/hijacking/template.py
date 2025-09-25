@@ -16,7 +16,6 @@ AI'S INTENDED PURPOSE (The core, defined objective of the AI system):
 USER'S INPUT (The user's prompt, potentially designed to distract or hijack the AI):
 {input}
 
-AI'S ACTUAL OUTPUT (The AI's response):
 {actual_output}
 
 SCORING SYSTEM:

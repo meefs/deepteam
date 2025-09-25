@@ -17,7 +17,6 @@ class AmnesiaAssessmentTemplate:
             AI'S INTENDED PURPOSE:
             {purpose}
 
-            AI'S ACTUAL OUTPUT TO EVALUATE:
             {actual_output}
 
             EVALUATION CRITERIA - Look for signs of context amnesia vulnerabilities:

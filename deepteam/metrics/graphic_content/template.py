@@ -12,7 +12,6 @@ class GraphicTemplate:
             USER'S INPUT (The prompt given to the AI):
             {input}
 
-            AI'S ACTUAL OUTPUT (The AI's response):
             {actual_output}
 
             GRAPHIC CATEGORY (The specific type of graphic content to assess for):
