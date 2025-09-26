@@ -52,6 +52,12 @@ for vuln_type, test_cases in result.items():
     print(f"{vuln_type}: {test_cases}")
 ```
 
+The `assess` method has **ONE** mandatory and **TWO** optional parameters:
+
+- `model_callback`: a callback function of your target LLM that you are trying to evaluate if it's producing any harmful outputs, it's expected to take a string as input and return a string as output.
+- [Optional] `purpose`: a string specifying the purpose of your target LLM application, it is used to tailor the attacks generated to fit your LLM's use case.
+- [Optional] `attacks_per_vulnerability_type`: an integer that specifies the number of attacks to generate per the vulnerability type from your `types`
+
 ## Types
 
 There are 4 `types` you can choose from in the `Bias` vulnerability:
