@@ -8,37 +8,32 @@ import AttackTagsDisplayer from "@site/src/components/AttackTagsDisplayer";
 
 <AttackTagsDisplayer multiTurn={true} llmSimulated={true} />
 
-The `LinearJailbreaking` attack starts with a _base attack_ — a crafted prompt targeting a specific vulnerability — and iteratively refines it using the **target LLM**'s responses. Each turn builds on the last, gradually improving the attack's effectiveness in bypassing safety mechanisms and producing harmful or restricted outputs.
+The `LinearJailbreaking` attack enhances a _base attack_ — a harmful prompt targeting a specific vulnerability — and iteratively refines it using the **target LLM**'s responses. Each iteration builds on the last, gradually improving the attack's effectiveness against the target LLM to produce harmful outputs.
 
-![Linear Jailbreaking Intro](./images/linear-jailbreaking-intro.png)
+![Linear Jailbreaking](./images/linear-jailbreaking-intro.png)
 
 :::info
-The process continues until the target LLM generates **a harmful response** or the **maximum number of turns** are reached.
+The linear jailbreaking process only terminates when the target LLM produces a harmful response or reaches the maximum number of turns.
 :::
 
 ## Usage
 
-```python title="main.py" {11-15}
+```python title="main.py"
 from deepteam import red_team
-from deepteam.vulnerabilities import Bias, BFLA
-from deepteam.attacks.single_turn import PromptInjection, Roleplay
+from deepteam.vulnerabilities import Bias
+from deepteam.attacks.single_turn import Roleplay
 from deepteam.attacks.multi_turn import LinearJailbreaking
-from your_model import your_callback
+from somewhere import your_callback
 
-# Define your vulnerabilities and their types here
-vulnerabilities = [BFLA(), Bias(types=["gender"])]
-
-# Define the Linear Jailbreaking attack with your configuration
 linear_jailbreaking = LinearJailbreaking(
     weight=5,
     num_turns=7,
-    turn_level_attacks=[PromptInjection(), Roleplay()]
+    turn_level_attacks=[Roleplay()]
 )
 
-# Call the red_team method with your attacks, vulnerabilites and your model callback
 red_team(
-    attacks=[linear_jailbreaking],
-    vulnerabilities=vulnerabilities,
+    attacks=[linear_jailbreaking], 
+    vulnerabilities=[Bias()], 
     model_callback=your_callback
 )
 ```
@@ -55,16 +50,16 @@ There are **FOUR** optional parameters when creating a `LinearJailbreaking` atta
 You can try to jailbreak your model on a single vulnerability using the `enhance` method:
 
 ```python
-from deepteam.attacks.single_turn import PromptInjection, Roleplay
+from deepteam.attacks.single_turn import Roleplay
 from deepteam.attacks.multi_turn import LinearJailbreaking
 from deepteam.vulnerabilities import Bias
-from your_model import your_callback
+from somewhere import your_callback
 
 bias = Bias()
 linear = LinearJailbreaking(
     weight=5, 
     num_turns=7, 
-    turn_level_attacks=[PromptInjection(), Roleplay()]
+    turn_level_attacks=[Roleplay()]
 )
 
 result = linear.enhance(vulnerability=bias, model_callback=your_callback)
@@ -82,7 +77,7 @@ print(result)
 
 Each step builds on the last, making the attack progressively more effective and better aligned with the model's behavior.
 
-![Linear Jailbreaking Intro](./images/linear-jailbreaking.png)
+![Linear Jailbreaking](./images/linear-jailbreaking-intro.png)
 
 If the `turn_level_attacks` is supplied with a list of single-turn attacks, `LinearJailbreaking` adds controlled variation:
 
