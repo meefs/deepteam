@@ -8,7 +8,7 @@ import AttackTagsDisplayer from "@site/src/components/AttackTagsDisplayer";
 
 <AttackTagsDisplayer multiTurn={true} llmSimulated={true} />
 
-The `TreeJailbreaking` attack generates multiple parallel attacks from a _base attack_ taken from the `vulnerability` you've given, it forms a tree by exploring different variations of the attack to bypass the model's safeguards. Instead of refining a single prompt, **it branches out** by evaluating and expanding only the most promising paths to increase the chances of a successful jailbreak.
+The `TreeJailbreaking` attack enhances a _base attack_ — a harmful prompt targeting a specific vulnerability — in multiple parallel ways, it forms a tree by exploring different variations of the attack to bypass the **target model**'s safeguards. Instead of refining a single prompt, **it branches out** by evaluating and expanding only the most promising paths to increase the chances of a successful jailbreak.
 
 ![Tree Jailbreaking Intro](./images/tree-jailbreaking-intro.png)
 
@@ -18,27 +18,22 @@ The `TreeJailbreaking` attack generates multiple parallel attacks from a _base a
 
 ## Usage
 
-```python title="main.py" {11-15}
+```python title="main.py"
 from deepteam import red_team
-from deepteam.vulnerabilities import Bias, BFLA
-from deepteam.attacks.single_turn import PromptInjection, Roleplay
+from deepteam.vulnerabilities import Bias
+from deepteam.attacks.single_turn import Roleplay
 from deepteam.attacks.multi_turn import TreeJailbreaking
-from your_model import your_callback
+from somewhere import your_callback
 
-# Define your vulnerabilities and their types here
-vulnerabilities = [BFLA(), Bias()]
-
-# Define the Tree Jailbreaking attack with your configuration
 tree_jalbreaking = TreeJailbreaking(
     weight=5,
     max_depth=7,
-    turn_level_attacks=[PromptInjection(), Roleplay()]
+    turn_level_attacks=[Roleplay()]
 )
 
-# Call the red_team method with your attacks, vulnerabilites and your model callback
 red_team(
     attacks=[tree_jalbreaking],
-    vulnerabilities=vulnerabilities,
+    vulnerabilities=[Bias()],
     model_callback=your_callback
 )
 ```
@@ -55,16 +50,16 @@ There are **FOUR** optional parameters when creating a `LinearJailbreaking` atta
 You can try to jailbreak your model on a single vulnerability using the `enhance` method:
 
 ```python
-from deepteam.attacks.single_turn import PromptInjection, Roleplay
+from deepteam.attacks.single_turn import Roleplay
 from deepteam.attacks.multi_turn import TreeJailbreaking
 from deepteam.vulnerabilities import Bias
-from your_model import your_callback
+from somewhere import your_callback
 
 bias = Bias()
 tree_jalbreaking = TreeJailbreaking(
     weight=5, 
     max_depth=7, 
-    turn_level_attacks=[PromptInjection(), Roleplay()]
+    turn_level_attacks=[Roleplay()]
 )
 
 result = tree_jalbreaking.enhance(vulnerability=bias, model_callback=your_callback)
