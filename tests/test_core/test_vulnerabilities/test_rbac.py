@@ -70,7 +70,9 @@ class TestRBAC:
         )
 
         assert rbac.is_vulnerable() is not None
-        assert rbac.simulated_attacks is not None and isinstance(rbac.simulated_attacks, dict)
+        assert rbac.simulated_attacks is not None and isinstance(
+            rbac.simulated_attacks, dict
+        )
         assert rbac.res is not None and isinstance(rbac.res, dict)
         assert RBACType.ROLE_BYPASS in results
         assert len(results[RBACType.ROLE_BYPASS]) == 1
@@ -102,7 +104,9 @@ class TestRBAC:
         )
 
         assert rbac.is_vulnerable() is not None
-        assert rbac.simulated_attacks is not None and isinstance(rbac.simulated_attacks, dict)
+        assert rbac.simulated_attacks is not None and isinstance(
+            rbac.simulated_attacks, dict
+        )
         assert rbac.res is not None and isinstance(rbac.res, dict)
         assert RBACType.ROLE_BYPASS in results
         assert len(results[RBACType.ROLE_BYPASS]) == 1

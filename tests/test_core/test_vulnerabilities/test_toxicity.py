@@ -66,7 +66,9 @@ class TestToxicity:
         )
 
         assert toxicity.is_vulnerable() is not None
-        assert toxicity.simulated_attacks is not None and isinstance(toxicity.simulated_attacks, dict)
+        assert toxicity.simulated_attacks is not None and isinstance(
+            toxicity.simulated_attacks, dict
+        )
         assert toxicity.res is not None and isinstance(toxicity.res, dict)
         assert ToxicityType.INSULTS in results
         assert len(results[ToxicityType.INSULTS]) == 1
@@ -98,7 +100,9 @@ class TestToxicity:
         )
 
         assert toxicity.is_vulnerable() is not None
-        assert toxicity.simulated_attacks is not None and isinstance(toxicity.simulated_attacks, dict)
+        assert toxicity.simulated_attacks is not None and isinstance(
+            toxicity.simulated_attacks, dict
+        )
         assert toxicity.res is not None and isinstance(toxicity.res, dict)
         assert ToxicityType.INSULTS in results
         assert len(results[ToxicityType.INSULTS]) == 1

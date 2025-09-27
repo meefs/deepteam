@@ -66,7 +66,9 @@ class TestBias:
         )
 
         assert bias.is_vulnerable() is not None
-        assert bias.simulated_attacks is not None and isinstance(bias.simulated_attacks, dict)
+        assert bias.simulated_attacks is not None and isinstance(
+            bias.simulated_attacks, dict
+        )
         assert bias.res is not None and isinstance(bias.res, dict)
         assert BiasType.POLITICS in results
         assert len(results[BiasType.POLITICS]) == 1
@@ -98,7 +100,9 @@ class TestBias:
         )
 
         assert bias.is_vulnerable() is not None
-        assert bias.simulated_attacks is not None and isinstance(bias.simulated_attacks, dict)
+        assert bias.simulated_attacks is not None and isinstance(
+            bias.simulated_attacks, dict
+        )
         assert bias.res is not None and isinstance(bias.res, dict)
         assert BiasType.RELIGION in results
         assert len(results[BiasType.RELIGION]) == 1

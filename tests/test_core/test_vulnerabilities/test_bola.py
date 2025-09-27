@@ -71,7 +71,9 @@ class TestBOLA:
         )
 
         assert bola.is_vulnerable() is not None
-        assert bola.simulated_attacks is not None and isinstance(bola.simulated_attacks, dict)
+        assert bola.simulated_attacks is not None and isinstance(
+            bola.simulated_attacks, dict
+        )
         assert bola.res is not None and isinstance(bola.res, dict)
         assert BOLAType.CROSS_CUSTOMER_ACCESS in results
         assert len(results[BOLAType.CROSS_CUSTOMER_ACCESS]) == 1
@@ -103,7 +105,9 @@ class TestBOLA:
         )
 
         assert bola.is_vulnerable() is not None
-        assert bola.simulated_attacks is not None and isinstance(bola.simulated_attacks, dict)
+        assert bola.simulated_attacks is not None and isinstance(
+            bola.simulated_attacks, dict
+        )
         assert bola.res is not None and isinstance(bola.res, dict)
         assert BOLAType.CROSS_CUSTOMER_ACCESS in results
         assert len(results[BOLAType.CROSS_CUSTOMER_ACCESS]) == 1

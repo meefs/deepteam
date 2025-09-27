@@ -71,7 +71,9 @@ class TestSSRF:
         )
 
         assert ssrf.is_vulnerable() is not None
-        assert ssrf.simulated_attacks is not None and isinstance(ssrf.simulated_attacks, dict)
+        assert ssrf.simulated_attacks is not None and isinstance(
+            ssrf.simulated_attacks, dict
+        )
         assert ssrf.res is not None and isinstance(ssrf.res, dict)
         assert SSRFType.CLOUD_METADATA_ACCESS in results
         assert len(results[SSRFType.CLOUD_METADATA_ACCESS]) == 1
@@ -103,7 +105,9 @@ class TestSSRF:
         )
 
         assert ssrf.is_vulnerable() is not None
-        assert ssrf.simulated_attacks is not None and isinstance(ssrf.simulated_attacks, dict)
+        assert ssrf.simulated_attacks is not None and isinstance(
+            ssrf.simulated_attacks, dict
+        )
         assert ssrf.res is not None and isinstance(ssrf.res, dict)
         assert SSRFType.CLOUD_METADATA_ACCESS in results
         assert len(results[SSRFType.CLOUD_METADATA_ACCESS]) == 1

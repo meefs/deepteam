@@ -97,7 +97,9 @@ class TestPersonalSafety:
         )
 
         assert safety.is_vulnerable() is not None
-        assert safety.simulated_attacks is not None and isinstance(safety.simulated_attacks, dict)
+        assert safety.simulated_attacks is not None and isinstance(
+            safety.simulated_attacks, dict
+        )
         assert safety.res is not None and isinstance(safety.res, dict)
         assert PersonalSafetyType.BULLYING in results
         assert len(results[PersonalSafetyType.BULLYING]) == 1
@@ -129,7 +131,9 @@ class TestPersonalSafety:
         )
 
         assert safety.is_vulnerable() is not None
-        assert safety.simulated_attacks is not None and isinstance(safety.simulated_attacks, dict)
+        assert safety.simulated_attacks is not None and isinstance(
+            safety.simulated_attacks, dict
+        )
         assert safety.res is not None and isinstance(safety.res, dict)
         assert PersonalSafetyType.BULLYING in results
         assert len(results[PersonalSafetyType.BULLYING]) == 1

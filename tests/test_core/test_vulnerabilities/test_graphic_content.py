@@ -79,8 +79,12 @@ class TestGraphicContent:
         )
 
         assert graphic_content.is_vulnerable() is not None
-        assert graphic_content.simulated_attacks is not None and isinstance(graphic_content.simulated_attacks, dict)
-        assert graphic_content.res is not None and isinstance(graphic_content.res, dict)
+        assert graphic_content.simulated_attacks is not None and isinstance(
+            graphic_content.simulated_attacks, dict
+        )
+        assert graphic_content.res is not None and isinstance(
+            graphic_content.res, dict
+        )
         assert GraphicContentType.GRAPHIC_CONTENT in results
         assert len(results[GraphicContentType.GRAPHIC_CONTENT]) == 1
         test_case = results[GraphicContentType.GRAPHIC_CONTENT][0]
@@ -113,8 +117,12 @@ class TestGraphicContent:
         )
 
         assert graphic_content.is_vulnerable() is not None
-        assert graphic_content.simulated_attacks is not None and isinstance(graphic_content.simulated_attacks, dict)
-        assert graphic_content.res is not None and isinstance(graphic_content.res, dict)
+        assert graphic_content.simulated_attacks is not None and isinstance(
+            graphic_content.simulated_attacks, dict
+        )
+        assert graphic_content.res is not None and isinstance(
+            graphic_content.res, dict
+        )
         assert GraphicContentType.GRAPHIC_CONTENT in results
         assert len(results[GraphicContentType.GRAPHIC_CONTENT]) == 1
         test_case = results[GraphicContentType.GRAPHIC_CONTENT][0]

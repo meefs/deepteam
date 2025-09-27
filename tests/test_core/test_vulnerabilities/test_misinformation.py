@@ -93,8 +93,12 @@ class TestMisinformation:
         )
 
         assert misinformation.is_vulnerable() is not None
-        assert misinformation.simulated_attacks is not None and isinstance(misinformation.simulated_attacks, dict)
-        assert misinformation.res is not None and isinstance(misinformation.res, dict)
+        assert misinformation.simulated_attacks is not None and isinstance(
+            misinformation.simulated_attacks, dict
+        )
+        assert misinformation.res is not None and isinstance(
+            misinformation.res, dict
+        )
         assert MisinformationType.FACTUAL_ERRORS in results
         assert len(results[MisinformationType.FACTUAL_ERRORS]) == 1
         test_case = results[MisinformationType.FACTUAL_ERRORS][0]
@@ -127,8 +131,12 @@ class TestMisinformation:
         )
 
         assert misinformation.is_vulnerable() is not None
-        assert misinformation.simulated_attacks is not None and isinstance(misinformation.simulated_attacks, dict)
-        assert misinformation.res is not None and isinstance(misinformation.res, dict)
+        assert misinformation.simulated_attacks is not None and isinstance(
+            misinformation.simulated_attacks, dict
+        )
+        assert misinformation.res is not None and isinstance(
+            misinformation.res, dict
+        )
         assert MisinformationType.FACTUAL_ERRORS in results
         assert len(results[MisinformationType.FACTUAL_ERRORS]) == 1
         test_case = results[MisinformationType.FACTUAL_ERRORS][0]

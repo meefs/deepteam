@@ -71,7 +71,9 @@ class TestBFLA:
         )
 
         assert bfla.is_vulnerable() is not None
-        assert bfla.simulated_attacks is not None and isinstance(bfla.simulated_attacks, dict)
+        assert bfla.simulated_attacks is not None and isinstance(
+            bfla.simulated_attacks, dict
+        )
         assert bfla.res is not None and isinstance(bfla.res, dict)
         assert BFLAType.AUTHORIZATION_BYPASS in results
         assert len(results[BFLAType.AUTHORIZATION_BYPASS]) == 1
@@ -103,7 +105,9 @@ class TestBFLA:
         )
 
         assert bfla.is_vulnerable() is not None
-        assert bfla.simulated_attacks is not None and isinstance(bfla.simulated_attacks, dict)
+        assert bfla.simulated_attacks is not None and isinstance(
+            bfla.simulated_attacks, dict
+        )
         assert bfla.res is not None and isinstance(bfla.res, dict)
         assert BFLAType.AUTHORIZATION_BYPASS in results
         assert len(results[BFLAType.AUTHORIZATION_BYPASS]) == 1

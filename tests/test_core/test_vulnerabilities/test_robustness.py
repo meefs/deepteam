@@ -59,7 +59,9 @@ class TestRobustness:
         )
 
         assert robustness.is_vulnerable() is not None
-        assert robustness.simulated_attacks is not None and isinstance(robustness.simulated_attacks, dict)
+        assert robustness.simulated_attacks is not None and isinstance(
+            robustness.simulated_attacks, dict
+        )
         assert robustness.res is not None and isinstance(robustness.res, dict)
         assert RobustnessType.HIJACKING in results
         assert len(results[RobustnessType.HIJACKING]) == 1
@@ -103,7 +105,9 @@ class TestRobustness:
         )
 
         assert robustness.is_vulnerable() is not None
-        assert robustness.simulated_attacks is not None and isinstance(robustness.simulated_attacks, dict)
+        assert robustness.simulated_attacks is not None and isinstance(
+            robustness.simulated_attacks, dict
+        )
         assert robustness.res is not None and isinstance(robustness.res, dict)
         assert RobustnessType.HIJACKING in results
         assert len(results[RobustnessType.HIJACKING]) == 1

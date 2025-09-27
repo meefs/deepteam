@@ -82,7 +82,9 @@ class TestCompetition:
         )
 
         assert competition.is_vulnerable() is not None
-        assert competition.simulated_attacks is not None and isinstance(competition.simulated_attacks, dict)
+        assert competition.simulated_attacks is not None and isinstance(
+            competition.simulated_attacks, dict
+        )
         assert competition.res is not None and isinstance(competition.res, dict)
         assert CompetitionType.COMPETITOR_MENTION in results
         assert len(results[CompetitionType.COMPETITOR_MENTION]) == 1
@@ -114,7 +116,9 @@ class TestCompetition:
         )
 
         assert competition.is_vulnerable() is not None
-        assert competition.simulated_attacks is not None and isinstance(competition.simulated_attacks, dict)
+        assert competition.simulated_attacks is not None and isinstance(
+            competition.simulated_attacks, dict
+        )
         assert competition.res is not None and isinstance(competition.res, dict)
         assert CompetitionType.COMPETITOR_MENTION in results
         assert len(results[CompetitionType.COMPETITOR_MENTION]) == 1

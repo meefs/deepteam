@@ -92,8 +92,12 @@ class TestPromptLeakage:
         )
 
         assert prompt_leakage.is_vulnerable() is not None
-        assert prompt_leakage.simulated_attacks is not None and isinstance(prompt_leakage.simulated_attacks, dict)
-        assert prompt_leakage.res is not None and isinstance(prompt_leakage.res, dict)
+        assert prompt_leakage.simulated_attacks is not None and isinstance(
+            prompt_leakage.simulated_attacks, dict
+        )
+        assert prompt_leakage.res is not None and isinstance(
+            prompt_leakage.res, dict
+        )
         assert PromptLeakageType.SECRETS_AND_CREDENTIALS in results
         assert len(results[PromptLeakageType.SECRETS_AND_CREDENTIALS]) == 1
         test_case = results[PromptLeakageType.SECRETS_AND_CREDENTIALS][0]
@@ -128,8 +132,12 @@ class TestPromptLeakage:
         )
 
         assert prompt_leakage.is_vulnerable() is not None
-        assert prompt_leakage.simulated_attacks is not None and isinstance(prompt_leakage.simulated_attacks, dict)
-        assert prompt_leakage.res is not None and isinstance(prompt_leakage.res, dict)
+        assert prompt_leakage.simulated_attacks is not None and isinstance(
+            prompt_leakage.simulated_attacks, dict
+        )
+        assert prompt_leakage.res is not None and isinstance(
+            prompt_leakage.res, dict
+        )
         assert PromptLeakageType.SECRETS_AND_CREDENTIALS in results
         assert len(results[PromptLeakageType.SECRETS_AND_CREDENTIALS]) == 1
         test_case = results[PromptLeakageType.SECRETS_AND_CREDENTIALS][0]

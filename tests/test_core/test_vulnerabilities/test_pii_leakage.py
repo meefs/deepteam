@@ -80,7 +80,9 @@ class TestPIILeakage:
         )
 
         assert pii_lekage.is_vulnerable() is not None
-        assert pii_lekage.simulated_attacks is not None and isinstance(pii_lekage.simulated_attacks, dict)
+        assert pii_lekage.simulated_attacks is not None and isinstance(
+            pii_lekage.simulated_attacks, dict
+        )
         assert pii_lekage.res is not None and isinstance(pii_lekage.res, dict)
         assert PIILeakageType.SESSION_LEAK in results
         assert len(results[PIILeakageType.SESSION_LEAK]) == 1
@@ -112,7 +114,9 @@ class TestPIILeakage:
         )
 
         assert pii_lekage.is_vulnerable() is not None
-        assert pii_lekage.simulated_attacks is not None and isinstance(pii_lekage.simulated_attacks, dict)
+        assert pii_lekage.simulated_attacks is not None and isinstance(
+            pii_lekage.simulated_attacks, dict
+        )
         assert pii_lekage.res is not None and isinstance(pii_lekage.res, dict)
         assert PIILeakageType.SESSION_LEAK in results
         assert len(results[PIILeakageType.SESSION_LEAK]) == 1

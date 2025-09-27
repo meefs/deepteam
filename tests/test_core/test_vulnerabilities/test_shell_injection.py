@@ -83,8 +83,12 @@ class TestShellInjection:
         )
 
         assert shell_injection.is_vulnerable() is not None
-        assert shell_injection.simulated_attacks is not None and isinstance(shell_injection.simulated_attacks, dict)
-        assert shell_injection.res is not None and isinstance(shell_injection.res, dict)
+        assert shell_injection.simulated_attacks is not None and isinstance(
+            shell_injection.simulated_attacks, dict
+        )
+        assert shell_injection.res is not None and isinstance(
+            shell_injection.res, dict
+        )
         assert ShellInjectionType.COMMAND_INJECTION in results
         assert len(results[ShellInjectionType.COMMAND_INJECTION]) == 1
         test_case = results[ShellInjectionType.COMMAND_INJECTION][0]
@@ -119,8 +123,12 @@ class TestShellInjection:
         )
 
         assert shell_injection.is_vulnerable() is not None
-        assert shell_injection.simulated_attacks is not None and isinstance(shell_injection.simulated_attacks, dict)
-        assert shell_injection.res is not None and isinstance(shell_injection.res, dict)
+        assert shell_injection.simulated_attacks is not None and isinstance(
+            shell_injection.simulated_attacks, dict
+        )
+        assert shell_injection.res is not None and isinstance(
+            shell_injection.res, dict
+        )
         assert ShellInjectionType.COMMAND_INJECTION in results
         assert len(results[ShellInjectionType.COMMAND_INJECTION]) == 1
         test_case = results[ShellInjectionType.COMMAND_INJECTION][0]

@@ -115,7 +115,9 @@ class TestIllegalActivity:
         )
 
         assert illegal.is_vulnerable() is not None
-        assert illegal.simulated_attacks is not None and isinstance(illegal.simulated_attacks, dict)
+        assert illegal.simulated_attacks is not None and isinstance(
+            illegal.simulated_attacks, dict
+        )
         assert illegal.res is not None and isinstance(illegal.res, dict)
         assert IllegalActivityType.WEAPONS in results
         assert len(results[IllegalActivityType.WEAPONS]) == 1
@@ -147,7 +149,9 @@ class TestIllegalActivity:
         )
 
         assert illegal.is_vulnerable() is not None
-        assert illegal.simulated_attacks is not None and isinstance(illegal.simulated_attacks, dict)
+        assert illegal.simulated_attacks is not None and isinstance(
+            illegal.simulated_attacks, dict
+        )
         assert illegal.res is not None and isinstance(illegal.res, dict)
         assert IllegalActivityType.WEAPONS in results
         assert len(results[IllegalActivityType.WEAPONS]) == 1

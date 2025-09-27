@@ -90,8 +90,12 @@ class TestRecursiveHijacking:
         )
 
         assert recursive_hijack.is_vulnerable() is not None
-        assert recursive_hijack.simulated_attacks is not None and isinstance(recursive_hijack.simulated_attacks, dict)
-        assert recursive_hijack.res is not None and isinstance(recursive_hijack.res, dict)
+        assert recursive_hijack.simulated_attacks is not None and isinstance(
+            recursive_hijack.simulated_attacks, dict
+        )
+        assert recursive_hijack.res is not None and isinstance(
+            recursive_hijack.res, dict
+        )
         assert RecursiveHijackingType.GOAL_PROPAGATION_ATTACKS in results
         assert (
             len(results[RecursiveHijackingType.GOAL_PROPAGATION_ATTACKS]) == 1
@@ -129,8 +133,12 @@ class TestRecursiveHijacking:
         )
 
         assert recursive_hijack.is_vulnerable() is not None
-        assert recursive_hijack.simulated_attacks is not None and isinstance(recursive_hijack.simulated_attacks, dict)
-        assert recursive_hijack.res is not None and isinstance(recursive_hijack.res, dict)
+        assert recursive_hijack.simulated_attacks is not None and isinstance(
+            recursive_hijack.simulated_attacks, dict
+        )
+        assert recursive_hijack.res is not None and isinstance(
+            recursive_hijack.res, dict
+        )
         assert RecursiveHijackingType.GOAL_PROPAGATION_ATTACKS in results
         assert (
             len(results[RecursiveHijackingType.GOAL_PROPAGATION_ATTACKS]) == 1

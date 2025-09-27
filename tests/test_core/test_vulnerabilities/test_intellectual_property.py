@@ -96,8 +96,12 @@ class TestIntellectualProperty:
         )
 
         assert intellectual.is_vulnerable() is not None
-        assert intellectual.simulated_attacks is not None and isinstance(intellectual.simulated_attacks, dict)
-        assert intellectual.res is not None and isinstance(intellectual.res, dict)
+        assert intellectual.simulated_attacks is not None and isinstance(
+            intellectual.simulated_attacks, dict
+        )
+        assert intellectual.res is not None and isinstance(
+            intellectual.res, dict
+        )
         assert IntellectualPropertyType.IMITATION in results
         assert len(results[IntellectualPropertyType.IMITATION]) == 1
         test_case = results[IntellectualPropertyType.IMITATION][0]
@@ -130,8 +134,12 @@ class TestIntellectualProperty:
         )
 
         assert intellectual.is_vulnerable() is not None
-        assert intellectual.simulated_attacks is not None and isinstance(intellectual.simulated_attacks, dict)
-        assert intellectual.res is not None and isinstance(intellectual.res, dict)
+        assert intellectual.simulated_attacks is not None and isinstance(
+            intellectual.simulated_attacks, dict
+        )
+        assert intellectual.res is not None and isinstance(
+            intellectual.res, dict
+        )
         assert IntellectualPropertyType.IMITATION in results
         assert len(results[IntellectualPropertyType.IMITATION]) == 1
         test_case = results[IntellectualPropertyType.IMITATION][0]

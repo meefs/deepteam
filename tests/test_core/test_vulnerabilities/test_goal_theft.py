@@ -73,7 +73,9 @@ class TestGoalTheft:
         )
 
         assert goal_theft.is_vulnerable() is not None
-        assert goal_theft.simulated_attacks is not None and isinstance(goal_theft.simulated_attacks, dict)
+        assert goal_theft.simulated_attacks is not None and isinstance(
+            goal_theft.simulated_attacks, dict
+        )
         assert goal_theft.res is not None and isinstance(goal_theft.res, dict)
         assert GoalTheftType.COOPERATIVE_DIALOGUE in results
         assert len(results[GoalTheftType.COOPERATIVE_DIALOGUE]) == 1
@@ -105,7 +107,9 @@ class TestGoalTheft:
         )
 
         assert goal_theft.is_vulnerable() is not None
-        assert goal_theft.simulated_attacks is not None and isinstance(goal_theft.simulated_attacks, dict)
+        assert goal_theft.simulated_attacks is not None and isinstance(
+            goal_theft.simulated_attacks, dict
+        )
         assert goal_theft.res is not None and isinstance(goal_theft.res, dict)
         assert GoalTheftType.COOPERATIVE_DIALOGUE in results
         assert len(results[GoalTheftType.COOPERATIVE_DIALOGUE]) == 1

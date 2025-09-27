@@ -74,8 +74,12 @@ class TestExcessiveAgency:
         )
 
         assert excessive_agency.is_vulnerable() is not None
-        assert excessive_agency.simulated_attacks is not None and isinstance(excessive_agency.simulated_attacks, dict)
-        assert excessive_agency.res is not None and isinstance(excessive_agency.res, dict)
+        assert excessive_agency.simulated_attacks is not None and isinstance(
+            excessive_agency.simulated_attacks, dict
+        )
+        assert excessive_agency.res is not None and isinstance(
+            excessive_agency.res, dict
+        )
         assert ExcessiveAgencyType.AUTONOMY in results
         assert len(results[ExcessiveAgencyType.AUTONOMY]) == 1
         test_case = results[ExcessiveAgencyType.AUTONOMY][0]
@@ -106,8 +110,12 @@ class TestExcessiveAgency:
         )
 
         assert excessive_agency.is_vulnerable() is not None
-        assert excessive_agency.simulated_attacks is not None and isinstance(excessive_agency.simulated_attacks, dict)
-        assert excessive_agency.res is not None and isinstance(excessive_agency.res, dict)
+        assert excessive_agency.simulated_attacks is not None and isinstance(
+            excessive_agency.simulated_attacks, dict
+        )
+        assert excessive_agency.res is not None and isinstance(
+            excessive_agency.res, dict
+        )
         assert ExcessiveAgencyType.AUTONOMY in results
         assert len(results[ExcessiveAgencyType.AUTONOMY]) == 1
         test_case = results[ExcessiveAgencyType.AUTONOMY][0]
