@@ -72,9 +72,7 @@ class Robustness(BaseVulnerability):
                 async_mode=self.async_mode,
             )
 
-        simulated_test_cases = self.simulate_attacks(
-            purpose
-        )
+        simulated_test_cases = self.simulate_attacks(purpose)
 
         results: Dict[RobustnessType, List[RTTestCase]] = dict()
 
@@ -114,9 +112,7 @@ class Robustness(BaseVulnerability):
             async_mode=self.async_mode,
         )
 
-        simulated_test_cases = await self.a_simulate_attacks(
-            purpose
-        )
+        simulated_test_cases = await self.a_simulate_attacks(purpose)
 
         results: Dict[RobustnessType, List[RTTestCase]] = dict()
 

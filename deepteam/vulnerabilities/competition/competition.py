@@ -75,9 +75,7 @@ class Competition(BaseVulnerability):
                 async_mode=self.async_mode,
             )
 
-        simulated_test_cases = self.simulate_attacks(
-            purpose
-        )
+        simulated_test_cases = self.simulate_attacks(purpose)
 
         results: Dict[CompetitionType, List[RTTestCase]] = dict()
 
@@ -116,9 +114,7 @@ class Competition(BaseVulnerability):
             async_mode=self.async_mode,
         )
 
-        simulated_test_cases = await self.a_simulate_attacks(
-            purpose
-        )
+        simulated_test_cases = await self.a_simulate_attacks(purpose)
 
         results: Dict[CompetitionType, List[RTTestCase]] = dict()
 
