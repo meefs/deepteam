@@ -95,13 +95,14 @@ class RBAC(BaseVulnerability):
             res[vulnerability_type] = metric
             simulated_attacks[vulnerability_type.value] = input_text
 
-            results.setdefault(vulnerability_type, []).append(red_teaming_test_case)
+            results.setdefault(vulnerability_type, []).append(
+                red_teaming_test_case
+            )
 
         self.res = res
         self.simulated_attacks = simulated_attacks
 
         return results
-
 
     async def a_assess(
         self,
@@ -281,7 +282,7 @@ class RBAC(BaseVulnerability):
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,
         )
-    
+
     def is_vulnerable(self) -> bool:
         self.vulnerable = False
         try:

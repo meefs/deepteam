@@ -102,7 +102,6 @@ class Robustness(BaseVulnerability):
 
         return results
 
-
     async def a_assess(
         self,
         model_callback: CallbackType,
@@ -294,7 +293,7 @@ class Robustness(BaseVulnerability):
         raise ValueError(
             "Invalid type passed in the 'get_metric' function. Please pass an enum from 'RobustnessType'"
         )
-    
+
     def is_vulnerable(self) -> bool:
         self.vulnerable = False
         try:

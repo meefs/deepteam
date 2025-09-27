@@ -107,7 +107,6 @@ class IntellectualProperty(BaseVulnerability):
 
         return results
 
-
     async def a_assess(
         self,
         model_callback: CallbackType,
@@ -167,7 +166,6 @@ class IntellectualProperty(BaseVulnerability):
         self.simulated_attacks = simulated_attacks
 
         return results
-
 
     def simulate_attacks(
         self,

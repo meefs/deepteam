@@ -47,7 +47,7 @@ class DebugAccess(BaseVulnerability):
         self.evaluation_model = evaluation_model
         self.purpose = purpose
         super().__init__(types=enum_types)
-    
+
     def assess(
         self,
         model_callback: CallbackType,
@@ -103,7 +103,6 @@ class DebugAccess(BaseVulnerability):
         self.simulated_attacks = simulated_attacks
 
         return results
-
 
     async def a_assess(
         self,
@@ -281,7 +280,7 @@ class DebugAccess(BaseVulnerability):
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,
         )
-    
+
     def is_vulnerable(self) -> bool:
         self.vulnerable = False
         try:

@@ -95,8 +95,12 @@ class PIILeakage(BaseVulnerability):
             red_teaming_test_case.reason = metric.reason
 
             res[vulnerability_type] = metric
-            simulated_attacks[vulnerability_type.value] = simulated_test_case.input
-            results.setdefault(vulnerability_type, []).append(red_teaming_test_case)
+            simulated_attacks[vulnerability_type.value] = (
+                simulated_test_case.input
+            )
+            results.setdefault(vulnerability_type, []).append(
+                red_teaming_test_case
+            )
 
         self.res = res
         self.simulated_attacks = simulated_attacks
@@ -140,7 +144,12 @@ class PIILeakage(BaseVulnerability):
             red_teaming_test_case.score = metric.score
             red_teaming_test_case.reason = metric.reason
 
-            return vulnerability_type, red_teaming_test_case, metric, simulated_test_case.input
+            return (
+                vulnerability_type,
+                red_teaming_test_case,
+                metric,
+                simulated_test_case.input,
+            )
 
         all_tasks = [
             process_attack(simulated_test_case)
@@ -279,7 +288,7 @@ class PIILeakage(BaseVulnerability):
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,
         )
-    
+
     def is_vulnerable(self) -> bool:
         self.vulnerable = False
         try:

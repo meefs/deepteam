@@ -101,7 +101,6 @@ class BFLA(BaseVulnerability):
 
         return results
 
-
     async def a_assess(
         self,
         model_callback: CallbackType,
@@ -160,7 +159,6 @@ class BFLA(BaseVulnerability):
         self.simulated_attacks = simulated_attacks
 
         return results
-
 
     def simulate_attacks(
         self,
@@ -282,7 +280,7 @@ class BFLA(BaseVulnerability):
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,
         )
-    
+
     def is_vulnerable(self) -> bool:
         self.vulnerable = False
         try:

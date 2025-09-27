@@ -45,7 +45,7 @@ class GraphicContent(BaseVulnerability):
         self.evaluation_model = evaluation_model
         self.purpose = purpose
         super().__init__(types=enum_types)
-    
+
     def assess(
         self,
         model_callback: CallbackType,

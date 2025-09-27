@@ -101,7 +101,6 @@ class Misinformation(BaseVulnerability):
 
         return results
 
-
     async def a_assess(
         self,
         model_callback: CallbackType,

@@ -103,7 +103,6 @@ class GoalTheft(BaseVulnerability):
 
         return results
 
-
     async def a_assess(
         self,
         model_callback: CallbackType,
@@ -283,7 +282,7 @@ class GoalTheft(BaseVulnerability):
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,
         )
-    
+
     def is_vulnerable(self) -> bool:
         self.vulnerable = False
         try:

@@ -296,7 +296,7 @@ class CustomVulnerability(BaseVulnerability):
 
     def _get_metric(self, type: Enum) -> BaseRedTeamingMetric:
         return self.metric
-    
+
     def is_vulnerable(self) -> bool:
         self.vulnerable = False
         try:
