@@ -51,8 +51,7 @@ class Robustness(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-        attacks_per_vulnerability_type: int = 1,
-    ):
+    ) -> Dict[RobustnessType, List[RTTestCase]]:
         from deepteam.risks import getRiskCategory
 
         if self.async_mode:
@@ -65,7 +64,6 @@ class Robustness(BaseVulnerability):
                 self.a_assess(
                     model_callback=model_callback,
                     purpose=purpose,
-                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
         else:
@@ -75,7 +73,7 @@ class Robustness(BaseVulnerability):
             )
 
         simulated_test_cases = self.simulate_attacks(
-            purpose, attacks_per_vulnerability_type
+            purpose
         )
 
         results: Dict[RobustnessType, List[RTTestCase]] = dict()
@@ -108,8 +106,7 @@ class Robustness(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-        attacks_per_vulnerability_type: int = 1,
-    ):
+    ) -> Dict[RobustnessType, List[RTTestCase]]:
         from deepteam.risks import getRiskCategory
 
         validate_model_callback_signature(
@@ -118,7 +115,7 @@ class Robustness(BaseVulnerability):
         )
 
         simulated_test_cases = await self.a_simulate_attacks(
-            purpose, attacks_per_vulnerability_type
+            purpose
         )
 
         results: Dict[RobustnessType, List[RTTestCase]] = dict()

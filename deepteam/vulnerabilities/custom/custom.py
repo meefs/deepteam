@@ -66,8 +66,7 @@ class CustomVulnerability(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: str = None,
-        attacks_per_vulnerability_type: int = 1,
-    ):
+    ) -> Dict[Enum, List[RTTestCase]]:
 
         if self.async_mode:
             validate_model_callback_signature(
@@ -79,7 +78,6 @@ class CustomVulnerability(BaseVulnerability):
                 self.a_assess(
                     model_callback=model_callback,
                     purpose=purpose,
-                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
         else:
@@ -89,10 +87,10 @@ class CustomVulnerability(BaseVulnerability):
             )
 
         simulated_test_cases = self.simulate_attacks(
-            purpose, attacks_per_vulnerability_type
+            purpose
         )
 
-        results: Dict[str, List[RTTestCase]] = dict()
+        results: Dict[Enum, List[RTTestCase]] = dict()
 
         for simulated_test_case in simulated_test_cases:
             vulnerability_type = simulated_test_case.vulnerability_type
@@ -122,8 +120,7 @@ class CustomVulnerability(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: str = None,
-        attacks_per_vulnerability_type: int = 1,
-    ):
+    ) -> Dict[Enum, List[RTTestCase]]:
 
         validate_model_callback_signature(
             model_callback=model_callback,
@@ -131,13 +128,12 @@ class CustomVulnerability(BaseVulnerability):
         )
 
         simulated_test_cases = await self.a_simulate_attacks(
-            purpose, attacks_per_vulnerability_type
+            purpose
         )
 
-        results: Dict[str, List[RTTestCase]] = dict()
+        results: Dict[Enum, List[RTTestCase]] = dict()
 
-        async def process_attack(simulated_test_case):
-            from deepteam.attacks.attack_simulator import RTTestCase
+        async def process_attack(simulated_test_case: RTTestCase):
 
             vulnerability_type = simulated_test_case.vulnerability_type
 

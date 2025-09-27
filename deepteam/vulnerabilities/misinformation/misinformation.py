@@ -51,8 +51,7 @@ class Misinformation(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-        attacks_per_vulnerability_type: int = 1,
-    ):
+    ) -> Dict[MisinformationType, List[RTTestCase]]:
 
         if self.async_mode:
             validate_model_callback_signature(
@@ -64,7 +63,6 @@ class Misinformation(BaseVulnerability):
                 self.a_assess(
                     model_callback=model_callback,
                     purpose=purpose,
-                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
         else:
@@ -74,7 +72,7 @@ class Misinformation(BaseVulnerability):
             )
 
         simulated_test_cases = self.simulate_attacks(
-            purpose, attacks_per_vulnerability_type
+            purpose
         )
 
         results: Dict[MisinformationType, List[RTTestCase]] = dict()
@@ -107,8 +105,7 @@ class Misinformation(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-        attacks_per_vulnerability_type: int = 1,
-    ):
+    ) -> Dict[MisinformationType, List[RTTestCase]]:
 
         validate_model_callback_signature(
             model_callback=model_callback,
@@ -116,7 +113,7 @@ class Misinformation(BaseVulnerability):
         )
 
         simulated_test_cases = await self.a_simulate_attacks(
-            purpose, attacks_per_vulnerability_type
+            purpose
         )
 
         results: Dict[MisinformationType, List[RTTestCase]] = dict()

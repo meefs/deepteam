@@ -48,8 +48,7 @@ class Toxicity(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-        attacks_per_vulnerability_type: int = 1,
-    ):
+    ) -> Dict[ToxicityType, List[RTTestCase]]:
 
         if self.async_mode:
             validate_model_callback_signature(
@@ -61,7 +60,6 @@ class Toxicity(BaseVulnerability):
                 self.a_assess(
                     model_callback=model_callback,
                     purpose=purpose,
-                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
         else:
@@ -71,7 +69,7 @@ class Toxicity(BaseVulnerability):
             )
 
         simulated_test_cases = self.simulate_attacks(
-            purpose, attacks_per_vulnerability_type
+            purpose
         )
 
         results: Dict[ToxicityType, List[RTTestCase]] = dict()
@@ -104,8 +102,7 @@ class Toxicity(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-        attacks_per_vulnerability_type: int = 1,
-    ):
+    ) -> Dict[ToxicityType, List[RTTestCase]]:
 
         validate_model_callback_signature(
             model_callback=model_callback,
@@ -113,7 +110,7 @@ class Toxicity(BaseVulnerability):
         )
 
         simulated_test_cases = await self.a_simulate_attacks(
-            purpose, attacks_per_vulnerability_type
+            purpose,
         )
 
         results: Dict[ToxicityType, List[RTTestCase]] = dict()
