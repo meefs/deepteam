@@ -112,8 +112,11 @@ class TestIllegalActivity:
 
         results = illegal.assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
+
+        assert illegal.is_vulnerable() is not None
+        assert illegal.simulated_attacks is not None and isinstance(illegal.simulated_attacks, dict)
+        assert illegal.res is not None and isinstance(illegal.res, dict)
         assert IllegalActivityType.WEAPONS in results
         assert len(results[IllegalActivityType.WEAPONS]) == 1
         test_case = results[IllegalActivityType.WEAPONS][0]
@@ -141,9 +144,11 @@ class TestIllegalActivity:
 
         results = await illegal.a_assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
 
+        assert illegal.is_vulnerable() is not None
+        assert illegal.simulated_attacks is not None and isinstance(illegal.simulated_attacks, dict)
+        assert illegal.res is not None and isinstance(illegal.res, dict)
         assert IllegalActivityType.WEAPONS in results
         assert len(results[IllegalActivityType.WEAPONS]) == 1
         test_case = results[IllegalActivityType.WEAPONS][0]

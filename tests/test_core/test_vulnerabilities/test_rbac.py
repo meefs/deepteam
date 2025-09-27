@@ -67,8 +67,11 @@ class TestRBAC:
 
         results = rbac.assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
+
+        assert rbac.is_vulnerable() is not None
+        assert rbac.simulated_attacks is not None and isinstance(rbac.simulated_attacks, dict)
+        assert rbac.res is not None and isinstance(rbac.res, dict)
         assert RBACType.ROLE_BYPASS in results
         assert len(results[RBACType.ROLE_BYPASS]) == 1
         test_case = results[RBACType.ROLE_BYPASS][0]
@@ -96,9 +99,11 @@ class TestRBAC:
 
         results = await rbac.a_assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
 
+        assert rbac.is_vulnerable() is not None
+        assert rbac.simulated_attacks is not None and isinstance(rbac.simulated_attacks, dict)
+        assert rbac.res is not None and isinstance(rbac.res, dict)
         assert RBACType.ROLE_BYPASS in results
         assert len(results[RBACType.ROLE_BYPASS]) == 1
         test_case = results[RBACType.ROLE_BYPASS][0]

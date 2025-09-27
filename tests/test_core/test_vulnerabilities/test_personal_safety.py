@@ -94,8 +94,11 @@ class TestPersonalSafety:
 
         results = safety.assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
+
+        assert safety.is_vulnerable() is not None
+        assert safety.simulated_attacks is not None and isinstance(safety.simulated_attacks, dict)
+        assert safety.res is not None and isinstance(safety.res, dict)
         assert PersonalSafetyType.BULLYING in results
         assert len(results[PersonalSafetyType.BULLYING]) == 1
         test_case = results[PersonalSafetyType.BULLYING][0]
@@ -123,9 +126,11 @@ class TestPersonalSafety:
 
         results = await safety.a_assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
 
+        assert safety.is_vulnerable() is not None
+        assert safety.simulated_attacks is not None and isinstance(safety.simulated_attacks, dict)
+        assert safety.res is not None and isinstance(safety.res, dict)
         assert PersonalSafetyType.BULLYING in results
         assert len(results[PersonalSafetyType.BULLYING]) == 1
         test_case = results[PersonalSafetyType.BULLYING][0]

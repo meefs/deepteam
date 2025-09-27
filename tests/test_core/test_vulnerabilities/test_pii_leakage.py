@@ -77,8 +77,11 @@ class TestPIILeakage:
 
         results = pii_lekage.assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
+
+        assert pii_lekage.is_vulnerable() is not None
+        assert pii_lekage.simulated_attacks is not None and isinstance(pii_lekage.simulated_attacks, dict)
+        assert pii_lekage.res is not None and isinstance(pii_lekage.res, dict)
         assert PIILeakageType.SESSION_LEAK in results
         assert len(results[PIILeakageType.SESSION_LEAK]) == 1
         test_case = results[PIILeakageType.SESSION_LEAK][0]
@@ -106,9 +109,11 @@ class TestPIILeakage:
 
         results = await pii_lekage.a_assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
 
+        assert pii_lekage.is_vulnerable() is not None
+        assert pii_lekage.simulated_attacks is not None and isinstance(pii_lekage.simulated_attacks, dict)
+        assert pii_lekage.res is not None and isinstance(pii_lekage.res, dict)
         assert PIILeakageType.SESSION_LEAK in results
         assert len(results[PIILeakageType.SESSION_LEAK]) == 1
         test_case = results[PIILeakageType.SESSION_LEAK][0]

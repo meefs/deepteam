@@ -80,8 +80,11 @@ class TestDebugAccess:
 
         results = debug_access.assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
+
+        assert debug_access.is_vulnerable() is not None
+        assert debug_access.simulated_attacks is not None and isinstance(debug_access.simulated_attacks, dict)
+        assert debug_access.res is not None and isinstance(debug_access.res, dict)
         assert DebugAccessType.DEBUG_MODE_BYPASS in results
         assert len(results[DebugAccessType.DEBUG_MODE_BYPASS]) == 1
         test_case = results[DebugAccessType.DEBUG_MODE_BYPASS][0]
@@ -109,9 +112,11 @@ class TestDebugAccess:
 
         results = await debug_access.a_assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
 
+        assert debug_access.is_vulnerable() is not None
+        assert debug_access.simulated_attacks is not None and isinstance(debug_access.simulated_attacks, dict)
+        assert debug_access.res is not None and isinstance(debug_access.res, dict)
         assert DebugAccessType.DEBUG_MODE_BYPASS in results
         assert len(results[DebugAccessType.DEBUG_MODE_BYPASS]) == 1
         test_case = results[DebugAccessType.DEBUG_MODE_BYPASS][0]

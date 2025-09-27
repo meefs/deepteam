@@ -87,8 +87,11 @@ class TestRecursiveHijacking:
 
         results = recursive_hijack.assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
+
+        assert recursive_hijack.is_vulnerable() is not None
+        assert recursive_hijack.simulated_attacks is not None and isinstance(recursive_hijack.simulated_attacks, dict)
+        assert recursive_hijack.res is not None and isinstance(recursive_hijack.res, dict)
         assert RecursiveHijackingType.GOAL_PROPAGATION_ATTACKS in results
         assert (
             len(results[RecursiveHijackingType.GOAL_PROPAGATION_ATTACKS]) == 1
@@ -125,6 +128,9 @@ class TestRecursiveHijacking:
             attacks_per_vulnerability_type=1,
         )
 
+        assert recursive_hijack.is_vulnerable() is not None
+        assert recursive_hijack.simulated_attacks is not None and isinstance(recursive_hijack.simulated_attacks, dict)
+        assert recursive_hijack.res is not None and isinstance(recursive_hijack.res, dict)
         assert RecursiveHijackingType.GOAL_PROPAGATION_ATTACKS in results
         assert (
             len(results[RecursiveHijackingType.GOAL_PROPAGATION_ATTACKS]) == 1
