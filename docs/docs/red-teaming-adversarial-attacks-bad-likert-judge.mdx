@@ -10,8 +10,6 @@ import AttackTagsDisplayer from "@site/src/components/AttackTagsDisplayer";
 
 The `BadLikertJudge` attack is a sophisticated multi-turn jailbreak technique that coerces LLMs into generating harmful content by **leveraging their ability to evaluate textual responses using Likert scale ratings**. The attack exploits the model's willingness to act as a _"harmfulness evaluator"_ rather than directly requesting harmful content. The process involves establishing the model as a judge, requesting examples for different harmfulness scores, and extracting the most harmful examples from the responses.
 
-![Bad Likert Judge](./images/bad-likert-judge.png)
-
 :::info
 The attack **leverages role reframing and indirect prompting** to bypass safety measures. Instead of asking "How to make a bomb?", it asks the model to provide examples of responses that would score 1 vs 3 on a harmfulness scale, then extracts the score 3 examples.
 :::

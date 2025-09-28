@@ -10,8 +10,6 @@ import AttackTagsDisplayer from "@site/src/components/AttackTagsDisplayer";
 
 The `SequentialJailbreaking` attack uses _multi-turn conversational scaffolding_ to guide a target LLM toward generating restricted or harmful outputs. Instead of issuing a direct request, **it reframes the harmful prompt into a structured dialogue or scenario** that gradually escalates in complexity or specificity over several turns — exploiting the model’s consistency and role adherence in conversation.
 
-![Sequential Jailbreaking Intro](./images/sequential-jailbreaking.png)
-
 :::caution IMPORTANT
 Sequential Jailbreaking relies on **narrative context and psychological framing** — harmful prompts are embedded in formats designed to reduce the model's guardrails over time.
 :::

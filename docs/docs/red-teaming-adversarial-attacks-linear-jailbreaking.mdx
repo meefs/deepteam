@@ -10,8 +10,6 @@ import AttackTagsDisplayer from "@site/src/components/AttackTagsDisplayer";
 
 The `LinearJailbreaking` attack enhances a _base attack_ — a harmful prompt targeting a specific vulnerability — and iteratively refines it using the **target LLM**'s responses. Each iteration builds on the last, gradually improving the attack's effectiveness against the target LLM to produce harmful outputs.
 
-![Linear Jailbreaking](./images/linear-jailbreaking-intro.png)
-
 :::info
 The linear jailbreaking process only terminates when the target LLM produces a harmful response or reaches the maximum number of turns.
 :::

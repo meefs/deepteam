@@ -10,8 +10,6 @@ import AttackTagsDisplayer from "@site/src/components/AttackTagsDisplayer";
 
 The `CrescendoJailbreaking` attack enhances a _base attack_ — a harmful prompt targeting a specific vulnerability — with **neutral or benign queries** and gradually escalates in intensity. Each round begins with **mild prompts** and grows more forceful and direct, **increasing pressure** on the model to produce harmful outputs. If the LLM refuses to engage, the attack **backtracks** and adjusts, retrying with slight modifications to bypass the refusal. This method is highly iterative, ensuring that with each round, the attack becomes harder for the model to refuse.
 
-![Crescendo Jailbreaking](./images/crescendo-jailbreaking.png)
-
 The **number of rounds** and **backtracks** can be adjusted, with each escalation carefully evaluated for success. Crescendo Jailbreaking is designed to **wear down** the model's defenses by gradually increasing the intensity of the prompts, making it more likely for the LLM to eventually generate harmful outputs. The gradual nature of this method makes it harder for the model to detect and resist, as the prompts evolve from **harmless** to **harmful** over time.
 
 :::caution IMPORTANT

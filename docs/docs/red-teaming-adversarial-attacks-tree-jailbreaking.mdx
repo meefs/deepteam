@@ -10,8 +10,6 @@ import AttackTagsDisplayer from "@site/src/components/AttackTagsDisplayer";
 
 The `TreeJailbreaking` attack enhances a _base attack_ — a harmful prompt targeting a specific vulnerability — in multiple parallel ways, it forms a tree by exploring different variations of the attack to bypass the **target model**'s safeguards. Instead of refining a single prompt, **it branches out** by evaluating and expanding only the most promising paths to increase the chances of a successful jailbreak.
 
-![Tree Jailbreaking Intro](./images/tree-jailbreaking-intro.png)
-
 :::caution IMPORTANT
 **Pruning is critical in Tree Jailbreaking**, as it ensures the system focuses resources on the most effective branches.
 :::
@@ -89,3 +87,18 @@ If the `turn_level_attacks` is supplied with a list of single-turn attacks, `Tre
 :::note
 This hybrid approach combines **broad parallel exploration** with **targeted refinement**, boosting the likelihood of bypassing safety filters through multiple diverse jailbreak attempts.
 :::
+
+## Example
+
+Here's an example of how `TreeJailbreaking` attack works from a vulnerability:
+
+![Tree Jailbreaking](./images/tree-jailbreaking-example.png)
+
+1. **Start**: Launch with one adversarial user prompt aimed at a known vulnerability.
+2. **Observe**: Get the model’s reply — it might refuse, give a neutral answer, or reveal something risky.
+3. **Vary**: Create a handful of alternative phrasings or contexts of the original prompt to try different angles.
+4. **Probe**: Send those variants to the model and note which ones produce more revealing or risky content.
+5. **Prune**: Discard variants that clearly fail (refuse or produce nothing useful).
+6. **Amplify**: Take the most promising variants and refine them further (rephrase, add context, change persona) to push the model more.
+7. **Iterate**: Repeat probing and pruning until one chain of prompts reliably elicits the desired (unsafe) output.
+8. **Select**: Choose the best sequence of prompts that produced the most effective breach and use that as the successful attack path.
