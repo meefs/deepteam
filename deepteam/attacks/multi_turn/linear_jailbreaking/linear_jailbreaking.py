@@ -34,7 +34,7 @@ class LinearJailbreaking(BaseAttack):
         weight: int = 1,
         num_turns: int = 5,
         turn_level_attacks: Optional[List[BaseAttack]] = None,
-        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = "gpt-4o-mini",
     ):
         self.weight = weight
         self.multi_turn = True
