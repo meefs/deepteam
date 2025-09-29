@@ -18,10 +18,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import GoalRedirection
 from somewhere import your_callback
 
-goal_redirection = GoalRedirection(
-    weight=2,
-    max_retires=7,
-)
+goal_redirection = GoalRedirection(weight=2, max_retires=7)
 
 red_team(
     attacks=[goal_redirection], 

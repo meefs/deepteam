@@ -18,10 +18,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import ContextPoisoning
 from somewhere import your_callback
 
-context_poisoning = ContextPoisoning(
-    weight=2,
-    max_retires=7,
-)
+context_poisoning = ContextPoisoning(weight=2, max_retires=7)
 
 red_team(
     attacks=[context_poisoning], 

@@ -18,10 +18,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import RoleManipulation
 from somewhere import your_callback
 
-role_manipulation = RoleManipulation(
-    weight=2,
-    max_retires=7,
-)
+role_manipulation = RoleManipulation(weight=2, max_retires=7)
 
 red_team(
     attacks=[role_manipulation], 

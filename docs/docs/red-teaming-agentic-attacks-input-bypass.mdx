@@ -18,10 +18,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import InputBypass
 from somewhere import your_callback
 
-input_bypass = InputBypass(
-    weight=2,
-    max_retires=7,
-)
+input_bypass = InputBypass(weight=2, max_retires=7)
 
 red_team(
     attacks=[input_bypass], 

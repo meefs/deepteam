@@ -18,9 +18,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import Base64
 from somewhere import your_callback
 
-base64 = Base64(
-    weight=2,
-)
+base64 = Base64(weight=2)
 
 red_team(
     attacks=[base64], 

@@ -18,10 +18,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import Multilingual
 from somewhere import your_callback
 
-multilingual = Multilingual(
-    weight=2,
-    max_retries=7,
-)
+multilingual = Multilingual(weight=2, max_retries=7)
 
 red_team(
     attacks=[multilingual], 

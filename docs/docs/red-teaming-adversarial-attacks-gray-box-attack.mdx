@@ -18,10 +18,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import GrayBox
 from somewhere import your_callback
 
-gray_box = GrayBox(
-    weight=2,
-    max_retries=7,
-)
+gray_box = GrayBox(weight=2, max_retries=7)
 
 red_team(
     attacks=[gray_box], 

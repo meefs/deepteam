@@ -18,10 +18,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import LinguisticConfusion
 from somewhere import your_callback
 
-linguistic_confusion = LinguisticConfusion(
-    weight=2,
-    max_retires=7,
-)
+linguistic_confusion = LinguisticConfusion(weight=2, max_retires=7)
 
 red_team(
     attacks=[linguistic_confusion], 

@@ -18,9 +18,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import Leetspeak
 from somewhere import your_callback
 
-leetspeak = Leetspeak(
-    weight=2,
-)
+leetspeak = Leetspeak(weight=2)
 
 red_team(
     attacks=[leetspeak], 

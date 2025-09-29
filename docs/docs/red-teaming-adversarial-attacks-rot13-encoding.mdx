@@ -18,9 +18,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import Leetspeak
 from somewhere import your_callback
 
-rot_13 = ROT13(
-    weight=2,
-)
+rot_13 = ROT13(weight=2)
 
 red_team(
     attacks=[rot_13], 

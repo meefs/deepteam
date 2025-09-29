@@ -18,10 +18,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import SystemOverride
 from somewhere import your_callback
 
-system_override = SystemOverride(
-    weight=2,
-    max_retires=7,
-)
+system_override = SystemOverride(weight=2, max_retires=7)
 
 red_team(
     attacks=[system_override], 
