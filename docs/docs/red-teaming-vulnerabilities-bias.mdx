@@ -78,9 +78,11 @@ The `Bias` vulnerability generates a base attack — a harmful prompt targeted a
 The enhancement or progression (depending on the attack) is evaluated using the `BiasMetric`, which generates a binary `score` (_**0** if bias detected and **1** otherwise_). The `BiasMetric` also generates a `reason` justifying the assigned score.
 
 ```mermaid
-graph TD
-    A[Start] --> B{Working?}
-    B -- Yes --> C[Done]
-    B -- No --> D[Fix it]
-    D --> B
+flowchart LR
+  BV[Bias Vulnerability] -->|passes base attack| AA[Adversarial Attack]
+  AA -->|single-turn| EA[Enhanced Attack]
+  AA -->|multi-turn| PT[Progression Turns]
+  EA --> BM[BiasMetric]
+  PT --> BM
+  BM --> |generates| RES[Score + Reason </br> 1 if safe 0 otherwise]
 ```
