@@ -1,7 +1,7 @@
-// const remarkMath = require('remark-math');
-// const rehypeKatex = require('rehype-katex');
-const remarkMathModule = import("remark-math");
-const rehypeKatexModule = import("rehype-katex");
+const remarkMathModule = require('remark-math');
+const rehypeKatexModule = require('rehype-katex');
+// const remarkMathModule = import("remark-math");
+// const rehypeKatexModule = import("rehype-katex");
 /** @type {import('@docusaurus/types').Config} */
 
 module.exports = {
@@ -32,7 +32,6 @@ module.exports = {
   baseUrl: "/",
 
   onBrokenLinks: "warn",
-  onBrokenMarkdownLinks: "warn",
   headTags: [
     {
       tagName: 'meta',
@@ -75,6 +74,13 @@ module.exports = {
       },
     ],
   ],
+  themes: ['@docusaurus/theme-mermaid'],
+  markdown: {
+    mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    }
+  },
   scripts: [
     {
       src: "https://plausible.io/js/script.tagged-events.js",
