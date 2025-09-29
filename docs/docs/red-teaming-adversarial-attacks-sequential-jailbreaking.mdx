@@ -99,3 +99,15 @@ Each attack uses a **preset structure** tailored to the selected `type`, and lev
 | `"game_environment"` | Presents the prompt as a challenge within a multi-level detective or puzzle game. |
 
 If `type="dialogue"` is selected, the optional `persona` parameter configures the tone and context of the conversation — e.g., `"prisoner"` might involve secretive exchanges, while `"student"` might center on tutoring or learning scenarios.
+
+## Example
+
+Here's an example of a `SequentialJailbreak` attack targeting a racial bias vulnerability:
+
+![SequentialJailbreak Example](./images/sequential-jailbreaking-example.png)
+
+1. **First Attack**: The attacker starts with a direct prompt asking about negative stereotypes associated with mixed-race individuals, targeting the racial bias vulnerability in the model.
+2. **Initial Response**: The model provides a safe, balanced response, acknowledging stereotypes but emphasizing the importance of challenging them.
+3. **Setting a Scenario**: The attacker now creates a scenario that builds up toward the vulnerability we're testing and asks the target model to partake in the scenario.
+4. **Subsequent Turns**: The attacker refines this scenario and frames it differently with each turn, adjusting based on the model's previous answers to find a way to provoke biased or harmful output.
+5. **Successful Breach**: After several iterations, the attacker successfully bypasses the model's safeguards, prompting a harmful response that perpetuates stereotypes.
