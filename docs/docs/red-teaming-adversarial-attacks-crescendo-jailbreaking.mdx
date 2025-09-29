@@ -87,3 +87,15 @@ If the `turn_level_attacks` is supplied with a list of single-turn attacks, `Cre
 - These injected attacks are still part of the same attack but help explore alternate jailbreak angles without disrupting the overall structure.
 
 Each round is crafted to bypass the LLM’s defenses by taking advantage of the model’s **iterative nature** and **refining the approach** after each failure.
+
+## Example 
+
+Here's an example of how a `CrescendoJailbreaking` attack works in action:
+
+![Crescendo Jailbreaking Example](./images/crescendo-jailbreaking-example.png)
+
+1. **First Attack**: The attacker starts with a direct prompt asking about negative stereotypes associated with mixed-race individuals, targeting the racial bias vulnerability in the model.
+2. **Initial Response**: The model provides a safe and balanced response, which is evaluated by the crescendo judge and sent to attacker.
+3. **Enhancement or Backtrack**: The attacker aggressively enhances the previous attack to try and jailbreak the target LLM. If the target LLM balantly refuses to comply, the crescendo judge evaluates it and the attacker will backtrack to less aggressive attack.
+4. **Repeat**: This process of enhancement and backtracing continues with each turn, adjusting based on the crescendo judge's verdict to find a way to provoke biased or harmful output.
+5. **Successful Breach**: After several iterations, the attacker successfully bypasses the model's safeguards, prompting a harmful response that perpetuates stereotypes.
