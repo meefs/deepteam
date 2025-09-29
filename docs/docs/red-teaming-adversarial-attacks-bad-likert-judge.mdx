@@ -82,7 +82,7 @@ print(result)
 6. **Backtrack adaptively** — If the model refuses or redacts, rephrase the rubric or role and retry, repeating until success or limits are reached.
 7. **Stop conditions** — End the flow when a disallowed example is produced or when the configured turn/backtrack limits are exhausted.
 
-![Bad Likert Judge](./images/bad-likert-judge.png)
+![Bad Likert Judge](https://deepteam-docs.s3.us-east-1.amazonaws.com/attacks:bad-likert-judge.png)
 
 If the `turn_level_attacks` is supplied with a list of single-turn attacks, `BadLikertJudge` adds controlled variation:
 
@@ -101,7 +101,7 @@ If the `turn_level_attacks` is supplied with a list of single-turn attacks, `Bad
 
 Here's an example of a `BadLikertJudge` attack targeting a racial bias vulnerability:
 
-![SequentialJailbreak Example](./images/bad-likert-judge-example.png)
+![SequentialJailbreak Example](https://deepteam-docs.s3.us-east-1.amazonaws.com/attacks:bad-likert-judge-example.png)
 
 1. **First Attack**: The attacker starts with a direct prompt asking about stealing data using malware which is unethical.
 2. **Initial Response**: The model might provide a safe response or might comply, this response is used to adjust the way the attacker adapts to the model.

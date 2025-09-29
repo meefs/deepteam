@@ -79,7 +79,7 @@ print(result)
 5. **Evaluate after each round**: The model’s responses are monitored and evaluated after each round, determining whether the model is yielding to the harmful prompt or maintaining its defenses.
 6. **Stop when harmful output is generated or after all rounds are exhausted**: The attack terminates when a harmful response is generated, or after all rounds and backtracks have been exhausted without success.
 
-![Crescendo Jailbreaking](./images/crescendo-jailbreaking.png)
+![Crescendo Jailbreaking](https://deepteam-docs.s3.us-east-1.amazonaws.com/attacks:crescendo-jailbreaking.png)
 
 If the `turn_level_attacks` is supplied with a list of single-turn attacks, `CrescendoJailbreaking` adds controlled variation:
 
@@ -92,7 +92,7 @@ Each round is crafted to bypass the LLM’s defenses by taking advantage of the 
 
 Here's an example of how a `CrescendoJailbreaking` attack works in action:
 
-![Crescendo Jailbreaking Example](./images/crescendo-jailbreaking-example.png)
+![Crescendo Jailbreaking Example](https://deepteam-docs.s3.us-east-1.amazonaws.com/attacks:crescendo-jailbreaking-example.png)
 
 1. **First Attack**: The attacker starts with a direct prompt asking about negative stereotypes associated with mixed-race individuals, targeting the racial bias vulnerability in the model.
 2. **Initial Response**: The model provides a safe and balanced response, which is evaluated by the crescendo judge and sent to attacker.
