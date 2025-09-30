@@ -145,9 +145,17 @@ class TreeJailbreaking(BaseAttack):
             assistant_response = model_callback(node.prompt, turns)
             turns.append(RTTurn(role="assistant", content=assistant_response))
             if node.turn_level_attack is not None:
-                turns.append(RTTurn(role="assistant", content=assistant_response, turn_level_attack=node.turn_level_attack.get_name()))
+                turns.append(
+                    RTTurn(
+                        role="assistant",
+                        content=assistant_response,
+                        turn_level_attack=node.turn_level_attack.get_name(),
+                    )
+                )
             else:
-                turns.append(RTTurn(role="assistant", content=assistant_response))
+                turns.append(
+                    RTTurn(role="assistant", content=assistant_response)
+                )
 
         return turns
 
@@ -424,7 +432,7 @@ class TreeJailbreaking(BaseAttack):
                 depth=node.depth + 1,
                 conversation_history=conversation_json,
                 parent=node,
-                turn_level_attack=turn_level_attack
+                turn_level_attack=turn_level_attack,
             )
             node.children.append(child_node)
 
@@ -643,7 +651,7 @@ class TreeJailbreaking(BaseAttack):
             depth=node.depth + 1,
             conversation_history=conversation_json,
             parent=node,
-            turn_level_attack=turn_level_attack
+            turn_level_attack=turn_level_attack,
         )
 
     ##################################################

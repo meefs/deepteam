@@ -171,9 +171,17 @@ class SequentialJailbreak(BaseAttack):
             assistant_response = model_callback(current_attack)
 
             if turn_level_attack is not None:
-                turns.append(RTTurn(role="assistant", content=assistant_response, turn_level_attack=turn_level_attack.get_name()))
+                turns.append(
+                    RTTurn(
+                        role="assistant",
+                        content=assistant_response,
+                        turn_level_attack=turn_level_attack.get_name(),
+                    )
+                )
             else:
-                turns.append(RTTurn(role="assistant", content=assistant_response))
+                turns.append(
+                    RTTurn(role="assistant", content=assistant_response)
+                )
             turn_level_attack = None
 
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(
@@ -343,11 +351,19 @@ class SequentialJailbreak(BaseAttack):
             turns.append(RTTurn(role="user", content=current_attack))
 
             assistant_response = await model_callback(current_attack)
-            
+
             if turn_level_attack is not None:
-                turns.append(RTTurn(role="assistant", content=assistant_response, turn_level_attack=turn_level_attack.get_name()))
+                turns.append(
+                    RTTurn(
+                        role="assistant",
+                        content=assistant_response,
+                        turn_level_attack=turn_level_attack.get_name(),
+                    )
+                )
             else:
-                turns.append(RTTurn(role="assistant", content=assistant_response))
+                turns.append(
+                    RTTurn(role="assistant", content=assistant_response)
+                )
             turn_level_attack = None
 
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(

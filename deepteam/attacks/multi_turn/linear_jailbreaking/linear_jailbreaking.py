@@ -141,7 +141,13 @@ class LinearJailbreaking(BaseAttack):
             target_response = model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
             if turn_level_attack is not None:
-                turns.append(RTTurn(role="assistant", content=target_response, turn_level_attack=turn_level_attack.get_name()))
+                turns.append(
+                    RTTurn(
+                        role="assistant",
+                        content=target_response,
+                        turn_level_attack=turn_level_attack.get_name(),
+                    )
+                )
             else:
                 turns.append(RTTurn(role="assistant", content=target_response))
             turn_level_attack = None
@@ -242,7 +248,13 @@ class LinearJailbreaking(BaseAttack):
             target_response = await model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
             if turn_level_attack is not None:
-                turns.append(RTTurn(role="assistant", content=target_response, turn_level_attack=turn_level_attack.get_name()))
+                turns.append(
+                    RTTurn(
+                        role="assistant",
+                        content=target_response,
+                        turn_level_attack=turn_level_attack.get_name(),
+                    )
+                )
             else:
                 turns.append(RTTurn(role="assistant", content=target_response))
             turn_level_attack = None

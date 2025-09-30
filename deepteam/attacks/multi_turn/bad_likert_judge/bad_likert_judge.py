@@ -152,9 +152,17 @@ class BadLikertJudge(BaseAttack):
             assistant_response = model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
             if turn_level_attack is not None:
-                turns.append(RTTurn(role="assistant", content=assistant_response, turn_level_attack=turn_level_attack.get_name()))
+                turns.append(
+                    RTTurn(
+                        role="assistant",
+                        content=assistant_response,
+                        turn_level_attack=turn_level_attack.get_name(),
+                    )
+                )
             else:
-                turns.append(RTTurn(role="assistant", content=assistant_response))
+                turns.append(
+                    RTTurn(role="assistant", content=assistant_response)
+                )
             turn_level_attack = None
 
             pbar.update(1)
@@ -265,9 +273,17 @@ class BadLikertJudge(BaseAttack):
             assistant_response = await model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
             if turn_level_attack is not None:
-                turns.append(RTTurn(role="assistant", content=assistant_response, turn_level_attack=turn_level_attack.get_name()))
+                turns.append(
+                    RTTurn(
+                        role="assistant",
+                        content=assistant_response,
+                        turn_level_attack=turn_level_attack.get_name(),
+                    )
+                )
             else:
-                turns.append(RTTurn(role="assistant", content=assistant_response))
+                turns.append(
+                    RTTurn(role="assistant", content=assistant_response)
+                )
             turn_level_attack = None
 
             pbar.update(1)
