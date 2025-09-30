@@ -183,6 +183,7 @@ class CrescendoJailbreaking(BaseAttack):
             # Randomly enhancing a turn attack
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
+                turn_level_attack = attack
                 current_attack = enhance_attack(
                     attack, current_attack, self.simulator_model
                 )
@@ -192,7 +193,11 @@ class CrescendoJailbreaking(BaseAttack):
             last_response = self.generate_target_response(current_attack)
             pbar_rounds.update(1)
 
-            turns.append(RTTurn(role="assistant", content=last_response))
+            if turn_level_attack is not None:
+                turns.append(RTTurn(role="assistant", content=assistant_response, turn_level_attack=turn_level_attack.get_name()))
+            else:
+                turns.append(RTTurn(role="assistant", content=assistant_response))
+            turn_level_attack = None
 
             is_refusal, refusal_rationale = self.get_refusal_score(
                 last_response, current_attack, vulnerability_data
@@ -340,6 +345,7 @@ class CrescendoJailbreaking(BaseAttack):
             # Randomly enhancing a turn attack
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
+                turn_level_attack = attack
                 current_attack = await a_enhance_attack(
                     attack, current_attack, self.simulator_model
                 )
@@ -351,7 +357,11 @@ class CrescendoJailbreaking(BaseAttack):
             )
             pbar_rounds.update(1)
 
-            turns.append(RTTurn(role="assistant", content=last_response))
+            if turn_level_attack is not None:
+                turns.append(RTTurn(role="assistant", content=assistant_response, turn_level_attack=turn_level_attack.get_name()))
+            else:
+                turns.append(RTTurn(role="assistant", content=assistant_response))
+            turn_level_attack = None
 
             is_refusal, refusal_rationale = await self.a_get_refusal_score(
                 last_response, current_attack, vulnerability_data
