@@ -1,0 +1,130 @@
+---
+id: red-teaming-risk-assessment
+title: Risk Assessment
+sidebar_label: Risk Assessment
+---
+
+## Quick Summary
+
+In `deepteam`, after red teaming an LLM with your [adversarial attacks](/docs/red-teaming-adversarial-attacks) and [vulnerabilities](/docs/red-teaming-vulnerabilities), you receive a `RiskAssessment` object as the return value of the `red_team()` function. Here's an example code:
+
+```python
+from deepteam import red_team
+from deepteam.vulnerabilities import Bias
+from deepteam.attacks.single_turn import Roleplay
+from somewhere import your_callback
+
+risk_assessment = red_team(
+    attacks=[Roleplay()], 
+    vulnerabilities=[Bias()], 
+    model_callback=your_callback
+)
+```
+
+The `red_team` function first simulates base attacks for all the `types` available in the `Bias` vulnerability which are then passed to an adversarial attack from the `attacks` list (if there are more than one, any one random attack would be chosen). 
+
+This attack enhances the base attack and invokes your `model_callback` with the enhanced attack. For multi-turn attacks, it would create `turns` with multi-turn progressions. After the attack has completed executing, it creates an `RTTestCase` which is used to create a `RiskAssessment` object.
+
+```mermaid
+flowchart LR
+    AA --> RTF
+    BV --> RTF
+    RTF --> |generates| RT
+    RT --> |generates| RA
+
+    RTF[red_team]
+    BV[Base Vulnerability]
+    AA[Adversarial Attack]
+    RT[Red Teaming Test Cases]
+    RA[Risk Assessment]
+```
+
+## What is a Risk Assessment
+
+The `RiskAssessment` object is the return value of calling `red_team()`:
+
+```python
+from deepteam import red_team
+
+risk_assessment = red_team(...)
+```
+
+It has two main attributes:
+
+- `overview`: An instance of [`RedTeamingOverview`](#red-teaming-overview) object
+- `test_cases`: List of all [`RTTestCases`](/docs/red-teaming-test-case) generated and evaluated
+
+```python
+class RiskAssessment(BaseModel):
+    overview: RedTeamingOverview
+    test_cases: List[RTTestCase]
+```
+
+## Red Teaming Overview
+
+The `RedTeamingOverview` is a top-level summary of performance across all attacks and vulnerabilities.
+
+```python
+class RedTeamingOverview(BaseModel):
+    vulnerability_type_results: List[VulnerabilityTypeResult]
+    attack_method_results: List[AttackMethodResult]
+    errored: int
+```
+
+There are **THREE** attributes to this object:
+
+- `vulnerability_type_results`: A list of [`VulnerabilityTypeResult`](#vulnerability-type-result) objects.
+- `attack_method_results`: A list of [`AttackMethodResult`](#attack-method-result) objects
+- `errored`: an `int` representing the number of errors that occured in the red teaming process.
+
+## Vulnerability Type Result
+
+The `VulnerabilityTypeResult` groups results by the **vulnerability** being tested.
+
+```python
+class VulnerabilityTypeResult(BaseModel):
+    vulnerability: str
+    vulnerability_type: Union[VulnerabilityType, Enum]
+    pass_rate: float
+    passing: int
+    failing: int
+    errored: int
+```
+
+There are **SIX** attributes to this object:
+
+- `vulnerability`: a `str` representing the name of the vulnerability
+- `vulnerability_type`: an `Enum` representing a single `type` from the `types` of the vulnerability
+- `pass_rate`: a `float` that represents the percentage of test cases that passes this vulnerability
+- `passing`: an `int` representing the number of passing test cases
+- `failing`: an `int` representing the number of failing test cases 
+- `errored`: an `int` representing the number of errored test cases
+
+:::info
+A test case is considered a **pass** if the model successfully avoided falling for the attack. The criteria are defined per `BaseVulnerability`. 
+:::
+
+## Attack Method Result
+
+The `AttackMethodResult` groups test cases by the **attack** strategy used.
+
+```python
+class AttackMethodResult(BaseModel):
+    pass_rate: float
+    passing: int
+    failing: int
+    errored: int
+    attack_method: Optional[str] = None
+```
+
+There are **FIVE** attributes to this object:
+
+- `pass_rate`: a `float` that represents the percentage of test cases that passes this vulnerability
+- `passing`: an `int` representing the number of passing test cases
+- `failing`: an `int` representing the number of failing test cases 
+- `errored`: an `int` representing the number of errored test cases
+- `attack_method`: a `str` representing the name of the attack
+
+:::info
+A test case is considered errored if it couldn't be evaluated (e.g. due to timeout, model crash, etc.)
+:::
