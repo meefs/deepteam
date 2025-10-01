@@ -68,8 +68,13 @@ class TestBFLA:
 
         results = bfla.assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
+
+        assert bfla.is_vulnerable() is not None
+        assert bfla.simulated_attacks is not None and isinstance(
+            bfla.simulated_attacks, dict
+        )
+        assert bfla.res is not None and isinstance(bfla.res, dict)
         assert BFLAType.AUTHORIZATION_BYPASS in results
         assert len(results[BFLAType.AUTHORIZATION_BYPASS]) == 1
         test_case = results[BFLAType.AUTHORIZATION_BYPASS][0]
@@ -97,9 +102,13 @@ class TestBFLA:
 
         results = await bfla.a_assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
 
+        assert bfla.is_vulnerable() is not None
+        assert bfla.simulated_attacks is not None and isinstance(
+            bfla.simulated_attacks, dict
+        )
+        assert bfla.res is not None and isinstance(bfla.res, dict)
         assert BFLAType.AUTHORIZATION_BYPASS in results
         assert len(results[BFLAType.AUTHORIZATION_BYPASS]) == 1
         test_case = results[BFLAType.AUTHORIZATION_BYPASS][0]

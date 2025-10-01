@@ -68,8 +68,13 @@ class TestBOLA:
 
         results = bola.assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
+
+        assert bola.is_vulnerable() is not None
+        assert bola.simulated_attacks is not None and isinstance(
+            bola.simulated_attacks, dict
+        )
+        assert bola.res is not None and isinstance(bola.res, dict)
         assert BOLAType.CROSS_CUSTOMER_ACCESS in results
         assert len(results[BOLAType.CROSS_CUSTOMER_ACCESS]) == 1
         test_case = results[BOLAType.CROSS_CUSTOMER_ACCESS][0]
@@ -97,9 +102,13 @@ class TestBOLA:
 
         results = await bola.a_assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
 
+        assert bola.is_vulnerable() is not None
+        assert bola.simulated_attacks is not None and isinstance(
+            bola.simulated_attacks, dict
+        )
+        assert bola.res is not None and isinstance(bola.res, dict)
         assert BOLAType.CROSS_CUSTOMER_ACCESS in results
         assert len(results[BOLAType.CROSS_CUSTOMER_ACCESS]) == 1
         test_case = results[BOLAType.CROSS_CUSTOMER_ACCESS][0]
