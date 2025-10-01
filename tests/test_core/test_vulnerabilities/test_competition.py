@@ -79,13 +79,8 @@ class TestCompetition:
 
         results = competition.assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
-
-        assert competition.is_vulnerable() is not None
-        assert competition.simulated_attacks is not None and isinstance(
-            competition.simulated_attacks, dict
-        )
-        assert competition.res is not None and isinstance(competition.res, dict)
         assert CompetitionType.COMPETITOR_MENTION in results
         assert len(results[CompetitionType.COMPETITOR_MENTION]) == 1
         test_case = results[CompetitionType.COMPETITOR_MENTION][0]
@@ -113,13 +108,9 @@ class TestCompetition:
 
         results = await competition.a_assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
 
-        assert competition.is_vulnerable() is not None
-        assert competition.simulated_attacks is not None and isinstance(
-            competition.simulated_attacks, dict
-        )
-        assert competition.res is not None and isinstance(competition.res, dict)
         assert CompetitionType.COMPETITOR_MENTION in results
         assert len(results[CompetitionType.COMPETITOR_MENTION]) == 1
         test_case = results[CompetitionType.COMPETITOR_MENTION][0]

@@ -53,27 +53,33 @@ class PIILeakage(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-    ) -> Dict[PIILeakageType, List[RTTestCase]]:
-
-        validate_model_callback_signature(
-            model_callback=model_callback,
-            async_mode=self.async_mode,
-        )
+        attacks_per_vulnerability_type: int = 1,
+    ):
 
         if self.async_mode:
+            validate_model_callback_signature(
+                model_callback=model_callback,
+                async_mode=self.async_mode,
+            )
             loop = get_or_create_event_loop()
             return loop.run_until_complete(
                 self.a_assess(
                     model_callback=model_callback,
                     purpose=purpose,
+                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 )
             )
+        else:
+            validate_model_callback_signature(
+                model_callback=model_callback,
+                async_mode=self.async_mode,
+            )
 
-        simulated_test_cases = self.simulate_attacks(purpose)
+        simulated_test_cases = self.simulate_attacks(
+            purpose, attacks_per_vulnerability_type
+        )
 
-        results: Dict[PIILeakageType, List[RTTestCase]] = {}
-        res: Dict[PIILeakageType, PIIMetric] = {}
-        simulated_attacks: Dict[str, str] = {}
+        results: Dict[PIILeakageType, List[RTTestCase]] = dict()
 
         for simulated_test_case in simulated_test_cases:
             vulnerability_type = simulated_test_case.vulnerability_type
@@ -94,16 +100,8 @@ class PIILeakage(BaseVulnerability):
             red_teaming_test_case.score = metric.score
             red_teaming_test_case.reason = metric.reason
 
-            res[vulnerability_type] = metric
-            simulated_attacks[vulnerability_type.value] = (
-                simulated_test_case.input
-            )
-            results.setdefault(vulnerability_type, []).append(
-                red_teaming_test_case
-            )
-
-        self.res = res
-        self.simulated_attacks = simulated_attacks
+            results[vulnerability_type] = results.get(vulnerability_type, [])
+            results[vulnerability_type].append(red_teaming_test_case)
 
         return results
 
@@ -111,22 +109,24 @@ class PIILeakage(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-    ) -> Dict[PIILeakageType, List[RTTestCase]]:
+        attacks_per_vulnerability_type: int = 1,
+    ):
 
         validate_model_callback_signature(
             model_callback=model_callback,
             async_mode=self.async_mode,
         )
 
-        simulated_test_cases = await self.a_simulate_attacks(purpose)
+        simulated_test_cases = await self.a_simulate_attacks(
+            purpose, attacks_per_vulnerability_type
+        )
 
-        results: Dict[PIILeakageType, List[RTTestCase]] = {}
-        res: Dict[PIILeakageType, PIIMetric] = {}
-        simulated_attacks: Dict[str, str] = {}
+        results: Dict[PIILeakageType, List[RTTestCase]] = dict()
 
         async def process_attack(simulated_test_case: RTTestCase):
             vulnerability_type = simulated_test_case.vulnerability_type
 
+            metric = self._get_metric(vulnerability_type)
             target_output = await model_callback(simulated_test_case.input)
 
             red_teaming_test_case = RTTestCase(
@@ -144,13 +144,9 @@ class PIILeakage(BaseVulnerability):
             red_teaming_test_case.score = metric.score
             red_teaming_test_case.reason = metric.reason
 
-            return (
-                vulnerability_type,
-                red_teaming_test_case,
-                metric,
-                simulated_test_case.input,
-            )
+            return vulnerability_type, red_teaming_test_case
 
+        # Run all processing concurrently
         all_tasks = [
             process_attack(simulated_test_case)
             for simulated_test_case in simulated_test_cases
@@ -158,13 +154,8 @@ class PIILeakage(BaseVulnerability):
         ]
 
         for task in asyncio.as_completed(all_tasks):
-            vuln_type, test_case, metric, input_text = await task
-            results.setdefault(vuln_type, []).append(test_case)
-            res[vuln_type] = metric
-            simulated_attacks[vuln_type.value] = input_text
-
-        self.res = res
-        self.simulated_attacks = simulated_attacks
+            vulnerability_type, test_case = await task
+            results.setdefault(vulnerability_type, []).append(test_case)
 
         return results
 
@@ -288,16 +279,6 @@ class PIILeakage(BaseVulnerability):
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,
         )
-
-    def is_vulnerable(self) -> bool:
-        self.vulnerable = False
-        try:
-            for _, metric_data in self.res.items():
-                if metric_data.score < 1:
-                    self.vulnerable = True
-        except:
-            self.vulnerable = False
-        return self.vulnerable
 
     def get_name(self) -> str:
         return "PII Leakage"

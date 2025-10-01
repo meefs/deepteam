@@ -37,7 +37,7 @@ class SequentialJailbreak(BaseAttack):
         persona: Optional[DialogueTypeLiteral] = None,
         num_turns: int = 5,
         turn_level_attacks: Optional[List[BaseAttack]] = None,
-        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = "gpt-4o-mini",
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ):
         self.weight = weight
         self.multi_turn = True
@@ -161,7 +161,6 @@ class SequentialJailbreak(BaseAttack):
             # Randomly enhancing a turn attack
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
-                turn_level_attack = attack
                 enhanced_attack = enhance_attack(
                     attack, enhanced_attack, self.simulator_model
                 )
@@ -169,20 +168,7 @@ class SequentialJailbreak(BaseAttack):
             turns.append(RTTurn(role="user", content=current_attack))
 
             assistant_response = model_callback(current_attack)
-
-            if turn_level_attack is not None:
-                turns.append(
-                    RTTurn(
-                        role="assistant",
-                        content=assistant_response,
-                        turn_level_attack=turn_level_attack.get_name(),
-                    )
-                )
-            else:
-                turns.append(
-                    RTTurn(role="assistant", content=assistant_response)
-                )
-            turn_level_attack = None
+            turns.append(RTTurn(role="assistant", content=assistant_response))
 
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(
                 current_attack, assistant_response
@@ -343,7 +329,6 @@ class SequentialJailbreak(BaseAttack):
             # Randomly enhancing a turn attack
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
-                turn_level_attack = attack
                 enhanced_attack = await a_enhance_attack(
                     attack, enhanced_attack, self.simulator_model
                 )
@@ -351,20 +336,7 @@ class SequentialJailbreak(BaseAttack):
             turns.append(RTTurn(role="user", content=current_attack))
 
             assistant_response = await model_callback(current_attack)
-
-            if turn_level_attack is not None:
-                turns.append(
-                    RTTurn(
-                        role="assistant",
-                        content=assistant_response,
-                        turn_level_attack=turn_level_attack.get_name(),
-                    )
-                )
-            else:
-                turns.append(
-                    RTTurn(role="assistant", content=assistant_response)
-                )
-            turn_level_attack = None
+            turns.append(RTTurn(role="assistant", content=assistant_response))
 
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(
                 current_attack, assistant_response

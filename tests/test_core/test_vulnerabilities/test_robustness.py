@@ -56,13 +56,8 @@ class TestRobustness:
 
         results = robustness.assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
-
-        assert robustness.is_vulnerable() is not None
-        assert robustness.simulated_attacks is not None and isinstance(
-            robustness.simulated_attacks, dict
-        )
-        assert robustness.res is not None and isinstance(robustness.res, dict)
         assert RobustnessType.HIJACKING in results
         assert len(results[RobustnessType.HIJACKING]) == 1
         test_case = results[RobustnessType.HIJACKING][0]
@@ -104,11 +99,6 @@ class TestRobustness:
             attacks_per_vulnerability_type=1,
         )
 
-        assert robustness.is_vulnerable() is not None
-        assert robustness.simulated_attacks is not None and isinstance(
-            robustness.simulated_attacks, dict
-        )
-        assert robustness.res is not None and isinstance(robustness.res, dict)
         assert RobustnessType.HIJACKING in results
         assert len(results[RobustnessType.HIJACKING]) == 1
         test_case = results[RobustnessType.HIJACKING][0]

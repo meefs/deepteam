@@ -145,21 +145,11 @@ def _build_attack(cfg: dict):
         kwargs["persona"] = cfg["persona"]
     if "category" in cfg:
         kwargs["category"] = cfg["category"]
-    if "num_turns" in cfg:
-        kwargs["num_turns"] = cfg["num_turns"]
+    if "turns" in cfg:
+        kwargs["turns"] = cfg["turns"]
     if "enable_refinement" in cfg:
         kwargs["enable_refinement"] = cfg["enable_refinement"]
-    if "turn_level_attacks" in cfg:
-        turn_level_attacks = cfg["turn_level_attacks"]
-        attacks_objects = []
-        for attack_name in turn_level_attacks:
-            attack_cls = ATTACK_MAP.get(attack_name)
-            if not attack_cls:
-                raise ValueError(f"Unknown attack: {attack_name}")
-            attacks_objects.append(attack_cls())
-        kwargs["turn_level_attacks"] = attacks_objects
-    obj = cls(**kwargs)
-    return obj
+    return cls(**kwargs)
 
 
 def _load_callback_from_file(

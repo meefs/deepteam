@@ -90,14 +90,7 @@ class TestMisinformation:
 
         results = misinformation.assess(
             model_callback=dummy_model_callback,
-        )
-
-        assert misinformation.is_vulnerable() is not None
-        assert misinformation.simulated_attacks is not None and isinstance(
-            misinformation.simulated_attacks, dict
-        )
-        assert misinformation.res is not None and isinstance(
-            misinformation.res, dict
+            attacks_per_vulnerability_type=1,
         )
         assert MisinformationType.FACTUAL_ERRORS in results
         assert len(results[MisinformationType.FACTUAL_ERRORS]) == 1
@@ -128,15 +121,9 @@ class TestMisinformation:
 
         results = await misinformation.a_assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
 
-        assert misinformation.is_vulnerable() is not None
-        assert misinformation.simulated_attacks is not None and isinstance(
-            misinformation.simulated_attacks, dict
-        )
-        assert misinformation.res is not None and isinstance(
-            misinformation.res, dict
-        )
         assert MisinformationType.FACTUAL_ERRORS in results
         assert len(results[MisinformationType.FACTUAL_ERRORS]) == 1
         test_case = results[MisinformationType.FACTUAL_ERRORS][0]

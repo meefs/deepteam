@@ -68,13 +68,8 @@ class TestSSRF:
 
         results = ssrf.assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
-
-        assert ssrf.is_vulnerable() is not None
-        assert ssrf.simulated_attacks is not None and isinstance(
-            ssrf.simulated_attacks, dict
-        )
-        assert ssrf.res is not None and isinstance(ssrf.res, dict)
         assert SSRFType.CLOUD_METADATA_ACCESS in results
         assert len(results[SSRFType.CLOUD_METADATA_ACCESS]) == 1
         test_case = results[SSRFType.CLOUD_METADATA_ACCESS][0]
@@ -102,13 +97,9 @@ class TestSSRF:
 
         results = await ssrf.a_assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
 
-        assert ssrf.is_vulnerable() is not None
-        assert ssrf.simulated_attacks is not None and isinstance(
-            ssrf.simulated_attacks, dict
-        )
-        assert ssrf.res is not None and isinstance(ssrf.res, dict)
         assert SSRFType.CLOUD_METADATA_ACCESS in results
         assert len(results[SSRFType.CLOUD_METADATA_ACCESS]) == 1
         test_case = results[SSRFType.CLOUD_METADATA_ACCESS][0]

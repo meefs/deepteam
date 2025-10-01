@@ -93,14 +93,7 @@ class TestIntellectualProperty:
 
         results = intellectual.assess(
             model_callback=dummy_model_callback,
-        )
-
-        assert intellectual.is_vulnerable() is not None
-        assert intellectual.simulated_attacks is not None and isinstance(
-            intellectual.simulated_attacks, dict
-        )
-        assert intellectual.res is not None and isinstance(
-            intellectual.res, dict
+            attacks_per_vulnerability_type=1,
         )
         assert IntellectualPropertyType.IMITATION in results
         assert len(results[IntellectualPropertyType.IMITATION]) == 1
@@ -131,15 +124,9 @@ class TestIntellectualProperty:
 
         results = await intellectual.a_assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
 
-        assert intellectual.is_vulnerable() is not None
-        assert intellectual.simulated_attacks is not None and isinstance(
-            intellectual.simulated_attacks, dict
-        )
-        assert intellectual.res is not None and isinstance(
-            intellectual.res, dict
-        )
         assert IntellectualPropertyType.IMITATION in results
         assert len(results[IntellectualPropertyType.IMITATION]) == 1
         test_case = results[IntellectualPropertyType.IMITATION][0]

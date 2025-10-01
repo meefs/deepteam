@@ -65,8 +65,8 @@ class TestPromptLeakage:
             PromptLeakage(types=types)
 
     def test_simulate_attacks_returns_expected_cases(self):
-        prompt_leakage = PromptLeakage(types=["secrets_and_credentials"])
-        test_cases = prompt_leakage.simulate_attacks(
+        prompt_lekage = PromptLeakage(types=["secrets_and_credentials"])
+        test_cases = prompt_lekage.simulate_attacks(
             attacks_per_vulnerability_type=2
         )
 
@@ -79,7 +79,7 @@ class TestPromptLeakage:
         )
 
     def test_assess_returns_results(self):
-        prompt_leakage = PromptLeakage(
+        prompt_lekage = PromptLeakage(
             types=["secrets_and_credentials"], async_mode=False
         )
 
@@ -87,16 +87,9 @@ class TestPromptLeakage:
             # Provide a simple pass-through or minimal callback if required by your real env
             return prompt
 
-        results = prompt_leakage.assess(
+        results = prompt_lekage.assess(
             model_callback=dummy_model_callback,
-        )
-
-        assert prompt_leakage.is_vulnerable() is not None
-        assert prompt_leakage.simulated_attacks is not None and isinstance(
-            prompt_leakage.simulated_attacks, dict
-        )
-        assert prompt_leakage.res is not None and isinstance(
-            prompt_leakage.res, dict
+            attacks_per_vulnerability_type=1,
         )
         assert PromptLeakageType.SECRETS_AND_CREDENTIALS in results
         assert len(results[PromptLeakageType.SECRETS_AND_CREDENTIALS]) == 1
@@ -108,10 +101,10 @@ class TestPromptLeakage:
     def test_get_metric_returns_PromptLeakage_metric(self):
         from deepteam.metrics import PromptExtractionMetric
 
-        prompt_leakage = PromptLeakage(
+        prompt_lekage = PromptLeakage(
             async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
         )
-        metric = prompt_leakage._get_metric(
+        metric = prompt_lekage._get_metric(
             PromptLeakageType.SECRETS_AND_CREDENTIALS
         )
         assert isinstance(metric, PromptExtractionMetric)
@@ -120,24 +113,18 @@ class TestPromptLeakage:
 
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
-        prompt_leakage = PromptLeakage(
+        prompt_lekage = PromptLeakage(
             types=["secrets_and_credentials"], async_mode=True
         )
 
         async def dummy_model_callback(prompt):
             return prompt
 
-        results = await prompt_leakage.a_assess(
+        results = await prompt_lekage.a_assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
 
-        assert prompt_leakage.is_vulnerable() is not None
-        assert prompt_leakage.simulated_attacks is not None and isinstance(
-            prompt_leakage.simulated_attacks, dict
-        )
-        assert prompt_leakage.res is not None and isinstance(
-            prompt_leakage.res, dict
-        )
         assert PromptLeakageType.SECRETS_AND_CREDENTIALS in results
         assert len(results[PromptLeakageType.SECRETS_AND_CREDENTIALS]) == 1
         test_case = results[PromptLeakageType.SECRETS_AND_CREDENTIALS][0]

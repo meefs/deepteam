@@ -70,13 +70,8 @@ class TestGoalTheft:
 
         results = goal_theft.assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
-
-        assert goal_theft.is_vulnerable() is not None
-        assert goal_theft.simulated_attacks is not None and isinstance(
-            goal_theft.simulated_attacks, dict
-        )
-        assert goal_theft.res is not None and isinstance(goal_theft.res, dict)
         assert GoalTheftType.COOPERATIVE_DIALOGUE in results
         assert len(results[GoalTheftType.COOPERATIVE_DIALOGUE]) == 1
         test_case = results[GoalTheftType.COOPERATIVE_DIALOGUE][0]
@@ -104,13 +99,9 @@ class TestGoalTheft:
 
         results = await goal_theft.a_assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
 
-        assert goal_theft.is_vulnerable() is not None
-        assert goal_theft.simulated_attacks is not None and isinstance(
-            goal_theft.simulated_attacks, dict
-        )
-        assert goal_theft.res is not None and isinstance(goal_theft.res, dict)
         assert GoalTheftType.COOPERATIVE_DIALOGUE in results
         assert len(results[GoalTheftType.COOPERATIVE_DIALOGUE]) == 1
         test_case = results[GoalTheftType.COOPERATIVE_DIALOGUE][0]

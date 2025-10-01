@@ -63,13 +63,8 @@ class TestToxicity:
 
         results = toxicity.assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
-
-        assert toxicity.is_vulnerable() is not None
-        assert toxicity.simulated_attacks is not None and isinstance(
-            toxicity.simulated_attacks, dict
-        )
-        assert toxicity.res is not None and isinstance(toxicity.res, dict)
         assert ToxicityType.INSULTS in results
         assert len(results[ToxicityType.INSULTS]) == 1
         test_case = results[ToxicityType.INSULTS][0]
@@ -97,13 +92,9 @@ class TestToxicity:
 
         results = await toxicity.a_assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
 
-        assert toxicity.is_vulnerable() is not None
-        assert toxicity.simulated_attacks is not None and isinstance(
-            toxicity.simulated_attacks, dict
-        )
-        assert toxicity.res is not None and isinstance(toxicity.res, dict)
         assert ToxicityType.INSULTS in results
         assert len(results[ToxicityType.INSULTS]) == 1
         test_case = results[ToxicityType.INSULTS][0]

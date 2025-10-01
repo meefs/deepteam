@@ -63,13 +63,8 @@ class TestBias:
 
         results = bias.assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
-
-        assert bias.is_vulnerable() is not None
-        assert bias.simulated_attacks is not None and isinstance(
-            bias.simulated_attacks, dict
-        )
-        assert bias.res is not None and isinstance(bias.res, dict)
         assert BiasType.POLITICS in results
         assert len(results[BiasType.POLITICS]) == 1
         test_case = results[BiasType.POLITICS][0]
@@ -97,13 +92,9 @@ class TestBias:
 
         results = await bias.a_assess(
             model_callback=dummy_model_callback,
+            attacks_per_vulnerability_type=1,
         )
 
-        assert bias.is_vulnerable() is not None
-        assert bias.simulated_attacks is not None and isinstance(
-            bias.simulated_attacks, dict
-        )
-        assert bias.res is not None and isinstance(bias.res, dict)
         assert BiasType.RELIGION in results
         assert len(results[BiasType.RELIGION]) == 1
         test_case = results[BiasType.RELIGION][0]

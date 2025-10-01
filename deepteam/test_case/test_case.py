@@ -5,7 +5,7 @@ from deepeval.test_case import LLMTestCase, Turn
 
 
 class RTTurn(Turn):
-    turn_level_attack: Optional[str] = None
+    pass
 
 
 class RTTestCase(LLMTestCase):
