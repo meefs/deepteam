@@ -80,7 +80,14 @@ class TestSQLInjection:
 
         results = sql_injection.assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
+        )
+
+        assert sql_injection.is_vulnerable() is not None
+        assert sql_injection.simulated_attacks is not None and isinstance(
+            sql_injection.simulated_attacks, dict
+        )
+        assert sql_injection.res is not None and isinstance(
+            sql_injection.res, dict
         )
         assert SQLInjectionType.BLIND_SQL_INJECTION in results
         assert len(results[SQLInjectionType.BLIND_SQL_INJECTION]) == 1
@@ -111,9 +118,15 @@ class TestSQLInjection:
 
         results = await sql_injection.a_assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
 
+        assert sql_injection.is_vulnerable() is not None
+        assert sql_injection.simulated_attacks is not None and isinstance(
+            sql_injection.simulated_attacks, dict
+        )
+        assert sql_injection.res is not None and isinstance(
+            sql_injection.res, dict
+        )
         assert SQLInjectionType.BLIND_SQL_INJECTION in results
         assert len(results[SQLInjectionType.BLIND_SQL_INJECTION]) == 1
         test_case = results[SQLInjectionType.BLIND_SQL_INJECTION][0]

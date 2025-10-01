@@ -34,7 +34,7 @@ class LinearJailbreaking(BaseAttack):
         weight: int = 1,
         num_turns: int = 5,
         turn_level_attacks: Optional[List[BaseAttack]] = None,
-        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = "gpt-4o-mini",
     ):
         self.weight = weight
         self.multi_turn = True
@@ -133,13 +133,24 @@ class LinearJailbreaking(BaseAttack):
             # Randomly enhancing a turn attack
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
+                turn_level_attack = attack
                 current_attack = enhance_attack(
                     attack, current_attack, self.simulator_model
                 )
 
             target_response = model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
-            turns.append(RTTurn(role="assistant", content=target_response))
+            if turn_level_attack is not None:
+                turns.append(
+                    RTTurn(
+                        role="assistant",
+                        content=target_response,
+                        turn_level_attack=turn_level_attack.get_name(),
+                    )
+                )
+            else:
+                turns.append(RTTurn(role="assistant", content=target_response))
+            turn_level_attack = None
 
             pbar.update(1)
 
@@ -229,13 +240,24 @@ class LinearJailbreaking(BaseAttack):
             # Randomly enhancing a turn attack
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
+                turn_level_attack = attack
                 current_attack = await a_enhance_attack(
                     attack, current_attack, self.simulator_model
                 )
 
             target_response = await model_callback(current_attack, turns)
             turns.append(RTTurn(role="user", content=current_attack))
-            turns.append(RTTurn(role="assistant", content=target_response))
+            if turn_level_attack is not None:
+                turns.append(
+                    RTTurn(
+                        role="assistant",
+                        content=target_response,
+                        turn_level_attack=turn_level_attack.get_name(),
+                    )
+                )
+            else:
+                turns.append(RTTurn(role="assistant", content=target_response))
+            turn_level_attack = None
 
             pbar.update(1)
 
