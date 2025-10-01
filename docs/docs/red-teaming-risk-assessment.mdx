@@ -6,7 +6,7 @@ sidebar_label: Risk Assessment
 
 ## Quick Summary
 
-In `deepteam`, after red teaming an LLM with your [adversarial attacks](/docs/red-teaming-adversarial-attacks) and [vulnerabilities](/docs/red-teaming-vulnerabilities), you receive a `RiskAssessment` object as the return value of the `red_team()` function. Here's an example code:
+In `deepteam`, after red teaming an LLM with your [adversarial attacks](/docs/red-teaming-adversarial-attacks) and [vulnerabilities](/docs/red-teaming-vulnerabilities), you receive a `RiskAssessment` object as the return value of the `red_team()` function. Here's an example walkthrough:
 
 ```python
 from deepteam import red_team
@@ -41,15 +41,13 @@ flowchart LR
 
 ## What is a Risk Assessment
 
-The `RiskAssessment` object is the return value of calling `red_team()`:
+The `RiskAssessment` object is the return value the `red_team()` method, when you use the `red_team` function, `deepteam` automatically does the [red teaming process](/docs/red-teaming-test-case#what-is-red-teaming) and generates a list of `RTTestCases`. These test cases are populated with `score` and `reason` from their vulnerability evaluations.
 
-```python
-from deepteam import red_team
+`deepteam` uses these test cases to create a full report on the results of the red team, the result is stored in an instance of `RiskAssessment`.
 
-risk_assessment = red_team(...)
-```
+![Red Teaming Risk Assessment](./images/red-teaming-risk-assessment.png)
 
-It has two main attributes:
+The `RiskAssessment` object has two main attributes:
 
 - `overview`: An instance of [`RedTeamingOverview`](#red-teaming-overview) object
 - `test_cases`: List of all [`RTTestCases`](/docs/red-teaming-test-case) generated and evaluated
@@ -62,7 +60,16 @@ class RiskAssessment(BaseModel):
 
 ## Red Teaming Overview
 
-The `RedTeamingOverview` is a top-level summary of performance across all attacks and vulnerabilities.
+The `RedTeamingOverview` is a top-level summary of performance across all attacks and vulnerabilities. You can access the `RedTeamingOverview` from a `RiskAssessment` as shown below:
+
+```python
+from deepteam import red_team
+
+risk_assessment = red_team(...)
+red_teaming_overview = risk_assessment.overview
+```
+
+The `RedTeamingOverview` contains information about the red teaming results categorized by both **attacks** and **vulnerabilities**. It also provides data on the total number of **errored** test cases from the red teaming process. Here's the data model of `RedTeamingOverview`:
 
 ```python
 class RedTeamingOverview(BaseModel):
@@ -79,7 +86,16 @@ There are **THREE** attributes to this object:
 
 ## Vulnerability Type Result
 
-The `VulnerabilityTypeResult` groups results by the **vulnerability** being tested.
+The `VulnerabilityTypeResult` groups results by the **vulnerability** being tested. You can access the `VulnerabilityTypeResult` from a `RiskAssessment` as shown below:
+
+```python
+from deepteam import red_team
+
+risk_assessment = red_team(...)
+vuln_type_results = risk_assessment.overview.vulnerability_type_results
+```
+
+The `VulnerabilityTypeResult` object contains data about red teaming results categorized by vulnerability. This object contains data like the **pass rate** of this vulnerability accross all test cases, number of **passing**, **failing** and **errored** test cases. 
 
 ```python
 class VulnerabilityTypeResult(BaseModel):
@@ -106,7 +122,16 @@ A test case is considered a **pass** if the model successfully avoided falling f
 
 ## Attack Method Result
 
-The `AttackMethodResult` groups test cases by the **attack** strategy used.
+The `AttackMethodResult` groups test cases by the **attack** strategy used. You can access the `AttackMethodResult` from a `RiskAssessment` as shown below:
+
+```python
+from deepteam import red_team
+
+risk_assessment = red_team(...)
+attack_results = risk_assessment.overview.attack_method_results
+```
+
+The `AttackMethodResult` object contains data about red teaming results categorized by attacks. This object contains data like the **pass rate** of this attack accross all test cases, number of **passing**, **failing** and **errored** test cases. 
 
 ```python
 class AttackMethodResult(BaseModel):
