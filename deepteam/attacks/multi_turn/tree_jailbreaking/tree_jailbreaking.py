@@ -238,7 +238,7 @@ class TreeJailbreaking(BaseAttack):
 
         return turns
 
-    def enhance(
+    def progress(
         self,
         vulnerability: BaseVulnerability,
         model_callback: CallbackType,
@@ -436,7 +436,7 @@ class TreeJailbreaking(BaseAttack):
             )
             node.children.append(child_node)
 
-    async def a_enhance(
+    async def a_progress(
         self,
         vulnerability: BaseVulnerability,
         model_callback: CallbackType,

@@ -429,7 +429,7 @@ class SequentialJailbreak(BaseAttack):
 
         return turns
 
-    def enhance(
+    def progress(
         self,
         vulnerability: "BaseVulnerability",
         model_callback: CallbackType,
@@ -509,7 +509,7 @@ class SequentialJailbreak(BaseAttack):
 
         return result
 
-    async def a_enhance(
+    async def a_progress(
         self,
         vulnerability: "BaseVulnerability",
         model_callback: CallbackType,
