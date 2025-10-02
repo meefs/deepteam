@@ -37,7 +37,8 @@ class TestCasesList(list):
                 case_data.update(case.metadata)
             data.append(case_data)
         return pd.DataFrame(data)
-    
+
+
 class VulnerabilityTypeResultsList(list):
 
     def to_df(self) -> "pd.DataFrame":
@@ -55,7 +56,8 @@ class VulnerabilityTypeResultsList(list):
             }
             data.append(case_data)
         return pd.DataFrame(data)
-    
+
+
 class AttackMethodResultList(list):
 
     def to_df(self) -> "pd.DataFrame":
@@ -131,8 +133,16 @@ class RiskAssessment(BaseModel):
         self.test_cases: TestCasesList = TestCasesList[RTTestCase](
             self.test_cases
         )
-        self.overview.vulnerability_type_results: VulnerabilityTypeResultsList = VulnerabilityTypeResultsList[VulnerabilityTypeResult](self.overview.vulnerability_type_results)
-        self.overview.attack_method_results: AttackMethodResultList = AttackMethodResultList[AttackMethodResult](self.overview.attack_method_results)
+        self.overview.vulnerability_type_results: (
+            VulnerabilityTypeResultsList
+        ) = VulnerabilityTypeResultsList[VulnerabilityTypeResult](
+            self.overview.vulnerability_type_results
+        )
+        self.overview.attack_method_results: AttackMethodResultList = (
+            AttackMethodResultList[AttackMethodResult](
+                self.overview.attack_method_results
+            )
+        )
 
     def save(self, to: str) -> str:
         try:
