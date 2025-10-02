@@ -45,7 +45,7 @@ There are **FOUR** optional parameters when creating a `LinearJailbreaking` atta
 
 ### As a standalone
 
-You can try to jailbreak your model on a single vulnerability using the `enhance` method:
+You can try to jailbreak your model on a single vulnerability using the `progress` method:
 
 ```python
 from deepteam.attacks.single_turn import Roleplay
@@ -60,7 +60,7 @@ linear = LinearJailbreaking(
     turn_level_attacks=[Roleplay()]
 )
 
-result = linear.enhance(vulnerability=bias, model_callback=your_callback)
+result = linear.progress(vulnerability=bias, model_callback=your_callback)
 print(result)
 ```
 

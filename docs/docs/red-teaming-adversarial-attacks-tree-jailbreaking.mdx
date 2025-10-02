@@ -38,7 +38,7 @@ red_team(
 )
 ```
 
-There are **FOUR** optional parameters when creating a `LinearJailbreaking` attack:
+There are **FOUR** optional parameters when creating a `TreeJailbreaking` attack:
 
 - [Optional] `weight`: an integer that determines this attack method's selection probability, proportional to the total weight sum of all `attacks` during red teaming. Defaulted to `1`.
 - [Optional] `max_depth`: an integer that specifies the maximum depth the branches of trees can reach until it enhances a final attack. Defaulted to `5`.
@@ -47,7 +47,7 @@ There are **FOUR** optional parameters when creating a `LinearJailbreaking` atta
 
 ### As a standalone
 
-You can try to jailbreak your model on a single vulnerability using the `enhance` method:
+You can try to jailbreak your model on a single vulnerability using the `progress` method:
 
 ```python
 from deepteam.attacks.single_turn import Roleplay
@@ -62,7 +62,7 @@ tree_jalbreaking = TreeJailbreaking(
     turn_level_attacks=[Roleplay()]
 )
 
-result = tree_jalbreaking.enhance(vulnerability=bias, model_callback=your_callback)
+result = tree_jalbreaking.progress(vulnerability=bias, model_callback=your_callback)
 print(result)
 ```
 

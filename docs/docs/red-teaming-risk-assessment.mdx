@@ -47,6 +47,13 @@ The `RiskAssessment` object is the return value the `red_team()` method, when yo
 
 ![Red Teaming Risk Assessment](./images/red-teaming-risk-assessment.png)
 
+A `RiskAssessment` is constructed in the following steps:
+
+1. Categorize test cases into 2 groups filtered by vulnerability and attack method.
+2. Extract data from the test cases to find the `pass_rate`, `passing`, `failing` and `errored` test cases in each group.
+3. Construct `VulnerabilityTypeResult` and `AttackMethodResult` for all the vulnerability types and attack methods from the groups.
+4. Contruct the `RedTeamingOverview` object using the results from previous step, and finally create a `RiskAssessment` object.
+
 The `RiskAssessment` object has two main attributes:
 
 - `overview`: An instance of [`RedTeamingOverview`](#red-teaming-overview) object

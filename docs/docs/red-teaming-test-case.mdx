@@ -75,7 +75,7 @@ Let's take a closer look at the red teaming process and the role of `RTTestCase`
 
 1. First the chosen vulnerability generates a **base attack** that is tailored to the target LLM's purpose and creates a `RTTestCase` containing `input`, `vulnerability` and `vulnerability_type`.
 
-2. The `RTTestCase` is then passed to an adversarial attack which enhances the base attack in the `input` and replaces it with the new **enhanced attack**, it also adds `attack_method` value to test case.
+2. The `RTTestCase` is then passed to an adversarial attack which enhances the base attack in the `input` and replaces it with the new **enhanced attack**, it also adds `attack_method` value to test case with the **name** of the adversarial attack.
 
 3. This new `input` is passed to the model callback. This is the step where the model is being probed with a harmful prompt which is our enhanced attack. The **target LLM's response** is now stored as the `actual_output` inside the same `RTTestCase`.
 
