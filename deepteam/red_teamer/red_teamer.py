@@ -221,7 +221,6 @@ class RedTeamer:
                     )
                 )
 
-            print(len(simulated_test_cases))
             # Create a mapping of vulnerabilities to attacks
             vulnerability_type_to_attacks_map: Dict[
                 VulnerabilityType, List[RTTestCase]
