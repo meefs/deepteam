@@ -112,13 +112,13 @@ class TestCrescendoJailbreaking:
         attack = CrescendoJailbreaking()
 
         # Verify all required methods exist
-        assert hasattr(attack, "enhance")
-        assert hasattr(attack, "a_enhance")
+        assert hasattr(attack, "progress")
+        assert hasattr(attack, "a_progress")
         assert hasattr(attack, "get_name")
         assert hasattr(attack, "_get_turns")
         assert hasattr(attack, "_a_get_turns")
-        assert callable(attack.enhance)
-        assert callable(attack.a_enhance)
+        assert callable(attack.progress)
+        assert callable(attack.a_progress)
         assert callable(attack.get_name)
         assert callable(attack._get_turns)
         assert callable(attack._a_get_turns)
