@@ -71,7 +71,7 @@ Red teaming refers to the practice of probing and attacking AI models in a contr
 
 Let's take a closer look at the red teaming process and the role of `RTTestCase` in this:
 
-![Red Teaming Test Case](./images/red-teaming-process.png)
+![Red Teaming Test Case](https://deepteam-docs.s3.us-east-1.amazonaws.com/docs:red-teaming-process.png)
 
 1. First the chosen vulnerability generates a **base attack** that is tailored to the target LLM's purpose and creates a `RTTestCase` containing `input`, `vulnerability` and `vulnerability_type`.
 
@@ -82,7 +82,7 @@ Let's take a closer look at the red teaming process and the role of `RTTestCase`
 :::note
 For multi-turn attacks, the `turns` parameter is populated instead of `actual_output`. `turns` is a list of `RTTurn`s representing the entire conversation between the attacker and target LLM as exchanges between `user` and `assistant` respectively.
 
-![Red Teaming Test Case Turns](./images/red-teaming-test-case-turns.png)
+![Red Teaming Test Case Turns](https://deepteam-docs.s3.us-east-1.amazonaws.com/docs:red-teaming-test-case-turns.png)
 
 :::
 
@@ -92,7 +92,7 @@ After these 3 steps, the `RTTestCase` can now be evaluated using the metric that
 
 An `RTTestCase` contains information like `vulnerability`, `input`, and `actual_output` or `turns`. Any test case filled with `input` and `actual_output` or `turns` can be used for evaluation to check if the target LLM has generated any harmful content. The `score`, `reason` and `error` are populated after evaluating a test case.
 
-![Red Teaming Test Case](./images/red-teaming-test-case.png) 
+![Red Teaming Test Case](https://deepteam-docs.s3.us-east-1.amazonaws.com/docs:red-teaming-test-case.png) 
 
 This finalized test case can now be used to build a [risk assessment](/docs/red-teaming-risk-assessment) — a full report on how the target LLM has performed across all attacks and vulnerabilities
 
