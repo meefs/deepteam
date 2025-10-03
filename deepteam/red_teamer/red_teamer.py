@@ -5,6 +5,7 @@ from rich.console import Console
 from rich.table import Table
 import inspect
 from rich import box
+from enum import Enum
 
 
 from deepeval.models import DeepEvalBaseLLM
@@ -140,7 +141,9 @@ class RedTeamer:
                         ].append(simulated_test_case)
                     simulated_test_case.risk_category = getRiskCategory(
                         simulated_test_case.vulnerability_type
-                    ).value
+                    )
+                    if isinstance(simulated_test_case.risk_category, Enum):
+                        simulated_test_case.risk_category = simulated_test_case.risk_category.value
 
                 total_attacks = sum(
                     len(attacks)
@@ -247,7 +250,9 @@ class RedTeamer:
                     ].append(simulated_test_case)
                 simulated_test_case.risk_category = getRiskCategory(
                     simulated_test_case.vulnerability_type
-                ).value
+                )
+                if isinstance(simulated_test_case.risk_category, Enum):
+                    simulated_test_case.risk_category = simulated_test_case.risk_category.value
 
             semaphore = asyncio.Semaphore(self.max_concurrent)
             total_attacks = sum(
