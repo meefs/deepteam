@@ -14,6 +14,7 @@ def red_team(
     attacks: Optional[List[BaseAttack]] = None,
     framework: Optional[AISafetyFramework] = None,
     simulator_model: DeepEvalBaseLLM = None,
+    evaluation_model: DeepEvalBaseLLM = None,
     attacks_per_vulnerability_type: int = 1,
     ignore_errors: bool = False,
     async_mode: bool = True,
@@ -25,12 +26,14 @@ def red_team(
         max_concurrent=max_concurrent,
         target_purpose=target_purpose,
         simulator_model=simulator_model,
+        evaluation_model=evaluation_model,
     )
     risk_assessment = red_teamer.red_team(
         model_callback=model_callback,
         vulnerabilities=vulnerabilities,
         attacks=attacks,
         simulator_model=simulator_model,
+        evaluation_model=evaluation_model,
         framework=framework,
         attacks_per_vulnerability_type=attacks_per_vulnerability_type,
         ignore_errors=ignore_errors,
