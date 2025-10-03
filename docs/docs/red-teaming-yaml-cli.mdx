@@ -117,6 +117,8 @@ models:
       api_key: "<your-api-key"
       openai_api_version: "2025-01-01-preview"
       azure_endpoint: "https://example-resource.azure.openai.com/"
+  evaluation:
+    ...
 ```
 </TabItem>
 <TabItem value="ollama" label="Ollama">
@@ -128,6 +130,8 @@ models:
       model: "model_name"
       temperature: 1
       base_url: "http://localhost:11434"
+  evaluation:
+    ...
 ```
 </TabItem>
 <TabItem value="gemini" label="Gemini">
@@ -138,6 +142,8 @@ models:
       provider: gemini
       model: "model_name"
       api_key: "<your-api-key>"
+  evaluation:
+    ...
 ```
 </TabItem>
 <TabItem value="anthropic" label="Anthropic">
@@ -147,6 +153,8 @@ models:
     model:
       provider: anthropic
       model: "model_name"
+  evaluation:
+    ...
 ```
 </TabItem>
 <TabItem value="bedroxk" label="Bedrock">
@@ -159,7 +167,9 @@ models:
       temperature: 1
       region_name: "region_name"
       aws_access_key_id: "aws_access_key_id"
-      aws_secret_access_key: "aws_secret_access_key"      
+      aws_secret_access_key: "aws_secret_access_key"     
+  evaluation:
+    ... 
 ```
 </TabItem>
 <TabItem value="local" label="Local">
@@ -172,6 +182,8 @@ models:
       temperature: 1
       base_url: "http://example:base-url"
       api_key: "<your-api-key>"
+  evaluation:
+    ...
 ```
 </TabItem>
 </Tabs>
