@@ -241,8 +241,16 @@ def run(
             _evaluation_model_spec = evaluation_model_spec["model"]
             evaluation_model = load_model(_evaluation_model_spec)
 
-    simulator_model = load_model(simulator_model_spec) if not simulator_model else simulator_model
-    evaluation_model = load_model(evaluation_model_spec) if not evaluation_model else evaluation_model
+    simulator_model = (
+        load_model(simulator_model_spec)
+        if not simulator_model
+        else simulator_model
+    )
+    evaluation_model = (
+        load_model(evaluation_model_spec)
+        if not evaluation_model
+        else evaluation_model
+    )
 
     # Parse system configuration (renamed from options)
     system_config = cfg.get("system_config", {})
