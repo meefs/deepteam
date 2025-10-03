@@ -13,15 +13,9 @@ async def model_callback(attack, turn_history):
     return response.choices[0].message.content
 
 
-# red_team(
-#     attacks=[LinearJailbreaking(num_turns=3)],
-#     vulnerabilities=[Bias(types=["race"], simulator_model="gpt-4o")],
-#     model_callback=model_callback,
-#     ignore_errors=False,
-# )
-
-
-from deepteam.cli.main import run
-
-file = run("config.yaml", 1, 1, "results_file")
-print(file)
+red_team(
+    attacks=[LinearJailbreaking(num_turns=3)],
+    vulnerabilities=[Bias(types=["race"], simulator_model="gpt-4o")],
+    model_callback=model_callback,
+    ignore_errors=False,
+)
