@@ -135,7 +135,9 @@ class RedTeamer:
                         vulnerability_type_to_attacks_map[
                             simulated_test_case.vulnerability_type
                         ].append(simulated_test_case)
-                    simulated_test_case.risk_category = getRiskCategory(simulated_test_case.vulnerability_type).value
+                    simulated_test_case.risk_category = getRiskCategory(
+                        simulated_test_case.vulnerability_type
+                    ).value
 
                 total_attacks = sum(
                     len(attacks)
@@ -238,7 +240,9 @@ class RedTeamer:
                     vulnerability_type_to_attacks_map[
                         simulated_test_case.vulnerability_type
                     ].append(simulated_test_case)
-                simulated_test_case.risk_category = getRiskCategory(simulated_test_case.vulnerability_type).value
+                simulated_test_case.risk_category = getRiskCategory(
+                    simulated_test_case.vulnerability_type
+                ).value
 
             semaphore = asyncio.Semaphore(self.max_concurrent)
             total_attacks = sum(
