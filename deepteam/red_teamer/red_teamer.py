@@ -148,7 +148,9 @@ class RedTeamer:
                         simulated_test_case.vulnerability_type
                     )
                     if isinstance(simulated_test_case.risk_category, Enum):
-                        simulated_test_case.risk_category = simulated_test_case.risk_category.value
+                        simulated_test_case.risk_category = (
+                            simulated_test_case.risk_category.value
+                        )
 
                 total_attacks = sum(
                     len(attacks)
@@ -213,9 +215,9 @@ class RedTeamer:
                 raise ValueError(
                     "You must either provide a 'framework' or 'vulnerabilities'."
                 )
-            
+
         if evaluation_model is not None:
-                self.evaluation_model = evaluation_model
+            self.evaluation_model = evaluation_model
 
         with capture_red_teamer_run(
             vulnerabilities=[v.get_name() for v in vulnerabilities],
@@ -261,7 +263,9 @@ class RedTeamer:
                     simulated_test_case.vulnerability_type
                 )
                 if isinstance(simulated_test_case.risk_category, Enum):
-                    simulated_test_case.risk_category = simulated_test_case.risk_category.value
+                    simulated_test_case.risk_category = (
+                        simulated_test_case.risk_category.value
+                    )
 
             semaphore = asyncio.Semaphore(self.max_concurrent)
             total_attacks = sum(
