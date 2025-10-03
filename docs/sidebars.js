@@ -14,7 +14,6 @@ module.exports = {
       items: [
         "red-teaming-introduction",
         "red-teaming-yaml-cli",
-        "red-teaming-agentic-introduction",
         {
           type: "category",
           label: "Concepts",
