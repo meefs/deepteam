@@ -169,6 +169,8 @@ class RiskAssessment(BaseModel):
                 f"🎉 Success! 🎉 Your risk assessment file has been saved to:\n📁 {full_file_path} ✅"
             )
 
+            return full_file_path
+
         except OSError as e:
             raise OSError(f"Failed to save file to '{to}': {e}") from e
 

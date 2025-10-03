@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from deepeval.models import DeepEvalBaseLLM
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
 from deepteam.attacks.multi_turn.types import CallbackType
@@ -12,6 +13,7 @@ def red_team(
     vulnerabilities: Optional[List[BaseVulnerability]] = None,
     attacks: Optional[List[BaseAttack]] = None,
     framework: Optional[AISafetyFramework] = None,
+    simulator_model: DeepEvalBaseLLM = None,
     attacks_per_vulnerability_type: int = 1,
     ignore_errors: bool = False,
     async_mode: bool = True,
@@ -22,11 +24,13 @@ def red_team(
         async_mode=async_mode,
         max_concurrent=max_concurrent,
         target_purpose=target_purpose,
+        simulator_model=simulator_model,
     )
     risk_assessment = red_teamer.red_team(
         model_callback=model_callback,
         vulnerabilities=vulnerabilities,
         attacks=attacks,
+        simulator_model=simulator_model,
         framework=framework,
         attacks_per_vulnerability_type=attacks_per_vulnerability_type,
         ignore_errors=ignore_errors,

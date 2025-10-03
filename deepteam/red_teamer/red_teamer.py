@@ -60,6 +60,7 @@ class RedTeamer:
         model_callback: CallbackType,
         vulnerabilities: Optional[List[BaseVulnerability]] = None,
         attacks: Optional[List[BaseAttack]] = None,
+        simulator_model: DeepEvalBaseLLM = None,
         framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
@@ -87,6 +88,7 @@ class RedTeamer:
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerabilities=vulnerabilities,
                     attacks=attacks,
+                    simulator_model=simulator_model,
                     ignore_errors=ignore_errors,
                     reuse_simulated_test_cases=reuse_simulated_test_cases,
                     metadata=metadata,
@@ -115,6 +117,7 @@ class RedTeamer:
                             vulnerabilities=vulnerabilities,
                             attacks=attacks,
                             ignore_errors=ignore_errors,
+                            simulator_model=simulator_model,
                             metadata=metadata,
                         )
                     )
@@ -186,6 +189,7 @@ class RedTeamer:
         model_callback: CallbackType,
         vulnerabilities: Optional[List[BaseVulnerability]] = None,
         attacks: Optional[List[BaseAttack]] = None,
+        simulator_model: DeepEvalBaseLLM = None,
         framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
@@ -219,6 +223,7 @@ class RedTeamer:
                         attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                         vulnerabilities=vulnerabilities,
                         attacks=attacks,
+                        simulator_model=simulator_model,
                         ignore_errors=ignore_errors,
                         metadata=metadata,
                     )
@@ -312,6 +317,7 @@ class RedTeamer:
                 metric: BaseRedTeamingMetric = _vulnerability._get_metric(
                     vulnerability_type
                 )
+                metric.evaluation_model = self.evaluation_model
                 break
 
         if multi_turn:
@@ -386,6 +392,7 @@ class RedTeamer:
                 metric: BaseRedTeamingMetric = _vulnerability._get_metric(
                     vulnerability_type
                 )
+                metric.evaluation_model = self.evaluation_model
                 break
 
         if multi_turn:
