@@ -78,8 +78,106 @@ There are **TWO** optional parameters when creating models configuration:
 - [Optional] `simulator`: the LLM model used to generate and enhance adversarial attacks. Defaulted to `"gpt-3.5-turbo-0125"`.
 - [Optional] `evaluation`: the LLM model used to evaluate responses and determine vulnerability scores. Defaulted to `"gpt-4o"`.
 
-:::info
-Using different models for simulation and evaluation can be beneficial. A more creative model like GPT-3.5 for simulation can generate more diverse attacks, while a more reliable model like GPT-4o for evaluation ensures consistent scoring.
+### Using custom models
+
+You can use custom for red teaming by using `deepeval`'s [integrations](https://deepeval.com/integrations/models/openai) or [custom LLM](https://deepeval.com/guides/guides-using-custom-llms).
+
+<Tabs groupId="custom-llms">
+<TabItem value="custom" label="Custom">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: custom
+      file: "my_model.py"
+      class: "CustomDeepEvalLLM"
+  evaluation: 
+    model:
+      provider: custom
+      file: "my_model.py"
+      class: "CustomDeepEvalLLM"
+```
+</TabItem>
+<TabItem value="openai" label="OpenAI">
+```yaml
+models:
+  simulator: gpt-3.5-turbo-0125
+  evaluation: gpt-4o
+```
+</TabItem>
+<TabItem value="azure" label="Azure">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: azure
+      model: "model_name"
+      temperature: 1
+      deployment_name: "Test Deployment"
+      api_key: "<your-api-key"
+      openai_api_version: "2025-01-01-preview"
+      azure_endpoint: "https://example-resource.azure.openai.com/"
+```
+</TabItem>
+<TabItem value="ollama" label="Ollama">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: ollama
+      model: "model_name"
+      temperature: 1
+      base_url: "http://localhost:11434"
+```
+</TabItem>
+<TabItem value="gemini" label="Gemini">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: gemini
+      model: "model_name"
+      api_key: "<your-api-key>"
+```
+</TabItem>
+<TabItem value="anthropic" label="Anthropic">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: anthropic
+      model: "model_name"
+```
+</TabItem>
+<TabItem value="bedroxk" label="Bedrock">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: anthropic
+      model: "model_name"
+      temperature: 1
+      region_name: "region_name"
+      aws_access_key_id: "aws_access_key_id"
+      aws_secret_access_key: "aws_secret_access_key"      
+```
+</TabItem>
+<TabItem value="local" label="Local">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: local
+      model: "model_name"
+      temperature: 1
+      base_url: "http://example:base-url"
+      api_key: "<your-api-key>"
+```
+</TabItem>
+</Tabs>
+
+:::note
+When using custom models, ensure your model class inherits from `DeepEvalBaseLLM` and implements the required methods as described in the [custom LLM documentation](/docs/red-teaming-introduction#configuring-llm-providers).
 :::
 
 ## Target Configuration
@@ -97,21 +195,10 @@ There are **ONE** mandatory and **ONE** optional parameter when creating target 
 - `model` OR `callback`: the target LLM model to test (must specify either `model` or `callback`)
 - [Optional] `purpose`: a description of your LLM application's intended purpose that helps contextualize the red teaming. Defaulted to `""`.
 
-For testing your own LLM applications with custom logic:
+You can use custom for red teaming by using `deepeval`'s [integrations](https://deepeval.com/integrations/models/openai) or [custom LLM](https://deepeval.com/guides/guides-using-custom-llms).
 
-```yaml
-target:
-  purpose: "A financial advice chatbot"
-  model:
-    provider: custom
-    file: "my_financial_bot.py"
-    class: "FinancialAdvisorLLM"
-```
-
-When using `provider: custom`, both `file` and `class` fields are mandatory.
-
-Alternatively, you can specify a custom callback function:
-
+<Tabs groupId="custom-llms">
+<TabItem value="callback" label="Callback">
 ```yaml
 target:
   purpose: "A custom chatbot"
@@ -121,6 +208,98 @@ target:
 ```
 
 When using `callback`, the `file` field is mandatory while `function` is optional.
+
+</TabItem>
+<TabItem value="custom" label="Custom">
+```yaml
+target:
+  purpose: "A financial advice chatbot"
+    model:
+      provider: custom
+      file: "my_model.py"
+      class: "CustomDeepEvalLLM"
+```
+
+When using `provider: custom`, both `file` and `class` fields are mandatory.
+
+</TabItem>
+<TabItem value="openai" label="OpenAI">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model: gpt-3.5-turbo
+```
+</TabItem>
+<TabItem value="azure" label="Azure">
+```yaml
+target:
+  purpose: "A financial advice chatbot"
+    model:
+      provider: azure
+      model: "model_name"
+      temperature: 1
+      deployment_name: "Test Deployment"
+      api_key: "<your-api-key"
+      openai_api_version: "2025-01-01-preview"
+      azure_endpoint: "https://example-resource.azure.openai.com/"
+```
+</TabItem>
+<TabItem value="ollama" label="Ollama">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model:
+    provider: ollama
+    model: "model_name"
+    temperature: 1
+    base_url: "http://localhost:11434"
+```
+</TabItem>
+<TabItem value="gemini" label="Gemini">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model:
+    provider: gemini
+    model: "model_name"
+    api_key: "<your-api-key>"
+```
+</TabItem>
+<TabItem value="anthropic" label="Anthropic">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model:
+    provider: anthropic
+    model: "model_name"
+```
+</TabItem>
+<TabItem value="bedroxk" label="Bedrock">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model:
+    provider: anthropic
+    model: "model_name"
+    temperature: 1
+    region_name: "region_name"
+    aws_access_key_id: "aws_access_key_id"
+    aws_secret_access_key: "aws_secret_access_key"      
+```
+</TabItem>
+<TabItem value="local" label="Local">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model:
+    provider: local
+    model: "model_name"
+    temperature: 1
+    base_url: "http://example:base-url"
+    api_key: "<your-api-key>"
+```
+</TabItem>
+</Tabs>
 
 :::note
 When using custom models, ensure your model class inherits from `DeepEvalBaseLLM` and implements the required methods as described in the [custom LLM documentation](/docs/red-teaming-introduction#configuring-llm-providers).
