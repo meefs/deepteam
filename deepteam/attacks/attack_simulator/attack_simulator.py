@@ -65,7 +65,8 @@ class AttackSimulator:
             desc=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
         )
         for vulnerability in pbar:
-            vulnerability.simulator_model = simulator_model
+            if simulator_model is not None:
+                vulnerability.simulator_model = simulator_model
             test_cases.extend(
                 self.simulate_baseline_attacks(
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
@@ -120,7 +121,8 @@ class AttackSimulator:
         )
 
         async def throttled_simulate_baseline_attack(vulnerability):
-            vulnerability.simulator_model = simulator_model
+            if simulator_model is not None:
+                vulnerability.simulator_model = simulator_model
             async with semaphore:  # Throttling applied here
                 result = await self.a_simulate_baseline_attacks(
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,

@@ -62,6 +62,7 @@ class RedTeamer:
         vulnerabilities: Optional[List[BaseVulnerability]] = None,
         attacks: Optional[List[BaseAttack]] = None,
         simulator_model: DeepEvalBaseLLM = None,
+        evaluation_model: DeepEvalBaseLLM = None,
         framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
@@ -90,6 +91,7 @@ class RedTeamer:
                     vulnerabilities=vulnerabilities,
                     attacks=attacks,
                     simulator_model=simulator_model,
+                    evaluation_model=evaluation_model,
                     ignore_errors=ignore_errors,
                     reuse_simulated_test_cases=reuse_simulated_test_cases,
                     metadata=metadata,
@@ -99,6 +101,9 @@ class RedTeamer:
             assert not inspect.iscoroutinefunction(
                 model_callback
             ), "`model_callback` needs to be sync. `async_mode` has been set to False."
+
+            if evaluation_model is not None:
+                self.evaluation_model = evaluation_model
             with capture_red_teamer_run(
                 vulnerabilities=[v.get_name() for v in vulnerabilities],
                 attacks=[a.get_name() for a in attacks],
@@ -193,6 +198,7 @@ class RedTeamer:
         vulnerabilities: Optional[List[BaseVulnerability]] = None,
         attacks: Optional[List[BaseAttack]] = None,
         simulator_model: DeepEvalBaseLLM = None,
+        evaluation_model: DeepEvalBaseLLM = None,
         framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
@@ -207,6 +213,9 @@ class RedTeamer:
                 raise ValueError(
                     "You must either provide a 'framework' or 'vulnerabilities'."
                 )
+            
+        if evaluation_model is not None:
+                self.evaluation_model = evaluation_model
 
         with capture_red_teamer_run(
             vulnerabilities=[v.get_name() for v in vulnerabilities],
