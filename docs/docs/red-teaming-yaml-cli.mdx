@@ -1,19 +1,19 @@
 ---
 id: red-teaming-yaml-cli
-title: Red Teaming with YAML Configuration
-sidebar_label: YAML CLI
+title: YAML Configurations
+sidebar_label: YAML Configs
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-
-## Quick Summary
 
 `deepteam` offers a powerful CLI interface that allows you to red team LLM applications using YAML configuration files. This approach provides a declarative way to define your red teaming setup, making it easier to version control, share, and reproduce red teaming experiments across different environments and team members.
 
 :::info
 The YAML CLI interface is built on top of the same red teaming engine as the Python API. All vulnerabilities, attacks, and evaluation capabilities are available through both interfaces.
 :::
+
+## Quick Summary
 
 The YAML CLI approach is made up of 4 main configuration sections:
 
@@ -56,7 +56,7 @@ attacks:
 Then run the red teaming with a single command:
 
 ```bash
-deepteam config.yaml
+deepteam run config.yaml
 ```
 
 :::tip DID YOU KNOW?
@@ -414,7 +414,7 @@ Once you have your YAML configuration file, you can start red teaming with the C
 ### Basic Usage
 
 ```bash
-deepteam config.yaml
+deepteam run config.yaml
 ```
 
 ### Command Line Overrides
@@ -423,13 +423,13 @@ You can override specific configuration values using command line flags:
 
 ```bash
 # Override concurrency and output folder
-deepteam config.yaml -c 20 -o custom-results
+deepteam run config.yaml -c 20 -o custom-results
 
 # Override attacks per vulnerability
-deepteam config.yaml -a 5
+deepteam run config.yaml -a 5
 
 # Combine multiple overrides
-deepteam config.yaml -c 15 -a 3 -o production-results
+deepteam run config.yaml -c 15 -a 3 -o production-results
 ```
 
 There are **THREE** optional command line flags:
@@ -517,7 +517,6 @@ deepteam --help
 :::tip
 
 **Available vulnerabilities:**
-
 
 - [`PIILeakage`](red-teaming-vulnerabilities-pii-leakage)
 - [`PromptLeakage`](red-teaming-vulnerabilities-prompt-leakage)
