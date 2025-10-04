@@ -4,7 +4,7 @@ from deepteam.attacks.single_turn import *
 from deepteam.attacks.multi_turn import *
 
 
-async def model_callback(input: str) -> str:
+async def model_callback(input: str, turns = None) -> str:
     return input
 
 

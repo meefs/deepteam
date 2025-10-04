@@ -80,6 +80,7 @@ DeepTeam runs **locally on your machine**, and **uses LLMs** for both simulation
     - Linear Jailbreaking
     - Tree Jailbreaking
     - Crescendo Jailbreaking
+  - etc.
 - Customize different vulnerabilities and attacks to your specific organization needs in 5 lines of code.
 - Easily access red teaming risk assessments, display in dataframes, and **save locally on your machine in JSON format.**
 - Out of the box support for standard guidelines such as OWASP Top 10 for LLMs, NIST AI RMF.
@@ -162,10 +163,10 @@ Use the CLI to run red teaming with YAML configs:
 
 ```bash
 # Basic usage
-deepteam run config.yaml
+deepteam config.yaml
 
 # With options
-deepteam run config.yaml -c 20 -a 5 -o results
+deepteam config.yaml -c 20 -a 5 -o results
 ```
 
 **Options:**
@@ -245,7 +246,7 @@ The `-c` and `-a` and `-o` CLI options override YAML config values:
 
 ```bash
 # Override max_concurrent, attacks_per_vuln, and output_folder from CLI
-deepteam run config.yaml -c 20 -a 5 -o results
+deepteam config.yaml -c 20 -a 5 -o results
 ```
 
 **Target Configuration Options:**
