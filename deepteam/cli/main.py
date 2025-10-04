@@ -193,8 +193,35 @@ def _load_config(path: str):
     with open(path, "r") as f:
         return yaml.safe_load(f)
 
+  
+def _show_version(value: bool):
+    from deepteam._version import __version__
+    if value:
+        typer.echo(f"deepteam version {__version__}")
+        raise typer.Exit()
+    
+@app.callback()
+def main(
+    version: bool = typer.Option(
+        None,
+        "--version",
+        help="Show the version and exit.",
+        is_flag=True,
+        callback=lambda v: _show_version(v),
+        is_eager=True,
+    )
+):
+    """
+    DeepTeam CLI for red teaming LLMs.
+    """
+    pass  
 
-@app.command()
+@app.command("login")
+def login():
+    typer.echo(f"This feature is currently in beta. For more details, please contact support@confident-ai.com")
+    raise typer.Exit()
+
+@app.command("run")
 def run(
     config_file: str,
     max_concurrent: int = typer.Option(
