@@ -50,13 +50,13 @@ default_vulnerabilities:
     types: ["profanity", "insults"]
 
 attacks:
-  - name: "Prompt Injection"
+  - name: "PromptInjection"
 ```
 
 Then run the red teaming with a single command:
 
 ```bash
-deepteam run config.yaml
+deepteam config.yaml
 ```
 
 :::tip DID YOU KNOW?
@@ -78,8 +78,118 @@ There are **TWO** optional parameters when creating models configuration:
 - [Optional] `simulator`: the LLM model used to generate and enhance adversarial attacks. Defaulted to `"gpt-3.5-turbo-0125"`.
 - [Optional] `evaluation`: the LLM model used to evaluate responses and determine vulnerability scores. Defaulted to `"gpt-4o"`.
 
-:::info
-Using different models for simulation and evaluation can be beneficial. A more creative model like GPT-3.5 for simulation can generate more diverse attacks, while a more reliable model like GPT-4o for evaluation ensures consistent scoring.
+### Using custom models
+
+You can use custom for red teaming by using `deepeval`'s [integrations](https://deepeval.com/integrations/models/openai) or [custom LLM](https://deepeval.com/guides/guides-using-custom-llms).
+
+<Tabs groupId="custom-llms">
+<TabItem value="custom" label="Custom">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: custom
+      file: "my_model.py"
+      class: "CustomDeepEvalLLM"
+  evaluation: 
+    model:
+      provider: custom
+      file: "my_model.py"
+      class: "CustomDeepEvalLLM"
+```
+</TabItem>
+<TabItem value="openai" label="OpenAI">
+```yaml
+models:
+  simulator: gpt-3.5-turbo-0125
+  evaluation: gpt-4o
+```
+</TabItem>
+<TabItem value="azure" label="Azure">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: azure
+      model: "model_name"
+      temperature: 1
+      deployment_name: "Test Deployment"
+      api_key: "<your-api-key"
+      openai_api_version: "2025-01-01-preview"
+      azure_endpoint: "https://example-resource.azure.openai.com/"
+  evaluation:
+    ...
+```
+</TabItem>
+<TabItem value="ollama" label="Ollama">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: ollama
+      model: "model_name"
+      temperature: 1
+      base_url: "http://localhost:11434"
+  evaluation:
+    ...
+```
+</TabItem>
+<TabItem value="gemini" label="Gemini">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: gemini
+      model: "model_name"
+      api_key: "<your-api-key>"
+  evaluation:
+    ...
+```
+</TabItem>
+<TabItem value="anthropic" label="Anthropic">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: anthropic
+      model: "model_name"
+  evaluation:
+    ...
+```
+</TabItem>
+<TabItem value="bedroxk" label="Bedrock">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: anthropic
+      model: "model_name"
+      temperature: 1
+      region_name: "region_name"
+      aws_access_key_id: "aws_access_key_id"
+      aws_secret_access_key: "aws_secret_access_key"     
+  evaluation:
+    ... 
+```
+</TabItem>
+<TabItem value="local" label="Local">
+```yaml
+models:
+  simulator: 
+    model:
+      provider: local
+      model: "model_name"
+      temperature: 1
+      base_url: "http://example:base-url"
+      api_key: "<your-api-key>"
+  evaluation:
+    ...
+```
+</TabItem>
+</Tabs>
+
+:::note
+When using custom models, ensure your model class inherits from `DeepEvalBaseLLM` and implements the required methods as described in the [custom LLM documentation](/docs/red-teaming-introduction#configuring-llm-providers).
 :::
 
 ## Target Configuration
@@ -97,21 +207,10 @@ There are **ONE** mandatory and **ONE** optional parameter when creating target 
 - `model` OR `callback`: the target LLM model to test (must specify either `model` or `callback`)
 - [Optional] `purpose`: a description of your LLM application's intended purpose that helps contextualize the red teaming. Defaulted to `""`.
 
-For testing your own LLM applications with custom logic:
+You can use custom for red teaming by using `deepeval`'s [integrations](https://deepeval.com/integrations/models/openai) or [custom LLM](https://deepeval.com/guides/guides-using-custom-llms).
 
-```yaml
-target:
-  purpose: "A financial advice chatbot"
-  model:
-    provider: custom
-    file: "my_financial_bot.py"
-    class: "FinancialAdvisorLLM"
-```
-
-When using `provider: custom`, both `file` and `class` fields are mandatory.
-
-Alternatively, you can specify a custom callback function:
-
+<Tabs groupId="custom-llms">
+<TabItem value="callback" label="Callback">
 ```yaml
 target:
   purpose: "A custom chatbot"
@@ -121,6 +220,98 @@ target:
 ```
 
 When using `callback`, the `file` field is mandatory while `function` is optional.
+
+</TabItem>
+<TabItem value="custom" label="Custom">
+```yaml
+target:
+  purpose: "A financial advice chatbot"
+    model:
+      provider: custom
+      file: "my_model.py"
+      class: "CustomDeepEvalLLM"
+```
+
+When using `provider: custom`, both `file` and `class` fields are mandatory.
+
+</TabItem>
+<TabItem value="openai" label="OpenAI">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model: gpt-3.5-turbo
+```
+</TabItem>
+<TabItem value="azure" label="Azure">
+```yaml
+target:
+  purpose: "A financial advice chatbot"
+    model:
+      provider: azure
+      model: "model_name"
+      temperature: 1
+      deployment_name: "Test Deployment"
+      api_key: "<your-api-key"
+      openai_api_version: "2025-01-01-preview"
+      azure_endpoint: "https://example-resource.azure.openai.com/"
+```
+</TabItem>
+<TabItem value="ollama" label="Ollama">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model:
+    provider: ollama
+    model: "model_name"
+    temperature: 1
+    base_url: "http://localhost:11434"
+```
+</TabItem>
+<TabItem value="gemini" label="Gemini">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model:
+    provider: gemini
+    model: "model_name"
+    api_key: "<your-api-key>"
+```
+</TabItem>
+<TabItem value="anthropic" label="Anthropic">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model:
+    provider: anthropic
+    model: "model_name"
+```
+</TabItem>
+<TabItem value="bedroxk" label="Bedrock">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model:
+    provider: anthropic
+    model: "model_name"
+    temperature: 1
+    region_name: "region_name"
+    aws_access_key_id: "aws_access_key_id"
+    aws_secret_access_key: "aws_secret_access_key"      
+```
+</TabItem>
+<TabItem value="local" label="Local">
+```yaml
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model:
+    provider: local
+    model: "model_name"
+    temperature: 1
+    base_url: "http://example:base-url"
+    api_key: "<your-api-key>"
+```
+</TabItem>
+</Tabs>
 
 :::note
 When using custom models, ensure your model class inherits from `DeepEvalBaseLLM` and implements the required methods as described in the [custom LLM documentation](/docs/red-teaming-introduction#configuring-llm-providers).
@@ -189,12 +380,18 @@ There are **TWO** mandatory and **TWO** optional parameters when creating custom
 
 ```yaml
 attacks:
-  - name: "Prompt Injection"
+  - name: "PromptInjection"
     weight: 2
   - name: "ROT13"
     weight: 1
-  - name: "Base64"
+  - name: "LinearJailbreaking"
+    num_turns: 2
+    turn_level_attacks: ["Roleplay"]
 ```
+
+:::caution Warning
+When defining attacks, you should pass the **class name** of the attacks as defined in the [attack docs](/docs/red-teaming-adversarial-attacks). For example, for the `PromptInjection` attack you **MUST** pass `"PromptInjection"` and not `"Prompt Injection"` or `"Promptinjection"`.
+:::
 
 Each attack entry has:
 
@@ -217,7 +414,7 @@ Once you have your YAML configuration file, you can start red teaming with the C
 ### Basic Usage
 
 ```bash
-deepteam run config.yaml
+deepteam config.yaml
 ```
 
 ### Command Line Overrides
@@ -226,13 +423,13 @@ You can override specific configuration values using command line flags:
 
 ```bash
 # Override concurrency and output folder
-deepteam run config.yaml -c 20 -o custom-results
+deepteam config.yaml -c 20 -o custom-results
 
 # Override attacks per vulnerability
-deepteam run config.yaml -a 5
+deepteam config.yaml -a 5
 
 # Combine multiple overrides
-deepteam run config.yaml -c 15 -a 3 -o production-results
+deepteam config.yaml -c 15 -a 3 -o production-results
 ```
 
 There are **THREE** optional command line flags:
@@ -315,13 +512,56 @@ Use the help command to see all available options:
 
 ```bash
 deepteam --help
-deepteam run --help
 ```
 
 :::tip
-Available vulnerabilities: `Bias`, `Toxicity`, `Misinformation`, `Illegal Activity`, `Prompt Leakage`, `PII Leakage`, `Unauthorized Access`, `Excessive Agency`, `Robustness`, `Intellectual Property`, `Competition`, `Graphic Content`, `Personal Safety`, `CustomVulnerability`.
 
-Available attacks: `Base64`, `Gray Box`, `Leetspeak`, `Math Problem`, `Multilingual`, `Prompt Injection`, `Prompt Probing`, `Roleplay`, `ROT-13`, `Crescendo Jailbreaking`, `Linear Jailbreaking`, `Tree Jailbreaking`, `Sequential Break`, `Bad Likert Judge`.
+**Available vulnerabilities:**
+
+
+- [`PIILeakage`](red-teaming-vulnerabilities-pii-leakage)
+- [`PromptLeakage`](red-teaming-vulnerabilities-prompt-leakage)
+- [`Bias`](red-teaming-vulnerabilities-bias)
+- [`Toxicity`](red-teaming-vulnerabilities-toxicity)
+- [`BFLA`](red-teaming-vulnerabilities-bfla)
+- [`BOLA`](red-teaming-vulnerabilities-bola)
+- [`RBAC`](red-teaming-vulnerabilities-rbac)
+- [`DebugAccess`](red-teaming-vulnerabilities-debug-access)
+- [`ShellInjection`](red-teaming-vulnerabilities-shell-injection)
+- [`SQLInjection`](red-teaming-vulnerabilities-sql-injection)
+- [`SSRF`](red-teaming-vulnerabilities-ssrf)
+- [`IllegalActivities`](red-teaming-vulnerabilities-illegal-activity)
+- [`GraphicContent`](red-teaming-vulnerabilities-graphic-content)
+- [`PersonalSafety`](red-teaming-vulnerabilities-personal-safety)
+- [`Misinformation`](red-teaming-vulnerabilities-misinformation)
+- [`Intellectual Property`](red-teaming-vulnerabilities-intellectual-property)
+- [`Competition`](red-teaming-vulnerabilities-competition)
+- [`GoalTheft`](red-teaming-agentic-vulnerabilities-goal-theft)
+- [`RecursiveHijacking`](red-teaming-agentic-vulnerabilities-recursive-hijacking)
+- [`ExcessiveAgency`](red-teaming-vulnerabilities-excessive-agency)
+- [`Robustnesss`](red-teaming-vulnerabilities-robustness)
+
+**Available attacks:**
+
+- [`Base64`](/docs/red-teaming-adversarial-attacks-base64-encoding)
+- [`GrayBox`](/docs/red-teaming-adversarial-attacks-gray-box-attack)
+- [`Leetspeak`](/docs/red-teaming-adversarial-attacks-leetspeak)
+- [`MathProblem`](/docs/red-teaming-adversarial-attacks-math-problem)
+- [`Multilingual`](/docs/red-teaming-adversarial-attacks-multilingual)
+- [`PromptInjection`](/docs/red-teaming-adversarial-attacks-prompt-injection)
+- [`Roleplay`](/docs/red-teaming-adversarial-attacks-roleplay)
+- [`ROT-13`](/docs/red-teaming-adversarial-attacks-rot13-encoding)
+- [`ContextPoisoning`](/docs/red-teaming-agentic-attacks-context-poisoning)
+- [`GoalRedirection`](/docs/red-teaming-agentic-attacks-goal-redirection)
+- [`InputBypass`](/docs/red-teaming-agentic-attacks-input-bypass)
+- [`PermissionEscalation`](/docs/red-teaming-agentic-attacks-permission-escalation)
+- [`LinguisticConfusion`](/docs/red-teaming-agentic-attacks-semantic-manipulation)
+- [`SystemOverride`](/docs/red-teaming-agentic-attacks-system-override)
+- [`Bad LikertJudge`](/docs/red-teaming-adversarial-attacks-bad-likert-judge)
+- [`CrescendoJailbreaking`](/docs/red-teaming-adversarial-attacks-crescendo-jailbreaking)
+- [`LinearJailbreaking`](/docs/red-teaming-adversarial-attacks-linear-jailbreaking)
+- [`SequentialBreak`](/docs/red-teaming-adversarial-attacks-sequential-jailbreaking)
+- [`TreeJailbreaking`](/docs/red-teaming-adversarial-attacks-tree-jailbreaking)
 
 For detailed documentation, refer to the [vulnerabilities documentation](/docs/red-teaming-vulnerabilities) and [attacks documentation](/docs/red-teaming-adversarial-attacks).
 :::

@@ -101,7 +101,6 @@ class TestRobustness:
 
         results = await robustness.a_assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
 
         assert robustness.is_vulnerable() is not None
