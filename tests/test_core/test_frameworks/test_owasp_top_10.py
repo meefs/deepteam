@@ -126,7 +126,7 @@ class TestOWASPTop10:
         risk_assessment = red_team(
             model_callback=mock_model_callback,
             framework=OWASPTop10(),
-            run_async=False,  # Use sync mode for simpler testing
+            async_mode=False,  # Use sync mode for simpler testing
             ignore_errors=True,  # Ignore any API or model errors during testing
         )
 
