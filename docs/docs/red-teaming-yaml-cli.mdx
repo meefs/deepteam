@@ -56,7 +56,7 @@ attacks:
 Then run the red teaming with a single command:
 
 ```bash
-deepteam config.yaml
+deepteam run config.yaml
 ```
 
 :::tip DID YOU KNOW?
@@ -414,7 +414,7 @@ Once you have your YAML configuration file, you can start red teaming with the C
 ### Basic Usage
 
 ```bash
-deepteam config.yaml
+deepteam run config.yaml
 ```
 
 ### Command Line Overrides
@@ -423,13 +423,13 @@ You can override specific configuration values using command line flags:
 
 ```bash
 # Override concurrency and output folder
-deepteam config.yaml -c 20 -o custom-results
+deepteam run config.yaml -c 20 -o custom-results
 
 # Override attacks per vulnerability
-deepteam config.yaml -a 5
+deepteam run config.yaml -a 5
 
 # Combine multiple overrides
-deepteam config.yaml -c 15 -a 3 -o production-results
+deepteam run config.yaml -c 15 -a 3 -o production-results
 ```
 
 There are **THREE** optional command line flags:
