@@ -1,19 +1,19 @@
 ---
 id: red-teaming-yaml-cli
-title: Red Teaming with YAML Configuration
-sidebar_label: YAML CLI
+title: YAML Configurations
+sidebar_label: YAML Configs
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-
-## Quick Summary
 
 `deepteam` offers a powerful CLI interface that allows you to red team LLM applications using YAML configuration files. This approach provides a declarative way to define your red teaming setup, making it easier to version control, share, and reproduce red teaming experiments across different environments and team members.
 
 :::info
 The YAML CLI interface is built on top of the same red teaming engine as the Python API. All vulnerabilities, attacks, and evaluation capabilities are available through both interfaces.
 :::
+
+## Quick Summary
 
 The YAML CLI approach is made up of 4 main configuration sections:
 
@@ -517,7 +517,6 @@ deepteam --help
 :::tip
 
 **Available vulnerabilities:**
-
 
 - [`PIILeakage`](red-teaming-vulnerabilities-pii-leakage)
 - [`PromptLeakage`](red-teaming-vulnerabilities-prompt-leakage)
