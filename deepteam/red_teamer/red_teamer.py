@@ -5,6 +5,7 @@ from rich.console import Console
 from rich.table import Table
 import inspect
 from rich import box
+from enum import Enum
 
 
 from deepeval.models import DeepEvalBaseLLM
@@ -60,6 +61,8 @@ class RedTeamer:
         model_callback: CallbackType,
         vulnerabilities: Optional[List[BaseVulnerability]] = None,
         attacks: Optional[List[BaseAttack]] = None,
+        simulator_model: DeepEvalBaseLLM = None,
+        evaluation_model: DeepEvalBaseLLM = None,
         framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
@@ -87,6 +90,8 @@ class RedTeamer:
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerabilities=vulnerabilities,
                     attacks=attacks,
+                    simulator_model=simulator_model,
+                    evaluation_model=evaluation_model,
                     ignore_errors=ignore_errors,
                     reuse_simulated_test_cases=reuse_simulated_test_cases,
                     metadata=metadata,
@@ -96,6 +101,9 @@ class RedTeamer:
             assert not inspect.iscoroutinefunction(
                 model_callback
             ), "`model_callback` needs to be sync. `async_mode` has been set to False."
+
+            if evaluation_model is not None:
+                self.evaluation_model = evaluation_model
             with capture_red_teamer_run(
                 vulnerabilities=[v.get_name() for v in vulnerabilities],
                 attacks=[a.get_name() for a in attacks],
@@ -115,6 +123,7 @@ class RedTeamer:
                             vulnerabilities=vulnerabilities,
                             attacks=attacks,
                             ignore_errors=ignore_errors,
+                            simulator_model=simulator_model,
                             metadata=metadata,
                         )
                     )
@@ -135,6 +144,13 @@ class RedTeamer:
                         vulnerability_type_to_attacks_map[
                             simulated_test_case.vulnerability_type
                         ].append(simulated_test_case)
+                    simulated_test_case.risk_category = getRiskCategory(
+                        simulated_test_case.vulnerability_type
+                    )
+                    if isinstance(simulated_test_case.risk_category, Enum):
+                        simulated_test_case.risk_category = (
+                            simulated_test_case.risk_category.value
+                        )
 
                 total_attacks = sum(
                     len(attacks)
@@ -183,6 +199,8 @@ class RedTeamer:
         model_callback: CallbackType,
         vulnerabilities: Optional[List[BaseVulnerability]] = None,
         attacks: Optional[List[BaseAttack]] = None,
+        simulator_model: DeepEvalBaseLLM = None,
+        evaluation_model: DeepEvalBaseLLM = None,
         framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
         ignore_errors: bool = False,
@@ -197,6 +215,9 @@ class RedTeamer:
                 raise ValueError(
                     "You must either provide a 'framework' or 'vulnerabilities'."
                 )
+
+        if evaluation_model is not None:
+            self.evaluation_model = evaluation_model
 
         with capture_red_teamer_run(
             vulnerabilities=[v.get_name() for v in vulnerabilities],
@@ -216,12 +237,12 @@ class RedTeamer:
                         attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                         vulnerabilities=vulnerabilities,
                         attacks=attacks,
+                        simulator_model=simulator_model,
                         ignore_errors=ignore_errors,
                         metadata=metadata,
                     )
                 )
 
-            print(len(simulated_test_cases))
             # Create a mapping of vulnerabilities to attacks
             vulnerability_type_to_attacks_map: Dict[
                 VulnerabilityType, List[RTTestCase]
@@ -238,6 +259,13 @@ class RedTeamer:
                     vulnerability_type_to_attacks_map[
                         simulated_test_case.vulnerability_type
                     ].append(simulated_test_case)
+                simulated_test_case.risk_category = getRiskCategory(
+                    simulated_test_case.vulnerability_type
+                )
+                if isinstance(simulated_test_case.risk_category, Enum):
+                    simulated_test_case.risk_category = (
+                        simulated_test_case.risk_category.value
+                    )
 
             semaphore = asyncio.Semaphore(self.max_concurrent)
             total_attacks = sum(
@@ -307,6 +335,7 @@ class RedTeamer:
                 metric: BaseRedTeamingMetric = _vulnerability._get_metric(
                     vulnerability_type
                 )
+                metric.evaluation_model = self.evaluation_model
                 break
 
         if multi_turn:
@@ -381,6 +410,7 @@ class RedTeamer:
                 metric: BaseRedTeamingMetric = _vulnerability._get_metric(
                     vulnerability_type
                 )
+                metric.evaluation_model = self.evaluation_model
                 break
 
         if multi_turn:

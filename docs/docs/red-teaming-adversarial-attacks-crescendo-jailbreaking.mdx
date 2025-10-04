@@ -49,7 +49,7 @@ There are **FIVE** optional parameters when creating a `CrescendoJailbreaking` a
 
 ### As a standalone
 
-You can also run the attack on a single vulnerability using the `enhance` method:
+You can also run the attack on a single vulnerability using the `progress` method:
 
 ```python
 from deepteam.attacks.single_turn import Roleplay
@@ -64,7 +64,7 @@ crescendo = CrescendoJailbreaking(
     turn_level_attacks=[Roleplay()]
 )
 
-result = crescendo.enhance(vulnerability=bias, model_callback=your_callback)
+result = crescendo.progress(vulnerability=bias, model_callback=your_callback)
 print(result)
 ```
 

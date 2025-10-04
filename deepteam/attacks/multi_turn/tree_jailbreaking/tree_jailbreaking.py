@@ -37,12 +37,14 @@ class TreeNode:
         depth: int,
         conversation_history=None,
         parent: Optional["TreeNode"] = None,
+        turn_level_attack: Optional[BaseAttack] = None,
     ):
         self.prompt = prompt
         self.score = score
         self.depth = depth
         self.children = []
         self.parent = parent
+        self.turn_level_attack = turn_level_attack
         self.conversation_history = conversation_history or []
 
 
@@ -142,6 +144,18 @@ class TreeJailbreaking(BaseAttack):
             turns.append(RTTurn(role="user", content=node.prompt))
             assistant_response = model_callback(node.prompt, turns)
             turns.append(RTTurn(role="assistant", content=assistant_response))
+            if node.turn_level_attack is not None:
+                turns.append(
+                    RTTurn(
+                        role="assistant",
+                        content=assistant_response,
+                        turn_level_attack=node.turn_level_attack.get_name(),
+                    )
+                )
+            else:
+                turns.append(
+                    RTTurn(role="assistant", content=assistant_response)
+                )
 
         return turns
 
@@ -224,7 +238,7 @@ class TreeJailbreaking(BaseAttack):
 
         return turns
 
-    def enhance(
+    def progress(
         self,
         vulnerability: BaseVulnerability,
         model_callback: CallbackType,
@@ -375,8 +389,10 @@ class TreeJailbreaking(BaseAttack):
             enhanced_attack = res.prompt
 
             # Randomly enhancing a turn attack
+            turn_level_attack = None
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
+                turn_level_attack = attack
                 enhanced_attack = enhance_attack(
                     attack, enhanced_attack, self.simulator_model
                 )
@@ -416,10 +432,11 @@ class TreeJailbreaking(BaseAttack):
                 depth=node.depth + 1,
                 conversation_history=conversation_json,
                 parent=node,
+                turn_level_attack=turn_level_attack,
             )
             node.children.append(child_node)
 
-    async def a_enhance(
+    async def a_progress(
         self,
         vulnerability: BaseVulnerability,
         model_callback: CallbackType,
@@ -592,8 +609,10 @@ class TreeJailbreaking(BaseAttack):
         enhanced_attack = res.prompt
 
         # Randomly enhancing a turn attack
+        turn_level_attack = None
         if self.turn_level_attacks and random.random() < 0.5:
             attack = random.choice(self.turn_level_attacks)
+            turn_level_attack = attack
             enhanced_attack = await a_enhance_attack(
                 attack, enhanced_attack, self.simulator_model
             )
@@ -632,6 +651,7 @@ class TreeJailbreaking(BaseAttack):
             depth=node.depth + 1,
             conversation_history=conversation_json,
             parent=node,
+            turn_level_attack=turn_level_attack,
         )
 
     ##################################################

@@ -145,11 +145,21 @@ def _build_attack(cfg: dict):
         kwargs["persona"] = cfg["persona"]
     if "category" in cfg:
         kwargs["category"] = cfg["category"]
-    if "turns" in cfg:
-        kwargs["turns"] = cfg["turns"]
+    if "num_turns" in cfg:
+        kwargs["num_turns"] = cfg["num_turns"]
     if "enable_refinement" in cfg:
         kwargs["enable_refinement"] = cfg["enable_refinement"]
-    return cls(**kwargs)
+    if "turn_level_attacks" in cfg:
+        turn_level_attacks = cfg["turn_level_attacks"]
+        attacks_objects = []
+        for attack_name in turn_level_attacks:
+            attack_cls = ATTACK_MAP.get(attack_name)
+            if not attack_cls:
+                raise ValueError(f"Unknown attack: {attack_name}")
+            attacks_objects.append(attack_cls())
+        kwargs["turn_level_attacks"] = attacks_objects
+    obj = cls(**kwargs)
+    return obj
 
 
 def _load_callback_from_file(
@@ -212,11 +222,35 @@ def run(
 
     # Parse red teaming models (moved out of target section)
     models_cfg = cfg.get("models", {})
+
     simulator_model_spec = models_cfg.get("simulator", "gpt-3.5-turbo-0125")
     evaluation_model_spec = models_cfg.get("evaluation", "gpt-4o")
 
-    simulator_model = load_model(simulator_model_spec)
-    evaluation_model = load_model(evaluation_model_spec)
+    simulator_model = None
+    evaluation_model = None
+
+    if not isinstance(simulator_model_spec, str):
+        if "model" in simulator_model_spec:
+            # Use model specification for simple cases
+            _simulator_model_spec = simulator_model_spec["model"]
+            simulator_model = load_model(_simulator_model_spec)
+
+    if not isinstance(evaluation_model_spec, str):
+        if "model" in evaluation_model_spec:
+            # Use model specification for simple cases
+            _evaluation_model_spec = evaluation_model_spec["model"]
+            evaluation_model = load_model(_evaluation_model_spec)
+
+    simulator_model = (
+        load_model(simulator_model_spec)
+        if not simulator_model
+        else simulator_model
+    )
+    evaluation_model = (
+        load_model(evaluation_model_spec)
+        if not evaluation_model
+        else evaluation_model
+    )
 
     # Parse system configuration (renamed from options)
     system_config = cfg.get("system_config", {})
@@ -305,7 +339,8 @@ def run(
 
     # Save risk assessment if output folder is specified
     if final_output_folder:
-        red_teamer.risk_assessment.save(to=final_output_folder)
+        file = red_teamer.risk_assessment.save(to=final_output_folder)
+        return file
 
     return risk
 

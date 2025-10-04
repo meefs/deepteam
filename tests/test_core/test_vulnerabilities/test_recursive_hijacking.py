@@ -129,7 +129,6 @@ class TestRecursiveHijacking:
 
         results = await recursive_hijack.a_assess(
             model_callback=dummy_model_callback,
-            attacks_per_vulnerability_type=1,
         )
 
         assert recursive_hijack.is_vulnerable() is not None

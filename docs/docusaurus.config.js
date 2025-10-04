@@ -56,6 +56,7 @@ module.exports = {
     [
       "@docusaurus/preset-classic",
       {
+        blog: false,
         docs: {
           path: "docs",
           editUrl:
