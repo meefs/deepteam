@@ -609,52 +609,48 @@ test-randomorder = ["pytest-randomly"]
 
 [[package]]
 name = "deepeval"
-version = "3.6.1"
+version = "3.6.2"
 description = "The LLM Evaluation Framework"
 optional = false
-python-versions = ">=3.9, <4.0"
-files = []
-develop = false
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "deepeval-3.6.2-py3-none-any.whl", hash = "sha256:3c0e6f37e328e182564f3a76ef5deeab605bf04945e771467bbff891f6c42afc"},
+    {file = "deepeval-3.6.2.tar.gz", hash = "sha256:7c35214f693260ec38e1317e74bef2438640f182f380236992731503aefff974"},
+]
 
 [package.dependencies]
 aiohttp = "*"
 anthropic = "*"
 click = ">=8.0.0,<8.3.0"
-google-genai = "^1.9.0"
-grpcio = "^1.67.1"
+google-genai = ">=1.9.0,<2.0.0"
+grpcio = ">=1.67.1,<2.0.0"
 jinja2 = "*"
 nest_asyncio = "*"
 ollama = "*"
 openai = "*"
-opentelemetry-api = "^1.24.0"
-opentelemetry-exporter-otlp-proto-grpc = "^1.24.0"
-opentelemetry-sdk = "^1.24.0"
+opentelemetry-api = ">=1.24.0,<2.0.0"
+opentelemetry-exporter-otlp-proto-grpc = ">=1.24.0,<2.0.0"
+opentelemetry-sdk = ">=1.24.0,<2.0.0"
 portalocker = "*"
-posthog = "^6.3.0"
-pydantic = "^2.11.7"
-pydantic-settings = "^2.10.1"
+posthog = ">=6.3.0,<7.0.0"
+pydantic = ">=2.11.7,<3.0.0"
+pydantic-settings = ">=2.10.1,<3.0.0"
 pyfiglet = "*"
 pytest = "*"
 pytest-asyncio = "*"
 pytest-repeat = "*"
-pytest-rerunfailures = "^12.0"
+pytest-rerunfailures = ">=12.0,<13.0"
 pytest-xdist = "*"
-python-dotenv = "^1.1.1"
-requests = "^2.31.0"
-rich = ">=13.6.0, <15.0.0"
+python-dotenv = ">=1.1.1,<2.0.0"
+requests = ">=2.31.0,<3.0.0"
+rich = ">=13.6.0,<15.0.0"
 sentry-sdk = "*"
 setuptools = "*"
-tabulate = "^0.9.0"
+tabulate = ">=0.9.0,<0.10.0"
 tenacity = ">=8.0.0,<=10.0.0"
-tqdm = "^4.66.1"
+tqdm = ">=4.66.1,<5.0.0"
 typer = ">=0.9,<1.0.0"
 wheel = "*"
-
-[package.source]
-type = "git"
-url = "https://github.com/confident-ai/deepeval.git"
-reference = "main"
-resolved_reference = "6889da1e3832cdf641c12b391b240359d8509b81"
 
 [[package]]
 name = "distro"
@@ -3110,4 +3106,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.14"
-content-hash = "de55f4d5f3a847049549ed2a1866fe1bffd16e9fcef10389a5f5b77bfcc0ed8e"
+content-hash = "2850b624f80d8d5cda74e67e645a8111d289796c4e118876fa4dd692901ddc75"

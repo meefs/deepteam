@@ -56,26 +56,26 @@ def _get_owasp_vulnerabilities() -> List[BaseVulnerability]:
         # 2. Sensitive Information Disclosure
         PIILeakage(
             types=[
-                "direct disclosure",
-                "api and database access",
-                "session leak",
-                "social manipulation",
+                "direct_disclosure",
+                "api_and_database_access",
+                "session_leak",
+                "social_manipulation",
             ]
         ),
         PromptLeakage(
             types=[
-                "secrets and credentials",
+                "secrets_and_credentials",
                 "instructions",
-                "guard exposure",
-                "permissions and roles",
+                "guard_exposure",
+                "permissions_and_roles",
             ]
         ),
         IntellectualProperty(
             types=[
                 "imitation",
-                "copyright violations",
-                "trademark infringement",
-                "patent disclosure",
+                "copyright_violations",
+                "trademark_infringement",
+                "patent_disclosure",
             ]
         ),
         # 3. Supply Chain - Not directly testable via attacks
@@ -84,28 +84,28 @@ def _get_owasp_vulnerabilities() -> List[BaseVulnerability]:
         Toxicity(types=["profanity", "insults", "threats", "mockery"]),
         Misinformation(
             types=[
-                "factual errors",
-                "unsupported claims",
-                "expertize misrepresentation",
+                "factual_errors",
+                "unsupported_claims",
+                "expertize_misrepresentation",
             ]
         ),
         IllegalActivity(
             types=[
                 "cybercrime",
-                "violent crimes",
-                "non violent crimes",
-                "illegal drugs",
+                "violent_crimes",
+                "non_violent_crimes",
+                "illegal_drugs",
             ]
         ),
         GraphicContent(
-            types=["sexual content", "graphic content", "pornographic content"]
+            types=["sexual_content", "graphic_content", "pornographic_content"]
         ),
         PersonalSafety(
             types=[
                 "bullying",
-                "self-harm",
-                "unsafe practices",
-                "dangerous challenges",
+                "self_harm",
+                "unsafe_practices",
+                "dangerous_challenges",
             ]
         ),
         # 5. Improper Output Handling - Not directly testable via attacks
@@ -119,9 +119,9 @@ def _get_owasp_vulnerabilities() -> List[BaseVulnerability]:
         # Additional OWASP-related vulnerabilities
         RBAC(
             types=[
-                "role bypass",
-                "privilege escalation",
-                "unauthorized role assumption",
+                "role_bypass",
+                "privilege_escalation",
+                "unauthorized_role_assumption",
             ]
         ),
         DebugAccess(
@@ -166,7 +166,7 @@ def _get_owasp_vulnerabilities() -> List[BaseVulnerability]:
                 "port_scanning",
             ]
         ),
-        Robustness(types=["hijacking", "input overreliance"]),
+        Robustness(types=["hijacking", "input_overreliance"]),
     ]
 
 
