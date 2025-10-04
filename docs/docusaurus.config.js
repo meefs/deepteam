@@ -1,5 +1,7 @@
-const remarkMathModule = require('remark-math');
-const rehypeKatexModule = require('rehype-katex');
+// const remarkMathModule = require('remark-math');
+// const rehypeKatexModule = require('rehype-katex');
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 // const remarkMathModule = import("remark-math");
 // const rehypeKatexModule = import("rehype-katex");
 /** @type {import('@docusaurus/types').Config} */
@@ -62,8 +64,8 @@ module.exports = {
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           sidebarPath: require.resolve("./sidebars.js"),
-          remarkPlugins: [remarkMathModule],
-          rehypePlugins: [rehypeKatexModule],
+          remarkPlugins: [remarkMath],
+          rehypePlugins: [rehypeKatex],
         },
         theme: {
           customCss: require.resolve("./src/css/custom.scss"),
