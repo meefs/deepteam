@@ -28,7 +28,6 @@ module.exports = {
         path: "blog",
         routeBasePath: "blog",
         sidebarPath: false,
-        editUrl: "https://github.com/confident-ai/deepteam/edit/main/docs/blog/",
         showLastUpdateAuthor: true,
         showLastUpdateTime: true,
         remarkPlugins: [remarkMath],
