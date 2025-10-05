@@ -27,7 +27,6 @@ module.exports = {
         id: "blogPages",
         path: "blog",
         routeBasePath: "blog",
-        sidebarPath: false,
       },
     ],
   ],
