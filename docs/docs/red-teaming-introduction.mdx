@@ -7,13 +7,16 @@ sidebar_label: Introduction
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-## Quick Summary
-
 `deepteam` offers a powerful yet simple way for anyone to red team all sorts of LLM applications for safety risks and security vulnerabilities in just a few lines of code. These LLM apps can be anything such as RAG pipelines, agents, chatbots, or even just the LLM itself, while the vulnerabilities include ones such as bias, toxicity, PII leakage, misinformation.
 
-:::info
-`deepteam` is powered by [`deepeval`, the LLM evaluation framework.](https://docs.confident-ai.com/) If you're looking to test your LLM application on criteria such as RAG correctness, answer relevancy, contextual precision, etc., you should checkout `deepeval` instead.
-:::
+## Quick Summary
+
+`deepteam` automates the entire LLM red teaming workflow, and is made up of 4 main components:
+
+- [Vulnerabilities](/docs/red-teaming-introduction#vulnerabilities) - weaknesses you wish to detect.
+- [Adversarial Attacks](/docs/red-teaming-introduction#adversarial-attacks) - the means to detect these weaknesses.
+- [Target LLM System](/docs/red-teaming-introduction#model-callback) - your AI that is going to defend against these attacks.
+- [Metrics](/docs/red-teaming-introduction#metrics) - the way to determine which of these attacks were (un)successfully defended against.
 
 <div
   style={{
@@ -33,14 +36,11 @@ import TabItem from "@theme/TabItem";
   />
 </div>
 
-`deepteam` automates the entire LLM red teaming workflow, and is made up of 4 main components:
-
-- [Vulnerabilities](/docs/red-teaming-introduction#vulnerabilities) - weaknesses you wish to detect.
-- [Adversarial Attacks](/docs/red-teaming-introduction#adversarial-attacks) - the means to detect these weaknesses.
-- [Target LLM System](/docs/red-teaming-introduction#model-callback) - your AI that is going to defend against these attacks.
-- [Metrics](/docs/red-teaming-introduction#metrics) - the way to determine which of these attacks were (un)successfully defended against.
-
 It works by first generating adversarial attacks aimed at provoking harmful output from your LLM system based on the vulnerabilities that you've defined, using attack methods such as prompt injection and jailbreaking. The outputs of your LLM is then evaluated by `deepteam`'s red teaming metrics to determine how effectively your application handles these attacks.
+
+:::note
+`deepteam` is powered by [`deepeval`, the LLM evaluation framework.](https://deepeval.com) If you're looking to test your LLM application on criteria such as RAG correctness, answer relevancy, contextual precision, etc., you should checkout `deepeval` instead.
+:::
 
 Here's how you can implement it in code:
 
