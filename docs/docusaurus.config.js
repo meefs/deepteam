@@ -21,6 +21,14 @@ module.exports = {
         showLastUpdateTime: true,
       },
     ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "blogPages",
+        path: "blog",
+        routeBasePath: "blog",
+      },
+    ],
   ],
 
   title: "DeepTeam - The Open-Source LLM Red Teaming Framework",

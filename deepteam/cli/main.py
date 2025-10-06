@@ -365,11 +365,11 @@ def run(
     red_teamer._print_risk_assessment()
 
     # Save risk assessment if output folder is specified
+    file = None
     if final_output_folder:
         file = red_teamer.risk_assessment.save(to=final_output_folder)
-        return file
 
-    return risk
+    return risk, file
 
 
 if __name__ == "__main__":
