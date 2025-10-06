@@ -342,12 +342,20 @@ def run(
         target_model_spec = target_cfg["model"]
         target_model = load_model(target_model_spec)
 
-        async def model_callback(input: str) -> str:
-            response = await target_model.a_generate(input)
-            # Ensure we return a string, handle different response types
-            if isinstance(response, tuple):
-                return str(response[0]) if response else "Empty response"
-            return str(response)
+        if system_config.get("run_async", True):
+            async def model_callback(input: str, turns=None) -> str:
+                response = await target_model.a_generate(input)
+                # Ensure we return a string, handle different response types
+                if isinstance(response, tuple):
+                    return str(response[0]) if response else "Empty response"
+                return str(response)
+        else:
+            def model_callback(input: str, turns=None) -> str:
+                response = target_model.generate(input)
+                # Ensure we return a string, handle different response types
+                if isinstance(response, tuple):
+                    return str(response[0]) if response else "Empty response"
+                return str(response)
 
     else:
         raise ValueError(
@@ -361,8 +369,6 @@ def run(
         attacks_per_vulnerability_type=final_attacks_per_vuln,
         ignore_errors=system_config.get("ignore_errors", False),
     )
-
-    red_teamer._print_risk_assessment()
 
     # Save risk assessment if output folder is specified
     file = None
