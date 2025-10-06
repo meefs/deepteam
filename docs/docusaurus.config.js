@@ -22,11 +22,12 @@ module.exports = {
       },
     ],
     [
-      "@docusaurus/plugin-content-docs",
+      "@docusaurus/plugin-content-blog",
       {
-        id: "blogPages",
+        id: "blogs",
         path: "blog",
         routeBasePath: "blog",
+        blogSidebarCount: 0
       },
     ],
   ],
