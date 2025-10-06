@@ -193,13 +193,15 @@ def _load_config(path: str):
     with open(path, "r") as f:
         return yaml.safe_load(f)
 
-  
+
 def _show_version(value: bool):
     from deepteam._version import __version__
+
     if value:
         typer.echo(f"deepteam version {__version__}")
         raise typer.Exit()
-    
+
+
 @app.callback()
 def main(
     version: bool = typer.Option(
@@ -214,12 +216,16 @@ def main(
     """
     DeepTeam CLI for red teaming LLMs.
     """
-    pass  
+    pass
+
 
 @app.command("login")
 def login():
-    typer.echo(f"This feature is currently in beta. For more details, please contact support@confident-ai.com")
+    typer.echo(
+        f"This feature is currently in beta. For more details, please contact support@confident-ai.com"
+    )
     raise typer.Exit()
+
 
 @app.command("run")
 def run(
@@ -343,13 +349,16 @@ def run(
         target_model = load_model(target_model_spec)
 
         if system_config.get("run_async", True):
+
             async def model_callback(input: str, turns=None) -> str:
                 response = await target_model.a_generate(input)
                 # Ensure we return a string, handle different response types
                 if isinstance(response, tuple):
                     return str(response[0]) if response else "Empty response"
                 return str(response)
+
         else:
+
             def model_callback(input: str, turns=None) -> str:
                 response = target_model.generate(input)
                 # Ensure we return a string, handle different response types
