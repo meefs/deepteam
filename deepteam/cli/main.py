@@ -3,7 +3,8 @@ import typer
 import importlib.util
 import sys
 import os
-from typing import Callable, Awaitable
+from typing import Callable, Awaitable, Optional
+from dataclasses import dataclass
 
 from . import config
 from .model_callback import load_model
@@ -58,6 +59,7 @@ from deepteam.attacks.multi_turn import (
     SequentialJailbreak,
     BadLikertJudge,
 )
+from deepteam.red_teamer.risk_assessment import RiskAssessment
 
 app = typer.Typer(name="deepteam")
 
@@ -104,6 +106,11 @@ ATTACK_CLASSES = [
 ]
 
 ATTACK_MAP = {cls.__name__: cls for cls in ATTACK_CLASSES}
+
+@dataclass
+class ConfigRunResult:
+    risk_assessment: RiskAssessment
+    file_path: Optional[str] = None
 
 
 def _build_vulnerability(cfg: dict, custom: bool):
@@ -378,13 +385,15 @@ def run(
         attacks_per_vulnerability_type=final_attacks_per_vuln,
         ignore_errors=system_config.get("ignore_errors", False),
     )
+    result = ConfigRunResult(risk)
 
     # Save risk assessment if output folder is specified
-    file = None
-    if final_output_folder:
+    if final_output_folder is not None:
+        print(final_output_folder)
         file = red_teamer.risk_assessment.save(to=final_output_folder)
+        result.file_path = file
 
-    return risk, file
+    return result
 
 
 if __name__ == "__main__":
