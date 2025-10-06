@@ -107,6 +107,7 @@ ATTACK_CLASSES = [
 
 ATTACK_MAP = {cls.__name__: cls for cls in ATTACK_CLASSES}
 
+
 @dataclass
 class ConfigRunResult:
     risk_assessment: RiskAssessment
