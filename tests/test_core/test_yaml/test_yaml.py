@@ -9,7 +9,9 @@ from deepeval.models import DeepEvalBaseLLM
 def test_cli_run_return_both_risk_and_file(tmp_path):
     OUTPUT_FOLDER = tmp_path / "results_file"
 
-    result = run("config.yaml", 1, 1, str(OUTPUT_FOLDER))
+    test_dir = os.path.dirname(__file__)
+    config_path = os.path.join(test_dir, "config.yaml")
+    result = run(config_path, 1, 1, str(OUTPUT_FOLDER))
 
     assert result.risk_assessment is not None
     assert result.file_path is not None
@@ -18,7 +20,9 @@ def test_cli_run_return_both_risk_and_file(tmp_path):
 
 
 def test_cli_run_return_both_risk_and_none():
-    result = run("config.yaml", 1, 1, None)
+    test_dir = os.path.dirname(__file__)
+    config_path = os.path.join(test_dir, "config.yaml")
+    result = run(config_path, 1, 1, None)
 
     assert result.risk_assessment is not None
     assert result.file_path is None
