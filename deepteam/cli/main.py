@@ -390,7 +390,6 @@ def run(
 
     # Save risk assessment if output folder is specified
     if final_output_folder is not None:
-        print(final_output_folder)
         file = red_teamer.risk_assessment.save(to=final_output_folder)
         result.file_path = file
 
