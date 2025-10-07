@@ -2,7 +2,7 @@
 title: Intensive Alignment Training Backfires
 description: Systematic analysis revealing how intensive safety training in modern reasoning models may create exploitable vulnerabilities, making heavily-aligned models more susceptible to sophisticated attacks than their predecessors
 slug: ai-safety-paradox-deepteam
-authors: [sid]
+authors: [sid, penguine]
 date: 2025-06-01
 hide_table_of_contents: false
 # TODO: Add proper image path once available
