@@ -73,9 +73,9 @@ class RedTeamer:
             vulnerabilities = framework.vulnerabilities
             attacks = framework.attacks
         else:
-            if not vulnerabilities:
+            if not vulnerabilities or not attacks:
                 raise ValueError(
-                    "You must either provide a 'framework' or 'vulnerabilities'."
+                    "You must either provide a 'framework' or 'vulnerabilities' and 'attacks."
                 )
 
         if self.async_mode:
@@ -104,6 +104,8 @@ class RedTeamer:
 
             if evaluation_model is not None:
                 self.evaluation_model = evaluation_model
+            if simulator_model is not None:
+                self.simulator_model = simulator_model
             with capture_red_teamer_run(
                 vulnerabilities=[v.get_name() for v in vulnerabilities],
                 attacks=[a.get_name() for a in attacks],
@@ -123,7 +125,7 @@ class RedTeamer:
                             vulnerabilities=vulnerabilities,
                             attacks=attacks,
                             ignore_errors=ignore_errors,
-                            simulator_model=simulator_model,
+                            simulator_model=self.simulator_model,
                             metadata=metadata,
                         )
                     )
@@ -211,13 +213,15 @@ class RedTeamer:
             vulnerabilities = framework.vulnerabilities
             attacks = framework.attacks
         else:
-            if not vulnerabilities:
+            if not vulnerabilities or not attacks:
                 raise ValueError(
-                    "You must either provide a 'framework' or 'vulnerabilities'."
+                    "You must either provide a 'framework' or 'vulnerabilities' and 'attacks."
                 )
 
         if evaluation_model is not None:
             self.evaluation_model = evaluation_model
+        if simulator_model is not None:
+            self.simulator_model = simulator_model
 
         with capture_red_teamer_run(
             vulnerabilities=[v.get_name() for v in vulnerabilities],
@@ -237,7 +241,7 @@ class RedTeamer:
                         attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                         vulnerabilities=vulnerabilities,
                         attacks=attacks,
-                        simulator_model=simulator_model,
+                        simulator_model=self.simulator_model,
                         ignore_errors=ignore_errors,
                         metadata=metadata,
                     )
@@ -332,10 +336,10 @@ class RedTeamer:
 
         for _vulnerability in vulnerabilities:
             if vulnerability_type in _vulnerability.types:
+                _vulnerability.evaluation_model = self.evaluation_model
                 metric: BaseRedTeamingMetric = _vulnerability._get_metric(
                     vulnerability_type
                 )
-                metric.evaluation_model = self.evaluation_model
                 break
 
         if multi_turn:
@@ -407,10 +411,10 @@ class RedTeamer:
 
         for _vulnerability in vulnerabilities:
             if vulnerability_type in _vulnerability.types:
+                _vulnerability.evaluation_model = self.evaluation_model
                 metric: BaseRedTeamingMetric = _vulnerability._get_metric(
                     vulnerability_type
                 )
-                metric.evaluation_model = self.evaluation_model
                 break
 
         if multi_turn:

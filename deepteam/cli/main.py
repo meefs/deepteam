@@ -3,7 +3,8 @@ import typer
 import importlib.util
 import sys
 import os
-from typing import Callable, Awaitable
+from typing import Callable, Awaitable, Optional
+from dataclasses import dataclass
 
 from . import config
 from .model_callback import load_model
@@ -58,6 +59,7 @@ from deepteam.attacks.multi_turn import (
     SequentialJailbreak,
     BadLikertJudge,
 )
+from deepteam.red_teamer.risk_assessment import RiskAssessment
 
 app = typer.Typer(name="deepteam")
 
@@ -104,6 +106,12 @@ ATTACK_CLASSES = [
 ]
 
 ATTACK_MAP = {cls.__name__: cls for cls in ATTACK_CLASSES}
+
+
+@dataclass
+class ConfigRunResult:
+    risk_assessment: RiskAssessment
+    file_path: Optional[str] = None
 
 
 def _build_vulnerability(cfg: dict, custom: bool):
@@ -193,13 +201,15 @@ def _load_config(path: str):
     with open(path, "r") as f:
         return yaml.safe_load(f)
 
-  
+
 def _show_version(value: bool):
     from deepteam._version import __version__
+
     if value:
         typer.echo(f"deepteam version {__version__}")
         raise typer.Exit()
-    
+
+
 @app.callback()
 def main(
     version: bool = typer.Option(
@@ -214,12 +224,16 @@ def main(
     """
     DeepTeam CLI for red teaming LLMs.
     """
-    pass  
+    pass
+
 
 @app.command("login")
 def login():
-    typer.echo(f"This feature is currently in beta. For more details, please contact support@confident-ai.com")
+    typer.echo(
+        f"This feature is currently in beta. For more details, please contact support@confident-ai.com"
+    )
     raise typer.Exit()
+
 
 @app.command("run")
 def run(
@@ -342,12 +356,23 @@ def run(
         target_model_spec = target_cfg["model"]
         target_model = load_model(target_model_spec)
 
-        async def model_callback(input: str) -> str:
-            response = await target_model.a_generate(input)
-            # Ensure we return a string, handle different response types
-            if isinstance(response, tuple):
-                return str(response[0]) if response else "Empty response"
-            return str(response)
+        if system_config.get("run_async", True):
+
+            async def model_callback(input: str, turns=None) -> str:
+                response = await target_model.a_generate(input)
+                # Ensure we return a string, handle different response types
+                if isinstance(response, tuple):
+                    return str(response[0]) if response else "Empty response"
+                return str(response)
+
+        else:
+
+            def model_callback(input: str, turns=None) -> str:
+                response = target_model.generate(input)
+                # Ensure we return a string, handle different response types
+                if isinstance(response, tuple):
+                    return str(response[0]) if response else "Empty response"
+                return str(response)
 
     else:
         raise ValueError(
@@ -361,15 +386,14 @@ def run(
         attacks_per_vulnerability_type=final_attacks_per_vuln,
         ignore_errors=system_config.get("ignore_errors", False),
     )
-
-    red_teamer._print_risk_assessment()
+    result = ConfigRunResult(risk)
 
     # Save risk assessment if output folder is specified
-    file = None
-    if final_output_folder:
+    if final_output_folder is not None:
         file = red_teamer.risk_assessment.save(to=final_output_folder)
+        result.file_path = file
 
-    return risk, file
+    return result
 
 
 if __name__ == "__main__":
