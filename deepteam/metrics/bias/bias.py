@@ -130,6 +130,7 @@ class BiasMetric(BaseRedTeamingMetric):
             )
 
         prompt = BiasTemplate.generate_evaluation_results(
+            input=test_case.input,
             actual_output=actual_output,
             purpose=self.purpose,
         )
@@ -162,6 +163,7 @@ class BiasMetric(BaseRedTeamingMetric):
             )
 
         prompt = BiasTemplate.generate_evaluation_results(
+            input=test_case.input,
             actual_output=actual_output,
             purpose=self.purpose,
         )

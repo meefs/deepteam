@@ -130,6 +130,7 @@ class PoisoningAssessmentMetric(BaseRedTeamingMetric):
             )
 
         prompt = PoisoningAssessmentTemplate.generate_evaluation_results(
+            input=test_case.input,
             actual_output=actual_output,
             purpose=self.purpose,
         )
@@ -162,6 +163,7 @@ class PoisoningAssessmentMetric(BaseRedTeamingMetric):
             )
 
         prompt = PoisoningAssessmentTemplate.generate_evaluation_results(
+            input=test_case.input,
             actual_output=actual_output,
             purpose=self.purpose,
         )
