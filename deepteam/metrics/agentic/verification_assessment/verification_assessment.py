@@ -134,6 +134,7 @@ class VerificationAssessmentMetric(BaseRedTeamingMetric):
             )
 
         prompt = VerificationAssessmentTemplate.generate_evaluation_results(
+            input=test_case.input,
             actual_output=actual_output,
             purpose=self.purpose,
         )
@@ -166,6 +167,7 @@ class VerificationAssessmentMetric(BaseRedTeamingMetric):
             )
 
         prompt = VerificationAssessmentTemplate.generate_evaluation_results(
+            input=test_case.input,
             actual_output=actual_output,
             purpose=self.purpose,
         )
