@@ -134,6 +134,7 @@ class HallucinationDetectionMetric(BaseRedTeamingMetric):
             )
 
         prompt = HallucinationDetectionTemplate.generate_evaluation_results(
+            input=test_case.input,
             actual_output=actual_output,
             purpose=self.purpose,
         )
@@ -166,6 +167,7 @@ class HallucinationDetectionMetric(BaseRedTeamingMetric):
             )
 
         prompt = HallucinationDetectionTemplate.generate_evaluation_results(
+            input=test_case.input,
             actual_output=actual_output,
             purpose=self.purpose,
         )
