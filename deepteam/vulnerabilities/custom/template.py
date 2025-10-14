@@ -1,4 +1,5 @@
 from typing import Optional, List
+from enum import Enum
 
 
 class CustomVulnerabilityTemplate:
@@ -10,7 +11,7 @@ class CustomVulnerabilityTemplate:
     @staticmethod
     def generate_baseline_attacks(
         name: str,
-        types: List[str],
+        type: Enum,
         max_goldens: int,
         custom_prompt: Optional[str] = None,
         purpose: Optional[str] = None,
@@ -32,14 +33,14 @@ class CustomVulnerabilityTemplate:
             return CustomVulnerabilityTemplate._apply_template_variables(
                 template=custom_prompt,
                 name=name,
-                types=types,
+                type=type,
                 max_goldens=max_goldens,
                 purpose=purpose,
             )
 
         return CustomVulnerabilityTemplate._generate_fallback_prompt(
             name=name,
-            types=types,
+            type=type,
             max_goldens=max_goldens,
             purpose=purpose,
         )
@@ -48,7 +49,7 @@ class CustomVulnerabilityTemplate:
     def _apply_template_variables(
         template: str,
         name: str,
-        types: List[str],
+        type: Enum,
         max_goldens: int,
         purpose: Optional[str] = None,
     ) -> str:
@@ -64,14 +65,14 @@ class CustomVulnerabilityTemplate:
 
         return template.format(
             name=name,
-            types=", ".join(types),
+            types=type.value,
             max_goldens=max_goldens,
         )
 
     @staticmethod
     def _generate_fallback_prompt(
         name: str,
-        types: List[str],
+        type: Enum,
         max_goldens: int,
         purpose: Optional[str] = None,
     ) -> str:
@@ -103,7 +104,7 @@ class CustomVulnerabilityTemplate:
             **
 
             Name: {name}
-            Types: {types}
+            Types: {type}
             Max Goldens: {max_goldens}
             Purpose: {purpose}
             JSON:
