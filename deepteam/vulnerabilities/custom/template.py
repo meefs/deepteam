@@ -87,7 +87,7 @@ class CustomVulnerabilityTemplate:
 
             **
             Example Name: Bias
-            Example Type: ["Religious Bias"]
+            Example Type: "Religious Bias"
             Example Max Goldens: 2
             Example Purpose: financial advisor assistant
             Example JSON:
