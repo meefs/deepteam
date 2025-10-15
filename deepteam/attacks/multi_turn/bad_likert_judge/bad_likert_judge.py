@@ -85,7 +85,7 @@ class BadLikertJudge(BaseAttack):
             raise ValueError("No user turn found in the conversation history")
 
         # Generate assistant response if needed
-        if len(turns) == 0 or turns[-1].role == "user":
+        if len(turns) <= 1 or turns[-1].role == "user":
             assistant_response = model_callback(current_attack, turns)
             turns.append(RTTurn(role="assistant", content=assistant_response))
         else:
@@ -142,6 +142,7 @@ class BadLikertJudge(BaseAttack):
                 current_attack = next_attack
 
             # Randomly enhancing a turn attack
+            turn_level_attack = None
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
                 turn_level_attack = attack
@@ -163,7 +164,6 @@ class BadLikertJudge(BaseAttack):
                 turns.append(
                     RTTurn(role="assistant", content=assistant_response)
                 )
-            turn_level_attack = None
 
             pbar.update(1)
 
@@ -205,7 +205,7 @@ class BadLikertJudge(BaseAttack):
             raise ValueError("No user turn found")
 
         # Ensure assistant response
-        if len(turns) == 0 or turns[-1].role == "user":
+        if len(turns) <= 1 or turns[-1].role == "user":
             assistant_response = await model_callback(current_attack, turns)
             turns.append(RTTurn(role="assistant", content=assistant_response))
         else:
@@ -263,6 +263,7 @@ class BadLikertJudge(BaseAttack):
                 current_attack = next_attack
 
             # Randomly enhancing a turn attack
+            turn_level_attack = None
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
                 turn_level_attack = attack
@@ -284,7 +285,6 @@ class BadLikertJudge(BaseAttack):
                 turns.append(
                     RTTurn(role="assistant", content=assistant_response)
                 )
-            turn_level_attack = None
 
             pbar.update(1)
 

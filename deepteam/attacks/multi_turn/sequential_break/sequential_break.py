@@ -102,7 +102,7 @@ class SequentialJailbreak(BaseAttack):
             raise ValueError("No user turns found in conversation history")
 
         # If the last turn is from user, we need a model response before simulation
-        if len(turns) == 0 or turns[-1].role == "user":
+        if len(turns) <= 1 or turns[-1].role == "user":
             target_response = model_callback(current_attack, turns)
             turns.append(RTTurn(role="assistant", content=target_response))
         else:
@@ -159,6 +159,7 @@ class SequentialJailbreak(BaseAttack):
                 )
 
             # Randomly enhancing a turn attack
+            turn_level_attack = None
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
                 turn_level_attack = attack
@@ -182,7 +183,6 @@ class SequentialJailbreak(BaseAttack):
                 turns.append(
                     RTTurn(role="assistant", content=assistant_response)
                 )
-            turn_level_attack = None
 
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(
                 current_attack, assistant_response
@@ -284,7 +284,7 @@ class SequentialJailbreak(BaseAttack):
             raise ValueError("No user turns found in conversation history")
 
         # If last turn is user, generate a model response before the loop
-        if len(turns) == 0 or turns[-1].role == "user":
+        if len(turns) <= 1 or turns[-1].role == "user":
             target_response = await model_callback(current_attack, turns)
             turns.append(RTTurn(role="assistant", content=target_response))
         else:
@@ -341,6 +341,7 @@ class SequentialJailbreak(BaseAttack):
                 )
 
             # Randomly enhancing a turn attack
+            turn_level_attack = None
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
                 turn_level_attack = attack
@@ -364,7 +365,6 @@ class SequentialJailbreak(BaseAttack):
                 turns.append(
                     RTTurn(role="assistant", content=assistant_response)
                 )
-            turn_level_attack = None
 
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(
                 current_attack, assistant_response
