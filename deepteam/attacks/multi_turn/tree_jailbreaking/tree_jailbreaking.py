@@ -97,7 +97,7 @@ class TreeJailbreaking(BaseAttack):
             )
 
         # Ensure the conversation is initialized correctly
-        if len(turns) == 0 or turns[-1].role == "user":
+        if len(turns) <= 1 or turns[-1].role == "user":
             assistant_response = model_callback(attack, turns)
             turns.append(RTTurn(role="assistant", content=assistant_response))
 
@@ -185,7 +185,7 @@ class TreeJailbreaking(BaseAttack):
             )
 
         # Ensure the conversation is initialized correctly
-        if len(turns) == 0 or turns[-1].role == "user":
+        if len(turns) <= 1 or turns[-1].role == "user":
             assistant_response = await model_callback(attack, turns)
             turns.append(RTTurn(role="assistant", content=assistant_response))
 

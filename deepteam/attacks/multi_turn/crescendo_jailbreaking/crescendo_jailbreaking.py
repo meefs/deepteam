@@ -181,6 +181,7 @@ class CrescendoJailbreaking(BaseAttack):
             pbar_rounds.update(1)
 
             # Randomly enhancing a turn attack
+            turn_level_attack = None
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
                 turn_level_attack = attack
@@ -205,7 +206,6 @@ class CrescendoJailbreaking(BaseAttack):
                 turns.append(
                     RTTurn(role="assistant", content=assistant_response)
                 )
-            turn_level_attack = None
 
             is_refusal, refusal_rationale = self.get_refusal_score(
                 last_response, current_attack, vulnerability_data
@@ -351,6 +351,7 @@ class CrescendoJailbreaking(BaseAttack):
             pbar_rounds.update(1)
 
             # Randomly enhancing a turn attack
+            turn_level_attack = None
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
                 turn_level_attack = attack
@@ -377,7 +378,6 @@ class CrescendoJailbreaking(BaseAttack):
                 turns.append(
                     RTTurn(role="assistant", content=assistant_response)
                 )
-            turn_level_attack = None
 
             is_refusal, refusal_rationale = await self.a_get_refusal_score(
                 last_response, current_attack, vulnerability_data

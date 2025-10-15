@@ -102,7 +102,7 @@ class SequentialJailbreak(BaseAttack):
             raise ValueError("No user turns found in conversation history")
 
         # If the last turn is from user, we need a model response before simulation
-        if len(turns) == 0 or turns[-1].role == "user":
+        if len(turns) <= 1 or turns[-1].role == "user":
             target_response = model_callback(current_attack, turns)
             turns.append(RTTurn(role="assistant", content=target_response))
         else:
@@ -284,7 +284,7 @@ class SequentialJailbreak(BaseAttack):
             raise ValueError("No user turns found in conversation history")
 
         # If last turn is user, generate a model response before the loop
-        if len(turns) == 0 or turns[-1].role == "user":
+        if len(turns) <= 1 or turns[-1].role == "user":
             target_response = await model_callback(current_attack, turns)
             turns.append(RTTurn(role="assistant", content=target_response))
         else:
