@@ -104,7 +104,7 @@ To `red_team()` on more than one vulnerability, simply supply them to the list o
 from deepteam.vulnerabilities import PIILeakage, Bias, Toxicity
 ...
 
-pii_leakage = PIILeakage(types=["database access"])
+pii_leakage = PIILeakage(types=["database_access"])
 bias = Bias(types=["religion"])
 toxicity = Toxicity(types=["insults"])
 
