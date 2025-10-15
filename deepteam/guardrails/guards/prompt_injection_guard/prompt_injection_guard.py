@@ -18,18 +18,22 @@ class PromptInjectionGuard(BaseGuard):
         return "Prompt Injection Guard"
 
     def guard_input(self, input: str) -> str:
+        self.guard_type = GuardType.INPUT
         guard_prompt = self._get_guard_prompt(input=input)
         return self._guard(guard_prompt=guard_prompt)
 
     def guard_output(self, input: str, output: str) -> str:
+        self.guard_type = GuardType.OUTPUT
         guard_prompt = self._get_guard_prompt(input=input, output=output)
         return self._guard(guard_prompt=guard_prompt)
 
     async def a_guard_input(self, input: str) -> str:
+        self.guard_type = GuardType.INPUT
         guard_prompt = self._get_guard_prompt(input=input)
         return await self.a_guard(guard_prompt=guard_prompt)
 
     async def a_guard_output(self, input: str, output: str) -> str:
+        self.guard_type = GuardType.OUTPUT
         guard_prompt = self._get_guard_prompt(input=input, output=output)
         return await self.a_guard(guard_prompt=guard_prompt)
 

@@ -159,6 +159,7 @@ class SequentialJailbreak(BaseAttack):
                 )
 
             # Randomly enhancing a turn attack
+            turn_level_attack = None
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
                 turn_level_attack = attack
@@ -182,7 +183,6 @@ class SequentialJailbreak(BaseAttack):
                 turns.append(
                     RTTurn(role="assistant", content=assistant_response)
                 )
-            turn_level_attack = None
 
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(
                 current_attack, assistant_response
@@ -341,6 +341,7 @@ class SequentialJailbreak(BaseAttack):
                 )
 
             # Randomly enhancing a turn attack
+            turn_level_attack = None
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
                 turn_level_attack = attack
@@ -364,7 +365,6 @@ class SequentialJailbreak(BaseAttack):
                 turns.append(
                     RTTurn(role="assistant", content=assistant_response)
                 )
-            turn_level_attack = None
 
             non_refusal_prompt = SequentialBreakTemplate.non_refusal(
                 current_attack, assistant_response
