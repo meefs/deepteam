@@ -222,15 +222,15 @@ red_team(
 
 The attacks are still randomly sampled but now you can completely eliminate the type of attack simluated to your LLM systems, but also the likelihood of each attack by specifying the `weight` of each.
 
-## Reuse Attacks For Red Teaming
+## Reuse Test Cases For Red Teaming
 
-To reuse attacks for red teaming, you'll need to red team using `deepteam`'s `RedTeamer`. This is exactly the same as the `red_team` function (and in fact is what the `red_team` function uses under the hood), and allows you to red team your LLM system in a stateful manner.
+To reuse previous test cases for red teaming, you'll need to red team using `deepteam`'s `RedTeamer`. This is exactly the same as the `red_team` function (and in fact is what the `red_team` function uses under the hood), and allows you to red team your LLM system in a stateful manner.
 
 :::tip
-This is important because it allows you to reuse attacks that were simulated prior to the current red team, which means you'll be able to iteratively measure whether your LLM system is becoming safer and more secure over time.
+This is important because it allows you to reuse test cases that were simulated prior to the current red team, which means you'll be able to iteratively measure whether your LLM system is becoming safer and more secure over time.
 :::
 
-The first step is to red team you LLM system using and instance of the `RedTeamer` instead:
+The first step is to red team your LLM system using an instance of the `RedTeamer` instead:
 
 ```python title="red_teaming_example.py"
 from deepteam import RedTeamer
@@ -248,26 +248,26 @@ red_teamer = RedTeamer()
 red_teamer.red_team(model_callback=model_callback, vulnerabilities=[bias])
 ```
 
-By red teaming using the `RedTeamer` instead of the standealone `red_team()` function, you'll be able to access previously simulated attacks in the `RedTeamer` instance.
+By red teaming using the `RedTeamer` instead of the standealone `red_team()` function, you'll be able to access previous test cases in the `RedTeamer` instance.
 
-You can `print` the `simulated_attacks` to see it for yourself:
+You can `print` the `test_cases` to see it for yourself:
 
 ```python title="red_teaming_example.py"
 ...
 
-print(red_teamer.simulated_attacks)
+print(red_teamer.test_cases)
 ```
 
 :::note
 This only prints something if you're previously ran the `red_team()` method within your `RedTeamer`, and will be resetted each time you run `red_team()`.
 :::
 
-Now that you can see your `simulated_attacks` is actually populated, go ahead and call the `red_team()` method again, with `reuse_simulated_attacks` set to `True`:
+Now that you can see your `test_cases` is actually populated, go ahead and call the `red_team()` method again, with `reuse_simulated_test_cases` set to `True`:
 
 ```python title="red_teaming_example.py"
 ...
 
-red_teamer.red_team(model_callback=model_callback, reuse_simulated_attacks=True)
+red_teamer.red_team(model_callback=model_callback, reuse_simulated_test_cases=True)
 ```
 
-And that's it! With this workflow, you can reuse adversarial attacks instead of re-simulating them each time, and `deepteam` will automatically use the corresponding red teaming metric to use to evaluate your (hopefully) improved LLM system on based on the vulnerabilities that your attacks were originally simuulated for.
+And that's it! With this workflow, you can reuse adversarial attacks instead of re-simulating them each time, and `deepteam` will automatically use the corresponding red teaming metric to use to evaluate your (hopefully) improved LLM system on based on the vulnerabilities that your attacks were originally simulated for.
