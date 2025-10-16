@@ -5,6 +5,8 @@ module.exports = {
         label: "Customizations",
         items: [
             "guide-custom-vulnerability",
+            // "guide-custom-red-teaming-pipelines",
+            "guide-custom-attacks"
         ],
         collapsed: false,
         },
