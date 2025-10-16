@@ -7,6 +7,11 @@ from deepeval.test_case import LLMTestCase, Turn
 class RTTurn(Turn):
     turn_level_attack: Optional[str] = None
 
+    def __repr__(self):
+        attrs = [f"role={self.role}", f"content={self.content}"]
+        if self.turn_level_attack is not None:
+            attrs.append(f"turn_level_attack={self.turn_level_attack}")
+        return f"RTTurn({', '.join(attrs)})"
 
 class RTTestCase(LLMTestCase):
     vulnerability: str
@@ -20,6 +25,28 @@ class RTTestCase(LLMTestCase):
     score: Optional[float] = None
     reason: Optional[str] = None
     error: Optional[str] = None
+
+    def __repr__(self):
+        attrs = [f"vulnerability={self.vulnerability}", f"vulnerability_type={self.vulnerability_type.value}"]
+        if self.input is not None:
+            attrs.append(f"input={self.input}")
+        if self.actual_output is not None:
+            attrs.append(f"actual_output={self.actual_output}")
+        if self.turns is not None:
+            attrs.append(f"turns={self.turns}")
+        if self.metadata is not None:
+            attrs.append(f"metadata={self.metadata}")
+        if self.attack_method is not None:
+            attrs.append(f"attack_method={self.attack_method}")
+        if self.risk_category is not None:
+            attrs.append(f"risk_category={self.risk_category}")
+        if self.score is not None:
+            attrs.append(f"score={self.score}")
+        if self.reason is not None:
+            attrs.append(f"reason={self.reason}")
+        if self.error is not None:
+            attrs.append(f"error={self.error}")
+        return f"RTTestCase({', '.join(attrs)})"
 
     # @model_validator(mode="before")
     # def validate_input(cls, data):
