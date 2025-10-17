@@ -13,6 +13,7 @@ class RTTurn(Turn):
             attrs.append(f"turn_level_attack={self.turn_level_attack}")
         return f"RTTurn({', '.join(attrs)})"
 
+
 class RTTestCase(LLMTestCase):
     vulnerability: str
     input: Optional[str] = None
@@ -27,7 +28,10 @@ class RTTestCase(LLMTestCase):
     error: Optional[str] = None
 
     def __repr__(self):
-        attrs = [f"vulnerability={self.vulnerability}", f"vulnerability_type={self.vulnerability_type.value}"]
+        attrs = [
+            f"vulnerability={self.vulnerability}",
+            f"vulnerability_type={self.vulnerability_type.value}",
+        ]
         if self.input is not None:
             attrs.append(f"input={self.input}")
         if self.actual_output is not None:
