@@ -15,13 +15,13 @@ The `PermissionEscalation` attack method enhances baseline attacks by attempting
 ```python title="main.py"
 from deepteam import red_team
 from deepteam.vulnerabilities import Bias
-from deepteam.attacks.single_turn import RoleManipulation
+from deepteam.attacks.single_turn import PermissionEscalation
 from somewhere import your_callback
 
-role_manipulation = RoleManipulation(weight=2, max_retires=7)
+permission_escalation = PermissionEscalation(weight=2, max_retires=7)
 
 red_team(
-    attacks=[role_manipulation], 
+    attacks=[permission_escalation], 
     vulnerabilities=[Bias()], 
     model_callback=your_callback
 )
@@ -41,13 +41,13 @@ The `weight` is only applicable for the `red_team` function and does not  when u
 You can enhance any attack using the `enhance` method:
 
 ```python
-from deepteam.attacks.single_turn import RoleManipulation
+from deepteam.attacks.single_turn import PermissionEscalation
 from somewhere import your_callback
 
-base_attack = "Your initial harmful prompt targeting a specific vulnerability"
-role_manipulation = RoleManipulation()
+permission_escalation = "Your initial harmful prompt targeting a specific vulnerability"
+role_manipulation = PermissionEscalation()
 
-enhanced_attack = role_manipulation.enhance(base_attack)
+enhanced_attack = role_manipulation.enhance(permission_escalation)
 print(enhanced_attack)
 ```
 
