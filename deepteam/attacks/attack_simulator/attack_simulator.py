@@ -286,7 +286,7 @@ class AttackSimulator:
                     model_callback=self.model_callback,
                     turns=turns,
                     vulnerability=test_case.vulnerability,
-                    vulnerability_type=test_case.vulnerability_type,
+                    vulnerability_type=test_case.vulnerability_type.value,
                 )
 
                 test_case.turns = res
@@ -395,7 +395,7 @@ class AttackSimulator:
                     model_callback=self.model_callback,
                     turns=turns,
                     vulnerability=test_case.vulnerability,
-                    vulnerability_type=test_case.vulnerability_type,
+                    vulnerability_type=test_case.vulnerability_type.value,
                 )
 
                 test_case.turns = res

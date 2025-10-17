@@ -367,7 +367,7 @@ class BadLikertJudge(BaseAttack):
                     model_callback=model_callback,
                     turns=inner_turns,
                     vulnerability=vulnerability_name,
-                    vulnerability_type=vuln_type,
+                    vulnerability_type=vuln_type.value,
                 )
 
             result[vuln_type] = enhanced_turns
@@ -449,7 +449,7 @@ class BadLikertJudge(BaseAttack):
                     model_callback=model_callback,
                     turns=inner_turns,
                     vulnerability=vulnerability_name,
-                    vulnerability_type=vuln_type,
+                    vulnerability_type=vuln_type.value,
                 )
 
             result[vuln_type] = enhanced_turns
