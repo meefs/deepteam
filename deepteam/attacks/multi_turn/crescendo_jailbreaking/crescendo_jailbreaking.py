@@ -491,9 +491,12 @@ class CrescendoJailbreaking(BaseAttack):
                     )
 
                 # Run enhancement loop and assign full turn history
+                vulnerability_name = vulnerability.get_name()
                 enhanced_turns = self._get_turns(
                     model_callback=model_callback,
                     turns=inner_turns,
+                    vulnerability=vulnerability_name,
+                    vulnerability_type=vuln_type.value,
                 )
 
             result[vuln_type] = enhanced_turns
@@ -575,7 +578,7 @@ class CrescendoJailbreaking(BaseAttack):
                     model_callback=model_callback,
                     turns=inner_turns,
                     vulnerability=vulnerability_name,
-                    vulnerability_type=vuln_type,
+                    vulnerability_type=vuln_type.value,
                 )
 
             result[vuln_type] = enhanced_turns
