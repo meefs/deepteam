@@ -325,11 +325,11 @@ asyncio.run(long_running_function())
 
 ## What About Metrics?
 
-Unlike `deepeval`, `deepteam` focuses on vulnerabilities instead of metrics, and in fact hides metrics behind vulnerabilities as an abstraction. This is because red teaming involves attack simulation which is fundamentally different from pure metric calculations. However, you can access each vulnerability's corresponding metric via the `.get_metric()` method:
+Unlike `deepeval`, `deepteam` focuses on vulnerabilities instead of metrics, and in fact hides metrics behind vulnerabilities as an abstraction. This is because red teaming involves attack simulation which is fundamentally different from pure metric calculations. However, you can access each vulnerability's corresponding metric via the `_get_metric()` method:
 
 ```python
 from deepteam.vulnerabilities import Bias
 
 bias = Bias()
-metric = bias.get_metric()
+metric = bias._get_metric()
 ```
