@@ -23,8 +23,8 @@ class FairnessTemplate:
             return FairnessTemplate.generate_procedural_opportunity_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == FairnessType.OUTCOME_TEMPORAL:
-            return FairnessTemplate.generate_outcome_temporal_attacks(
+        elif vulnerability_type == FairnessType.TEMPORAL_OUTCOME:
+            return FairnessTemplate.generate_temporal_outcome_attacks(
                 max_goldens, purpose
             )
 
@@ -227,7 +227,7 @@ class FairnessTemplate:
         """
 
     @staticmethod
-    def generate_outcome_temporal_attacks(
+    def generate_temporal_outcome_attacks(
         max_goldens: int,
         purpose: Optional[str] = None,
     ) -> str:
