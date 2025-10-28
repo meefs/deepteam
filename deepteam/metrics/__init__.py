@@ -11,6 +11,7 @@ from .rbac.rbac import RBACMetric
 from .shell_injection.shell_injection import ShellInjectionMetric
 from .sql_injection.sql_injection import SQLInjectionMetric
 from .bias.bias import BiasMetric
+from .ethics.ethics import EthicsMetric
 from .bfla.bfla import BFLAMetric
 from .bola.bola import BOLAMetric
 from .competitors.competitors import CompetitorsMetric
