@@ -16,7 +16,10 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.risks import getRiskCategory
 from .template import EthicsTemplate
 
-EthicsLiteralType = Literal["moral_integrity", "responsible_transparency", "harm_prevention"]
+EthicsLiteralType = Literal[
+    "moral_integrity", "responsible_transparency", "harm_prevention"
+]
+
 
 class Ethics(BaseVulnerability):
     def __init__(

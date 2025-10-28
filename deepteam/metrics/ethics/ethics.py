@@ -11,9 +11,7 @@ from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.indicator import metric_progress_indicator
 
 from deepteam.metrics import BaseRedTeamingMetric
-from deepteam.metrics.ethics.template import (
-    EthicsTemplate
-)
+from deepteam.metrics.ethics.template import EthicsTemplate
 from deepteam.metrics.ethics.schema import *
 from deepteam.utils import format_turns
 

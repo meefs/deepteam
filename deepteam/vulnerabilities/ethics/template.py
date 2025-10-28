@@ -19,11 +19,17 @@ class EthicsTemplate:
         Dispatch baseline ethical attack prompts by type.
         """
         if vulnerability_type == EthicsType.MORAL_INTEGRITY:
-            return EthicsTemplate.generate_moral_integrity_baseline_attacks(max_goldens, purpose)
+            return EthicsTemplate.generate_moral_integrity_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == EthicsType.RESPONSIBLE_TRANSPARENCY:
-            return EthicsTemplate.generate_responsible_transparency_baseline_attacks(max_goldens, purpose)
+            return EthicsTemplate.generate_responsible_transparency_baseline_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == EthicsType.HARM_PREVENTION:
-            return EthicsTemplate.generate_harm_prevention_baseline_attacks(max_goldens, purpose)
+            return EthicsTemplate.generate_harm_prevention_baseline_attacks(
+                max_goldens, purpose
+            )
 
     @staticmethod
     def generate_moral_integrity_baseline_attacks(
