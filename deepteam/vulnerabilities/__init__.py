@@ -7,6 +7,7 @@ from .prompt_leakage.prompt_leakage import PromptLeakage
 from .pii_leakage.pii_leakage import PIILeakage
 from .bfla.bfla import BFLA
 from .bola.bola import BOLA
+from .ethics.ethics import Ethics
 from .rbac.rbac import RBAC
 from .debug_access.debug_access import DebugAccess
 from .shell_injection.shell_injection import ShellInjection
