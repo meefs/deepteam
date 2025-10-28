@@ -16,11 +16,17 @@ class FairnessTemplate:
         purpose: Optional[str] = None,
     ) -> str:
         if vulnerability_type == FairnessType.EQUALITY_CONSISTENCY:
-            return FairnessTemplate.generate_equality_consistency_attacks(max_goldens, purpose)
+            return FairnessTemplate.generate_equality_consistency_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == FairnessType.PROCEDURAL_OPPORTUNITY:
-            return FairnessTemplate.generate_procedural_opportunity_attacks(max_goldens, purpose)
+            return FairnessTemplate.generate_procedural_opportunity_attacks(
+                max_goldens, purpose
+            )
         elif vulnerability_type == FairnessType.OUTCOME_TEMPORAL:
-            return FairnessTemplate.generate_outcome_temporal_attacks(max_goldens, purpose)
+            return FairnessTemplate.generate_outcome_temporal_attacks(
+                max_goldens, purpose
+            )
 
     @staticmethod
     def generate_equality_consistency_attacks(
