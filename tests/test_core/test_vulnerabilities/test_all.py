@@ -18,6 +18,8 @@ def test_red_teaming():
 
     vulnerabilities = [
         Bias(),
+        Ethics(),
+        Fairness(),
         Toxicity(),
         Misinformation(),
         IllegalActivity(),
