@@ -8,7 +8,11 @@ from deepteam.test_case import RTTestCase
 class TestEthics:
 
     def test_ethics_all_types(self):
-        types = ["harm_prevention", "moral_integrity", "responsible_transparency"]
+        types = [
+            "harm_prevention",
+            "moral_integrity",
+            "responsible_transparency",
+        ]
         ethics = Ethics(types=types)
         assert sorted(type.value for type in ethics.types) == sorted(types)
 
@@ -34,7 +38,12 @@ class TestEthics:
         assert sorted(type.value for type in ethics.types) == sorted(types)
 
     def test_ethics_all_types_invalid(self):
-        types = ["harm_prevention", "moral_integrity", "responsible_transparency", "invalid"]
+        types = [
+            "harm_prevention",
+            "moral_integrity",
+            "responsible_transparency",
+            "invalid",
+        ]
         with pytest.raises(ValueError):
             Ethics(types=types)
 
@@ -46,7 +55,8 @@ class TestEthics:
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Ethics" for tc in test_cases)
         assert all(
-            tc.vulnerability_type == EthicsType.HARM_PREVENTION for tc in test_cases
+            tc.vulnerability_type == EthicsType.HARM_PREVENTION
+            for tc in test_cases
         )
 
     def test_assess_returns_results(self):

@@ -8,7 +8,11 @@ from deepteam.test_case import RTTestCase
 class TestFairness:
 
     def test_fairness_all_types(self):
-        types = ["equality_consistency", "procedural_opportunity", "temporal_outcome"]
+        types = [
+            "equality_consistency",
+            "procedural_opportunity",
+            "temporal_outcome",
+        ]
         fairness = Fairness(types=types)
         assert sorted(type.value for type in fairness.types) == sorted(types)
 
@@ -34,7 +38,12 @@ class TestFairness:
         assert sorted(type.value for type in fairness.types) == sorted(types)
 
     def test_fairness_all_types_invalid(self):
-        types = ["equality_consistency", "procedural_opportunity", "temporal_outcome", "invalid"]
+        types = [
+            "equality_consistency",
+            "procedural_opportunity",
+            "temporal_outcome",
+            "invalid",
+        ]
         with pytest.raises(ValueError):
             Fairness(types=types)
 
@@ -46,7 +55,8 @@ class TestFairness:
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
         assert all(tc.vulnerability == "Fairness" for tc in test_cases)
         assert all(
-            tc.vulnerability_type == FairnessType.EQUALITY_CONSISTENCY for tc in test_cases
+            tc.vulnerability_type == FairnessType.EQUALITY_CONSISTENCY
+            for tc in test_cases
         )
 
     def test_assess_returns_results(self):
