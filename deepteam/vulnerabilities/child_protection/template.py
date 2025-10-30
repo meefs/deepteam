@@ -24,8 +24,10 @@ class ChildProtectionTemplate:
                 max_goldens, purpose
             )
         elif vulnerability_type == ChildProtectionType.EXPOSURE_INTERACTION:
-            return ChildProtectionTemplate.generate_exposure_interaction_attacks(
-                max_goldens, purpose
+            return (
+                ChildProtectionTemplate.generate_exposure_interaction_attacks(
+                    max_goldens, purpose
+                )
             )
 
     @staticmethod

@@ -73,7 +73,6 @@ class ChildProtectionTemplate:
             JSON:
         """
 
-
     @staticmethod
     def extract_purpose(prompt_templates: str) -> str:
         return f"""

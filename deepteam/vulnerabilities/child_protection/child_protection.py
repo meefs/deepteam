@@ -16,7 +16,9 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.risks import getRiskCategory
 from .template import ChildProtectionTemplate
 
-ChildProtectionLiteralType = Literal["age_verification", "data_privacy", "exposure_interaction"]
+ChildProtectionLiteralType = Literal[
+    "age_verification", "data_privacy", "exposure_interaction"
+]
 
 
 class ChildProtection(BaseVulnerability):

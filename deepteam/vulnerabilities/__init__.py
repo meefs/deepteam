@@ -7,6 +7,7 @@ from .prompt_leakage.prompt_leakage import PromptLeakage
 from .pii_leakage.pii_leakage import PIILeakage
 from .bfla.bfla import BFLA
 from .bola.bola import BOLA
+from .child_protection.child_protection import ChildProtection
 from .ethics.ethics import Ethics
 from .fairness.fairness import Fairness
 from .rbac.rbac import RBAC
@@ -30,6 +31,7 @@ from .agentic.excessive_agency.excessive_agency import ExcessiveAgency
 __all__ = [
     "BaseVulnerability",
     "Bias",
+    "ChildProtection",
     "Ethics",
     "Fairness",
     "Toxicity",
