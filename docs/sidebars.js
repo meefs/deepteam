@@ -97,6 +97,7 @@ module.exports = {
           label: "Responsible AI",
           items: [
             "red-teaming-vulnerabilities-bias",
+            "red-teaming-vulnerabilities-child-protection",
             "red-teaming-vulnerabilities-ethics",
             "red-teaming-vulnerabilities-fairness",
             "red-teaming-vulnerabilities-toxicity",
