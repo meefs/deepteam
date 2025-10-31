@@ -96,7 +96,7 @@ class AttackSimulator:
             enhanced_test_cases.append(test_case)
 
         self.test_cases.extend(enhanced_test_cases)
-        return test_cases
+        return enhanced_test_cases
 
     async def a_simulate(
         self,
@@ -184,7 +184,7 @@ class AttackSimulator:
         pbar.close()
 
         self.test_cases.extend(enhanced_test_cases)
-        return test_cases
+        return enhanced_test_cases
 
     ##################################################
     ### Simulating Base (Unenhanced) Attacks #########
