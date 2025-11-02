@@ -83,14 +83,14 @@ class AttackSimulator:
             )
             attack_weights = [attack.weight for attack in attacks]
 
-            for baseline_attack in pbar:
+            for test_case in pbar:
                 # Randomly sample an enhancement based on the distribution
                 sampled_attack = random.choices(
                     attacks, weights=attack_weights, k=1
                 )[0]
                 self.enhance_attack(
                     attack=sampled_attack,
-                    test_case=baseline_attack,
+                    test_case=test_case,
                     ignore_errors=ignore_errors,
                 )
 
@@ -152,7 +152,7 @@ class AttackSimulator:
             )
 
             async def throttled_attack_method(
-                baseline_attack: RTTestCase,
+                test_case: RTTestCase,
             ):
                 async with semaphore:  # Throttling applied here
                     # Randomly sample an enhancement based on the distribution
@@ -166,7 +166,7 @@ class AttackSimulator:
 
                     await self.a_enhance_attack(
                         attack=attack,
-                        test_case=baseline_attack,
+                        test_case=test_case,
                         ignore_errors=ignore_errors,
                     )
                     pbar.update(1)
