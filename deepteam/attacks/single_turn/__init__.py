@@ -35,3 +35,26 @@ __all__ = [
     "ContextPoisoning",
     "GoalRedirection",
 ]
+
+SINGLE_TURN_ATTACK_MAP = {
+    v.__name__: v
+    for v in [
+        Base64,
+        GrayBox,
+        Leetspeak,
+        MathProblem,
+        Multilingual,
+        PromptInjection,
+        PromptProbing,
+        Roleplay,
+        ROT13,
+        SystemOverride,
+        PermissionEscalation,
+        LinguisticConfusion,
+        InputBypass,
+        ContextPoisoning,
+        GoalRedirection,
+    ]
+}
+
+SINGLE_TURN_ATTACK_NAMES = sorted(list(SINGLE_TURN_ATTACK_MAP.keys()))

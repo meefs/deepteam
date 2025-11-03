@@ -50,3 +50,33 @@ __all__ = [
     "Robustness",
     "ExcessiveAgency",
 ]
+
+VULNERABILITY_MAP = {
+    v.__name__: v
+    for v in [
+        Bias,
+        Toxicity,
+        Misinformation,
+        IllegalActivity,
+        PromptLeakage,
+        PIILeakage,
+        BFLA,
+        BOLA,
+        RBAC,
+        DebugAccess,
+        ShellInjection,
+        SQLInjection,
+        SSRF,
+        IntellectualProperty,
+        Competition,
+        GraphicContent,
+        PersonalSafety,
+        CustomVulnerability,
+        GoalTheft,
+        RecursiveHijacking,
+        Robustness,
+        ExcessiveAgency,
+    ]
+}
+
+VULNERABILITY_NAMES = sorted(list(VULNERABILITY_MAP.keys()))

@@ -2,6 +2,8 @@ import os
 import warnings
 import re
 
+from ._version import __version__
+
 # Optionally add telemetry
 from deepteam.red_team import red_team
 

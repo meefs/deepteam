@@ -1,6 +1,6 @@
 from typing import List, Optional
 from enum import Enum
-from pydantic import model_validator
+
 from deepeval.test_case import LLMTestCase, Turn
 
 
