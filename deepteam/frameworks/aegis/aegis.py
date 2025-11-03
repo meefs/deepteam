@@ -43,7 +43,7 @@ class Aegis(AISafetyFramework):
 
         if len(attacks) < self.num_attacks:
             raise ValueError(
-                f"Please set your 'num_attacks' to less than or equal to {len(attacks)}."
+                f"There are only {len(attacks)} harmful attacks that can be used in the Aegis dataset. Please set your 'num_attacks' to less than or equal to {len(attacks)}."
             )
 
         sampled = random.sample(attacks, k=self.num_attacks)
@@ -73,7 +73,7 @@ class Aegis(AISafetyFramework):
 
         if len(attacks) < self.num_attacks:
             raise ValueError(
-                f"Please set your 'num_attacks' to less than or equal to {len(attacks)}."
+                f"There are only {len(attacks)} harmful attacks that can be used in the Aegis dataset. Please set your 'num_attacks' to less than or equal to {len(attacks)}."
             )
 
         sampled = random.sample(attacks, k=self.num_attacks)
