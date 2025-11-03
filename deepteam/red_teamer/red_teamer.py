@@ -69,14 +69,14 @@ class RedTeamer:
         reuse_simulated_test_cases: bool = False,
         metadata: Optional[dict] = None,
     ):
-        if framework:
-            vulnerabilities = framework.vulnerabilities
+        if not framework and not vulnerabilities:
+            raise ValueError(
+                "You must either provide a 'framework' or 'vulnerabilities'"
+            )
+
+        if framework and framework._is_dataset is False:
             attacks = framework.attacks
-        else:
-            if not vulnerabilities:
-                raise ValueError(
-                    "You must either provide a 'framework' or 'vulnerabilities'"
-                )
+            vulnerabilities = framework.vulnerabilities
 
         if self.async_mode:
             validate_model_callback_signature(
@@ -89,6 +89,7 @@ class RedTeamer:
                     model_callback=model_callback,
                     attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                     vulnerabilities=vulnerabilities,
+                    framework=framework,
                     attacks=attacks,
                     simulator_model=simulator_model,
                     evaluation_model=evaluation_model,
@@ -107,7 +108,7 @@ class RedTeamer:
             if simulator_model is not None:
                 self.simulator_model = simulator_model
             with capture_red_teamer_run(
-                vulnerabilities=[v.get_name() for v in vulnerabilities],
+                vulnerabilities=[v.get_name() for v in vulnerabilities] if vulnerabilities else [f"Framework: {framework.get_name()}"],
                 attacks=[a.get_name() for a in attacks] if attacks else [],
             ):
                 # Generate attacks
@@ -123,6 +124,7 @@ class RedTeamer:
                         self.attack_simulator.simulate(
                             attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                             vulnerabilities=vulnerabilities,
+                            framework=framework,
                             attacks=attacks,
                             ignore_errors=ignore_errors,
                             simulator_model=self.simulator_model,
@@ -154,36 +156,42 @@ class RedTeamer:
                             simulated_test_case.risk_category.value
                         )
 
-                total_attacks = sum(
-                    len(attacks)
-                    for attacks in vulnerability_type_to_attacks_map.values()
-                )
-                num_vulnerability_types = sum(
-                    len(v.get_types()) for v in vulnerabilities
-                )
-                pbar = tqdm(
-                    total=total_attacks,
-                    desc=f"📝 Evaluating {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s)",
-                )
-
-                red_teaming_test_cases: List[RTTestCase] = []
-
-                for (
-                    vulnerability_type,
-                    attacks,
-                ) in vulnerability_type_to_attacks_map.items():
-                    test_cases = self._evaluate_vulnerability_type(
-                        model_callback,
-                        vulnerabilities,
-                        vulnerability_type,
-                        attacks,
-                        ignore_errors=ignore_errors,
+                if framework and framework._is_dataset:
+                    red_teaming_test_cases = framework.evaluate_test_cases(
+                        test_cases=simulated_test_cases,
+                        model_callback=model_callback,
                     )
-                    red_teaming_test_cases.extend(test_cases)
+                else:
+                    total_attacks = sum(
+                        len(test_cases)
+                        for test_cases in vulnerability_type_to_attacks_map.values()
+                    )
+                    num_vulnerability_types = sum(
+                        len(v.get_types()) for v in vulnerabilities
+                    )
+                    pbar = tqdm(
+                        total=total_attacks,
+                        desc=f"📝 Evaluating {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s)",
+                    )
 
-                    pbar.update(len(attacks))
+                    red_teaming_test_cases: List[RTTestCase] = []
 
-                pbar.close()
+                    for (
+                        vulnerability_type,
+                        test_cases,
+                    ) in vulnerability_type_to_attacks_map.items():
+                        rt_test_cases = self._evaluate_vulnerability_type(
+                            model_callback,
+                            vulnerabilities,
+                            vulnerability_type,
+                            test_cases,
+                            ignore_errors=ignore_errors,
+                        )
+                        red_teaming_test_cases.extend(rt_test_cases)
+
+                        pbar.update(len(test_cases))
+
+                    pbar.close()
 
                 self.risk_assessment = RiskAssessment(
                     overview=construct_risk_assessment_overview(
@@ -209,14 +217,14 @@ class RedTeamer:
         reuse_simulated_test_cases: bool = False,
         metadata: Optional[dict] = None,
     ):
-        if framework:
-            vulnerabilities = framework.vulnerabilities
+        if not framework and not vulnerabilities:
+            raise ValueError(
+                "You must either provide a 'framework' or 'vulnerabilities'"
+            )
+
+        if framework and framework._is_dataset is False:
             attacks = framework.attacks
-        else:
-            if not vulnerabilities:
-                raise ValueError(
-                    "You must either provide a 'framework' or 'vulnerabilities'"
-                )
+            vulnerabilities = framework.vulnerabilities
 
         if evaluation_model is not None:
             self.evaluation_model = evaluation_model
@@ -224,7 +232,7 @@ class RedTeamer:
             self.simulator_model = simulator_model
 
         with capture_red_teamer_run(
-            vulnerabilities=[v.get_name() for v in vulnerabilities],
+            vulnerabilities=[v.get_name() for v in vulnerabilities] if vulnerabilities else [f"Framework: {framework.get_name()}"],
             attacks=[a.get_name() for a in attacks] if attacks else [],
         ):
             # Generate attacks
@@ -240,6 +248,7 @@ class RedTeamer:
                     await self.attack_simulator.a_simulate(
                         attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                         vulnerabilities=vulnerabilities,
+                        framework=framework,
                         attacks=attacks,
                         simulator_model=self.simulator_model,
                         ignore_errors=ignore_errors,
@@ -271,44 +280,50 @@ class RedTeamer:
                         simulated_test_case.risk_category.value
                     )
 
-            semaphore = asyncio.Semaphore(self.max_concurrent)
-            total_attacks = sum(
-                len(attacks)
-                for attacks in vulnerability_type_to_attacks_map.values()
-            )
-            num_vulnerability_types = sum(
-                len(v.get_types()) for v in vulnerabilities
-            )
-            pbar = tqdm(
-                total=total_attacks,
-                desc=f"📝 Evaluating {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s)",
-            )
-
-            red_teaming_test_cases: List[RTTestCase] = []
-
-            async def throttled_evaluate_vulnerability_type(
-                vulnerability_type, attacks
-            ):
-                async with semaphore:
-                    test_cases = await self._a_evaluate_vulnerability_type(
-                        model_callback,
-                        vulnerabilities,
-                        vulnerability_type,
-                        attacks,
-                        ignore_errors=ignore_errors,
-                    )
-                    red_teaming_test_cases.extend(test_cases)
-                    pbar.update(len(attacks))
-
-            # Create a list of tasks for evaluating each vulnerability, with throttling
-            tasks = [
-                throttled_evaluate_vulnerability_type(
-                    vulnerability_type, attacks
+            if framework and framework._is_dataset:
+                red_teaming_test_cases = await framework.a_evaluate_test_cases(
+                    test_cases=simulated_test_cases,
+                    model_callback=model_callback,
                 )
-                for vulnerability_type, attacks in vulnerability_type_to_attacks_map.items()
-            ]
-            await asyncio.gather(*tasks)
-            pbar.close()
+            else:
+                semaphore = asyncio.Semaphore(self.max_concurrent)
+                total_attacks = sum(
+                    len(attacks)
+                    for attacks in vulnerability_type_to_attacks_map.values()
+                )
+                num_vulnerability_types = sum(
+                    len(v.get_types()) for v in vulnerabilities
+                )
+                pbar = tqdm(
+                    total=total_attacks,
+                    desc=f"📝 Evaluating {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s)",
+                )
+
+                red_teaming_test_cases: List[RTTestCase] = []
+
+                async def throttled_evaluate_vulnerability_type(
+                    vulnerability_type, attacks
+                ):
+                    async with semaphore:
+                        test_cases = await self._a_evaluate_vulnerability_type(
+                            model_callback,
+                            vulnerabilities,
+                            vulnerability_type,
+                            attacks,
+                            ignore_errors=ignore_errors,
+                        )
+                        red_teaming_test_cases.extend(test_cases)
+                        pbar.update(len(attacks))
+
+                # Create a list of tasks for evaluating each vulnerability, with throttling
+                tasks = [
+                    throttled_evaluate_vulnerability_type(
+                        vulnerability_type, attacks
+                    )
+                    for vulnerability_type, attacks in vulnerability_type_to_attacks_map.items()
+                ]
+                await asyncio.gather(*tasks)
+                pbar.close()
 
             self.risk_assessment = RiskAssessment(
                 overview=construct_risk_assessment_overview(

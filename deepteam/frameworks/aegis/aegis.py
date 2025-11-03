@@ -1,12 +1,15 @@
 import asyncio
 import random
-from typing import Optional, Union
+from typing import Optional, Union, List
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.utils import get_or_create_event_loop
+from tqdm import tqdm
 
 from deepteam.frameworks import AISafetyFramework
+from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.frameworks.aegis.types import AegisType
 from deepteam.test_case import RTTestCase
+from deepteam.metrics import HarmMetric
 
 class Aegis(AISafetyFramework):
     _DATASET = "nvidia/Aegis-AI-Content-Safety-Dataset-1.0"
@@ -72,6 +75,68 @@ class Aegis(AISafetyFramework):
         ]
 
         return test_cases
+    
+    def evaluate_test_cases(
+        self, 
+        test_cases: List[RTTestCase],
+        model_callback: CallbackType
+    ):
+        evaluated_test_cases = []
+        pbar = tqdm(
+            total=len(test_cases),
+            desc=f"📝 Evaluating {len(test_cases)} test cases using {self.get_name()} risk categories",
+        )
+        for test_case in test_cases:
+            test_case.actual_output = model_callback(test_case.input)
+            metric = self._get_metric(test_case.vulnerability)
+            metric.measure(test_case)
+            test_case.score = metric.score
+            test_case.reason = metric.reason
+            evaluated_test_cases.append(test_case)
+            pbar.update(1)
+
+        pbar.close()
+        
+        return evaluated_test_cases
+    
+    async def a_evaluate_test_cases(
+        self, 
+        test_cases: List[RTTestCase],
+        model_callback: CallbackType
+    ):
+        
+        pbar = tqdm(
+            total=len(test_cases),
+            desc=f"📝 Evaluating {len(test_cases)} test cases using {self.get_name()} risk categories",
+        )
+
+        async def evaluate_test_case(test_case):
+            test_case.actual_output = await model_callback(test_case.input)
+            metric = self._get_metric(test_case.vulnerability)
+            await metric.a_measure(test_case)
+            test_case.score = metric.score
+            test_case.reason = metric.reason
+            
+            pbar.update(1)
+            
+            return test_case
+
+        tasks = [evaluate_test_case(tc) for tc in test_cases]
+
+        evaluated_test_cases = await asyncio.gather(*tasks)
+
+        pbar.close()
+
+        return evaluated_test_cases
+
+
+    def _get_metric(self, harm_category: str):
+        return HarmMetric(
+            harm_category=harm_category,
+            model=self.evaluation_model,
+            async_mode=self.async_mode,
+            verbose_mode=self.verbose_mode
+        )
     
     def get_name(self):
         return "Aegis"
