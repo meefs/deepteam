@@ -73,9 +73,9 @@ class RedTeamer:
             vulnerabilities = framework.vulnerabilities
             attacks = framework.attacks
         else:
-            if not vulnerabilities or not attacks:
+            if not vulnerabilities:
                 raise ValueError(
-                    "You must either provide a 'framework' or 'vulnerabilities' and 'attacks."
+                    "You must either provide a 'framework' or 'vulnerabilities'"
                 )
 
         if self.async_mode:
@@ -108,7 +108,7 @@ class RedTeamer:
                 self.simulator_model = simulator_model
             with capture_red_teamer_run(
                 vulnerabilities=[v.get_name() for v in vulnerabilities],
-                attacks=[a.get_name() for a in attacks],
+                attacks=[a.get_name() for a in attacks] if attacks else [],
             ):
                 # Generate attacks
                 if (
@@ -213,9 +213,9 @@ class RedTeamer:
             vulnerabilities = framework.vulnerabilities
             attacks = framework.attacks
         else:
-            if not vulnerabilities or not attacks:
+            if not vulnerabilities:
                 raise ValueError(
-                    "You must either provide a 'framework' or 'vulnerabilities' and 'attacks."
+                    "You must either provide a 'framework' or 'vulnerabilities'"
                 )
 
         if evaluation_model is not None:
@@ -225,7 +225,7 @@ class RedTeamer:
 
         with capture_red_teamer_run(
             vulnerabilities=[v.get_name() for v in vulnerabilities],
-            attacks=[a.get_name() for a in attacks],
+            attacks=[a.get_name() for a in attacks] if attacks else [],
         ):
             # Generate attacks
             if (

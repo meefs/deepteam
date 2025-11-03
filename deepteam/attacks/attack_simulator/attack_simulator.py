@@ -50,8 +50,8 @@ class AttackSimulator:
         self,
         attacks_per_vulnerability_type: int,
         vulnerabilities: List[BaseVulnerability],
-        attacks: List[BaseAttack],
         ignore_errors: bool,
+        attacks: Optional[List[BaseAttack]] = None,
         simulator_model: DeepEvalBaseLLM = None,
         metadata: Optional[dict] = None,
     ) -> List[RTTestCase]:
@@ -75,27 +75,26 @@ class AttackSimulator:
                     metadata=metadata,
                 )
             )
-        # Enhance attacks by sampling from the provided distribution
-        enhanced_test_cases: List[RTTestCase] = []
-        pbar = tqdm(
-            test_cases,
-            desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
-        )
-        attack_weights = [attack.weight for attack in attacks]
-
-        for baseline_attack in pbar:
-            # Randomly sample an enhancement based on the distribution
-            sampled_attack = random.choices(
-                attacks, weights=attack_weights, k=1
-            )[0]
-            test_case = self.enhance_attack(
-                attack=sampled_attack,
-                test_case=baseline_attack,
-                ignore_errors=ignore_errors,
+        if attacks is not None:
+            # Enhance attacks by sampling from the provided distribution
+            pbar = tqdm(
+                test_cases,
+                desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
             )
-            enhanced_test_cases.append(test_case)
+            attack_weights = [attack.weight for attack in attacks]
 
-        self.test_cases.extend(enhanced_test_cases)
+            for test_case in pbar:
+                # Randomly sample an enhancement based on the distribution
+                sampled_attack = random.choices(
+                    attacks, weights=attack_weights, k=1
+                )[0]
+                self.enhance_attack(
+                    attack=sampled_attack,
+                    test_case=test_case,
+                    ignore_errors=ignore_errors,
+                )
+
+        self.test_cases.extend(test_cases)
         return test_cases
 
     async def a_simulate(
@@ -145,45 +144,42 @@ class AttackSimulator:
             test_cases.extend(result)
         pbar.close()
 
-        # Enhance attacks by sampling from the provided distribution
-        enhanced_test_cases: List[RTTestCase] = []
-        pbar = tqdm(
-            total=len(test_cases),
-            desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
-        )
+        if attacks is not None:
+            # Enhance attacks by sampling from the provided distribution
+            pbar = tqdm(
+                total=len(test_cases),
+                desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
+            )
 
-        async def throttled_attack_method(
-            baseline_attack: RTTestCase,
-        ):
-            async with semaphore:  # Throttling applied here
-                # Randomly sample an enhancement based on the distribution
-                if not attacks:
-                    attack = BaselineAttack()
-                else:
-                    attack_weights = [attack.weight for attack in attacks]
-                    attack = random.choices(
-                        attacks, weights=attack_weights, k=1
-                    )[0]
+            async def throttled_attack_method(
+                test_case: RTTestCase,
+            ):
+                async with semaphore:  # Throttling applied here
+                    # Randomly sample an enhancement based on the distribution
+                    if not attacks:
+                        attack = BaselineAttack()
+                    else:
+                        attack_weights = [attack.weight for attack in attacks]
+                        attack = random.choices(
+                            attacks, weights=attack_weights, k=1
+                        )[0]
 
-                result = await self.a_enhance_attack(
-                    attack=attack,
-                    test_case=baseline_attack,
-                    ignore_errors=ignore_errors,
-                )
-                pbar.update(1)
-                return result
+                    await self.a_enhance_attack(
+                        attack=attack,
+                        test_case=test_case,
+                        ignore_errors=ignore_errors,
+                    )
+                    pbar.update(1)
 
-        enhanced_test_cases.extend(
             await asyncio.gather(
                 *[
                     asyncio.create_task(throttled_attack_method(test_case))
                     for test_case in test_cases
                 ]
             )
-        )
         pbar.close()
 
-        self.test_cases.extend(enhanced_test_cases)
+        self.test_cases.extend(test_cases)
         return test_cases
 
     ##################################################
