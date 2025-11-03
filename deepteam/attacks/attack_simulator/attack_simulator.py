@@ -107,7 +107,6 @@ class AttackSimulator:
             self.test_cases.extend(test_cases)
             return test_cases
 
-
     async def a_simulate(
         self,
         attacks_per_vulnerability_type: int,
@@ -180,7 +179,9 @@ class AttackSimulator:
                         if not attacks:
                             attack = BaselineAttack()
                         else:
-                            attack_weights = [attack.weight for attack in attacks]
+                            attack_weights = [
+                                attack.weight for attack in attacks
+                            ]
                             attack = random.choices(
                                 attacks, weights=attack_weights, k=1
                             )[0]

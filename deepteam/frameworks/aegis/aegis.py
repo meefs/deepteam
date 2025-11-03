@@ -11,11 +11,12 @@ from deepteam.frameworks.aegis.types import AegisType
 from deepteam.test_case import RTTestCase
 from deepteam.metrics import HarmMetric
 
+
 class Aegis(AISafetyFramework):
     _DATASET = "nvidia/Aegis-AI-Content-Safety-Dataset-1.0"
 
     def __init__(
-        self, 
+        self,
         num_attacks: int = 15,
         async_mode: bool = True,
         verbose_mode: bool = False,
@@ -28,40 +29,52 @@ class Aegis(AISafetyFramework):
         self.verbose_mode = verbose_mode
         self.evaluation_model = evaluation_model
         self._is_dataset = True
-        
+
     def simulate_attacks(self):
         from datasets import load_dataset
 
         dataset = load_dataset(self._DATASET, split="train")
-        attacks = [row for row in dataset if row.get("text_type") == "user_message" and row.get("labels_0") != "Safe"]
+        attacks = [
+            row
+            for row in dataset
+            if row.get("text_type") == "user_message"
+            and row.get("labels_0") != "Safe"
+        ]
 
         if len(attacks) < self.num_attacks:
-            raise ValueError(f"Please set your 'num_attacks' to less than or equal to {len(attacks)}.")
+            raise ValueError(
+                f"Please set your 'num_attacks' to less than or equal to {len(attacks)}."
+            )
 
         sampled = random.sample(attacks, k=self.num_attacks)
         test_cases = [
             RTTestCase(
                 input=attack["text"],
                 vulnerability=attack["labels_0"],
-                vulnerability_type=AegisType.AEGIS
+                vulnerability_type=AegisType.AEGIS,
             )
             for attack in sampled
         ]
         return test_cases
-    
 
     async def a_simulate_attacks(self):
         from datasets import load_dataset
 
-        dataset = await asyncio.to_thread(load_dataset, self._DATASET, split="train")
-        
+        dataset = await asyncio.to_thread(
+            load_dataset, self._DATASET, split="train"
+        )
+
         attacks = [
-            row for row in dataset
-            if row.get("text_type") == "user_message" and row.get("labels_0") != "Safe"
+            row
+            for row in dataset
+            if row.get("text_type") == "user_message"
+            and row.get("labels_0") != "Safe"
         ]
 
         if len(attacks) < self.num_attacks:
-            raise ValueError(f"Please set your 'num_attacks' to less than or equal to {len(attacks)}.")
+            raise ValueError(
+                f"Please set your 'num_attacks' to less than or equal to {len(attacks)}."
+            )
 
         sampled = random.sample(attacks, k=self.num_attacks)
 
@@ -69,17 +82,15 @@ class Aegis(AISafetyFramework):
             RTTestCase(
                 input=attack["text"],
                 vulnerability=attack["labels_0"],
-                vulnerability_type=AegisType.AEGIS
+                vulnerability_type=AegisType.AEGIS,
             )
             for attack in sampled
         ]
 
         return test_cases
-    
+
     def evaluate_test_cases(
-        self, 
-        test_cases: List[RTTestCase],
-        model_callback: CallbackType
+        self, test_cases: List[RTTestCase], model_callback: CallbackType
     ):
         evaluated_test_cases = []
         pbar = tqdm(
@@ -96,15 +107,13 @@ class Aegis(AISafetyFramework):
             pbar.update(1)
 
         pbar.close()
-        
+
         return evaluated_test_cases
-    
+
     async def a_evaluate_test_cases(
-        self, 
-        test_cases: List[RTTestCase],
-        model_callback: CallbackType
+        self, test_cases: List[RTTestCase], model_callback: CallbackType
     ):
-        
+
         pbar = tqdm(
             total=len(test_cases),
             desc=f"📝 Evaluating {len(test_cases)} test cases using {self.get_name()} risk categories",
@@ -116,9 +125,9 @@ class Aegis(AISafetyFramework):
             await metric.a_measure(test_case)
             test_case.score = metric.score
             test_case.reason = metric.reason
-            
+
             pbar.update(1)
-            
+
             return test_case
 
         tasks = [evaluate_test_case(tc) for tc in test_cases]
@@ -129,14 +138,13 @@ class Aegis(AISafetyFramework):
 
         return evaluated_test_cases
 
-
     def _get_metric(self, harm_category: str):
         return HarmMetric(
             harm_category=harm_category,
             model=self.evaluation_model,
             async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode
+            verbose_mode=self.verbose_mode,
         )
-    
+
     def get_name(self):
         return "Aegis"

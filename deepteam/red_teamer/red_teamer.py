@@ -108,7 +108,11 @@ class RedTeamer:
             if simulator_model is not None:
                 self.simulator_model = simulator_model
             with capture_red_teamer_run(
-                vulnerabilities=[v.get_name() for v in vulnerabilities] if vulnerabilities else [f"Framework: {framework.get_name()}"],
+                vulnerabilities=(
+                    [v.get_name() for v in vulnerabilities]
+                    if vulnerabilities
+                    else [f"Framework: {framework.get_name()}"]
+                ),
                 attacks=[a.get_name() for a in attacks] if attacks else [],
             ):
                 # Generate attacks
@@ -232,7 +236,11 @@ class RedTeamer:
             self.simulator_model = simulator_model
 
         with capture_red_teamer_run(
-            vulnerabilities=[v.get_name() for v in vulnerabilities] if vulnerabilities else [f"Framework: {framework.get_name()}"],
+            vulnerabilities=(
+                [v.get_name() for v in vulnerabilities]
+                if vulnerabilities
+                else [f"Framework: {framework.get_name()}"]
+            ),
             attacks=[a.get_name() for a in attacks] if attacks else [],
         ):
             # Generate attacks

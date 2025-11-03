@@ -6,6 +6,4 @@ class AegisType(Enum):
     AEGIS = "aegis_safety_dataset"
 
 
-AegisTypes = Literal[
-    AegisType.AEGIS.value
-]
+AegisTypes = Literal[AegisType.AEGIS.value]
