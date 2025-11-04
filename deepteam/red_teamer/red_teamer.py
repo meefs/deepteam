@@ -102,6 +102,7 @@ class RedTeamer:
                 )
                 framework.load_dataset()
                 pbar.update(framework.num_attacks)
+                pbar.close()
             else:
                 attacks = framework.attacks
                 vulnerabilities = framework.vulnerabilities
@@ -115,12 +116,9 @@ class RedTeamer:
             if simulator_model is not None:
                 self.simulator_model = simulator_model
             with capture_red_teamer_run(
-                vulnerabilities=(
-                    [v.get_name() for v in vulnerabilities]
-                    if vulnerabilities
-                    else [f"Framework: {framework.get_name()}"]
-                ),
+                vulnerabilities=[v.get_name() for v in vulnerabilities] if vulnerabilities else [],
                 attacks=[a.get_name() for a in attacks] if attacks else [],
+                framework=framework.get_name() if framework and framework._has_dataset else None
             ):
                 # Generate attacks
                 if (
@@ -246,6 +244,7 @@ class RedTeamer:
             )
             framework.load_dataset()
             pbar.update(framework.num_attacks)
+            pbar.close()
         else:
             attacks = framework.attacks
             vulnerabilities = framework.vulnerabilities
@@ -256,12 +255,9 @@ class RedTeamer:
             self.simulator_model = simulator_model
 
         with capture_red_teamer_run(
-            vulnerabilities=(
-                [v.get_name() for v in vulnerabilities]
-                if vulnerabilities
-                else [f"Framework: {framework.get_name()}"]
-            ),
+            vulnerabilities=[v.get_name() for v in vulnerabilities] if vulnerabilities else [],
             attacks=[a.get_name() for a in attacks] if attacks else [],
+            framework=framework.get_name() if framework and framework._has_dataset else None
         ):
             # Generate attacks
             if (
