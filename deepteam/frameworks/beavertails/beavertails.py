@@ -35,10 +35,7 @@ class BeaverTails(AISafetyFramework):
         from datasets import load_dataset as hf_load_dataset
 
         dataset = hf_load_dataset(self._DATASET, split=self.data_split)
-        attacks = [
-            row for row in dataset 
-            if row["is_safe"] == False
-        ]
+        attacks = [row for row in dataset if row["is_safe"] == False]
 
         if len(attacks) < self.num_attacks:
             raise ValueError(
@@ -49,7 +46,13 @@ class BeaverTails(AISafetyFramework):
         test_cases = [
             RTTestCase(
                 input=attack["prompt"],
-                vulnerability=" ".join([category for category, boolean in attack["category"].items() if boolean]),
+                vulnerability=" ".join(
+                    [
+                        category
+                        for category, boolean in attack["category"].items()
+                        if boolean
+                    ]
+                ),
                 vulnerability_type=BeaverTailsType.BEAVERTAILS,
             )
             for attack in sampled
