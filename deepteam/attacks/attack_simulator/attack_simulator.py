@@ -49,160 +49,138 @@ class AttackSimulator:
     def simulate(
         self,
         attacks_per_vulnerability_type: int,
+        vulnerabilities: List[BaseVulnerability],
         ignore_errors: bool,
-        vulnerabilities: Optional[List[BaseVulnerability]] = None,
-        framework: Optional["AISafetyFramework"] = None,
         attacks: Optional[List[BaseAttack]] = None,
         simulator_model: DeepEvalBaseLLM = None,
         metadata: Optional[dict] = None,
     ) -> List[RTTestCase]:
-        if framework is not None and framework._is_dataset:
-            pbar = tqdm(
-                range(framework.num_attacks),
-                desc=f"💥 Fetching {framework.num_attacks} attacks from {framework.get_name()} Dataset",
-            )
-            test_cases = framework.simulate_attacks()
-            pbar.update(framework.num_attacks)
-            return test_cases
-        else:
-            # Simulate unenhanced attacks for each vulnerability
-            test_cases: List[RTTestCase] = []
-            num_vulnerability_types = sum(
-                len(v.get_types()) for v in vulnerabilities
-            )
-            pbar = tqdm(
-                vulnerabilities,
-                desc=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
-            )
-            for vulnerability in pbar:
-                if simulator_model is not None:
-                    vulnerability.simulator_model = simulator_model
-                test_cases.extend(
-                    self.simulate_baseline_attacks(
-                        attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                        vulnerability=vulnerability,
-                        ignore_errors=ignore_errors,
-                        metadata=metadata,
-                    )
+        # Simulate unenhanced attacks for each vulnerability
+        test_cases: List[RTTestCase] = []
+        num_vulnerability_types = sum(
+            len(v.get_types()) for v in vulnerabilities
+        )
+        pbar = tqdm(
+            vulnerabilities,
+            desc=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
+        )
+        for vulnerability in pbar:
+            if simulator_model is not None:
+                vulnerability.simulator_model = simulator_model
+            test_cases.extend(
+                self.simulate_baseline_attacks(
+                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                    vulnerability=vulnerability,
+                    ignore_errors=ignore_errors,
+                    metadata=metadata,
                 )
-            if attacks is not None:
-                # Enhance attacks by sampling from the provided distribution
-                pbar = tqdm(
-                    test_cases,
-                    desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
+            )
+        if attacks is not None:
+            # Enhance attacks by sampling from the provided distribution
+            pbar = tqdm(
+                test_cases,
+                desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
+            )
+            attack_weights = [attack.weight for attack in attacks]
+
+            for test_case in pbar:
+                # Randomly sample an enhancement based on the distribution
+                sampled_attack = random.choices(
+                    attacks, weights=attack_weights, k=1
+                )[0]
+                self.enhance_attack(
+                    attack=sampled_attack,
+                    test_case=test_case,
+                    ignore_errors=ignore_errors,
                 )
-                attack_weights = [attack.weight for attack in attacks]
 
-                for test_case in pbar:
-                    # Randomly sample an enhancement based on the distribution
-                    sampled_attack = random.choices(
-                        attacks, weights=attack_weights, k=1
-                    )[0]
-                    self.enhance_attack(
-                        attack=sampled_attack,
-                        test_case=test_case,
-                        ignore_errors=ignore_errors,
-                    )
-
-            self.test_cases.extend(test_cases)
-            return test_cases
+        self.test_cases.extend(test_cases)
+        return test_cases
 
     async def a_simulate(
         self,
         attacks_per_vulnerability_type: int,
+        vulnerabilities: List[BaseVulnerability],
         ignore_errors: bool,
-        vulnerabilities: Optional[List[BaseVulnerability]] = None,
-        framework: Optional["AISafetyFramework"] = None,
         metadata: Optional[dict] = None,
         simulator_model: DeepEvalBaseLLM = None,
         attacks: Optional[List[BaseAttack]] = None,
     ) -> List[RTTestCase]:
-        if framework is not None and framework._is_dataset:
-            pbar = tqdm(
-                range(framework.num_attacks),
-                desc=f"💥 Fetching {framework.num_attacks} attacks from {framework.get_name()} Dataset",
-            )
-            test_cases = await framework.a_simulate_attacks()
-            pbar.update(framework.num_attacks)
-            return test_cases
-        else:
-            # Create a semaphore to control the number of concurrent tasks
-            semaphore = asyncio.Semaphore(self.max_concurrent)
+        # Create a semaphore to control the number of concurrent tasks
+        semaphore = asyncio.Semaphore(self.max_concurrent)
 
-            # Simulate unenhanced attacks for each vulnerability
-            test_cases: List[RTTestCase] = []
-            num_vulnerability_types = sum(
-                len(v.get_types()) for v in vulnerabilities
+        # Simulate unenhanced attacks for each vulnerability
+        test_cases: List[RTTestCase] = []
+        num_vulnerability_types = sum(
+            len(v.get_types()) for v in vulnerabilities
+        )
+        pbar = tqdm(
+            vulnerabilities,
+            desc=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
+        )
+
+        async def throttled_simulate_baseline_attack(vulnerability):
+            if simulator_model is not None:
+                vulnerability.simulator_model = simulator_model
+            async with semaphore:  # Throttling applied here
+                result = await self.a_simulate_baseline_attacks(
+                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                    vulnerability=vulnerability,
+                    ignore_errors=ignore_errors,
+                    metadata=metadata,
+                )
+                pbar.update(1)
+                return result
+
+        simulate_tasks = [
+            asyncio.create_task(
+                throttled_simulate_baseline_attack(vulnerability)
             )
+            for vulnerability in vulnerabilities
+        ]
+
+        attack_results = await asyncio.gather(*simulate_tasks)
+        for result in attack_results:
+            test_cases.extend(result)
+        pbar.close()
+
+        if attacks is not None:
+            # Enhance attacks by sampling from the provided distribution
             pbar = tqdm(
-                vulnerabilities,
-                desc=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
+                total=len(test_cases),
+                desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
             )
 
-            async def throttled_simulate_baseline_attack(vulnerability):
-                if simulator_model is not None:
-                    vulnerability.simulator_model = simulator_model
+            async def throttled_attack_method(
+                test_case: RTTestCase,
+            ):
                 async with semaphore:  # Throttling applied here
-                    result = await self.a_simulate_baseline_attacks(
-                        attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                        vulnerability=vulnerability,
+                    # Randomly sample an enhancement based on the distribution
+                    if not attacks:
+                        attack = BaselineAttack()
+                    else:
+                        attack_weights = [attack.weight for attack in attacks]
+                        attack = random.choices(
+                            attacks, weights=attack_weights, k=1
+                        )[0]
+
+                    await self.a_enhance_attack(
+                        attack=attack,
+                        test_case=test_case,
                         ignore_errors=ignore_errors,
-                        metadata=metadata,
                     )
                     pbar.update(1)
-                    return result
 
-            simulate_tasks = [
-                asyncio.create_task(
-                    throttled_simulate_baseline_attack(vulnerability)
-                )
-                for vulnerability in vulnerabilities
-            ]
+            await asyncio.gather(
+                *[
+                    asyncio.create_task(throttled_attack_method(test_case))
+                    for test_case in test_cases
+                ]
+            )
+        pbar.close()
 
-            attack_results = await asyncio.gather(*simulate_tasks)
-            for result in attack_results:
-                test_cases.extend(result)
-            pbar.close()
-
-            if attacks is not None:
-                # Enhance attacks by sampling from the provided distribution
-                pbar = tqdm(
-                    total=len(test_cases),
-                    desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
-                )
-
-                async def throttled_attack_method(
-                    test_case: RTTestCase,
-                ):
-                    async with semaphore:  # Throttling applied here
-                        # Randomly sample an enhancement based on the distribution
-                        if not attacks:
-                            attack = BaselineAttack()
-                        else:
-                            attack_weights = [
-                                attack.weight for attack in attacks
-                            ]
-                            attack = random.choices(
-                                attacks, weights=attack_weights, k=1
-                            )[0]
-
-                        await self.a_enhance_attack(
-                            attack=attack,
-                            test_case=test_case,
-                            ignore_errors=ignore_errors,
-                        )
-                        pbar.update(1)
-
-                await asyncio.gather(
-                    *[
-                        asyncio.create_task(throttled_attack_method(test_case))
-                        for test_case in test_cases
-                    ]
-                )
-            pbar.close()
-
-            self.test_cases.extend(test_cases)
-            return test_cases
+        self.test_cases.extend(test_cases)
+        return test_cases
 
     ##################################################
     ### Simulating Base (Unenhanced) Attacks #########
