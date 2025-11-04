@@ -95,17 +95,18 @@ class RedTeamer:
                 )
             )
         else:
-            if framework and framework._has_dataset:
-                pbar = tqdm(
-                    range(framework.num_attacks),
-                    desc=f"💥 Fetching {framework.num_attacks} attacks from {framework.get_name()} Dataset",
-                )
-                framework.load_dataset()
-                pbar.update(framework.num_attacks)
-                pbar.close()
-            else:
-                attacks = framework.attacks
-                vulnerabilities = framework.vulnerabilities
+            if framework:
+                if framework._has_dataset:
+                    pbar = tqdm(
+                        range(framework.num_attacks),
+                        desc=f"💥 Fetching {framework.num_attacks} attacks from {framework.get_name()} Dataset",
+                    )
+                    framework.load_dataset()
+                    pbar.update(framework.num_attacks)
+                    pbar.close()
+                else:
+                    attacks = framework.attacks
+                    vulnerabilities = framework.vulnerabilities
 
             assert not inspect.iscoroutinefunction(
                 model_callback
@@ -237,17 +238,19 @@ class RedTeamer:
                 "You must either provide a 'framework' or 'vulnerabilities'"
             )
 
-        if framework and framework._has_dataset:
-            pbar = tqdm(
-                range(framework.num_attacks),
-                desc=f"💥 Fetching {framework.num_attacks} attacks from {framework.get_name()} Dataset",
-            )
-            framework.load_dataset()
-            pbar.update(framework.num_attacks)
-            pbar.close()
-        else:
-            attacks = framework.attacks
-            vulnerabilities = framework.vulnerabilities
+        if framework:
+            if framework._has_dataset:
+                pbar = tqdm(
+                    range(framework.num_attacks),
+                    desc=f"💥 Fetching {framework.num_attacks} attacks from {framework.get_name()} Dataset",
+                )
+                framework.load_dataset()
+                pbar.update(framework.num_attacks)
+                pbar.close()
+            else:
+                attacks = framework.attacks
+                vulnerabilities = framework.vulnerabilities
+            
 
         if evaluation_model is not None:
             self.evaluation_model = evaluation_model
