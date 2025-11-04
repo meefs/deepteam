@@ -131,7 +131,11 @@ IS_RUNNING_IN_JUPYTER = (
 
 
 @contextmanager
-def capture_red_teamer_run(vulnerabilities: List[str], attacks: List[str]):
+def capture_red_teamer_run(
+    vulnerabilities: List[str], 
+    attacks: List[str],
+    framework: str = None
+):
     if not telemetry_opt_out():
         with tracer.start_as_current_span(f"Invoked redteamer") as span:
             posthog.capture(
@@ -144,6 +148,8 @@ def capture_red_teamer_run(vulnerabilities: List[str], attacks: List[str]):
                 "feature_status.redteaming",
                 get_feature_status(Feature.REDTEAMING),
             )
+            if framework is not None:
+                span.set_attribute(f"framework.{framework}", 1)
             for vulnerability in vulnerabilities:
                 span.set_attribute(f"vulnerability.{vulnerability}", 1)
             for attack in attacks:

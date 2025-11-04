@@ -118,7 +118,7 @@ class RedTeamer:
             with capture_red_teamer_run(
                 vulnerabilities=[v.get_name() for v in vulnerabilities] if vulnerabilities else [],
                 attacks=[a.get_name() for a in attacks] if attacks else [],
-                framework=framework.get_name() if framework and framework._has_dataset else None
+                framework=framework.get_name() if framework else None
             ):
                 # Generate attacks
                 if (
@@ -257,7 +257,7 @@ class RedTeamer:
         with capture_red_teamer_run(
             vulnerabilities=[v.get_name() for v in vulnerabilities] if vulnerabilities else [],
             attacks=[a.get_name() for a in attacks] if attacks else [],
-            framework=framework.get_name() if framework and framework._has_dataset else None
+            framework=framework.get_name() if framework else None
         ):
             # Generate attacks
             if (
