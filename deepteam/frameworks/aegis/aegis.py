@@ -1,8 +1,7 @@
 import asyncio
 import random
-from typing import Optional, Union, List
+from typing import Optional, Union
 from deepeval.models import DeepEvalBaseLLM
-from deepeval.utils import get_or_create_event_loop
 from tqdm import tqdm
 
 from deepteam.frameworks import AISafetyFramework
