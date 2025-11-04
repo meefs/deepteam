@@ -2,6 +2,7 @@ from .frameworks import AISafetyFramework
 from .aegis.aegis import Aegis
 from .nist.nist import NIST
 from .owasp.owasp import OWASPTop10
+from .mitre.mitre import MITRE
 from .beavertails.beavertails import BeaverTails
 
 __all__ = [
@@ -10,4 +11,5 @@ __all__ = [
     "NIST",
     "Aegis",
     "BeaverTails",
+    "MITRE",
 ]
