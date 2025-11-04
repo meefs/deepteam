@@ -88,20 +88,16 @@ class Aegis(AISafetyFramework):
         ]
 
         return test_cases
-    
-    def evaluate_test_case(
-        self, test_case: RTTestCase
-    ):
+
+    def evaluate_test_case(self, test_case: RTTestCase):
         metric = self._get_metric(test_case.vulnerability)
         metric.measure(test_case)
         test_case.score = metric.score
         test_case.reason = metric.reason
 
         return test_case
-    
-    async def a_evaluate_test_case(
-        self, test_case: RTTestCase
-    ):
+
+    async def a_evaluate_test_case(self, test_case: RTTestCase):
         metric = self._get_metric(test_case.vulnerability)
         await metric.a_measure(test_case)
         test_case.score = metric.score

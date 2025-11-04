@@ -167,7 +167,9 @@ class RedTeamer:
                     )
                     evaluated_test_cases = []
                     for test_case in simulated_test_cases:
-                        test_case.actual_output = model_callback(test_case.input)
+                        test_case.actual_output = model_callback(
+                            test_case.input
+                        )
                         evaluated_test_case = framework.evaluate_test_case(
                             test_case
                         )
@@ -305,7 +307,9 @@ class RedTeamer:
                 )
 
                 async def evaluate_test_case(test_case):
-                    test_case.actual_output = await model_callback(test_case.input)
+                    test_case.actual_output = await model_callback(
+                        test_case.input
+                    )
                     evaluated_test_case = framework.evaluate_test_case(
                         test_case
                     )
