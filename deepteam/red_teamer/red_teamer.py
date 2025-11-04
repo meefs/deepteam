@@ -161,10 +161,20 @@ class RedTeamer:
                         )
 
                 if framework and framework._is_dataset:
-                    red_teaming_test_cases = framework.evaluate_test_cases(
-                        test_cases=simulated_test_cases,
-                        model_callback=model_callback,
+                    pbar = tqdm(
+                        total=len(simulated_test_cases),
+                        desc=f"📝 Evaluating {len(simulated_test_cases)} test cases using {framework.get_name()} risk categories",
                     )
+                    evaluated_test_cases = []
+                    for test_case in simulated_test_cases:
+                        test_case.actual_output = model_callback(test_case.input)
+                        evaluated_test_case = framework.evaluate_test_case(
+                            test_case
+                        )
+                        evaluated_test_cases.append(evaluated_test_case)
+                        pbar.update(1)
+                    red_teaming_test_cases = evaluated_test_cases
+                    pbar.close()
                 else:
                     total_attacks = sum(
                         len(test_cases)
@@ -289,10 +299,24 @@ class RedTeamer:
                     )
 
             if framework and framework._is_dataset:
-                red_teaming_test_cases = await framework.a_evaluate_test_cases(
-                    test_cases=simulated_test_cases,
-                    model_callback=model_callback,
+                pbar = tqdm(
+                    total=len(simulated_test_cases),
+                    desc=f"📝 Evaluating {len(simulated_test_cases)} test cases using {framework.get_name()} risk categories",
                 )
+
+                async def evaluate_test_case(test_case):
+                    test_case.actual_output = await model_callback(test_case.input)
+                    evaluated_test_case = framework.evaluate_test_case(
+                        test_case
+                    )
+                    pbar.update(1)
+
+                    return evaluated_test_case
+
+                tasks = [evaluate_test_case(tc) for tc in simulated_test_cases]
+                red_teaming_test_cases = await asyncio.gather(*tasks)
+
+                pbar.close()
             else:
                 semaphore = asyncio.Semaphore(self.max_concurrent)
                 total_attacks = sum(

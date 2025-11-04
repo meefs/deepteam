@@ -88,55 +88,26 @@ class Aegis(AISafetyFramework):
         ]
 
         return test_cases
-
-    def evaluate_test_cases(
-        self, test_cases: List[RTTestCase], model_callback: CallbackType
+    
+    def evaluate_test_case(
+        self, test_case: RTTestCase
     ):
-        evaluated_test_cases = []
-        pbar = tqdm(
-            total=len(test_cases),
-            desc=f"📝 Evaluating {len(test_cases)} test cases using {self.get_name()} risk categories",
-        )
-        for test_case in test_cases:
-            test_case.actual_output = model_callback(test_case.input)
-            metric = self._get_metric(test_case.vulnerability)
-            metric.measure(test_case)
-            test_case.score = metric.score
-            test_case.reason = metric.reason
-            evaluated_test_cases.append(test_case)
-            pbar.update(1)
+        metric = self._get_metric(test_case.vulnerability)
+        metric.measure(test_case)
+        test_case.score = metric.score
+        test_case.reason = metric.reason
 
-        pbar.close()
-
-        return evaluated_test_cases
-
-    async def a_evaluate_test_cases(
-        self, test_cases: List[RTTestCase], model_callback: CallbackType
+        return test_case
+    
+    async def a_evaluate_test_case(
+        self, test_case: RTTestCase
     ):
+        metric = self._get_metric(test_case.vulnerability)
+        await metric.a_measure(test_case)
+        test_case.score = metric.score
+        test_case.reason = metric.reason
 
-        pbar = tqdm(
-            total=len(test_cases),
-            desc=f"📝 Evaluating {len(test_cases)} test cases using {self.get_name()} risk categories",
-        )
-
-        async def evaluate_test_case(test_case):
-            test_case.actual_output = await model_callback(test_case.input)
-            metric = self._get_metric(test_case.vulnerability)
-            await metric.a_measure(test_case)
-            test_case.score = metric.score
-            test_case.reason = metric.reason
-
-            pbar.update(1)
-
-            return test_case
-
-        tasks = [evaluate_test_case(tc) for tc in test_cases]
-
-        evaluated_test_cases = await asyncio.gather(*tasks)
-
-        pbar.close()
-
-        return evaluated_test_cases
+        return test_case
 
     def _get_metric(self, harm_category: str):
         return HarmMetric(
