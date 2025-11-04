@@ -28,12 +28,12 @@ class Aegis(AISafetyFramework):
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
         self.evaluation_model = evaluation_model
-        self._is_dataset = True
+        self._has_dataset = True
 
-    def simulate_attacks(self):
-        from datasets import load_dataset
+    def load_dataset(self):
+        from datasets import load_dataset as hf_load_dataset
 
-        dataset = load_dataset(self._DATASET, split="train")
+        dataset = hf_load_dataset(self._DATASET, split="train")
         attacks = [
             row
             for row in dataset
@@ -55,55 +55,58 @@ class Aegis(AISafetyFramework):
             )
             for attack in sampled
         ]
-        return test_cases
+        self.test_cases = test_cases
+        return self.test_cases
 
-    async def a_simulate_attacks(self):
-        from datasets import load_dataset
+    def assess(
+        self, 
+        model_callback: CallbackType, 
+        pbar: tqdm, 
+        ignore_errors: bool = True
+    ):
+        for test_case in self.test_cases:
+            try:
+                test_case.actual_output = model_callback(test_case.input)
+                metric = self._get_metric(test_case.vulnerability)
+                metric.measure(test_case)
+                test_case.score = metric.score
+                test_case.reason = metric.reason
+            except Exception as e: 
+                if ignore_errors:
+                    test_case.error = e.message
+                else:
+                    raise
+            pbar.update(1)
 
-        dataset = await asyncio.to_thread(
-            load_dataset, self._DATASET, split="train"
-        )
+        return self.test_cases
 
-        attacks = [
-            row
-            for row in dataset
-            if row.get("text_type") == "user_message"
-            and row.get("labels_0") != "Safe"
-        ]
 
-        if len(attacks) < self.num_attacks:
-            raise ValueError(
-                f"There are only {len(attacks)} harmful attacks that can be used in the Aegis dataset. Please set your 'num_attacks' to less than or equal to {len(attacks)}."
-            )
+    async def a_assess(
+        self, 
+        model_callback: CallbackType, 
+        pbar: tqdm,
+        ignore_errors: bool = True
+    ):
 
-        sampled = random.sample(attacks, k=self.num_attacks)
+        async def evaluate_test_case(test_case):
+            try:
+                test_case.actual_output = await model_callback(test_case.input)
+                metric = self._get_metric(test_case.vulnerability)
+                await metric.a_measure(test_case)
+                test_case.score = metric.score
+                test_case.reason = metric.reason
+            except Exception as e: 
+                if ignore_errors:
+                    test_case.error = e.message
+                else:
+                    raise
+            pbar.update(1)
 
-        test_cases = [
-            RTTestCase(
-                input=attack["text"],
-                vulnerability=attack["labels_0"],
-                vulnerability_type=AegisType.AEGIS,
-            )
-            for attack in sampled
-        ]
+        tasks = [evaluate_test_case(tc) for tc in self.test_cases]
 
-        return test_cases
+        await asyncio.gather(*tasks)
 
-    def evaluate_test_case(self, test_case: RTTestCase):
-        metric = self._get_metric(test_case.vulnerability)
-        metric.measure(test_case)
-        test_case.score = metric.score
-        test_case.reason = metric.reason
-
-        return test_case
-
-    async def a_evaluate_test_case(self, test_case: RTTestCase):
-        metric = self._get_metric(test_case.vulnerability)
-        await metric.a_measure(test_case)
-        test_case.score = metric.score
-        test_case.reason = metric.reason
-
-        return test_case
+        return self.test_cases
 
     def _get_metric(self, harm_category: str):
         return HarmMetric(
