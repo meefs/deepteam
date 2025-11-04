@@ -20,12 +20,15 @@ class AISafetyFramework:
     description: str
     vulnerabilities: Optional[List[BaseVulnerability]]
     attacks: Optional[List[BaseAttack]]
-    _is_dataset: bool = False
+    _has_dataset: bool = False
 
-    def simulate_attacks(self):
+    def load_dataset(self):
         pass
 
-    async def a_simulate_attacks(self):
+    def assess(self):
+        pass
+
+    async def a_assess(self):
         pass
 
     class Config:
