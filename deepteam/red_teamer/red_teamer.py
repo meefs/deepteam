@@ -105,7 +105,7 @@ class RedTeamer:
             else:
                 attacks = framework.attacks
                 vulnerabilities = framework.vulnerabilities
-        
+
             assert not inspect.iscoroutinefunction(
                 model_callback
             ), "`model_callback` needs to be sync. `async_mode` has been set to False."
@@ -313,14 +313,14 @@ class RedTeamer:
                     )
 
             if framework and framework._has_dataset:
-                    pbar = tqdm(
-                        total=len(simulated_test_cases),
-                        desc=f"📝 Evaluating {len(simulated_test_cases)} test cases using {framework.get_name()} risk categories",
-                    )
-                    red_teaming_test_cases = await framework.a_assess(
-                        model_callback, pbar, ignore_errors
-                    )
-                    pbar.close()
+                pbar = tqdm(
+                    total=len(simulated_test_cases),
+                    desc=f"📝 Evaluating {len(simulated_test_cases)} test cases using {framework.get_name()} risk categories",
+                )
+                red_teaming_test_cases = await framework.a_assess(
+                    model_callback, pbar, ignore_errors
+                )
+                pbar.close()
             else:
                 semaphore = asyncio.Semaphore(self.max_concurrent)
                 total_attacks = sum(

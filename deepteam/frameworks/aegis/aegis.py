@@ -59,10 +59,10 @@ class Aegis(AISafetyFramework):
         return self.test_cases
 
     def assess(
-        self, 
-        model_callback: CallbackType, 
-        pbar: tqdm, 
-        ignore_errors: bool = True
+        self,
+        model_callback: CallbackType,
+        pbar: tqdm,
+        ignore_errors: bool = True,
     ):
         for test_case in self.test_cases:
             try:
@@ -71,7 +71,7 @@ class Aegis(AISafetyFramework):
                 metric.measure(test_case)
                 test_case.score = metric.score
                 test_case.reason = metric.reason
-            except Exception as e: 
+            except Exception as e:
                 if ignore_errors:
                     test_case.error = e.message
                 else:
@@ -80,12 +80,11 @@ class Aegis(AISafetyFramework):
 
         return self.test_cases
 
-
     async def a_assess(
-        self, 
-        model_callback: CallbackType, 
+        self,
+        model_callback: CallbackType,
         pbar: tqdm,
-        ignore_errors: bool = True
+        ignore_errors: bool = True,
     ):
 
         async def evaluate_test_case(test_case):
@@ -95,7 +94,7 @@ class Aegis(AISafetyFramework):
                 await metric.a_measure(test_case)
                 test_case.score = metric.score
                 test_case.reason = metric.reason
-            except Exception as e: 
+            except Exception as e:
                 if ignore_errors:
                     test_case.error = e.message
                 else:
