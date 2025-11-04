@@ -138,7 +138,6 @@ class RedTeamer:
                             self.attack_simulator.simulate(
                                 attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                                 vulnerabilities=vulnerabilities,
-                                framework=framework,
                                 attacks=attacks,
                                 ignore_errors=ignore_errors,
                                 simulator_model=self.simulator_model,
@@ -280,7 +279,6 @@ class RedTeamer:
                         await self.attack_simulator.a_simulate(
                             attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                             vulnerabilities=vulnerabilities,
-                            framework=framework,
                             attacks=attacks,
                             simulator_model=self.simulator_model,
                             ignore_errors=ignore_errors,
