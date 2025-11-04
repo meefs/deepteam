@@ -1,6 +1,6 @@
 import asyncio
 import random
-from typing import Literal
+from typing import Literal, Optional, Union
 from deepeval.models import DeepEvalBaseLLM
 from tqdm import tqdm
 
