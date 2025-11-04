@@ -44,11 +44,12 @@ from deepteam.attacks.multi_turn import (
     BadLikertJudge,
 )
 
+
 class OWASPTop10(AISafetyFramework):
 
     def __init__(self):
         self.name = "OWASP"
-        self.description="The OWASP Top 10 for LLMs 2025"
+        self.description = "The OWASP Top 10 for LLMs 2025"
         self.vulnerabilities = self._get_owasp_vulnerabilities()
         self.attacks = self._get_owasp_attacks()
 
@@ -105,7 +106,11 @@ class OWASPTop10(AISafetyFramework):
                 ]
             ),
             GraphicContent(
-                types=["sexual_content", "graphic_content", "pornographic_content"]
+                types=[
+                    "sexual_content",
+                    "graphic_content",
+                    "pornographic_content",
+                ]
             ),
             PersonalSafety(
                 types=[
@@ -175,7 +180,6 @@ class OWASPTop10(AISafetyFramework):
             ),
             Robustness(types=["hijacking", "input_overreliance"]),
         ]
-
 
     def _get_owasp_attacks(self) -> List[BaseAttack]:
         """
