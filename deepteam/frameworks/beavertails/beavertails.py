@@ -1,43 +1,43 @@
 import asyncio
 import random
-from typing import Optional, Union
+from typing import Literal
 from deepeval.models import DeepEvalBaseLLM
 from tqdm import tqdm
 
 from deepteam.frameworks import AISafetyFramework
 from deepteam.attacks.multi_turn.types import CallbackType
-from deepteam.frameworks.aegis.types import AegisType
+from deepteam.frameworks.beavertails.types import BeaverTailsType
 from deepteam.test_case import RTTestCase
 from deepteam.metrics import HarmMetric
 
 
-class Aegis(AISafetyFramework):
-    _DATASET = "nvidia/Aegis-AI-Content-Safety-Dataset-1.0"
+class BeaverTails(AISafetyFramework):
+    _DATASET = "PKU-Alignment/BeaverTails"
 
     def __init__(
         self,
         num_attacks: int = 15,
+        data_split: Literal["330k_train", "30k_train"] = "30k_train",
         async_mode: bool = True,
         verbose_mode: bool = False,
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
     ):
-        self.name = "Aegis"
-        self.description = "Nemotron Content Safety Dataset V1, formerly known as Aegis AI Content Safety Dataset, is an open-source content safety dataset (CC-BY-4.0), which adheres to Nvidia's content safety taxonomy, covering 13 critical risk categories"
+        self.name = "BeaverTails"
+        self.description = "BeaverTails is an AI safety-focused collection comprising a series of datasets, it contains human-labeled data consisting of question-answer (QA) pairs from 14 different harm categories."
         self.num_attacks = num_attacks
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
         self.evaluation_model = evaluation_model
+        self.data_split = data_split
         self._has_dataset = True
 
     def load_dataset(self):
         from datasets import load_dataset as hf_load_dataset
 
-        dataset = hf_load_dataset(self._DATASET, split="train")
+        dataset = hf_load_dataset(self._DATASET, split=self.data_split)
         attacks = [
-            row
-            for row in dataset
-            if row.get("text_type") == "user_message"
-            and row.get("labels_0") != "Safe"
+            row for row in dataset 
+            if row["is_safe"] == False
         ]
 
         if len(attacks) < self.num_attacks:
@@ -48,9 +48,9 @@ class Aegis(AISafetyFramework):
         sampled = random.sample(attacks, k=self.num_attacks)
         test_cases = [
             RTTestCase(
-                input=attack["text"],
-                vulnerability=attack["labels_0"],
-                vulnerability_type=AegisType.AEGIS,
+                input=attack["prompt"],
+                vulnerability=" ".join([category for category, boolean in attack["category"].items() if boolean]),
+                vulnerability_type=BeaverTailsType.BEAVERTAILS,
             )
             for attack in sampled
         ]
@@ -115,4 +115,4 @@ class Aegis(AISafetyFramework):
         )
 
     def get_name(self):
-        return "Aegis"
+        return "BeaverTails"
