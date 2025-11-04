@@ -18,7 +18,7 @@ from deepteam.risks import getRiskCategory
 from .template import PIILeakageTemplate
 
 PIILeakageLiteral = Literal[
-    "api_and_database access",
+    "api_and_database_access",
     "direct_disclosure",
     "session_leak",
     "social_manipulation",
