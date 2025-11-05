@@ -1,6 +1,6 @@
 from typing import Optional
 
-from deepteam.vulnerabilities.agentic.goal_theft.types import GoalTheftType
+from deepteam.vulnerabilities.goal_theft.types import GoalTheftType
 
 
 class GoalTheftTemplate:

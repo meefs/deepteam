@@ -8,22 +8,25 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.utils import validate_model_callback_signature
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.agentic.robustness import RobustnessType
+from deepteam.vulnerabilities.goal_theft import GoalTheftType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
-from deepteam.metrics import (
-    HijackingMetric,
-    OverrelianceMetric,
+from deepteam.metrics.agentic.extraction_success.extraction_success import (
+    ExtractionSuccessMetric,
     BaseRedTeamingMetric,
 )
 from deepteam.test_case import RTTestCase
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
-from .template import RobustnessTemplate
+from .template import GoalTheftTemplate
 
-RobustnessLiteral = Literal["input_overreliance", "hijacking"]
+GoalTheftLiteralType = Literal[
+    "escalating_probing", "cooperative_dialogue", "social_engineering"
+]
 
 
-class Robustness(BaseVulnerability):
+class GoalTheft(BaseVulnerability):
+    name = "Goal Theft"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -32,13 +35,13 @@ class Robustness(BaseVulnerability):
             Union[str, DeepEvalBaseLLM]
         ] = "gpt-3.5-turbo-0125",
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
-        types: Optional[List[RobustnessLiteral]] = [
-            type.value for type in RobustnessType
+        types: Optional[List[GoalTheftLiteralType]] = [
+            type.value for type in GoalTheftType
         ],
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=RobustnessType
+            self.name, types=types, allowed_type=GoalTheftType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -51,7 +54,7 @@ class Robustness(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-    ) -> Dict[RobustnessType, List[RTTestCase]]:
+    ) -> Dict[GoalTheftType, List[RTTestCase]]:
         from deepteam.risks import getRiskCategory
 
         validate_model_callback_signature(
@@ -67,8 +70,8 @@ class Robustness(BaseVulnerability):
 
         simulated_test_cases = self.simulate_attacks(purpose)
 
-        results: Dict[RobustnessType, List[RTTestCase]] = {}
-        res: Dict[RobustnessType, BaseRedTeamingMetric] = {}
+        results: Dict[GoalTheftType, List[RTTestCase]] = {}
+        res: Dict[GoalTheftType, ExtractionSuccessMetric] = {}
         simulated_attacks: Dict[str, str] = {}
 
         for test_case in simulated_test_cases:
@@ -106,7 +109,7 @@ class Robustness(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-    ) -> Dict[RobustnessType, List[RTTestCase]]:
+    ) -> Dict[GoalTheftType, List[RTTestCase]]:
         from deepteam.risks import getRiskCategory
 
         validate_model_callback_signature(
@@ -116,8 +119,8 @@ class Robustness(BaseVulnerability):
 
         simulated_test_cases = await self.a_simulate_attacks(purpose)
 
-        results: Dict[RobustnessType, List[RTTestCase]] = {}
-        res: Dict[RobustnessType, BaseRedTeamingMetric] = {}
+        results: Dict[GoalTheftType, List[RTTestCase]] = {}
+        res: Dict[GoalTheftType, ExtractionSuccessMetric] = {}
         simulated_attacks: Dict[str, str] = {}
 
         async def process_attack(test_case: RTTestCase):
@@ -179,7 +182,7 @@ class Robustness(BaseVulnerability):
         for type in self.types:
             templates[type] = templates.get(type, [])
             templates[type].append(
-                RobustnessTemplate.generate_baseline_attacks(
+                GoalTheftTemplate.generate_baseline_attacks(
                     type, attacks_per_vulnerability_type, self.purpose
                 )
             )
@@ -233,7 +236,7 @@ class Robustness(BaseVulnerability):
         for type in self.types:
             templates[type] = templates.get(type, [])
             templates[type].append(
-                RobustnessTemplate.generate_baseline_attacks(
+                GoalTheftTemplate.generate_baseline_attacks(
                     type, attacks_per_vulnerability_type, self.purpose
                 )
             )
@@ -271,27 +274,15 @@ class Robustness(BaseVulnerability):
 
         return simulated_test_cases
 
-    # TODO: Different metrics for different types. Forces us to use type in the `_get_metric` call.
     def _get_metric(
         self,
-        type: RobustnessType,
+        type: GoalTheftType,
     ) -> BaseRedTeamingMetric:
-        if type == RobustnessType.HIJACKING:
-            return HijackingMetric(
-                purpose=self.purpose,
-                model=self.evaluation_model,
-                async_mode=self.async_mode,
-                verbose_mode=self.verbose_mode,
-            )
-        if type == RobustnessType.INPUT_OVERRELIANCE:
-            return OverrelianceMetric(
-                purpose=self.purpose,
-                model=self.evaluation_model,
-                async_mode=self.async_mode,
-                verbose_mode=self.verbose_mode,
-            )
-        raise ValueError(
-            "Invalid type passed in the 'get_metric' function. Please pass an enum from 'RobustnessType'"
+        return ExtractionSuccessMetric(
+            purpose=self.purpose,
+            model=self.evaluation_model,
+            async_mode=self.async_mode,
+            verbose_mode=self.verbose_mode,
         )
 
     def is_vulnerable(self) -> bool:
@@ -305,4 +296,4 @@ class Robustness(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Robustness"
+        return self.name

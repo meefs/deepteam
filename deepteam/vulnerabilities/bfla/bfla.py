@@ -25,6 +25,8 @@ BFLALiteral = Literal[
 
 
 class BFLA(BaseVulnerability):
+    name = "BFLA"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -37,7 +39,7 @@ class BFLA(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=BFLAType
+            self.name, types=types, allowed_type=BFLAType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -292,4 +294,4 @@ class BFLA(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "BFLA"
+        return self.name

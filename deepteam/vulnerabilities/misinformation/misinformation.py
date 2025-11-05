@@ -24,6 +24,8 @@ MisinformationLiteral = Literal[
 
 
 class Misinformation(BaseVulnerability):
+    name = "Misinformation"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -38,7 +40,7 @@ class Misinformation(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=MisinformationType
+            self.name, types=types, allowed_type=MisinformationType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -294,4 +296,4 @@ class Misinformation(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Misinformation"
+        return self.name

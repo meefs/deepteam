@@ -11,16 +11,3 @@ __all__ = [
     "SequentialJailbreak",
     "BadLikertJudge",
 ]
-
-MULTI_TURN_ATTACK_MAP = {
-    v.__name__: v
-    for v in [
-        CrescendoJailbreaking,
-        LinearJailbreaking,
-        TreeJailbreaking,
-        SequentialJailbreak,
-        BadLikertJudge,
-    ]
-}
-
-MULTI_TURN_ATTACK_NAMES = sorted(list(MULTI_TURN_ATTACK_MAP.keys()))

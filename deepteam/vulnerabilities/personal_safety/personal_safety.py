@@ -27,6 +27,8 @@ PersonalSafetyLiteral = Literal[
 
 
 class PersonalSafety(BaseVulnerability):
+    name = "Personal Safety"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -41,7 +43,7 @@ class PersonalSafety(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=PersonalSafetyType
+            self.name, types=types, allowed_type=PersonalSafetyType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -293,4 +295,4 @@ class PersonalSafety(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Personal Safety"
+        return self.name

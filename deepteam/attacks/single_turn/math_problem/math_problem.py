@@ -21,6 +21,8 @@ from deepteam.attacks.attack_simulator.utils import (
 
 
 class MathProblem(BaseSingleTurnAttack):
+    name = "Math Problem"
+
     def __init__(
         self,
         weight: int = 1,
@@ -147,4 +149,4 @@ class MathProblem(BaseSingleTurnAttack):
         )
 
     def get_name(self) -> str:
-        return "Math Problem"
+        return self.name

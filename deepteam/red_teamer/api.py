@@ -28,9 +28,7 @@ class AttackMethodResult(BaseModel):
 
 
 class APIRTTurn(TurnApi):
-    turn_level_attack: Optional[str] = Field(
-        alias="turnLevelAttack"
-    )
+    turn_level_attack: Optional[str] = Field(alias="turnLevelAttack")
 
 
 class APIRTTestCase(BaseModel):
@@ -39,9 +37,7 @@ class APIRTTestCase(BaseModel):
     retrieval_context: Optional[List[str]] = Field(
         None, alias="retrievalContext"
     )
-    tools_called: Optional[List[str]] = Field(
-        None, alias="toolsCalled"
-    )
+    tools_called: Optional[List[str]] = Field(None, alias="toolsCalled")
     turns: Optional[List[APIRTTurn]] = Field(None)
 
     success: Optional[bool] = Field(None)
@@ -61,14 +57,10 @@ class APIRiskAssessment(BaseModel):
     vulnerability_results: List[VulnerabilityTypeResult] = Field(
         alias="vulnerabilityResults"
     )
-    attack_results: List[AttackMethodResult] = Field(
-        alias="attackResults"
-    )
+    attack_results: List[AttackMethodResult] = Field(alias="attackResults")
     run_duration: float = Field(alias="runDuration")
     identifier: Optional[str] = Field(alias="identifier")
-    assessment_cost: Optional[float] = Field(
-        alias="assessmentCost"
-    )
+    assessment_cost: Optional[float] = Field(alias="assessmentCost")
     test_cases: List[APIRTTestCase] = Field(alias="testCases")
 
 
@@ -93,7 +85,6 @@ def map_test_case_to_api(test_case: RTTestCase, index: int) -> APIRTTestCase:
             map_turn_to_api(turn, idx)
             for idx, turn in enumerate(test_case.turns)
         ]
-
 
     if test_case.score is not None:
         success = test_case.score > 0

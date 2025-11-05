@@ -2,6 +2,8 @@ from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 
 class Leetspeak(BaseSingleTurnAttack):
+    name = "Leetspeak"
+
     def __init__(self, weight: int = 1):
         self.weight = weight
 

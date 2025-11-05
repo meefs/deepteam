@@ -1,3 +1,4 @@
+from typing import Dict, List
 from .base_vulnerability import BaseVulnerability
 from .bias.bias import Bias
 from .toxicity.toxicity import Toxicity
@@ -17,13 +18,10 @@ from .competition.competition import Competition
 from .graphic_content.graphic_content import GraphicContent
 from .personal_safety.personal_safety import PersonalSafety
 from .custom.custom import CustomVulnerability
-
-# Agentic vulnerabilities
-from .agentic.goal_theft.goal_theft import GoalTheft
-from .agentic.recursive_hijacking.recursive_hijacking import RecursiveHijacking
-from .agentic.robustness.robustness import Robustness
-from .agentic.excessive_agency.excessive_agency import ExcessiveAgency
-
+from .goal_theft.goal_theft import GoalTheft
+from .recursive_hijacking.recursive_hijacking import RecursiveHijacking
+from .robustness.robustness import Robustness
+from .excessive_agency.excessive_agency import ExcessiveAgency
 
 __all__ = [
     "BaseVulnerability",
@@ -50,33 +48,3 @@ __all__ = [
     "Robustness",
     "ExcessiveAgency",
 ]
-
-VULNERABILITY_MAP = {
-    v.__name__: v
-    for v in [
-        Bias,
-        Toxicity,
-        Misinformation,
-        IllegalActivity,
-        PromptLeakage,
-        PIILeakage,
-        BFLA,
-        BOLA,
-        RBAC,
-        DebugAccess,
-        ShellInjection,
-        SQLInjection,
-        SSRF,
-        IntellectualProperty,
-        Competition,
-        GraphicContent,
-        PersonalSafety,
-        CustomVulnerability,
-        GoalTheft,
-        RecursiveHijacking,
-        Robustness,
-        ExcessiveAgency,
-    ]
-}
-
-VULNERABILITY_NAMES = sorted(list(VULNERABILITY_MAP.keys()))

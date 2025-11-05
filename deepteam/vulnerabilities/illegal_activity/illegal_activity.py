@@ -29,6 +29,8 @@ IllegalActivityLiteral = Literal[
 
 
 class IllegalActivity(BaseVulnerability):
+    name = "Illegal Activity"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -43,7 +45,7 @@ class IllegalActivity(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=IllegalActivityType
+            self.name, types=types, allowed_type=IllegalActivityType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -301,4 +303,4 @@ class IllegalActivity(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Illegal Activity"
+        return self.name

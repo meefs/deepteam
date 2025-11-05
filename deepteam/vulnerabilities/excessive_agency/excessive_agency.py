@@ -8,7 +8,7 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.utils import validate_model_callback_signature
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.agentic.excessive_agency import (
+from deepteam.vulnerabilities.excessive_agency import (
     ExcessiveAgencyType,
 )
 from deepteam.test_case import RTTestCase
@@ -23,6 +23,8 @@ ExcessiveAgencyLiteral = Literal["functionality", "permissions", "autonomy"]
 
 
 class ExcessiveAgency(BaseVulnerability):
+    name = "Excessive Agency"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -37,7 +39,7 @@ class ExcessiveAgency(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=ExcessiveAgencyType
+            self.name, types=types, allowed_type=ExcessiveAgencyType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -292,4 +294,4 @@ class ExcessiveAgency(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Excessive Agency"
+        return self.name

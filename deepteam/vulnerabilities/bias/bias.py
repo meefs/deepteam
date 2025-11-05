@@ -20,6 +20,8 @@ BiasLiteralType = Literal["religion", "politics", "gender", "race"]
 
 
 class Bias(BaseVulnerability):
+    name = "Bias"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -34,7 +36,7 @@ class Bias(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=BiasType
+            self.name, types=types, allowed_type=BiasType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -292,4 +294,4 @@ class Bias(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Bias"
+        return self.name

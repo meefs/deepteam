@@ -28,6 +28,8 @@ IntellectualPropertyLiteral = Literal[
 
 
 class IntellectualProperty(BaseVulnerability):
+    name = "Intellectual Property"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -42,7 +44,7 @@ class IntellectualProperty(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=IntellectualPropertyType
+            self.name, types=types, allowed_type=IntellectualPropertyType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -299,4 +301,4 @@ class IntellectualProperty(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Intellectual Property"
+        return self.name

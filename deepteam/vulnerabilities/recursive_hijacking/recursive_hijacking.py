@@ -8,23 +8,29 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.utils import validate_model_callback_signature
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.agentic.goal_theft import GoalTheftType
+from deepteam.vulnerabilities.recursive_hijacking import (
+    RecursiveHijackingType,
+)
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
-from deepteam.metrics.agentic.extraction_success.extraction_success import (
-    ExtractionSuccessMetric,
+from deepteam.metrics.agentic.subversion_success.subversion_success import (
+    SubversionSuccessMetric,
     BaseRedTeamingMetric,
 )
 from deepteam.test_case import RTTestCase
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
-from .template import GoalTheftTemplate
+from .template import RecursiveHijackingTemplate
 
-GoalTheftLiteralType = Literal[
-    "escalating_probing", "cooperative_dialogue", "social_engineering"
+RecursiveHijackingLiteralType = Literal[
+    "self_modifying_goals",
+    "recursive_objective_chaining",
+    "goal_propagation_attacks",
 ]
 
 
-class GoalTheft(BaseVulnerability):
+class RecursiveHijacking(BaseVulnerability):
+    name = "Recursive Hijacking"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -33,13 +39,13 @@ class GoalTheft(BaseVulnerability):
             Union[str, DeepEvalBaseLLM]
         ] = "gpt-3.5-turbo-0125",
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
-        types: Optional[List[GoalTheftLiteralType]] = [
-            type.value for type in GoalTheftType
+        types: Optional[List[RecursiveHijackingLiteralType]] = [
+            type.value for type in RecursiveHijackingType
         ],
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=GoalTheftType
+            self.name, types=types, allowed_type=RecursiveHijackingType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -52,7 +58,7 @@ class GoalTheft(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-    ) -> Dict[GoalTheftType, List[RTTestCase]]:
+    ) -> Dict[RecursiveHijackingType, List[RTTestCase]]:
         from deepteam.risks import getRiskCategory
 
         validate_model_callback_signature(
@@ -68,8 +74,8 @@ class GoalTheft(BaseVulnerability):
 
         simulated_test_cases = self.simulate_attacks(purpose)
 
-        results: Dict[GoalTheftType, List[RTTestCase]] = {}
-        res: Dict[GoalTheftType, ExtractionSuccessMetric] = {}
+        results: Dict[RecursiveHijackingType, List[RTTestCase]] = {}
+        res: Dict[RecursiveHijackingType, SubversionSuccessMetric] = {}
         simulated_attacks: Dict[str, str] = {}
 
         for test_case in simulated_test_cases:
@@ -107,7 +113,7 @@ class GoalTheft(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-    ) -> Dict[GoalTheftType, List[RTTestCase]]:
+    ) -> Dict[RecursiveHijackingType, List[RTTestCase]]:
         from deepteam.risks import getRiskCategory
 
         validate_model_callback_signature(
@@ -117,8 +123,8 @@ class GoalTheft(BaseVulnerability):
 
         simulated_test_cases = await self.a_simulate_attacks(purpose)
 
-        results: Dict[GoalTheftType, List[RTTestCase]] = {}
-        res: Dict[GoalTheftType, ExtractionSuccessMetric] = {}
+        results: Dict[RecursiveHijackingType, List[RTTestCase]] = {}
+        res: Dict[RecursiveHijackingType, SubversionSuccessMetric] = {}
         simulated_attacks: Dict[str, str] = {}
 
         async def process_attack(test_case: RTTestCase):
@@ -180,7 +186,7 @@ class GoalTheft(BaseVulnerability):
         for type in self.types:
             templates[type] = templates.get(type, [])
             templates[type].append(
-                GoalTheftTemplate.generate_baseline_attacks(
+                RecursiveHijackingTemplate.generate_baseline_attacks(
                     type, attacks_per_vulnerability_type, self.purpose
                 )
             )
@@ -234,7 +240,7 @@ class GoalTheft(BaseVulnerability):
         for type in self.types:
             templates[type] = templates.get(type, [])
             templates[type].append(
-                GoalTheftTemplate.generate_baseline_attacks(
+                RecursiveHijackingTemplate.generate_baseline_attacks(
                     type, attacks_per_vulnerability_type, self.purpose
                 )
             )
@@ -274,9 +280,9 @@ class GoalTheft(BaseVulnerability):
 
     def _get_metric(
         self,
-        type: GoalTheftType,
+        type: RecursiveHijackingType,
     ) -> BaseRedTeamingMetric:
-        return ExtractionSuccessMetric(
+        return SubversionSuccessMetric(
             purpose=self.purpose,
             model=self.evaluation_model,
             async_mode=self.async_mode,
@@ -294,4 +300,4 @@ class GoalTheft(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Goal Theft"
+        return self.name

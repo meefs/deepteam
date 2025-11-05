@@ -25,6 +25,8 @@ BOLALiteral = Literal[
 
 
 class BOLA(BaseVulnerability):
+    name = "BOLA"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -37,7 +39,7 @@ class BOLA(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=BOLAType
+            self.name, types=types, allowed_type=BOLAType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -293,4 +295,4 @@ class BOLA(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "BOLA"
+        return self.name

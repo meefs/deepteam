@@ -18,7 +18,9 @@ from deepteam.attacks.attack_simulator.utils import (
     a_generate,
 )
 from deepteam.attacks.multi_turn.types import CallbackType
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.multi_turn.base_multi_turn_attack import (
+    BaseMultiTurnAttack,
+)
 from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.attacks.multi_turn.base_template import BaseMultiTurnTemplate
@@ -26,14 +28,19 @@ from deepteam.errors import ModelRefusalError
 from deepteam.test_case.test_case import RTTurn
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.vulnerabilities import BaseVulnerability
+from deepteam.attacks.single_turn.base_single_turn_attack import (
+    BaseSingleTurnAttack,
+)
 
 
-class LinearJailbreaking(BaseAttack):
+class LinearJailbreaking(BaseMultiTurnAttack):
+    name = "Linear Jailbreaking"
+
     def __init__(
         self,
         weight: int = 1,
         num_turns: int = 5,
-        turn_level_attacks: Optional[List[BaseAttack]] = None,
+        turn_level_attacks: Optional[List[BaseSingleTurnAttack]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = "gpt-4o-mini",
     ):
         self.weight = weight
@@ -430,4 +437,4 @@ class LinearJailbreaking(BaseAttack):
         return result
 
     def get_name(self) -> str:
-        return "Linear Jailbreaking"
+        return self.name

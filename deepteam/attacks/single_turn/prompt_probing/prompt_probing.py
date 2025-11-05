@@ -21,6 +21,7 @@ from deepteam.attacks.attack_simulator.utils import (
 
 
 class PromptProbing(BaseSingleTurnAttack):
+    name = "Prompt Probing"
 
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight
@@ -140,4 +141,4 @@ class PromptProbing(BaseSingleTurnAttack):
         return attack
 
     def get_name(self) -> str:
-        return "Prompt Probing"
+        return self.name

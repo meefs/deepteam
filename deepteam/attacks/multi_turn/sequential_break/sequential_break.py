@@ -5,7 +5,9 @@ import random
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.multi_turn.base_multi_turn_attack import (
+    BaseMultiTurnAttack,
+)
 from deepteam.attacks.multi_turn.sequential_break.schema import (
     RewrittenDialogue,
     DialogueJudge,
@@ -27,16 +29,21 @@ from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.test_case.test_case import RTTurn
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.vulnerabilities import BaseVulnerability
+from deepteam.attacks.single_turn.base_single_turn_attack import (
+    BaseSingleTurnAttack,
+)
 
 
-class SequentialJailbreak(BaseAttack):
+class SequentialJailbreak(BaseMultiTurnAttack):
+    name = "Sequential Jailbreak"
+
     def __init__(
         self,
         weight: int = 1,
         type: Optional[SequentialJailbreakTypeLiteral] = None,
         persona: Optional[DialogueTypeLiteral] = None,
         num_turns: int = 5,
-        turn_level_attacks: Optional[List[BaseAttack]] = None,
+        turn_level_attacks: Optional[List[BaseSingleTurnAttack]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = "gpt-4o-mini",
     ):
         self.weight = weight
@@ -431,7 +438,7 @@ class SequentialJailbreak(BaseAttack):
 
     def progress(
         self,
-        vulnerability: "BaseVulnerability",
+        vulnerability: BaseVulnerability,
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
     ) -> Dict[VulnerabilityType, List[RTTurn]]:
@@ -514,7 +521,7 @@ class SequentialJailbreak(BaseAttack):
 
     async def a_progress(
         self,
-        vulnerability: "BaseVulnerability",
+        vulnerability: BaseVulnerability,
         model_callback: CallbackType,
         turns: Optional[List[RTTurn]] = None,
     ) -> Dict[VulnerabilityType, List[RTTurn]]:
@@ -595,4 +602,4 @@ class SequentialJailbreak(BaseAttack):
         return result
 
     def get_name(self) -> str:
-        return "Sequential Jailbreak"
+        return self.name

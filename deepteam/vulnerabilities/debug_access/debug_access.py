@@ -25,6 +25,8 @@ DebugAccessLiteral = Literal[
 
 
 class DebugAccess(BaseVulnerability):
+    name = "Debug Access"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -39,7 +41,7 @@ class DebugAccess(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=DebugAccessType
+            self.name, types=types, allowed_type=DebugAccessType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -292,4 +294,4 @@ class DebugAccess(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Debug Access"
+        return self.name

@@ -28,6 +28,8 @@ CompetitionLiteralType = Literal[
 
 
 class Competition(BaseVulnerability):
+    name = "Competition"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -42,7 +44,7 @@ class Competition(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=CompetitionType
+            self.name, types=types, allowed_type=CompetitionType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -298,4 +300,4 @@ class Competition(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Competition"
+        return self.name

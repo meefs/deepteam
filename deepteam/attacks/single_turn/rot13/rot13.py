@@ -2,6 +2,8 @@ from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 
 class ROT13(BaseSingleTurnAttack):
+    name = "ROT-13"
+
     def __init__(self, weight: int = 1):
         self.weight = weight
 
@@ -18,4 +20,4 @@ class ROT13(BaseSingleTurnAttack):
         return self.enhance(attack)
 
     def get_name(self) -> str:
-        return "ROT-13"
+        return self.name

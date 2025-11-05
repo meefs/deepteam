@@ -9,7 +9,9 @@ import random
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.multi_turn.base_multi_turn_attack import (
+    BaseMultiTurnAttack,
+)
 from deepteam.attacks.multi_turn.tree_jailbreaking.schema import (
     ImprovementPrompt,
     Rating,
@@ -27,6 +29,9 @@ from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.test_case.test_case import RTTurn
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.vulnerabilities import BaseVulnerability
+from deepteam.attacks.single_turn.base_single_turn_attack import (
+    BaseSingleTurnAttack,
+)
 
 
 class TreeNode:
@@ -37,7 +42,7 @@ class TreeNode:
         depth: int,
         conversation_history=None,
         parent: Optional["TreeNode"] = None,
-        turn_level_attack: Optional[BaseAttack] = None,
+        turn_level_attack: Optional[BaseSingleTurnAttack] = None,
     ):
         self.prompt = prompt
         self.score = score
@@ -48,13 +53,14 @@ class TreeNode:
         self.conversation_history = conversation_history or []
 
 
-class TreeJailbreaking(BaseAttack):
+class TreeJailbreaking(BaseMultiTurnAttack):
+    name = "Tree Jailbreaking"
 
     def __init__(
         self,
         weight: int = 1,
         max_depth: int = 5,
-        turn_level_attacks: Optional[List[BaseAttack]] = None,
+        turn_level_attacks: Optional[List[BaseSingleTurnAttack]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = "gpt-4o-mini",
     ):
         self.weight = weight
@@ -697,4 +703,4 @@ class TreeJailbreaking(BaseAttack):
         return max(MIN_BRANCHES, min(MAX_BRANCHES, branches))
 
     def get_name(self) -> str:
-        return "Tree Jailbreaking"
+        return self.name

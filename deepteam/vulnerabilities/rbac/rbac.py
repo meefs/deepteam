@@ -25,6 +25,8 @@ RBACLiteral = Literal[
 
 
 class RBAC(BaseVulnerability):
+    name = "RBAC"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -37,7 +39,7 @@ class RBAC(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=RBACType
+            self.name, types=types, allowed_type=RBACType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -294,4 +296,4 @@ class RBAC(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "RBAC"
+        return self.name

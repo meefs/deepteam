@@ -23,6 +23,8 @@ GraphicContentLiteral = Literal[
 
 
 class GraphicContent(BaseVulnerability):
+    name = "Graphic Content"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -37,7 +39,7 @@ class GraphicContent(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=GraphicContentType
+            self.name, types=types, allowed_type=GraphicContentType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -294,4 +296,4 @@ class GraphicContent(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Graphic Content"
+        return self.name

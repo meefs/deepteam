@@ -26,6 +26,8 @@ PIILeakageLiteral = Literal[
 
 
 class PIILeakage(BaseVulnerability):
+    name = "PII Leakage"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -40,7 +42,7 @@ class PIILeakage(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=PIILeakageType
+            self.name, types=types, allowed_type=PIILeakageType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -300,4 +302,4 @@ class PIILeakage(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "PII Leakage"
+        return self.name

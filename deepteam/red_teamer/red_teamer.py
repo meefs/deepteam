@@ -701,7 +701,6 @@ class RedTeamer:
             # Pydantic version below 2.0
             body = api_risk_assessment.dict(by_alias=True, exclude_none=True)
 
-        
         data, link = api.send_request(
             method=HttpMethods.POST,
             endpoint=Endpoints.RISK_ASSESSMENT_ENDPOINT,

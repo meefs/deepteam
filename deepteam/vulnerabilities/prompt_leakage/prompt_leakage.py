@@ -26,6 +26,8 @@ PromptLeakageLiteral = Literal[
 
 
 class PromptLeakage(BaseVulnerability):
+    name = "Prompt Leakage"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -40,7 +42,7 @@ class PromptLeakage(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=PromptLeakageType
+            self.name, types=types, allowed_type=PromptLeakageType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -297,4 +299,4 @@ class PromptLeakage(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Prompt Leakage"
+        return self.name

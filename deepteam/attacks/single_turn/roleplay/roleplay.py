@@ -22,6 +22,7 @@ from deepteam.attacks.attack_simulator.utils import (
 
 
 class Roleplay(BaseSingleTurnAttack):
+    name = "Roleplay"
 
     def __init__(
         self,

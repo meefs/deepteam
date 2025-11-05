@@ -21,6 +21,8 @@ ToxicityLiteral = Literal["profanity", "insults", "threats", "mockery"]
 
 
 class Toxicity(BaseVulnerability):
+    name = "Toxicity"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -35,7 +37,7 @@ class Toxicity(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=ToxicityType
+            self.name, types=types, allowed_type=ToxicityType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -289,4 +291,4 @@ class Toxicity(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Toxicity"
+        return self.name

@@ -20,6 +20,7 @@ from deepteam.attacks.attack_simulator.utils import (
 
 
 class GrayBox(BaseSingleTurnAttack):
+    name = "Gray Box"
 
     def __init__(self, weight: int = 1, max_retries: int = 5):
         self.weight = weight
@@ -136,4 +137,4 @@ class GrayBox(BaseSingleTurnAttack):
         return attack
 
     def get_name(self) -> str:
-        return "Gray Box"
+        return self.name
