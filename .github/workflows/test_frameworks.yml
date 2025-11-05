@@ -1,4 +1,4 @@
-name: Core Tests
+name: Framework Tests
 
 on:
   push:
