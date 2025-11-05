@@ -16,7 +16,6 @@ from deepteam.vulnerabilities import (
     PersonalSafety,
     RBAC,
     BOLA,
-    BFLA,
     SSRF,
     DebugAccess,
     ShellInjection,
