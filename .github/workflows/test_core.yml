@@ -49,6 +49,8 @@ jobs:
 
       - name: Install project
         run: poetry install --no-interaction --only main
+      - name: Install Framework datasets extra
+        run: poetry install --with frameworks
 
       #----------------------------------------------
       #              run test suite

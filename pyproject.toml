@@ -47,3 +47,9 @@ markers = [
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.frameworks]
+optional = true
+
+[tool.poetry.group.frameworks.dependencies]
+datasets = "^4.4.0"
