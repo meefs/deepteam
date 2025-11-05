@@ -48,7 +48,7 @@ from deepteam.attacks.multi_turn import (
 class OWASPTop10(AISafetyFramework):
 
     def __init__(self):
-        self.name = "OWASPTop10"
+        self.name = "OWASP"
         self.description = "The OWASP Top 10 for LLMs 2025"
         self.vulnerabilities = self._get_owasp_vulnerabilities()
         self.attacks = self._get_owasp_attacks()
@@ -213,4 +213,4 @@ class OWASPTop10(AISafetyFramework):
         ]
 
     def get_name(self):
-        return "OWASPTop10"
+        return "OWASP"
