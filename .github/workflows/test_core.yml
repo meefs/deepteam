@@ -49,8 +49,6 @@ jobs:
 
       - name: Install project
         run: poetry install --no-interaction --only main
-      - name: Install Framework datasets extra
-        run: poetry install --with frameworks
 
       #----------------------------------------------
       #              run test suite
@@ -59,4 +57,5 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
+          poetry run pip install datasets
           poetry run pytest tests/test_core/

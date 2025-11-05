@@ -27,6 +27,12 @@ pytest = ">=8.3.0"
 build = ">=1.0.3"
 twine = ">=6.1.0"
 
+[tool.poetry.group.frameworks]
+optional = true
+
+[tool.poetry.group.frameworks.dependencies]
+datasets = "^4.4.0"
+
 [tool.poetry.scripts]
 deepteam = "deepteam.cli.main:app"
 
@@ -47,9 +53,3 @@ markers = [
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.group.frameworks]
-optional = true
-
-[tool.poetry.group.frameworks.dependencies]
-datasets = "^4.4.0"
