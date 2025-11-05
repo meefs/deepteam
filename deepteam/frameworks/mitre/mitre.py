@@ -1,6 +1,7 @@
-from typing import List, Literal
+from typing import List, Literal, Dict
 from deepteam.frameworks import AISafetyFramework
 from deepteam.vulnerabilities import (
+    BaseVulnerability,
     IllegalActivity,
     PromptLeakage,
     PIILeakage,
@@ -81,7 +82,7 @@ class MITRE(AISafetyFramework):
         return attacks
 
     def _mitre_vulnerabilities_by_category(self):
-        mapping = {
+        mapping: Dict[str, List[BaseVulnerability]] = {
             "reconnaissance": [
                 Competition(
                     types=[
@@ -255,7 +256,7 @@ class MITRE(AISafetyFramework):
         return mapping
 
     def _mitre_attacks_by_category(self):
-        mapping = {
+        mapping: Dict[str, List[BaseAttack]] = {
             "reconnaissance": [
                 Roleplay(
                     weight=3,
