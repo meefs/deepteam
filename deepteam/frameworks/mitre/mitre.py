@@ -141,7 +141,7 @@ class MITRE(AISafetyFramework):
                     name="CommandAndControl",
                     criteria="Detect covert signaling or stateful control channels through model outputs or agents.",
                     types=["covert_channel", "stateful_signal"],
-                )
+                ),
             ],
             "initial_access": [
                 DebugAccess(

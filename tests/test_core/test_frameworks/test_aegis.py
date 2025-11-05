@@ -18,7 +18,10 @@ class TestAegis:
     def test_aegis_description(self):
         """Test that Aegis framework has correct description."""
         framework = Aegis()
-        assert framework.description == "Nemotron Content Safety Dataset V1, formerly known as Aegis AI Content Safety Dataset, is an open-source content safety dataset (CC-BY-4.0), which adheres to Nvidia's content safety taxonomy, covering 13 critical risk categories"
+        assert (
+            framework.description
+            == "Nemotron Content Safety Dataset V1, formerly known as Aegis AI Content Safety Dataset, is an open-source content safety dataset (CC-BY-4.0), which adheres to Nvidia's content safety taxonomy, covering 13 critical risk categories"
+        )
 
     def test_aegis_red_team(self):
         """Test that Aegis framework can be used with red_team function."""

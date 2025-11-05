@@ -18,7 +18,10 @@ class TestBeaverTails:
     def test_beavertails_description(self):
         """Test that BeaverTails framework has correct description."""
         framework = BeaverTails()
-        assert framework.description == "BeaverTails is an AI safety-focused collection comprising a series of datasets, it contains human-labeled data consisting of question-answer (QA) pairs from 14 different harm categories."
+        assert (
+            framework.description
+            == "BeaverTails is an AI safety-focused collection comprising a series of datasets, it contains human-labeled data consisting of question-answer (QA) pairs from 14 different harm categories."
+        )
 
     def test_beavertails_red_team(self):
         """Test that BeaverTails framework can be used with red_team function."""

@@ -4,6 +4,7 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
 from deepteam import red_team
 
+
 class TestOWASPTop10:
 
     def test_owasp_top_10_init(self):

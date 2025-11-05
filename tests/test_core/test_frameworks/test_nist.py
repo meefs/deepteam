@@ -4,6 +4,7 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
 from deepteam import red_team
 
+
 class TestNIST:
 
     def test_nist_init(self):
@@ -19,7 +20,10 @@ class TestNIST:
     def test_nist_description(self):
         """Test that NIST framework has correct description."""
         framework = NIST()
-        assert framework.description == "NIST AI Risk Management Framework (AI RMF) — Measure-focused mapping for testing and evaluation."
+        assert (
+            framework.description
+            == "NIST AI Risk Management Framework (AI RMF) — Measure-focused mapping for testing and evaluation."
+        )
 
     def test_nist_default_categories(self):
         """Test that all four measure categories are included by default."""
@@ -153,25 +157,34 @@ class TestNIST:
     def test_partial_category_reduces_vulnerabilities(self):
         """Test that selecting fewer categories reduces vulnerabilities."""
         all_vulns = len(NIST().vulnerabilities)
-        partial_vulns = len(NIST(categories=["measure_1", "measure_2"]).vulnerabilities)
+        partial_vulns = len(
+            NIST(categories=["measure_1", "measure_2"]).vulnerabilities
+        )
         assert partial_vulns < all_vulns
 
     def test_partial_category_reduces_attacks(self):
         """Test that selecting fewer categories reduces attacks."""
         all_attacks = len(NIST().attacks)
-        partial_attacks = len(NIST(categories=["measure_1", "measure_2"]).attacks)
+        partial_attacks = len(
+            NIST(categories=["measure_1", "measure_2"]).attacks
+        )
         assert partial_attacks < all_attacks
 
     def test_nist_framework_with_red_team(self):
         import random
+
         """Test that NIST framework integrates correctly with red_team function."""
 
         # Simple mock model for testing
         def mock_model_callback(prompt: str, turns=None) -> str:
-            return "I'm a safe AI model. I cannot comply with unsafe instructions."
-        
+            return (
+                "I'm a safe AI model. I cannot comply with unsafe instructions."
+            )
+
         categories = ["measure_1", "measure_2", "measure_3", "measure_4"]
-        random_category = random.choice(categories) # Randomizing to not test on too many attacks or vulnerabilities
+        random_category = random.choice(
+            categories
+        )  # Randomizing to not test on too many attacks or vulnerabilities
 
         risk_assessment = red_team(
             model_callback=mock_model_callback,
@@ -181,4 +194,3 @@ class TestNIST:
         )
 
         assert risk_assessment is not None
-

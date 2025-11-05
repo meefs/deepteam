@@ -20,7 +20,10 @@ class TestMITRE:
     def test_mitre_description(self):
         """Test that MITRE ATLAS framework has correct description."""
         framework = MITRE()
-        assert framework.description == "MITRE ATLAS mapping for LLM/ML adversarial techniques (project-specific) to understand and defend against threats specific to AI and ML systems."
+        assert (
+            framework.description
+            == "MITRE ATLAS mapping for LLM/ML adversarial techniques (project-specific) to understand and defend against threats specific to AI and ML systems."
+        )
 
     def test_mitre_default_categories(self):
         """Test that all six MITRE categories are included by default."""
@@ -116,7 +119,9 @@ class TestMITRE:
             "RecursiveHijacking",
         ]
         for name in expected_vulns:
-            assert name in vuln_names, f"Expected vulnerability {name} not found"
+            assert (
+                name in vuln_names
+            ), f"Expected vulnerability {name} not found"
 
     def test_mitre_attack_names_present(self):
         """Test that key MITRE attacks are present."""
@@ -155,6 +160,7 @@ class TestMITRE:
         import random
 
         """Test MITRE ATLAS integration with red_team pipeline."""
+
         def mock_model_callback(prompt: str, turns=None) -> str:
             return "This request violates internal policy."
 
