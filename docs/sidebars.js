@@ -182,7 +182,7 @@ module.exports = {
       items: [
         "frameworks-introduction",
         "frameworks-owasp-top-10-for-llms", 
-        "frameworks-nist",
+        "frameworks-nist-ai-rmf",
         "frameworks-mitre-atlas",
         "frameworks-beavertails",
         "frameworks-aegis",

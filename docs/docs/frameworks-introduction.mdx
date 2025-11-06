@@ -13,11 +13,52 @@ DeepTeam supports multiple frameworks — from dataset-based testing (_BeaverTai
 
 Here are the list of frameworks available in `deepteam`:
 
-- [MITRE ATLAS](#mitre-atlas)
-- [NIST AI RMF](#nist-ai-rmf)
 - [OWASP Top 10 for LLMs](#owasp-top-10-for-llms)
+- [NIST AI RMF](#nist-ai-rmf)
+- [MITRE ATLAS](#mitre-atlas)
 - [BeaverTails](#beavertails)
 - [Aegis](#aegis)
+
+### OWASP Top 10 for LLMs
+
+The OWASP Top 10 for LLMs framework identifies the most critical security risks in LLM applications.
+It reflects the 2025 OWASP edition, covering vulnerabilities in RAG systems, agents, and model integrations.
+
+- Tests for prompt injection, system prompt leakage, vector weaknesses, and more
+- Simulates real-world exploit attempts and harmful outputs
+- Ideal for application-level AI security assessments
+
+```python
+from deepteam.frameworks import OWASPTop10
+owasp = OWASPTop10(num_attacks=10)
+
+risk = red_team(
+    model_callback=your_model_callback, 
+    framework=owasp
+)
+```
+
+[Learn more about OWASP Top 10 for LLMs](/docs/frameworks-owasp-top-10-for-llms)
+
+### NIST AI RMF
+
+The NIST AI Risk Management Framework (RMF) provides a structured approach to identifying, managing, and mitigating AI risks.
+It focuses on trustworthiness, robustness, and accountability — aligning LLM behavior with regulatory and ethical standards.
+
+- Tests safety, fairness, and robustness dimensions
+- Suitable for compliance-driven AI governance workflows
+
+```python
+from deepteam.frameworks import NIST
+nist = NIST(num_attacks=10)
+
+risk = red_team(
+    model_callback=your_model_callback, 
+    framework=nist
+)
+```
+
+[Learn more about NIST AI RMF](/docs/frameworks-nist-ai-rmf)
 
 ### MITRE ATLAS
 
@@ -41,48 +82,7 @@ risk = red_team(
 )
 ```
 
-[Learn more about MITRE ATLAS](/docs/red-teaming-frameworks-mitre)
-
-### NIST AI RMF
-
-The NIST AI Risk Management Framework (RMF) provides a structured approach to identifying, managing, and mitigating AI risks.
-It focuses on trustworthiness, robustness, and accountability — aligning LLM behavior with regulatory and ethical standards.
-
-- Tests safety, fairness, and robustness dimensions
-- Suitable for compliance-driven AI governance workflows
-
-```python
-from deepteam.frameworks import NIST
-nist = NIST(num_attacks=10)
-
-risk = red_team(
-    model_callback=your_model_callback, 
-    framework=nist
-)
-```
-
-[Learn more about NIST AI RMF](/docs/red-teaming-frameworks-nist)
-
-### OWASP Top 10 for LLMs
-
-The OWASP Top 10 for LLMs framework identifies the most critical security risks in LLM applications.
-It reflects the 2025 OWASP edition, covering vulnerabilities in RAG systems, agents, and model integrations.
-
-- Tests for prompt injection, system prompt leakage, vector weaknesses, and more
-- Simulates real-world exploit attempts and harmful outputs
-- Ideal for application-level AI security assessments
-
-```python
-from deepteam.frameworks import OWASPTop10
-owasp = OWASPTop10(num_attacks=10)
-
-risk = red_team(
-    model_callback=your_model_callback, 
-    framework=owasp
-)
-```
-
-[Learn more about OWASP Top 10 for LLMs](/docs/red-teaming-frameworks-owasp-top-10-for-llms)
+[Learn more about MITRE ATLAS](/docs/frameworks-mitre-atlas)
 
 ### BeaverTails
 
@@ -102,7 +102,7 @@ risk = red_team(
 )
 ```
 
-[Learn more about BeaverTails](/docs/red-teaming-frameworks-beavertails)
+[Learn more about BeaverTails](/docs/frameworks-beavertails)
 
 ### Aegis
 
@@ -122,7 +122,7 @@ risk = red_team(
 )
 ```
 
-[Learn more about Aegis](/docs/red-teaming-frameworks-aegis)
+[Learn more about Aegis](/docs/frameworks-aegis)
 
 :::tip
 You can customize and add more attacks and vulnerabilities to already existing frameworks to specialise red-teaming to your LLM's use case.
