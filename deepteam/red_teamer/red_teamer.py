@@ -73,6 +73,11 @@ class RedTeamer:
             raise ValueError(
                 "You must either provide a 'framework' or 'vulnerabilities'"
             )
+        
+        if framework and (vulnerabilities or attacks):
+            raise ValueError(
+                "You can only pass either 'framework' or 'attacks' and 'vulnerabilities' at the same time"
+            )
 
         if self.async_mode:
             validate_model_callback_signature(
@@ -240,6 +245,11 @@ class RedTeamer:
         if not framework and not vulnerabilities:
             raise ValueError(
                 "You must either provide a 'framework' or 'vulnerabilities'"
+            )
+        
+        if framework and (vulnerabilities or attacks):
+            raise ValueError(
+                "You can only pass either 'framework' or 'attacks' and 'vulnerabilities' at the same time"
             )
 
         if framework:
