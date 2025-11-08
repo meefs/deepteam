@@ -31,4 +31,4 @@ class Leetspeak(BaseSingleTurnAttack):
         return self.enhance(attack)
 
     def get_name(self) -> str:
-        return "Leetspeak"
+        return self.name

@@ -50,4 +50,4 @@ class ContextPoisoning(BaseSingleTurnAttack):
         return self.enhance(attack)
 
     def get_name(self) -> str:
-        return "Context Poisoning"
+        return self.name

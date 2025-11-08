@@ -146,4 +146,4 @@ class Roleplay(BaseSingleTurnAttack):
         return attack
 
     def get_name(self) -> str:
-        return "Roleplay"
+        return self.name
