@@ -146,8 +146,8 @@ class BadLikertJudge(BaseAttack):
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
                 turn_level_attack = attack
-                enhanced_attack = enhance_attack(
-                    attack, enhanced_attack, self.simulator_model
+                current_attack = enhance_attack(
+                    attack, current_attack, self.simulator_model
                 )
 
             assistant_response = model_callback(current_attack, turns)
@@ -267,8 +267,8 @@ class BadLikertJudge(BaseAttack):
             if self.turn_level_attacks and random.random() < 0.5:
                 attack = random.choice(self.turn_level_attacks)
                 turn_level_attack = attack
-                enhanced_attack = await a_enhance_attack(
-                    attack, enhanced_attack, self.simulator_model
+                current_attack = await a_enhance_attack(
+                    attack, current_attack, self.simulator_model
                 )
 
             assistant_response = await model_callback(current_attack, turns)
