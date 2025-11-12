@@ -1,4 +1,4 @@
-from typing import List, Literal, Dict
+from typing import List, Literal
 from deepteam.frameworks import AISafetyFramework
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
