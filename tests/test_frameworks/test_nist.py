@@ -2,6 +2,8 @@ import pytest
 from deepteam.frameworks import NIST
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
+from deepteam.frameworks.nist.risk_categories import NIST_MAPPING
+from deepteam.frameworks.risk_category import RiskCategory
 from deepteam import red_team
 
 
@@ -128,31 +130,32 @@ class TestNIST:
 
     def test_nist_category_vulnerability_mapping(self):
         """Test that all categories map to vulnerabilities properly."""
-        framework = NIST()
-        mapping = framework._nist_vulnerabilities_by_measure()
+        mapping = NIST_MAPPING
         assert set(mapping.keys()) == {
             "measure_1",
             "measure_2",
             "measure_3",
             "measure_4",
         }
-        for vlist in mapping.values():
-            assert isinstance(vlist, list)
-            assert all(isinstance(v, BaseVulnerability) for v in vlist)
+        for risk_category in mapping.values():
+            assert isinstance(risk_category, RiskCategory)
+            assert all(
+                isinstance(v, BaseVulnerability)
+                for v in risk_category.vulnerabilities
+            )
 
     def test_nist_category_attack_mapping(self):
         """Test that all categories map to attacks properly."""
-        framework = NIST()
-        mapping = framework._nist_attacks_by_measure()
+        mapping = NIST_MAPPING
         assert set(mapping.keys()) == {
             "measure_1",
             "measure_2",
             "measure_3",
             "measure_4",
         }
-        for alist in mapping.values():
-            assert isinstance(alist, list)
-            assert all(isinstance(a, BaseAttack) for a in alist)
+        for risk_category in mapping.values():
+            assert isinstance(risk_category, RiskCategory)
+            assert all(isinstance(v, BaseAttack) for v in risk_category.attacks)
 
     def test_partial_category_reduces_vulnerabilities(self):
         """Test that selecting fewer categories reduces vulnerabilities."""

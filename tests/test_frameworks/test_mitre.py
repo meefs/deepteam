@@ -2,6 +2,8 @@ import pytest
 from deepteam.frameworks import MITRE
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
+from deepteam.frameworks.mitre.risk_categories import MITRE_MAPPING
+from deepteam.frameworks.risk_category import RiskCategory
 from deepteam import red_team
 
 
@@ -68,8 +70,7 @@ class TestMITRE:
 
     def test_mitre_category_vulnerability_mapping(self):
         """Test that all categories map to vulnerabilities properly."""
-        framework = MITRE()
-        mapping = framework._mitre_vulnerabilities_by_category()
+        mapping = MITRE_MAPPING
         assert set(mapping.keys()) == {
             "reconnaissance",
             "resource_development",
@@ -78,14 +79,16 @@ class TestMITRE:
             "exfiltration",
             "impact",
         }
-        for vlist in mapping.values():
-            assert isinstance(vlist, list)
-            assert all(isinstance(v, BaseVulnerability) for v in vlist)
+        for risk_category in mapping.values():
+            assert isinstance(risk_category, RiskCategory)
+            assert all(
+                isinstance(v, BaseVulnerability)
+                for v in risk_category.vulnerabilities
+            )
 
     def test_mitre_category_attack_mapping(self):
         """Test that all categories map to attacks properly."""
-        framework = MITRE()
-        mapping = framework._mitre_attacks_by_category()
+        mapping = MITRE_MAPPING
         assert set(mapping.keys()) == {
             "reconnaissance",
             "resource_development",
@@ -94,9 +97,9 @@ class TestMITRE:
             "exfiltration",
             "impact",
         }
-        for alist in mapping.values():
-            assert isinstance(alist, list)
-            assert all(isinstance(a, BaseAttack) for a in alist)
+        for risk_category in mapping.values():
+            assert isinstance(risk_category, RiskCategory)
+            assert all(isinstance(v, BaseAttack) for v in risk_category.attacks)
 
     def test_mitre_vulnerability_names_present(self):
         """Test that key MITRE vulnerabilities are present."""
