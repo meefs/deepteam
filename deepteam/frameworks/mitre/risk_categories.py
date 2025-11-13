@@ -31,7 +31,7 @@ from deepteam.attacks.multi_turn import (
     SequentialJailbreak,
 )
 
-MITRE_CATEGORIES = [ 
+MITRE_CATEGORIES = [
     RiskCategory(
         name="reconnaissance",
         attacks=[
