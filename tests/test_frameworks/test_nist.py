@@ -2,7 +2,7 @@ import pytest
 from deepteam.frameworks import NIST
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
-from deepteam.frameworks.nist.risk_categories import NIST_MAPPING
+from deepteam.frameworks.nist.risk_categories import NIST_CATEGORIES
 from deepteam.frameworks.risk_category import RiskCategory
 from deepteam import red_team
 
@@ -130,14 +130,14 @@ class TestNIST:
 
     def test_nist_category_vulnerability_mapping(self):
         """Test that all categories map to vulnerabilities properly."""
-        mapping = NIST_MAPPING
-        assert set(mapping.keys()) == {
+        categories = NIST_CATEGORIES
+        assert set([category.name for category in categories]) == {
             "measure_1",
             "measure_2",
             "measure_3",
             "measure_4",
         }
-        for risk_category in mapping.values():
+        for risk_category in categories:
             assert isinstance(risk_category, RiskCategory)
             assert all(
                 isinstance(v, BaseVulnerability)
@@ -146,14 +146,14 @@ class TestNIST:
 
     def test_nist_category_attack_mapping(self):
         """Test that all categories map to attacks properly."""
-        mapping = NIST_MAPPING
-        assert set(mapping.keys()) == {
+        categories = NIST_CATEGORIES
+        assert set([category.name for category in categories]) == {
             "measure_1",
             "measure_2",
             "measure_3",
             "measure_4",
         }
-        for risk_category in mapping.values():
+        for risk_category in categories:
             assert isinstance(risk_category, RiskCategory)
             assert all(isinstance(v, BaseAttack) for v in risk_category.attacks)
 
