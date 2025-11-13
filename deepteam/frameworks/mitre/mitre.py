@@ -1,6 +1,6 @@
 from typing import List, Literal
 from deepteam.frameworks import AISafetyFramework
-from deepteam.frameworks.mitre.risk_categories import MITRE_MAPPING
+from deepteam.frameworks.mitre.risk_categories import MITRE_CATEGORIES
 
 
 class MITRE(AISafetyFramework):
@@ -35,17 +35,19 @@ class MITRE(AISafetyFramework):
     def _get_vulnerabilities_by_categories(self, categories):
         vulnerabilities = []
         for category in categories:
-            risk_category = MITRE_MAPPING.get(category)
-            new_vulnerabilities = risk_category.vulnerabilities
-            vulnerabilities.extend(new_vulnerabilities)
+            for risk_category in MITRE_CATEGORIES:
+                if category == risk_category.name:
+                    new_vulnerabilities = risk_category.vulnerabilities
+                    vulnerabilities.extend(new_vulnerabilities)
         return vulnerabilities
 
     def _get_attacks_by_categories(self, categories):
         attacks = []
         for category in categories:
-            risk_category = MITRE_MAPPING.get(category)
-            new_attacks = risk_category.attacks
-            attacks.extend(new_attacks)
+            for risk_category in MITRE_CATEGORIES:
+                if category == risk_category.name:
+                    new_attacks = risk_category.attacks
+                    attacks.extend(new_attacks)
         return attacks
 
     def get_name(self):

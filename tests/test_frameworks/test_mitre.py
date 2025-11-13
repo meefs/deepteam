@@ -2,8 +2,8 @@ import pytest
 from deepteam.frameworks import MITRE
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
-from deepteam.frameworks.mitre.risk_categories import MITRE_MAPPING
 from deepteam.frameworks.risk_category import RiskCategory
+from deepteam.frameworks.mitre.risk_categories import MITRE_CATEGORIES
 from deepteam import red_team
 
 
@@ -70,8 +70,8 @@ class TestMITRE:
 
     def test_mitre_category_vulnerability_mapping(self):
         """Test that all categories map to vulnerabilities properly."""
-        mapping = MITRE_MAPPING
-        assert set(mapping.keys()) == {
+        categories = MITRE_CATEGORIES
+        assert set([category.name for category in categories]) == {
             "reconnaissance",
             "resource_development",
             "initial_access",
@@ -79,7 +79,7 @@ class TestMITRE:
             "exfiltration",
             "impact",
         }
-        for risk_category in mapping.values():
+        for risk_category in categories:
             assert isinstance(risk_category, RiskCategory)
             assert all(
                 isinstance(v, BaseVulnerability)
@@ -88,8 +88,8 @@ class TestMITRE:
 
     def test_mitre_category_attack_mapping(self):
         """Test that all categories map to attacks properly."""
-        mapping = MITRE_MAPPING
-        assert set(mapping.keys()) == {
+        categories = MITRE_CATEGORIES
+        assert set([category.name for category in categories]) == {
             "reconnaissance",
             "resource_development",
             "initial_access",
@@ -97,7 +97,7 @@ class TestMITRE:
             "exfiltration",
             "impact",
         }
-        for risk_category in mapping.values():
+        for risk_category in categories:
             assert isinstance(risk_category, RiskCategory)
             assert all(isinstance(v, BaseAttack) for v in risk_category.attacks)
 

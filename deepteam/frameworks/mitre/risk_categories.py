@@ -31,8 +31,8 @@ from deepteam.attacks.multi_turn import (
     SequentialJailbreak,
 )
 
-MITRE_MAPPING = {
-    "reconnaissance": RiskCategory(
+MITRE_CATEGORIES = [ 
+    RiskCategory(
         name="reconnaissance",
         attacks=[
             Roleplay(
@@ -77,7 +77,7 @@ MITRE_MAPPING = {
             ),
         ],
     ),
-    "resource_development": RiskCategory(
+    RiskCategory(
         name="resource_development",
         attacks=[
             Roleplay(
@@ -122,7 +122,7 @@ MITRE_MAPPING = {
             ),
         ],
     ),
-    "initial_access": RiskCategory(
+    RiskCategory(
         name="initial_access",
         attacks=[
             Roleplay(
@@ -167,7 +167,7 @@ MITRE_MAPPING = {
             ),
         ],
     ),
-    "ml_attack_staging": RiskCategory(
+    RiskCategory(
         name="ml_attack_staging",
         attacks=[
             PromptInjection(weight=2),
@@ -199,7 +199,7 @@ MITRE_MAPPING = {
             ),
         ],
     ),
-    "exfiltration": RiskCategory(
+    RiskCategory(
         name="exfiltration",
         attacks=[
             Roleplay(
@@ -270,7 +270,7 @@ MITRE_MAPPING = {
             ),
         ],
     ),
-    "impact": RiskCategory(
+    RiskCategory(
         name="impact",
         attacks=[
             Roleplay(
@@ -311,4 +311,4 @@ MITRE_MAPPING = {
             ),
         ],
     ),
-}
+]
