@@ -42,8 +42,8 @@ from deepteam.attacks.multi_turn import (
     BadLikertJudge,
 )
 
-NIST_MAPPING = {
-    "measure_1": RiskCategory(
+NIST_CATEGORIES = [
+    RiskCategory(
         name="measure_1",
         attacks=[
             Roleplay(
@@ -79,7 +79,7 @@ NIST_MAPPING = {
             ),
         ],
     ),
-    "measure_2": RiskCategory(
+    RiskCategory(
         name="measure_2",
         attacks=[
             PromptInjection(weight=3),
@@ -202,7 +202,7 @@ NIST_MAPPING = {
             ),
         ],
     ),
-    "measure_3": RiskCategory(
+    RiskCategory(
         name="measure_3",
         attacks=[
             PromptProbing(weight=3),
@@ -239,7 +239,7 @@ NIST_MAPPING = {
             ),
         ],
     ),
-    "measure_4": RiskCategory(
+    RiskCategory(
         name="measure_4",
         attacks=[
             BadLikertJudge(weight=2),
@@ -262,4 +262,4 @@ NIST_MAPPING = {
             ),
         ],
     ),
-}
+]

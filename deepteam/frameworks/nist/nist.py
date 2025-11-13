@@ -2,7 +2,7 @@ from typing import List, Literal
 from deepteam.frameworks import AISafetyFramework
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
-from deepteam.frameworks.nist.risk_categories import NIST_MAPPING
+from deepteam.frameworks.nist.risk_categories import NIST_CATEGORIES
 
 
 class NIST(AISafetyFramework):
@@ -25,9 +25,10 @@ class NIST(AISafetyFramework):
     ) -> List[BaseVulnerability]:
         vulnerabilities: List[BaseVulnerability] = []
         for category in categories:
-            risk_category = NIST_MAPPING.get(category)
-            new_vulnerabilities = risk_category.vulnerabilities
-            vulnerabilities.extend(new_vulnerabilities)
+            for risk_category in NIST_CATEGORIES:
+                if category == risk_category.name:
+                    new_vulnerabilities = risk_category.vulnerabilities
+                    vulnerabilities.extend(new_vulnerabilities)
         return vulnerabilities
 
     def _get_attacks_by_categories(
@@ -35,9 +36,10 @@ class NIST(AISafetyFramework):
     ) -> List[BaseAttack]:
         attacks: List[BaseAttack] = []
         for category in categories:
-            risk_category = NIST_MAPPING.get(category)
-            new_attacks = risk_category.attacks
-            attacks.extend(new_attacks)
+            for risk_category in NIST_CATEGORIES:
+                if category == risk_category.name:
+                    new_attacks = risk_category.attacks
+                    attacks.extend(new_attacks)
         return attacks
 
     def get_name(self):
