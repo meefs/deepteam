@@ -4,6 +4,7 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
 from deepteam.frameworks.nist.risk_categories import NIST_CATEGORIES
 
+ALLOWED_TYPES = ["measure_1", "measure_2", "measure_3", "measure_4"]
 
 class NIST(AISafetyFramework):
     def __init__(
@@ -15,6 +16,11 @@ class NIST(AISafetyFramework):
         self.name = "NIST AI RMF"
         self.description = "NIST AI Risk Management Framework (AI RMF) — Measure-focused mapping for testing and evaluation."
         self.categories = categories
+        for category in self.categories:
+            if category not in ALLOWED_TYPES:
+                raise ValueError(
+                    f"The category '{category}' is not a valid NIST risk category. Please enter a valid NIST risk category."
+                )
         self.vulnerabilities = self._get_vulnerabilities_by_categories(
             self.categories
         )
