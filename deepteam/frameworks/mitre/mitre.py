@@ -2,6 +2,20 @@ from typing import List, Literal
 from deepteam.frameworks import AISafetyFramework
 from deepteam.frameworks.mitre.risk_categories import MITRE_CATEGORIES
 
+"""
+MITRE ATT&CK Framework Mapping for LLMs 2025
+===========================================
+
+This framework maps MITRE ATT&CK tactics and techniques to LLM-specific threats and vulnerabilities.
+It includes red-teaming attack methods and corresponding weaknesses tied to each MITRE category.
+
+Each category includes:
+- Attacks: Techniques for exploiting, bypassing, or manipulating LLM systems.
+- Vulnerabilities: Weaknesses that can be leveraged by attackers in LLM models.
+
+Reference: https://attack.mitre.org
+"""
+
 ALLOWED_TYPES = [
     "reconnaissance","resource_development","initial_access","ml_attack_staging","exfiltration","impact",
 ]
@@ -30,33 +44,11 @@ class MITRE(AISafetyFramework):
         self.name = "MITRE ATLAS"
         self.description = "MITRE ATLAS mapping for LLM/ML adversarial techniques (project-specific) to understand and defend against threats specific to AI and ML systems."
         self.categories = categories
-        for category in self.categories:
-            if category not in ALLOWED_TYPES:
-                raise ValueError(
-                    f"The category '{category}' is not a valid NIST risk category. Please enter a valid NIST risk category."
-                )
-        self.vulnerabilities = self._get_vulnerabilities_by_categories(
-            self.categories
-        )
-        self.attacks = self._get_attacks_by_categories(self.categories)
-
-    def _get_vulnerabilities_by_categories(self, categories):
-        vulnerabilities = []
+        self.risk_categories = []
         for category in categories:
             for risk_category in MITRE_CATEGORIES:
-                if category == risk_category.name:
-                    new_vulnerabilities = risk_category.vulnerabilities
-                    vulnerabilities.extend(new_vulnerabilities)
-        return vulnerabilities
-
-    def _get_attacks_by_categories(self, categories):
-        attacks = []
-        for category in categories:
-            for risk_category in MITRE_CATEGORIES:
-                if category == risk_category.name:
-                    new_attacks = risk_category.attacks
-                    attacks.extend(new_attacks)
-        return attacks
+                if risk_category.name == category:
+                    self.risk_categories.append(risk_category)
 
     def get_name(self):
         return "MITRE ATLAS"

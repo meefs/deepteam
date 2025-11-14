@@ -4,6 +4,20 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
 from deepteam.frameworks.nist.risk_categories import NIST_CATEGORIES
 
+"""
+NIST Cybersecurity Framework Mapping for LLMs 2025
+==================================================
+
+This framework maps NIST Cybersecurity Framework risk categories to LLM-specific threats and vulnerabilities.
+It includes realistic attack techniques and weaknesses tied to each category.
+
+Each category includes:
+- Attacks: Techniques for exploiting or bypassing LLM security.
+- Vulnerabilities: Weaknesses that can be exploited in LLM systems.
+
+Reference: https://www.nist.gov/itl/ai-risk-management-framework
+"""
+
 ALLOWED_TYPES = ["measure_1", "measure_2", "measure_3", "measure_4"]
 
 class NIST(AISafetyFramework):
@@ -16,37 +30,11 @@ class NIST(AISafetyFramework):
         self.name = "NIST AI RMF"
         self.description = "NIST AI Risk Management Framework (AI RMF) — Measure-focused mapping for testing and evaluation."
         self.categories = categories
-        for category in self.categories:
-            if category not in ALLOWED_TYPES:
-                raise ValueError(
-                    f"The category '{category}' is not a valid NIST risk category. Please enter a valid NIST risk category."
-                )
-        self.vulnerabilities = self._get_vulnerabilities_by_categories(
-            self.categories
-        )
-        self.attacks = self._get_attacks_by_categories(self.categories)
-
-    def _get_vulnerabilities_by_categories(
-        self, categories: List[str]
-    ) -> List[BaseVulnerability]:
-        vulnerabilities: List[BaseVulnerability] = []
+        self.risk_categories = []
         for category in categories:
             for risk_category in NIST_CATEGORIES:
-                if category == risk_category.name:
-                    new_vulnerabilities = risk_category.vulnerabilities
-                    vulnerabilities.extend(new_vulnerabilities)
-        return vulnerabilities
-
-    def _get_attacks_by_categories(
-        self, categories: List[str]
-    ) -> List[BaseAttack]:
-        attacks: List[BaseAttack] = []
-        for category in categories:
-            for risk_category in NIST_CATEGORIES:
-                if category == risk_category.name:
-                    new_attacks = risk_category.attacks
-                    attacks.extend(new_attacks)
-        return attacks
+                if risk_category.name == category:
+                    self.risk_categories.append(risk_category)
 
     def get_name(self):
         return "NIST AI RMF"

@@ -20,10 +20,6 @@ Each category includes:
 Reference: https://genai.owasp.org/llm-top-10/
 """
 
-OWASP_Types = Literal[
-    "LLM_01", "LLM_02", "LLM_03", "LLM_04", "LLM_05", "LLM_06", "LLM_07", "LLM_08", "LLM_09", "LLM_10"
-]
-
 ALLOWED_TYPES = [
     "LLM_01", "LLM_02", "LLM_03", "LLM_04", "LLM_05", "LLM_06", "LLM_07", "LLM_08", "LLM_09", "LLM_10"
 ]
@@ -32,44 +28,23 @@ class OWASPTop10(AISafetyFramework):
 
     def __init__(
         self,
-        categories: List[OWASP_Types] = [
+        categories: List[
+            Literal[
+                "LLM_01", "LLM_02", "LLM_03", "LLM_04", "LLM_05", "LLM_06", "LLM_07", "LLM_08", "LLM_09", "LLM_10"
+            ]
+        ] = [
             "LLM_01", "LLM_02", "LLM_03", "LLM_04", "LLM_05", "LLM_06", "LLM_07", "LLM_08", "LLM_09", "LLM_10"
         ],
     ):
         self.name = "OWASP"
         self.description = "The OWASP Top 10 for LLMs 2025"
+        self.risk_categories = OWASP_CATEGORIES
         self.categories = categories
-        for category in self.categories:
-            if category not in ALLOWED_TYPES:
-                raise ValueError(
-                    f"The category '{category}' is not a valid OWASP risk category. Please enter a valid OWASP risk category."
-                )
-        self.vulnerabilities = self._get_vulnerabilities_by_categories(
-            self.categories
-        )
-        self.attacks = self._get_attacks_by_categories(self.categories)
-
-    def _get_vulnerabilities_by_categories(
-        self, categories: List[str]
-    ) -> List[BaseVulnerability]:
-        vulnerabilities: List[BaseVulnerability] = []
+        self.risk_categories = []
         for category in categories:
             for risk_category in OWASP_CATEGORIES:
-                if category == risk_category.name:
-                    new_vulnerabilities = risk_category.vulnerabilities
-                    vulnerabilities.extend(new_vulnerabilities)
-        return vulnerabilities
-
-    def _get_attacks_by_categories(
-        self, categories: List[str]
-    ) -> List[BaseAttack]:
-        attacks: List[BaseAttack] = []
-        for category in categories:
-            for risk_category in OWASP_CATEGORIES:
-                if category == risk_category.name:
-                    new_attacks = risk_category.attacks
-                    attacks.extend(new_attacks)
-        return attacks
+                if risk_category.name == category:
+                    self.risk_categories.append(risk_category)
 
 
     def get_name(self):
