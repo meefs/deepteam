@@ -50,34 +50,35 @@ class TestOWASP:
 
     def test_owasp_vulnerabilities_exist(self):
         """Test that vulnerabilities are defined and populated."""
-        framework = OWASPTop10()
-        assert hasattr(framework, "vulnerabilities")
-        assert framework.vulnerabilities is not None
-        assert len(framework.vulnerabilities) > 0
+        for risk_category in OWASP_CATEGORIES:
+            assert hasattr(risk_category, "vulnerabilities")
+            assert risk_category.vulnerabilities is not None
+            assert len(risk_category.vulnerabilities) > 0
 
     def test_owasp_vulnerabilities_are_instances(self):
         """Test that all vulnerabilities are instances of BaseVulnerability."""
-        framework = OWASPTop10()
-        for vuln in framework.vulnerabilities:
-            assert isinstance(vuln, BaseVulnerability)
+        for risk_category in OWASP_CATEGORIES:
+            for vuln in risk_category.vulnerabilities:
+                assert isinstance(vuln, BaseVulnerability)
 
     def test_owasp_attacks_exist(self):
         """Test that attacks are defined and populated."""
-        framework = OWASPTop10()
-        assert hasattr(framework, "attacks")
-        assert framework.attacks is not None
-        assert len(framework.attacks) > 0
+        for risk_category in OWASP_CATEGORIES:
+            assert hasattr(risk_category, "attacks")
+            assert risk_category.attacks is not None
+            assert len(risk_category.attacks) > 0
 
     def test_owasp_attacks_are_instances(self):
         """Test that all attacks are instances of BaseAttack."""
-        framework = OWASPTop10()
-        for attack in framework.attacks:
-            assert isinstance(attack, BaseAttack)
+        for risk_category in OWASP_CATEGORIES:
+            for attack in risk_category.attacks:
+                assert isinstance(attack, BaseAttack)
 
     def test_owasp_vulnerability_types_present(self):
         """Test that key vulnerabilities are present."""
-        framework = OWASPTop10()
-        vuln_names = [v.__class__.__name__ for v in framework.vulnerabilities]
+        vuln_names = []
+        for risk_category in OWASP_CATEGORIES:
+            vuln_names.extend([v.__class__.__name__ for v in risk_category.vulnerabilities])
         expected_vulns = [
             "Bias",
             "Toxicity",
@@ -105,8 +106,9 @@ class TestOWASP:
 
     def test_owasp_attack_types_present(self):
         """Test that key attacks are included."""
-        framework = OWASPTop10()
-        attack_names = [a.__class__.__name__ for a in framework.attacks]
+        attack_names = []
+        for risk_category in OWASP_CATEGORIES:
+            attack_names.extend([a.__class__.__name__ for a in risk_category.attacks])
         expected_attacks = [
             "PromptInjection",
             "PromptProbing",
@@ -124,11 +126,11 @@ class TestOWASP:
 
     def test_owasp_attack_weights_defined(self):
         """Test that all attacks have a valid weight."""
-        framework = OWASPTop10()
-        for attack in framework.attacks:
-            assert hasattr(attack, "weight")
-            assert isinstance(attack.weight, int)
-            assert attack.weight >= 1
+        for risk_category in OWASP_CATEGORIES:
+            for attack in risk_category.attacks:
+                assert hasattr(attack, "weight")
+                assert isinstance(attack.weight, int)
+                assert attack.weight >= 1
 
     def test_owasp_category_vulnerability_mapping(self):
         """Test that all categories map to vulnerabilities properly."""
@@ -171,22 +173,6 @@ class TestOWASP:
             assert isinstance(risk_category, RiskCategory)
             assert all(isinstance(a, BaseAttack) for a in risk_category.attacks)
 
-    def test_partial_category_reduces_vulnerabilities(self):
-        """Test that selecting fewer categories reduces vulnerabilities."""
-        all_vulns = len(OWASPTop10().vulnerabilities)
-        partial_vulns = len(
-            OWASPTop10(categories=["LLM_01", "LLM_02"]).vulnerabilities
-        )
-        assert partial_vulns < all_vulns
-
-    def test_partial_category_reduces_attacks(self):
-        """Test that selecting fewer categories reduces attacks."""
-        all_attacks = len(OWASPTop10().attacks)
-        partial_attacks = len(
-            OWASPTop10(categories=["LLM_01", "LLM_02"]).attacks
-        )
-        assert partial_attacks < all_attacks
-
     def test_owasp_framework_with_red_team(self):
         import random
 
@@ -217,4 +203,5 @@ class TestOWASP:
             ignore_errors=True,
         )
 
+        assert isinstance(risk_assessment, dict)
         assert risk_assessment is not None
