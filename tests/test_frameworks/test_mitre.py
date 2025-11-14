@@ -105,7 +105,9 @@ class TestMITRE:
         """Test that key MITRE vulnerabilities are present."""
         vuln_names = []
         for risk_category in MITRE_CATEGORIES:
-            vuln_names.extend([v.__class__.__name__ for v in risk_category.vulnerabilities])
+            vuln_names.extend(
+                [v.__class__.__name__ for v in risk_category.vulnerabilities]
+            )
         expected_vulns = [
             "IllegalActivity",
             "PromptLeakage",
@@ -131,7 +133,9 @@ class TestMITRE:
         """Test that key MITRE attacks are present."""
         attack_names = []
         for risk_category in MITRE_CATEGORIES:
-            attack_names.extend([a.__class__.__name__ for a in risk_category.attacks])
+            attack_names.extend(
+                [a.__class__.__name__ for a in risk_category.attacks]
+            )
         expected_attacks = [
             "Roleplay",
             "PromptInjection",

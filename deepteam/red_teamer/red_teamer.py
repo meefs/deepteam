@@ -70,8 +70,10 @@ class RedTeamer:
         metadata: Optional[dict] = None,
     ):
         if not framework or framework._has_dataset:
-            raise ValueError("Please pass in a valid framework that does not rely on a dataset.")
-        
+            raise ValueError(
+                "Please pass in a valid framework that does not rely on a dataset."
+            )
+
         def assess_risk_category(category: RiskCategory):
             return self.red_team(
                 model_callback=model_callback,
@@ -87,7 +89,10 @@ class RedTeamer:
 
         results = {}
 
-        pbar = tqdm(total=len(framework.risk_categories), desc=f"⏳ Running red-teaming for {framework.get_name()} Framework")
+        pbar = tqdm(
+            total=len(framework.risk_categories),
+            desc=f"⏳ Running red-teaming for {framework.get_name()} Framework",
+        )
         for risk_category in framework.risk_categories:
             framework_assessment = assess_risk_category(risk_category)
             results[risk_category.name] = framework_assessment
@@ -106,9 +111,11 @@ class RedTeamer:
         ignore_errors: bool = False,
         reuse_simulated_test_cases: bool = False,
         metadata: Optional[dict] = None,
-    )-> Dict[str, RiskAssessment]:
+    ) -> Dict[str, RiskAssessment]:
         if not framework or framework._has_dataset:
-            raise ValueError("Please pass in a valid framework that does not rely on a dataset.")
+            raise ValueError(
+                "Please pass in a valid framework that does not rely on a dataset."
+            )
 
         async def assess_risk_category(category: RiskCategory):
             return await self.a_red_team(
@@ -130,7 +137,10 @@ class RedTeamer:
 
         results = {}
 
-        pbar = tqdm(total=len(tasks), desc=f"⏳ Running red-teaming for {framework.get_name()} Framework")
+        pbar = tqdm(
+            total=len(tasks),
+            desc=f"⏳ Running red-teaming for {framework.get_name()} Framework",
+        )
 
         for task in asyncio.as_completed(tasks):
             result = await task
@@ -173,9 +183,11 @@ class RedTeamer:
                 attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 ignore_errors=ignore_errors,
                 reuse_simulated_test_cases=reuse_simulated_test_cases,
-                metadata=metadata
+                metadata=metadata,
             )
-            self._print_framework_overview_table(framework_results=framework_assessment)
+            self._print_framework_overview_table(
+                framework_results=framework_assessment
+            )
             return framework_assessment
 
         if self.async_mode:
@@ -350,7 +362,7 @@ class RedTeamer:
             raise ValueError(
                 "You can only pass either 'framework' or 'attacks' and 'vulnerabilities' at the same time"
             )
-        
+
         if framework and not framework._has_dataset:
             framework_assessment = await self._a_framework_assessment(
                 model_callback=model_callback,
@@ -360,9 +372,11 @@ class RedTeamer:
                 attacks_per_vulnerability_type=attacks_per_vulnerability_type,
                 ignore_errors=ignore_errors,
                 reuse_simulated_test_cases=reuse_simulated_test_cases,
-                metadata=metadata
+                metadata=metadata,
             )
-            self._print_framework_overview_table(framework_results=framework_assessment)
+            self._print_framework_overview_table(
+                framework_results=framework_assessment
+            )
             return framework_assessment
 
         if framework:
@@ -840,7 +854,9 @@ class RedTeamer:
         console = Console()
 
         console.print("\n" + "=" * 80)
-        console.print("[bold magenta]🏛  Framework-Level Risk Category Overview[/bold magenta]")
+        console.print(
+            "[bold magenta]🏛  Framework-Level Risk Category Overview[/bold magenta]"
+        )
         console.print("=" * 80)
 
         table = Table(
@@ -867,19 +883,30 @@ class RedTeamer:
             assessment = framework_results[category_name]
 
             overview = assessment.overview
-            passing = sum(result.passing for result in overview.vulnerability_type_results)
-            failing = sum(result.failing for result in overview.vulnerability_type_results)
-            errored = sum(result.errored for result in overview.vulnerability_type_results)
+            passing = sum(
+                result.passing for result in overview.vulnerability_type_results
+            )
+            failing = sum(
+                result.failing for result in overview.vulnerability_type_results
+            )
+            errored = sum(
+                result.errored for result in overview.vulnerability_type_results
+            )
 
             total = passing + failing
             pass_rate = passing / total if total > 0 else 0.0
 
             vulnerability_groups = defaultdict(list)
             for result in overview.vulnerability_type_results:
-                vulnerability_groups[result.vulnerability].append(result.vulnerability_type.value)
+                vulnerability_groups[result.vulnerability].append(
+                    result.vulnerability_type.value
+                )
 
             vuln_lines = []
-            for vulnerability_name, vulnerability_types in vulnerability_groups.items():
+            for (
+                vulnerability_name,
+                vulnerability_types,
+            ) in vulnerability_groups.items():
                 vuln_lines.append(f"[bold]{vulnerability_name}[/bold]")
                 for vulnerability_type in vulnerability_types:
                     vuln_lines.append(f"  - {vulnerability_type}")
@@ -887,7 +914,9 @@ class RedTeamer:
             vulnerabilty_names = "\n".join(vuln_lines) if vuln_lines else "N/A"
 
             # ----- Attack methods (simple list) -----
-            attack_list = [amr.attack_method for amr in overview.attack_method_results]
+            attack_list = [
+                amr.attack_method for amr in overview.attack_method_results
+            ]
             attack_names = "\n".join(attack_list) if attack_list else "N/A"
 
             # Color-coded pass rate

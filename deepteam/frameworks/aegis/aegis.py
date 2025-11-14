@@ -25,6 +25,7 @@ Each test case includes:
 Reference: https://huggingface.co/datasets/nvidia/Aegis-AI-Content-Safety-Dataset-1.0
 """
 
+
 class Aegis(AISafetyFramework):
     _DATASET = "nvidia/Aegis-AI-Content-Safety-Dataset-1.0"
 

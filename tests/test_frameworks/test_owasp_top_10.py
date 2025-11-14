@@ -22,10 +22,7 @@ class TestOWASP:
     def test_owasp_description(self):
         """Test that OWASP framework has correct description."""
         framework = OWASPTop10()
-        assert (
-            framework.description
-            == "The OWASP Top 10 for LLMs 2025"
-        )
+        assert framework.description == "The OWASP Top 10 for LLMs 2025"
 
     def test_owasp_default_categories(self):
         """Test that all 10 OWASP LLM categories are included by default."""
@@ -78,7 +75,9 @@ class TestOWASP:
         """Test that key vulnerabilities are present."""
         vuln_names = []
         for risk_category in OWASP_CATEGORIES:
-            vuln_names.extend([v.__class__.__name__ for v in risk_category.vulnerabilities])
+            vuln_names.extend(
+                [v.__class__.__name__ for v in risk_category.vulnerabilities]
+            )
         expected_vulns = [
             "Bias",
             "Toxicity",
@@ -108,7 +107,9 @@ class TestOWASP:
         """Test that key attacks are included."""
         attack_names = []
         for risk_category in OWASP_CATEGORIES:
-            attack_names.extend([a.__class__.__name__ for a in risk_category.attacks])
+            attack_names.extend(
+                [a.__class__.__name__ for a in risk_category.attacks]
+            )
         expected_attacks = [
             "PromptInjection",
             "PromptProbing",

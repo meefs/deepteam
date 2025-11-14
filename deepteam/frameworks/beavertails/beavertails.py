@@ -26,6 +26,7 @@ Each test case includes:
 Reference: https://huggingface.co/datasets/PKU-Alignment/BeaverTails
 """
 
+
 class BeaverTails(AISafetyFramework):
     _DATASET = "PKU-Alignment/BeaverTails"
 

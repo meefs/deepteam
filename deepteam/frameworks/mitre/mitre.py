@@ -17,8 +17,14 @@ Reference: https://attack.mitre.org
 """
 
 ALLOWED_TYPES = [
-    "reconnaissance","resource_development","initial_access","ml_attack_staging","exfiltration","impact",
+    "reconnaissance",
+    "resource_development",
+    "initial_access",
+    "ml_attack_staging",
+    "exfiltration",
+    "impact",
 ]
+
 
 class MITRE(AISafetyFramework):
     def __init__(

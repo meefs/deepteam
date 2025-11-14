@@ -21,8 +21,18 @@ Reference: https://genai.owasp.org/llm-top-10/
 """
 
 ALLOWED_TYPES = [
-    "LLM_01", "LLM_02", "LLM_03", "LLM_04", "LLM_05", "LLM_06", "LLM_07", "LLM_08", "LLM_09", "LLM_10"
+    "LLM_01",
+    "LLM_02",
+    "LLM_03",
+    "LLM_04",
+    "LLM_05",
+    "LLM_06",
+    "LLM_07",
+    "LLM_08",
+    "LLM_09",
+    "LLM_10",
 ]
+
 
 class OWASPTop10(AISafetyFramework):
 
@@ -30,10 +40,28 @@ class OWASPTop10(AISafetyFramework):
         self,
         categories: List[
             Literal[
-                "LLM_01", "LLM_02", "LLM_03", "LLM_04", "LLM_05", "LLM_06", "LLM_07", "LLM_08", "LLM_09", "LLM_10"
+                "LLM_01",
+                "LLM_02",
+                "LLM_03",
+                "LLM_04",
+                "LLM_05",
+                "LLM_06",
+                "LLM_07",
+                "LLM_08",
+                "LLM_09",
+                "LLM_10",
             ]
         ] = [
-            "LLM_01", "LLM_02", "LLM_03", "LLM_04", "LLM_05", "LLM_06", "LLM_07", "LLM_08", "LLM_09", "LLM_10"
+            "LLM_01",
+            "LLM_02",
+            "LLM_03",
+            "LLM_04",
+            "LLM_05",
+            "LLM_06",
+            "LLM_07",
+            "LLM_08",
+            "LLM_09",
+            "LLM_10",
         ],
     ):
         self.name = "OWASP"
@@ -45,7 +73,6 @@ class OWASPTop10(AISafetyFramework):
             for risk_category in OWASP_CATEGORIES:
                 if risk_category.name == category:
                     self.risk_categories.append(risk_category)
-
 
     def get_name(self):
         return "OWASP"

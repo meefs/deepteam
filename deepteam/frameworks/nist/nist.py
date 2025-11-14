@@ -20,6 +20,7 @@ Reference: https://www.nist.gov/itl/ai-risk-management-framework
 
 ALLOWED_TYPES = ["measure_1", "measure_2", "measure_3", "measure_4"]
 
+
 class NIST(AISafetyFramework):
     def __init__(
         self,
