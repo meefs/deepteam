@@ -10,6 +10,20 @@ from deepteam.frameworks.aegis.types import AegisType
 from deepteam.test_case import RTTestCase
 from deepteam.metrics import HarmMetric
 
+"""
+Aegis Content Safety Framework Mapping
+======================================
+
+This framework evaluates models using the NVIDIA Aegis (Nemotron) Content Safety Dataset,
+mapping 13 safety-critical harm categories to sampled adversarial user messages.
+
+Each test case includes:
+- Input: Real harmful user messages from the Aegis dataset.
+- Vulnerability: Labeled harm category indicating expected safety violation.
+- Metric: Harm scoring using the evaluation model.
+
+Reference: https://huggingface.co/datasets/nvidia/Aegis-AI-Content-Safety-Dataset-1.0
+"""
 
 class Aegis(AISafetyFramework):
     _DATASET = "nvidia/Aegis-AI-Content-Safety-Dataset-1.0"
