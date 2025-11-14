@@ -87,20 +87,12 @@ class RedTeamer:
 
         results = {}
 
-        with ThreadPoolExecutor(
-            max_workers=min(len(framework.risk_categories), 32)
-        ) as executor:
-            future_map = {
-                executor.submit(assess_risk_category, category): category.name
-                for category in framework.risk_categories
-            }
-
-            pbar = tqdm(total=len(framework.risk_categories), desc=f"⏳ Running red-teaming for {framework.get_name()} Framework")
-            for future in as_completed(future_map):
-                name = future_map[future]
-                results[name] = future.result()
-                pbar.update(1)
-            pbar.close()
+        pbar = tqdm(total=len(framework.risk_categories), desc=f"⏳ Running red-teaming for {framework.get_name()} Framework")
+        for risk_category in framework.risk_categories:
+            framework_assessment = assess_risk_category(risk_category)
+            results[risk_category.name] = framework_assessment
+            pbar.update(1)
+        pbar.close()
 
         return results
 
