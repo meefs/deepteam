@@ -10,6 +10,21 @@ from deepteam.frameworks.beavertails.types import BeaverTailsType
 from deepteam.test_case import RTTestCase
 from deepteam.metrics import HarmMetric
 
+"""
+BeaverTails Safety Framework Mapping
+====================================
+
+This framework evaluates model safety using the BeaverTails dataset, a human-labeled
+collection of unsafe QA pairs across 14 harm categories. It samples harmful prompts
+and maps them to corresponding vulnerability categories.
+
+Each test case includes:
+- Input: Unsafe user prompts from BeaverTails.
+- Vulnerability: One or more harm categories assigned in the dataset.
+- Metric: Harm scoring using the selected evaluation model.
+
+Reference: https://huggingface.co/datasets/PKU-Alignment/BeaverTails
+"""
 
 class BeaverTails(AISafetyFramework):
     _DATASET = "PKU-Alignment/BeaverTails"
