@@ -6,7 +6,9 @@ from rich.progress import (
     SpinnerColumn,
     TextColumn,
     BarColumn,
+    TaskProgressColumn,
     TimeElapsedColumn,
+    TimeRemainingColumn,
 )
 from deepteam.test_case import RTTurn
 
@@ -41,9 +43,13 @@ def format_turns(turns: List[RTTurn]):
 def create_progress() -> Progress:
     return Progress(
         SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        BarColumn(),
+        TextColumn("[bold bright_white]{task.description}", justify="left"),
+        BarColumn(bar_width=None),
+        TaskProgressColumn(text_format="[cyan]{task.completed}[/]/[bright_white]{task.total}"),
         TimeElapsedColumn(),
+        TimeRemainingColumn(compact=True),
+        expand=True,
+        transient=False,
     )
 
 
