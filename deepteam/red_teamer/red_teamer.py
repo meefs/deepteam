@@ -18,7 +18,13 @@ from deepteam.frameworks.frameworks import AISafetyFramework
 from deepteam.frameworks.risk_category import RiskCategory
 from deepteam.telemetry import capture_red_teamer_run
 from deepteam.attacks import BaseAttack
-from deepteam.utils import validate_model_callback_signature, create_progress, rich_track, add_pbar, update_pbar
+from deepteam.utils import (
+    validate_model_callback_signature,
+    create_progress,
+    rich_track,
+    add_pbar,
+    update_pbar,
+)
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.attacks.attack_simulator import AttackSimulator
@@ -212,7 +218,7 @@ class RedTeamer:
                     ignore_errors=ignore_errors,
                     reuse_simulated_test_cases=reuse_simulated_test_cases,
                     metadata=metadata,
-                    _print_assessment=_print_assessment
+                    _print_assessment=_print_assessment,
                 )
             )
         else:
@@ -333,7 +339,9 @@ class RedTeamer:
                             )
                             red_teaming_test_cases.extend(rt_test_cases)
 
-                            update_pbar(progress, task_id, advance=len(test_cases))
+                            update_pbar(
+                                progress, task_id, advance=len(test_cases)
+                            )
 
                 self.risk_assessment = RiskAssessment(
                     overview=construct_risk_assessment_overview(
@@ -342,7 +350,7 @@ class RedTeamer:
                     test_cases=red_teaming_test_cases,
                 )
                 self.test_cases = red_teaming_test_cases
-                
+
                 if _print_assessment:
                     self._print_risk_assessment(self.risk_assessment)
 
@@ -373,15 +381,18 @@ class RedTeamer:
             )
 
         if framework and not framework._has_dataset:
-            framework_assessment = await self._a_framework_assessment(
-                model_callback=model_callback,
-                simulator_model=simulator_model,
-                evaluation_model=evaluation_model,
-                framework=framework,
-                attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                ignore_errors=ignore_errors,
-                reuse_simulated_test_cases=reuse_simulated_test_cases,
-                metadata=metadata,
+            loop = get_or_create_event_loop()
+            framework_assessment = loop.run_until_complete(
+                await self._a_framework_assessment(
+                    model_callback=model_callback,
+                    simulator_model=simulator_model,
+                    evaluation_model=evaluation_model,
+                    framework=framework,
+                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                    ignore_errors=ignore_errors,
+                    reuse_simulated_test_cases=reuse_simulated_test_cases,
+                    metadata=metadata,
+                )
             )
             self._print_framework_overview_table(
                 framework_results=framework_assessment
@@ -495,12 +506,14 @@ class RedTeamer:
                         vulnerability_type, attacks
                     ):
                         async with semaphore:
-                            test_cases = await self._a_evaluate_vulnerability_type(
-                                model_callback,
-                                vulnerabilities,
-                                vulnerability_type,
-                                attacks,
-                                ignore_errors=ignore_errors,
+                            test_cases = (
+                                await self._a_evaluate_vulnerability_type(
+                                    model_callback,
+                                    vulnerabilities,
+                                    vulnerability_type,
+                                    attacks,
+                                    ignore_errors=ignore_errors,
+                                )
                             )
                             red_teaming_test_cases.extend(test_cases)
                             update_pbar(progress, task_id, advance=len(attacks))
@@ -524,7 +537,7 @@ class RedTeamer:
 
             if _print_assessment:
                 self._print_risk_assessment(self.risk_assessment)
-                
+
             return self.risk_assessment
 
     def _attack(

@@ -37,6 +37,7 @@ def format_turns(turns: List[RTTurn]):
 
     return formatted_turns
 
+
 def create_progress() -> Progress:
     return Progress(
         SpinnerColumn(),
@@ -45,10 +46,14 @@ def create_progress() -> Progress:
         TimeElapsedColumn(),
     )
 
-def add_pbar(progress: Optional[Progress], description: str, total: Optional[int] = None) -> Optional[int]:
+
+def add_pbar(
+    progress: Optional[Progress], description: str, total: Optional[int] = None
+) -> Optional[int]:
     if progress is None:
         return None
     return progress.add_task(description, total=total)
+
 
 def update_pbar(
     progress: Optional[Progress],
@@ -70,7 +75,10 @@ def update_pbar(
     if task is not None and task.finished and remove:
         progress.remove_task(pbar_id)
 
-def remove_pbars(progress: Optional[Progress], pbar_ids: List[int], cascade: bool = True):
+
+def remove_pbars(
+    progress: Optional[Progress], pbar_ids: List[int], cascade: bool = True
+):
     if progress is None:
         return
     for pbar_id in pbar_ids:
@@ -80,7 +88,10 @@ def remove_pbars(progress: Optional[Progress], pbar_ids: List[int], cascade: boo
         if task is not None:
             progress.remove_task(pbar_id)
 
-def rich_track(iterable: Iterable[Any], progress: Optional[Progress], description: str) -> Iterable[Any]:
+
+def rich_track(
+    iterable: Iterable[Any], progress: Optional[Progress], description: str
+) -> Iterable[Any]:
     if progress is None:
         for item in iterable:
             yield item
@@ -94,4 +105,3 @@ def rich_track(iterable: Iterable[Any], progress: Optional[Progress], descriptio
         yield item
         update_pbar(progress, task_id)
     update_pbar(progress, task_id, advance_to_end=True)
-

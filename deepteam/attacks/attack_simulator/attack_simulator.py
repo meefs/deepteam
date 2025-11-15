@@ -66,7 +66,7 @@ class AttackSimulator:
             for vulnerability in rich_track(
                 iterable=vulnerabilities,
                 progress=progress,
-                description=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))"
+                description=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
             ):
                 if simulator_model is not None:
                     vulnerability.simulator_model = simulator_model
@@ -123,9 +123,9 @@ class AttackSimulator:
             task_id_vuln = add_pbar(
                 progress,
                 description=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
-                total=len(vulnerabilities)
+                total=len(vulnerabilities),
             )
-            
+
             async def throttled_simulate_baseline_attack(vulnerability):
                 if simulator_model is not None:
                     vulnerability.simulator_model = simulator_model
@@ -153,11 +153,10 @@ class AttackSimulator:
             if attacks is not None:
                 # Enhance attacks by sampling from the provided distribution
                 task_id_attack = add_pbar(
-                    progress, 
+                    progress,
                     description=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
-                    total=len(test_cases)
+                    total=len(test_cases),
                 )
-
 
                 async def throttled_attack_method(
                     test_case: RTTestCase,
@@ -167,7 +166,9 @@ class AttackSimulator:
                         if not attacks:
                             attack = BaselineAttack()
                         else:
-                            attack_weights = [attack.weight for attack in attacks]
+                            attack_weights = [
+                                attack.weight for attack in attacks
+                            ]
                             attack = random.choices(
                                 attacks, weights=attack_weights, k=1
                             )[0]
