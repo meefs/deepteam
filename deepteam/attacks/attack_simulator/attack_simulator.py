@@ -63,11 +63,12 @@ class AttackSimulator:
 
         progress = create_progress()
         with progress:
-            for vulnerability in rich_track(
-                iterable=vulnerabilities,
-                progress=progress,
+            task_id = add_pbar(
+                progress,
                 description=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
-            ):
+                total=len(vulnerabilities)
+            )
+            for vulnerability in vulnerabilities:
                 if simulator_model is not None:
                     vulnerability.simulator_model = simulator_model
                 test_cases.extend(
@@ -78,24 +79,29 @@ class AttackSimulator:
                         metadata=metadata,
                     )
                 )
-        if attacks is not None:
-            # Enhance attacks by sampling from the provided distribution
-            attack_weights = [attack.weight for attack in attacks]
+                update_pbar(progress, task_id)
 
-            for test_case in rich_track(
-                iterable=test_cases,
-                progress=progress,
-                description=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
-            ):
-                # Randomly sample an enhancement based on the distribution
-                sampled_attack = random.choices(
-                    attacks, weights=attack_weights, k=1
-                )[0]
-                self.enhance_attack(
-                    attack=sampled_attack,
-                    test_case=test_case,
-                    ignore_errors=ignore_errors,
+            if attacks is not None:
+                # Enhance attacks by sampling from the provided distribution
+                attack_weights = [attack.weight for attack in attacks]
+
+                task_id_simulation = add_pbar(
+                    progress,
+                    description=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
+                    total=len(test_cases)
                 )
+
+                for test_case in test_cases:
+                    # Randomly sample an enhancement based on the distribution
+                    sampled_attack = random.choices(
+                        attacks, weights=attack_weights, k=1
+                    )[0]
+                    self.enhance_attack(
+                        attack=sampled_attack,
+                        test_case=test_case,
+                        ignore_errors=ignore_errors,
+                    )
+                    update_pbar(progress, task_id_simulation)
 
         self.test_cases.extend(test_cases)
         return test_cases
