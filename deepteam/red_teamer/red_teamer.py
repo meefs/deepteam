@@ -5,7 +5,6 @@ from rich.table import Table
 import inspect
 from rich import box
 from enum import Enum
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
 
 from deepeval.models import DeepEvalBaseLLM
@@ -21,7 +20,6 @@ from deepteam.attacks import BaseAttack
 from deepteam.utils import (
     validate_model_callback_signature,
     create_progress,
-    rich_track,
     add_pbar,
     update_pbar,
 )

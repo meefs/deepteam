@@ -83,12 +83,16 @@ class BadLikertJudge(BaseAttack):
                     break
 
             if current_attack is None:
-                raise ValueError("No user turn found in the conversation history")
+                raise ValueError(
+                    "No user turn found in the conversation history"
+                )
 
             # Generate assistant response if needed
             if len(turns) <= 1 or turns[-1].role == "user":
                 assistant_response = model_callback(current_attack, turns)
-                turns.append(RTTurn(role="assistant", content=assistant_response))
+                turns.append(
+                    RTTurn(role="assistant", content=assistant_response)
+                )
             else:
                 assistant_response = turns[-1].content
 
@@ -135,8 +139,10 @@ class BadLikertJudge(BaseAttack):
                     raise ModelRefusalError(entity=self.get_name())
 
                 if self.enable_refinement and self.num_turns >= 3:
-                    current_attack = BadLikertJudgeTemplate.likert_refine_score_3(
-                        next_attack, vulnerability_data
+                    current_attack = (
+                        BadLikertJudgeTemplate.likert_refine_score_3(
+                            next_attack, vulnerability_data
+                        )
                     )
                 else:
                     current_attack = next_attack
@@ -208,7 +214,9 @@ class BadLikertJudge(BaseAttack):
             # Ensure assistant response
             if len(turns) <= 1 or turns[-1].role == "user":
                 assistant_response = await model_callback(current_attack, turns)
-                turns.append(RTTurn(role="assistant", content=assistant_response))
+                turns.append(
+                    RTTurn(role="assistant", content=assistant_response)
+                )
             else:
                 assistant_response = turns[-1].content
 
@@ -256,8 +264,10 @@ class BadLikertJudge(BaseAttack):
                     raise ModelRefusalError(entity=self.get_name())
 
                 if self.enable_refinement and self.num_turns >= 3:
-                    current_attack = BadLikertJudgeTemplate.likert_refine_score_3(
-                        next_attack, vulnerability_data
+                    current_attack = (
+                        BadLikertJudgeTemplate.likert_refine_score_3(
+                            next_attack, vulnerability_data
+                        )
                     )
                 else:
                     current_attack = next_attack

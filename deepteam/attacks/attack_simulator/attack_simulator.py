@@ -9,7 +9,7 @@ from deepeval.metrics.utils import initialize_model
 from deepeval.metrics.utils import initialize_model
 
 from deepteam.attacks import BaseAttack
-from deepteam.utils import create_progress, rich_track, add_pbar, update_pbar
+from deepteam.utils import create_progress, add_pbar, update_pbar
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.errors import ModelRefusalError
@@ -66,7 +66,7 @@ class AttackSimulator:
             task_id = add_pbar(
                 progress,
                 description=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
-                total=len(vulnerabilities)
+                total=len(vulnerabilities),
             )
             for vulnerability in vulnerabilities:
                 if simulator_model is not None:
@@ -88,7 +88,7 @@ class AttackSimulator:
                 task_id_simulation = add_pbar(
                     progress,
                     description=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
-                    total=len(test_cases)
+                    total=len(test_cases),
                 )
 
                 for test_case in test_cases:

@@ -87,21 +87,3 @@ def remove_pbars(
         task = next((t for t in progress.tasks if t.id == pbar_id), None)
         if task is not None:
             progress.remove_task(pbar_id)
-
-
-def rich_track(
-    iterable: Iterable[Any], progress: Optional[Progress], description: str
-) -> Iterable[Any]:
-    if progress is None:
-        for item in iterable:
-            yield item
-        return
-    try:
-        total = len(iterable)
-    except Exception:
-        total = None
-    task_id = add_pbar(progress, description, total)
-    for item in iterable:
-        yield item
-        update_pbar(progress, task_id)
-    update_pbar(progress, task_id, advance_to_end=True)

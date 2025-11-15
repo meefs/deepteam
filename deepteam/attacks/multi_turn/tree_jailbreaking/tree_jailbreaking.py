@@ -120,7 +120,13 @@ class TreeJailbreaking(BaseAttack):
 
             try:
                 best_node = self.tree_search(
-                    root, attack, start_time, MAX_RUNTIME, progress, task_id, vulnerability_data
+                    root,
+                    attack,
+                    start_time,
+                    MAX_RUNTIME,
+                    progress,
+                    task_id,
+                    vulnerability_data,
                 )
             finally:
                 update_pbar(progress, task_id, advance_to_end=True)
@@ -136,7 +142,8 @@ class TreeJailbreaking(BaseAttack):
             if path_nodes:
                 first_prompt = path_nodes[0].prompt
                 if any(
-                    t.content == first_prompt and t.role == "user" for t in turns
+                    t.content == first_prompt and t.role == "user"
+                    for t in turns
                 ):
                     path_nodes = path_nodes[1:]
 
@@ -144,7 +151,9 @@ class TreeJailbreaking(BaseAttack):
             for node in path_nodes:
                 turns.append(RTTurn(role="user", content=node.prompt))
                 assistant_response = model_callback(node.prompt, turns)
-                turns.append(RTTurn(role="assistant", content=assistant_response))
+                turns.append(
+                    RTTurn(role="assistant", content=assistant_response)
+                )
                 if node.turn_level_attack is not None:
                     turns.append(
                         RTTurn(
@@ -209,7 +218,13 @@ class TreeJailbreaking(BaseAttack):
 
             try:
                 best_node = await self.a_tree_search(
-                    root, attack, start_time, MAX_RUNTIME, vulnerability_data, progress, task_id
+                    root,
+                    attack,
+                    start_time,
+                    MAX_RUNTIME,
+                    vulnerability_data,
+                    progress,
+                    task_id,
                 )
             finally:
                 update_pbar(progress, task_id, advance_to_end=True)
@@ -225,7 +240,8 @@ class TreeJailbreaking(BaseAttack):
             if path_nodes:
                 first_prompt = path_nodes[0].prompt
                 if any(
-                    t.content == first_prompt and t.role == "user" for t in turns
+                    t.content == first_prompt and t.role == "user"
+                    for t in turns
                 ):
                     path_nodes = path_nodes[1:]
 
@@ -233,7 +249,9 @@ class TreeJailbreaking(BaseAttack):
             for node in path_nodes:
                 turns.append(RTTurn(role="user", content=node.prompt))
                 assistant_response = await model_callback(node.prompt, turns)
-                turns.append(RTTurn(role="assistant", content=assistant_response))
+                turns.append(
+                    RTTurn(role="assistant", content=assistant_response)
+                )
 
         return turns
 
@@ -343,7 +361,11 @@ class TreeJailbreaking(BaseAttack):
 
             # Update progress bar
             elapsed_time = time.time() - start_time
-            update_pbar(progress, task_id, elapsed_time - progress.tasks[task_id].completed)
+            update_pbar(
+                progress,
+                task_id,
+                elapsed_time - progress.tasks[task_id].completed,
+            )
 
         return best_node
 
@@ -527,7 +549,7 @@ class TreeJailbreaking(BaseAttack):
         MAX_RUNTIME: float,
         vulnerability_data: str,
         progress: Progress,
-        task_id: int
+        task_id: int,
     ) -> TreeNode:
         """Asynchronous tree search implementation with runtime limit."""
         queue = [root]

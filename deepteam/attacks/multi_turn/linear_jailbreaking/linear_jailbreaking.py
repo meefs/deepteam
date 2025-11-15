@@ -150,7 +150,9 @@ class LinearJailbreaking(BaseAttack):
                         )
                     )
                 else:
-                    turns.append(RTTurn(role="assistant", content=target_response))
+                    turns.append(
+                        RTTurn(role="assistant", content=target_response)
+                    )
 
                 update_pbar(progress, task_id)
 
@@ -256,7 +258,9 @@ class LinearJailbreaking(BaseAttack):
                         )
                     )
                 else:
-                    turns.append(RTTurn(role="assistant", content=target_response))
+                    turns.append(
+                        RTTurn(role="assistant", content=target_response)
+                    )
 
                 update_pbar(progress, task_id)
 

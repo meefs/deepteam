@@ -48,7 +48,9 @@ class Multilingual(BaseSingleTurnAttack):
                     prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
-                update_pbar(progress, task_id)  # Update the progress bar for generation
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for generation
 
                 # Check for compliance using a compliance template
                 compliance_prompt = MultilingualTemplate.non_compliant(
@@ -57,7 +59,9 @@ class Multilingual(BaseSingleTurnAttack):
                 compliance_res: ComplianceData = generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
-                update_pbar(progress, task_id)  # Update the progress bar for compliance
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for compliance
 
                 # Check if rewritten prompt is a translation
                 is_translation_prompt = MultilingualTemplate.is_translation(
@@ -66,7 +70,9 @@ class Multilingual(BaseSingleTurnAttack):
                 is_translation_res: IsTranslation = generate(
                     is_translation_prompt, IsTranslation, self.simulator_model
                 )
-                update_pbar(progress, task_id)  # Update the progress bar for is a translation
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for is a translation
 
                 if (
                     not compliance_res.non_compliant
@@ -103,7 +109,9 @@ class Multilingual(BaseSingleTurnAttack):
                         prompt, EnhancedAttack, self.simulator_model
                     )
                     enhanced_attack = res.input
-                    update_pbar(progress, task_id)  # Update the progress bar for generation
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for generation
 
                     # Check for compliance using a compliance template
                     compliance_prompt = MultilingualTemplate.non_compliant(
@@ -112,16 +120,22 @@ class Multilingual(BaseSingleTurnAttack):
                     compliance_res: ComplianceData = await a_generate(
                         compliance_prompt, ComplianceData, self.simulator_model
                     )
-                    update_pbar(progress, task_id)  # Update the progress bar for compliance
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for compliance
 
                     # Check if rewritten prompt is a translation
                     is_translation_prompt = MultilingualTemplate.is_translation(
                         res.model_dump()
                     )
                     is_translation_res: IsTranslation = await a_generate(
-                        is_translation_prompt, IsTranslation, self.simulator_model
+                        is_translation_prompt,
+                        IsTranslation,
+                        self.simulator_model,
                     )
-                    update_pbar(progress, task_id)  # Update the progress bar for is a translation
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for is a translation
 
                     if (
                         not compliance_res.non_compliant

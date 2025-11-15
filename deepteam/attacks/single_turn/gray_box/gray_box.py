@@ -48,7 +48,9 @@ class GrayBox(BaseSingleTurnAttack):
                     prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
-                update_pbar(progress, task_id)  # Update the progress bar for generation
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for generation
 
                 # Check for compliance using a compliance template
                 compliance_prompt = GrayBoxTemplate.non_compliant(
@@ -57,7 +59,9 @@ class GrayBox(BaseSingleTurnAttack):
                 compliance_res: ComplianceData = generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
-                update_pbar(progress, task_id)  # Update the progress bar for compliance
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for compliance
 
                 # Check if rewritten prompt is a gray box attack
                 is_gray_box_prompt = GrayBoxTemplate.is_gray_box(
@@ -66,7 +70,9 @@ class GrayBox(BaseSingleTurnAttack):
                 is_gray_box_res: IsGrayBox = generate(
                     is_gray_box_prompt, IsGrayBox, self.simulator_model
                 )
-                update_pbar(progress, task_id)  # Update the progress bar for is gray box attack
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for is gray box attack
 
                 if (
                     not compliance_res.non_compliant
@@ -106,7 +112,9 @@ class GrayBox(BaseSingleTurnAttack):
                         prompt, EnhancedAttack, self.simulator_model
                     )
                     enhanced_attack = res.input
-                    update_pbar(progress, task_id)  # Update the progress bar for generation
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for generation
 
                     # Check for compliance using a compliance template
                     compliance_prompt = GrayBoxTemplate.non_compliant(
@@ -115,7 +123,9 @@ class GrayBox(BaseSingleTurnAttack):
                     compliance_res: ComplianceData = await a_generate(
                         compliance_prompt, ComplianceData, self.simulator_model
                     )
-                    update_pbar(progress, task_id)  # Update the progress bar for compliance
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for compliance
 
                     # Check if rewritten prompt is a gray box attack
                     is_gray_box_prompt = GrayBoxTemplate.is_gray_box(
@@ -124,7 +134,9 @@ class GrayBox(BaseSingleTurnAttack):
                     is_gray_box_res: IsGrayBox = await a_generate(
                         is_gray_box_prompt, IsGrayBox, self.simulator_model
                     )
-                    update_pbar(progress, task_id)  # Update the progress bar for is gray box attack
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for is gray box attack
 
                     if (
                         not compliance_res.non_compliant

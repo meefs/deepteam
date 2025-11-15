@@ -48,7 +48,9 @@ class PromptProbing(BaseSingleTurnAttack):
                     prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
-                update_pbar(progress, task_id)  # Update the progress bar for generation
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for generation
 
                 # Check for compliance using a compliance template
                 compliance_prompt = PromptProbingTemplate.non_compliant(
@@ -57,7 +59,9 @@ class PromptProbing(BaseSingleTurnAttack):
                 compliance_res: ComplianceData = generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
-                update_pbar(progress, task_id)  # Update the progress bar for compliance
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for compliance
 
                 # Check if rewritten prompt is a prompt probing attack
                 is_prompt_probing_prompt = (
@@ -105,7 +109,9 @@ class PromptProbing(BaseSingleTurnAttack):
                         prompt, EnhancedAttack, self.simulator_model
                     )
                     enhanced_attack = res.input
-                    update_pbar(progress, task_id)  # Update the progress bar for generation
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for generation
 
                     # Check for compliance using a compliance template
                     compliance_prompt = PromptProbingTemplate.non_compliant(
@@ -114,18 +120,22 @@ class PromptProbing(BaseSingleTurnAttack):
                     compliance_res: ComplianceData = await a_generate(
                         compliance_prompt, ComplianceData, self.simulator_model
                     )
-                    update_pbar(progress, task_id)  # Update the progress bar for compliance
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for compliance
 
                     # Check if rewritten prompt is a prompt probing attack
                     is_prompt_probing_prompt = (
-                        PromptProbingTemplate.is_prompt_probing(res.model_dump())
+                        PromptProbingTemplate.is_prompt_probing(
+                            res.model_dump()
+                        )
                     )
                     is_prompt_probing_res: IsPromptProbing = await a_generate(
                         is_prompt_probing_prompt,
                         IsPromptProbing,
                         self.simulator_model,
                     )
-                    update_pbar(progress, task_id) # Update the progress bar
+                    update_pbar(progress, task_id)  # Update the progress bar
 
                     if (
                         not compliance_res.non_compliant

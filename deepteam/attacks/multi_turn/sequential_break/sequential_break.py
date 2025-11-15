@@ -141,7 +141,9 @@ class SequentialJailbreak(BaseAttack):
                 rewritten_content = rewritten_content.replace(
                     "Paraphrased version:", ""
                 ).strip()
-                rewritten_content = rewritten_content.replace("<end>", "").strip()
+                rewritten_content = rewritten_content.replace(
+                    "<end>", ""
+                ).strip()
 
                 if self.attack_type == "question_bank":
                     current_attack = (
@@ -156,8 +158,10 @@ class SequentialJailbreak(BaseAttack):
                         )
                     )
                 else:
-                    current_attack = SequentialBreakTemplate.get_dialogue_template(
-                        rewritten_content, self.persona
+                    current_attack = (
+                        SequentialBreakTemplate.get_dialogue_template(
+                            rewritten_content, self.persona
+                        )
                     )
 
                 # Randomly enhancing a turn attack
@@ -209,11 +213,13 @@ class SequentialJailbreak(BaseAttack):
                     eval_flag = judge_res.classification == "Harmful"
                     eval_percentage = getattr(judge_res, "score", 0)
                 elif self.attack_type == "game_environment":
-                    judge_prompt = SequentialBreakTemplate.game_environment_judge(
-                        original_attack,
-                        current_attack,
-                        assistant_response,
-                        vulnerability_data,
+                    judge_prompt = (
+                        SequentialBreakTemplate.game_environment_judge(
+                            original_attack,
+                            current_attack,
+                            assistant_response,
+                            vulnerability_data,
+                        )
                     )
                     judge_res: GameEnvironmentJudge = generate(
                         judge_prompt, GameEnvironmentJudge, self.simulator_model
@@ -321,7 +327,9 @@ class SequentialJailbreak(BaseAttack):
                 rewritten_content = rewritten_content.replace(
                     "Paraphrased version:", ""
                 ).strip()
-                rewritten_content = rewritten_content.replace("<end>", "").strip()
+                rewritten_content = rewritten_content.replace(
+                    "<end>", ""
+                ).strip()
 
                 if self.attack_type == "question_bank":
                     current_attack = (
@@ -336,8 +344,10 @@ class SequentialJailbreak(BaseAttack):
                         )
                     )
                 else:
-                    current_attack = SequentialBreakTemplate.get_dialogue_template(
-                        rewritten_content, self.persona
+                    current_attack = (
+                        SequentialBreakTemplate.get_dialogue_template(
+                            rewritten_content, self.persona
+                        )
                     )
 
                 # Randomly enhancing a turn attack
@@ -388,11 +398,13 @@ class SequentialJailbreak(BaseAttack):
                     )
                     eval_flag = judge_res.classification == "Harmful"
                 elif self.attack_type == "game_environment":
-                    judge_prompt = SequentialBreakTemplate.game_environment_judge(
-                        original_attack,
-                        current_attack,
-                        assistant_response,
-                        vulnerability_data,
+                    judge_prompt = (
+                        SequentialBreakTemplate.game_environment_judge(
+                            original_attack,
+                            current_attack,
+                            assistant_response,
+                            vulnerability_data,
+                        )
                     )
                     judge_res: GameEnvironmentJudge = await a_generate(
                         judge_prompt, GameEnvironmentJudge, self.simulator_model

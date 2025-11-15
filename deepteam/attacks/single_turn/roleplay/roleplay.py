@@ -57,7 +57,9 @@ class Roleplay(BaseSingleTurnAttack):
                     prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input
-                update_pbar(progress, task_id)  # Update the progress bar for generation
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for generation
 
                 # Check for compliance using a compliance template
                 compliance_prompt = RoleplayTemplate.non_compliant(
@@ -66,7 +68,9 @@ class Roleplay(BaseSingleTurnAttack):
                 compliance_res: ComplianceData = generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
-                update_pbar(progress, task_id)  # Update the progress bar for compliance
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for compliance
 
                 # Check if rewritten prompt is a roleplay attack
                 is_roleplay_prompt = RoleplayTemplate.is_roleplay(
@@ -112,7 +116,9 @@ class Roleplay(BaseSingleTurnAttack):
                         prompt, EnhancedAttack, self.simulator_model
                     )
                     enhanced_attack = res.input
-                    update_pbar(progress, task_id)  # Update the progress bar for generation
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for generation
 
                     # Check for compliance using a compliance template
                     compliance_prompt = RoleplayTemplate.non_compliant(
@@ -121,7 +127,9 @@ class Roleplay(BaseSingleTurnAttack):
                     compliance_res: ComplianceData = await a_generate(
                         compliance_prompt, ComplianceData, self.simulator_model
                     )
-                    update_pbar(progress, task_id)  # Update the progress bar for compliance
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for compliance
 
                     # Check if rewritten prompt is a roleplay attack
                     is_roleplay_prompt = RoleplayTemplate.is_roleplay(

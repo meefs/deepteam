@@ -51,7 +51,9 @@ class MathProblem(BaseSingleTurnAttack):
                     prompt, EnhancedAttack, self.simulator_model
                 )
                 enhanced_attack = res.input + self.get_additional_instructions()
-                update_pbar(progress, task_id)  # Update the progress bar for generation
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for generation
 
                 # Check for compliance using a compliance template
                 compliance_prompt = MathProblemTemplate.non_compliant(
@@ -60,7 +62,9 @@ class MathProblem(BaseSingleTurnAttack):
                 compliance_res: ComplianceData = generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
-                update_pbar(progress, task_id)  # Update the progress bar for compliance
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for compliance
 
                 # Check if rewritten prompt is a math problem
                 is_math_problem_prompt = MathProblemTemplate.is_math_problem(
@@ -69,7 +73,9 @@ class MathProblem(BaseSingleTurnAttack):
                 is_math_problem_res: IsMathProblem = generate(
                     is_math_problem_prompt, IsMathProblem, self.simulator_model
                 )
-                update_pbar(progress, task_id)  # Update the progress bar for is math problem
+                update_pbar(
+                    progress, task_id
+                )  # Update the progress bar for is math problem
 
                 if (
                     not compliance_res.non_compliant
@@ -78,7 +84,7 @@ class MathProblem(BaseSingleTurnAttack):
                     # If it's compliant and is a math problem, return the enhanced prompt
                     update_pbar(progress, task_id, advance_to_end=True)
                     return enhanced_attack
-                
+
             update_pbar(progress, task_id, advance_to_end=True)
         # If all retries fail, return the original attack
         return attack
@@ -106,8 +112,12 @@ class MathProblem(BaseSingleTurnAttack):
                     res: EnhancedAttack = await a_generate(
                         prompt, EnhancedAttack, self.simulator_model
                     )
-                    enhanced_attack = res.input + self.get_additional_instructions()
-                    update_pbar(progress, task_id)  # Update the progress bar for generation
+                    enhanced_attack = (
+                        res.input + self.get_additional_instructions()
+                    )
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for generation
 
                     # Check for compliance using a compliance template
                     compliance_prompt = MathProblemTemplate.non_compliant(
@@ -116,16 +126,22 @@ class MathProblem(BaseSingleTurnAttack):
                     compliance_res: ComplianceData = await a_generate(
                         compliance_prompt, ComplianceData, self.simulator_model
                     )
-                    update_pbar(progress, task_id)  # Update the progress bar for compliance
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for compliance
 
                     # Check if rewritten prompt is a math problem
-                    is_math_problem_prompt = MathProblemTemplate.is_math_problem(
-                        res.model_dump()
+                    is_math_problem_prompt = (
+                        MathProblemTemplate.is_math_problem(res.model_dump())
                     )
                     is_math_problem_res: IsMathProblem = await a_generate(
-                        is_math_problem_prompt, IsMathProblem, self.simulator_model
+                        is_math_problem_prompt,
+                        IsMathProblem,
+                        self.simulator_model,
                     )
-                    update_pbar(progress, task_id)  # Update the progress bar for is math problem
+                    update_pbar(
+                        progress, task_id
+                    )  # Update the progress bar for is math problem
 
                     if (
                         not compliance_res.non_compliant
