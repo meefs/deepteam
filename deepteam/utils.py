@@ -45,7 +45,9 @@ def create_progress() -> Progress:
         SpinnerColumn(),
         TextColumn("[bold bright_white]{task.description}", justify="left"),
         BarColumn(bar_width=None),
-        TaskProgressColumn(text_format="[cyan]{task.completed}[/]/[bright_white]{task.total}"),
+        TaskProgressColumn(
+            text_format="[cyan]{task.completed}[/]/[bright_white]{task.total}"
+        ),
         TimeElapsedColumn(),
         TimeRemainingColumn(compact=True),
         expand=True,
