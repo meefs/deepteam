@@ -100,8 +100,16 @@ class RedTeamer:
                 total=len(framework.risk_categories),
             )
             for risk_category in framework.risk_categories:
-                framework_assessment = assess_risk_category(risk_category)
-                results[risk_category.name] = framework_assessment
+                progress_2 = create_progress()
+                with progress_2:
+                    risk_task_id = add_pbar(
+                        progress_2,
+                        description=f"🖍️ Assessing risk-category: {risk_category.name}",
+                        total=1,
+                    )
+                    framework_assessment = assess_risk_category(risk_category)
+                    results[risk_category.name] = framework_assessment
+                    update_pbar(progress_2, risk_task_id, advance_to_end=True)
                 update_pbar(progress, task_id)
 
         return results
@@ -123,28 +131,40 @@ class RedTeamer:
             )
 
         async def assess_risk_category(category: RiskCategory):
-            return await self.a_red_team(
-                model_callback=model_callback,
-                attacks=category.attacks,
-                vulnerabilities=category.vulnerabilities,
-                simulator_model=simulator_model,
-                evaluation_model=evaluation_model,
-                ignore_errors=ignore_errors,
-                reuse_simulated_test_cases=reuse_simulated_test_cases,
-                metadata=metadata,
-                attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                _print_assessment=False,
-            )
-
-        tasks = {
-            asyncio.create_task(assess_risk_category(category)): category.name
-            for category in framework.risk_categories
-        }
-
-        results = {}
+            progress_2 = create_progress()
+            with progress_2:
+                risk_task_id = add_pbar(
+                    progress_2,
+                    description=f"🖍️ Assessing risk-category: {category.name}",
+                    total=1,
+                )
+                assessment = await self.a_red_team(
+                    model_callback=model_callback,
+                    attacks=category.attacks,
+                    vulnerabilities=category.vulnerabilities,
+                    simulator_model=simulator_model,
+                    evaluation_model=evaluation_model,
+                    ignore_errors=ignore_errors,
+                    reuse_simulated_test_cases=reuse_simulated_test_cases,
+                    metadata=metadata,
+                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                    _print_assessment=False,
+                )
+                update_pbar(progress_2, risk_task_id, advance_to_end=True)
+                return assessment
 
         progress = create_progress()
         with progress:
+
+            tasks = {
+                asyncio.create_task(
+                    assess_risk_category(category)
+                ): category.name
+                for category in framework.risk_categories
+            }
+
+            results = {}
+
             task_id = add_pbar(
                 progress,
                 description=f"⏳ Running red-teaming for {framework.get_name()} Framework",
@@ -156,7 +176,7 @@ class RedTeamer:
                 results[name] = result
                 update_pbar(progress, task_id)
 
-        return results
+            return results
 
     def red_team(
         self,

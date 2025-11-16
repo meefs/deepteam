@@ -49,7 +49,6 @@ def create_progress() -> Progress:
             text_format="[cyan]{task.completed}[/]/[bright_white]{task.total}"
         ),
         TimeElapsedColumn(),
-        TimeRemainingColumn(compact=True),
         expand=True,
         transient=False,
     )
