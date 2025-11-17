@@ -430,7 +430,8 @@ class TreeJailbreaking(BaseAttack):
                 continue  # Skip this child
 
             # Generate a response from the target LLM
-            target_response = self.model_callback(enhanced_attack)
+            conversation_turns = self.build_turns_from_node(node)
+            target_response = self.model_callback(enhanced_attack, conversation_turns)
 
             # Calculate the score for the enhanced attack
             judge_prompt = JailBreakingTemplate.linear_judge(
@@ -656,7 +657,8 @@ class TreeJailbreaking(BaseAttack):
             return None  # Skip this child
 
         # Generate a response from the target LLM asynchronously
-        target_response = await self.model_callback(enhanced_attack)
+        conversation_turns = self.build_turns_from_node(node)
+        target_response = await self.model_callback(enhanced_attack, conversation_turns)
 
         # Calculate the score for the enhanced attack asynchronously
         judge_prompt = JailBreakingTemplate.linear_judge(
@@ -684,6 +686,18 @@ class TreeJailbreaking(BaseAttack):
     ##################################################
     ### General Jailbreaking #########################
     ##################################################
+
+    def build_turns_from_node(self, node: TreeNode) -> List[RTTurn]:
+        path_nodes = []
+        current = node
+        while current is not None:
+            path_nodes.append(current)
+            current = current.parent
+        path_nodes.reverse()
+        turns = []
+        for n in path_nodes:
+            turns.append(RTTurn(role="user", content=n.prompt))
+        return turns
 
     def calculate_branches(self, score: int, depth: int) -> int:
         """Calculate the number of branches (children) based on the score."""

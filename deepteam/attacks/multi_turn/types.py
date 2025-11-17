@@ -1,3 +1,5 @@
-from typing import Callable
+from typing import Callable, List, Optional
 
-CallbackType = Callable[[str], str]
+from deepteam.test_case.test_case import RTTurn
+
+CallbackType = Callable[[str, Optional[List[RTTurn]]], str]

@@ -292,7 +292,7 @@ class AttackSimulator:
             turns = [RTTurn(role="user", content=attack_input)]
 
             try:
-                res = attack._get_turns(
+                res: List[RTTurn] = attack._get_turns(
                     model_callback=self.model_callback,
                     turns=turns,
                     vulnerability=test_case.vulnerability,
@@ -300,6 +300,7 @@ class AttackSimulator:
                 )
 
                 test_case.turns = res
+                test_case.actual_output = res[-1].content
 
             except ModelRefusalError as e:
                 if ignore_errors:
@@ -401,7 +402,7 @@ class AttackSimulator:
             turns = [RTTurn(role="user", content=attack_input)]
 
             try:
-                res = await attack._a_get_turns(
+                res: List[RTTurn] = await attack._a_get_turns(
                     model_callback=self.model_callback,
                     turns=turns,
                     vulnerability=test_case.vulnerability,
@@ -409,6 +410,7 @@ class AttackSimulator:
                 )
 
                 test_case.turns = res
+                test_case.actual_output = res[-1].content
 
             except ModelRefusalError as e:
                 if ignore_errors:
