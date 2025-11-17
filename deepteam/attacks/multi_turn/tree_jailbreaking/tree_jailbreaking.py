@@ -27,7 +27,9 @@ from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.test_case.test_case import RTTurn
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.attacks.multi_turn import BaseMultiTurnAttack
+from deepteam.attacks.multi_turn.base_multi_turn_attack import (
+    BaseMultiTurnAttack,
+)
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 

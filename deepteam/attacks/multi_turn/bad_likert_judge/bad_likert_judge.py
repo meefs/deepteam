@@ -3,7 +3,9 @@ from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 import random
 
-from deepteam.attacks.multi_turn import BaseMultiTurnAttack
+from deepteam.attacks.multi_turn.base_multi_turn_attack import (
+    BaseMultiTurnAttack,
+)
 from deepteam.attacks.multi_turn.bad_likert_judge.schema import (
     BLJJudge,
 )
@@ -22,6 +24,7 @@ from deepteam.errors import ModelRefusalError
 from deepteam.test_case.test_case import RTTurn
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.vulnerabilities import BaseVulnerability
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 
 class BadLikertJudge(BaseMultiTurnAttack):
@@ -31,7 +34,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
         category: str = "bias",
         num_turns: int = 5,
         enable_refinement: bool = True,
-        turn_level_attacks: Optional[List[BaseAttack]] = None,
+        turn_level_attacks: Optional[List[BaseSingleTurnAttack]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = "gpt-4o-mini",
     ):
         self.weight = weight

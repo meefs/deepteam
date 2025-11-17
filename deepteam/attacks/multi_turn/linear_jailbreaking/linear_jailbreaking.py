@@ -4,7 +4,7 @@ import random
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
-from deepteam.attacks import BaseAttack
+
 from deepteam.attacks.multi_turn.linear_jailbreaking.schema import (
     Improvement,
     Feedback,
@@ -19,7 +19,9 @@ from deepteam.attacks.attack_simulator.utils import (
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
-from deepteam.attacks.multi_turn import BaseMultiTurnAttack
+from deepteam.attacks.multi_turn.base_multi_turn_attack import (
+    BaseMultiTurnAttack,
+)
 from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.attacks.multi_turn.base_template import BaseMultiTurnTemplate

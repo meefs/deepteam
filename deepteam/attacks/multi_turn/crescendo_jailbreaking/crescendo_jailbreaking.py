@@ -9,7 +9,9 @@ from deepeval.metrics.utils import initialize_model
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
-from deepteam.attacks.multi_turn import BaseMultiTurnAttack
+from deepteam.attacks.multi_turn.base_multi_turn_attack import (
+    BaseMultiTurnAttack,
+)
 from deepteam.attacks.multi_turn.crescendo_jailbreaking.template import (
     JailBreakingCrescendoTemplate,
 )
