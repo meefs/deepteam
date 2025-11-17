@@ -3,9 +3,11 @@ from deepteam.vulnerabilities import Bias, BOLA
 from deepteam.attacks.single_turn import Roleplay
 import os
 from deepteam.frameworks import OWASPTop10
+from deepteam.test_case.test_case import RTTurn
+from typing import List
 
 
-async def your_callback(input: str) -> str:
+async def your_callback(input: str, turns: List[RTTurn]) -> str:
     return "I'm sorry but I can't answer this: " + input
 
 

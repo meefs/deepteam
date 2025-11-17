@@ -278,11 +278,14 @@ class AttackSimulator:
             test_case.attack_method = attack.get_name()
             turns = [RTTurn(role="user", content=attack_input)]
 
+            from deepteam.vulnerabilities import Bias
             try:
-                res = attack.progress(
+                res = attack._get_turns(
                     model_callback=self.model_callback,
                     turns=turns,
                     vulnerability=test_case.vulnerability,
+                    vulnerability_type=test_case.vulnerability_type,
+                    # vulnerability=Bias(),
                 )
 
                 test_case.turns = res
@@ -374,11 +377,14 @@ class AttackSimulator:
             sig = inspect.signature(attack.a_progress)
             turns = [RTTurn(role="user", content=attack_input)]
 
+            from deepteam.vulnerabilities import Bias
             try:
-                res = await attack.a_progress(
+                res = await attack._a_get_turns(
                     model_callback=self.model_callback,
                     turns=turns,
                     vulnerability=test_case.vulnerability,
+                    vulnerability_type=test_case.vulnerability_type,
+                    # vulnerability=Bias(),
                 )
                 test_case.turns = res
 
