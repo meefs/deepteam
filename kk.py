@@ -21,16 +21,16 @@ async def your_callback(input: str, turns: List[RTTurn]) -> str:
 print(os.environ.get("CONFIDENT_API_KEY"))
 
 risk_assessment = red_team(
-    attacks=[
-        LinearJailbreaking(),
-        CrescendoJailbreaking(),
-        TreeJailbreaking(),
-        SequentialJailbreak(),
-        BadLikertJudge(),
-    ],
-    vulnerabilities=[Bias(), Bias()],
+    # attacks=[
+    #     LinearJailbreaking(),
+    #     CrescendoJailbreaking(),
+    #     TreeJailbreaking(),
+    #     SequentialJailbreak(),
+    #     BadLikertJudge(),
+    # ],
+    # vulnerabilities=[Bias(), Bias()],
     model_callback=your_callback,
-    # framework=OWASPTop10(),
+    framework=OWASPTop10(),
 )
 
 # from deepteam.vulnerabilities.constants import (
