@@ -53,6 +53,7 @@ class TreeNode:
 
 
 class TreeJailbreaking(BaseMultiTurnAttack):
+    name = "Tree Jailbreaking"
 
     def __init__(
         self,
@@ -728,4 +729,4 @@ class TreeJailbreaking(BaseMultiTurnAttack):
         return max(MIN_BRANCHES, min(MAX_BRANCHES, branches))
 
     def get_name(self) -> str:
-        return "Tree Jailbreaking"
+        return self.name

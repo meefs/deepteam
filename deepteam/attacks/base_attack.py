@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 class BaseAttack(ABC):
     weight: int = 1
     multi_turn: bool = False
+    name: str
 
     def enhance(self, attack: str, *args, **kwargs) -> str:
         pass

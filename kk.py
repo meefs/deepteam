@@ -18,19 +18,24 @@ async def your_callback(input: str, turns: List[RTTurn]) -> str:
     return "I'm sorry but I can't answer this: " + input
 
 
+import deepteam
+
+print(deepteam.__version__)
+
 print(os.environ.get("CONFIDENT_API_KEY"))
 
 risk_assessment = red_team(
-    # attacks=[
-    #     LinearJailbreaking(),
-    #     CrescendoJailbreaking(),
-    #     TreeJailbreaking(),
-    #     SequentialJailbreak(),
-    #     BadLikertJudge(),
-    # ],
-    # vulnerabilities=[Bias(), Bias()],
+    attacks=[
+        LinearJailbreaking(),
+        # CrescendoJailbreaking(),
+        Roleplay(),
+        # TreeJailbreaking(),
+        # SequentialJailbreak(),
+        # BadLikertJudge(),
+    ],
+    vulnerabilities=[Bias()],
     model_callback=your_callback,
-    framework=OWASPTop10(),
+    # framework=OWASPTop10(),
 )
 
 # from deepteam.vulnerabilities.constants import (

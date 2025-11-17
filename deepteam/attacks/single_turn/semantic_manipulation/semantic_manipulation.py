@@ -7,6 +7,8 @@ from deepteam.attacks.single_turn.semantic_manipulation.template import (
 
 
 class LinguisticConfusion(BaseSingleTurnAttack):
+    name = "Linguistic Confusion"
+
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight
         self.max_retries = max_retries
@@ -43,4 +45,4 @@ class LinguisticConfusion(BaseSingleTurnAttack):
         return self.enhance(attack)
 
     def get_name(self) -> str:
-        return "Linguistic Confusion"
+        return self.name

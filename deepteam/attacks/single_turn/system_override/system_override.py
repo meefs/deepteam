@@ -7,6 +7,8 @@ from deepteam.attacks.single_turn.system_override.template import (
 
 
 class SystemOverride(BaseSingleTurnAttack):
+    name = "System Override"
+
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight
         self.max_retries = max_retries
@@ -48,4 +50,4 @@ class SystemOverride(BaseSingleTurnAttack):
         return self.enhance(attack)
 
     def get_name(self) -> str:
-        return "System Override"
+        return self.name

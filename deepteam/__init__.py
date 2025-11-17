@@ -9,10 +9,12 @@ from deepteam.red_team import red_team
 from deepteam.guardrails import (
     Guardrails,
 )
+from deepteam._version import __version__
 
 __all__ = [
     "red_team",
     "Guardrails",
+    "__version__",
 ]
 
 

@@ -1,15 +1,20 @@
 import asyncio
+import time
 from typing import Dict, List, Optional, Union
+import webbrowser
 from rich.console import Console
 from rich.table import Table
 import inspect
 from rich import box
 from enum import Enum
 from collections import defaultdict
+from deepeval.confident.api import HttpMethods, is_confident
 
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 from deepeval.dataset.golden import Golden
+from deepteam.confident.api import Api, Endpoints
+from deepteam.red_teamer.api import map_risk_assessment_to_api
 from deepteam.test_case import RTTestCase
 from deepeval.utils import get_or_create_event_loop
 
@@ -33,6 +38,8 @@ from deepteam.red_teamer.risk_assessment import (
     RiskAssessment,
 )
 from deepteam.risks import getRiskCategory
+
+console = Console()
 
 
 class RedTeamer:
@@ -191,6 +198,7 @@ class RedTeamer:
         reuse_simulated_test_cases: bool = False,
         metadata: Optional[dict] = None,
         _print_assessment: Optional[bool] = True,
+        _upload_to_confident: Optional[bool] = True,
     ):
         if not framework and not vulnerabilities:
             raise ValueError(
@@ -255,6 +263,7 @@ class RedTeamer:
                 model_callback
             ), "`model_callback` needs to be sync. `async_mode` has been set to False."
 
+            start_time = time.time()
             if evaluation_model is not None:
                 self.evaluation_model = evaluation_model
             if simulator_model is not None:
@@ -363,7 +372,8 @@ class RedTeamer:
 
                 self.risk_assessment = RiskAssessment(
                     overview=construct_risk_assessment_overview(
-                        red_teaming_test_cases=red_teaming_test_cases
+                        red_teaming_test_cases=red_teaming_test_cases,
+                        run_duration=time.time() - start_time,
                     ),
                     test_cases=red_teaming_test_cases,
                 )
@@ -371,6 +381,8 @@ class RedTeamer:
 
                 if _print_assessment:
                     self._print_risk_assessment(self.risk_assessment)
+                if _upload_to_confident:
+                    self._post_risk_assessment()
 
                 return self.risk_assessment
 
@@ -387,6 +399,7 @@ class RedTeamer:
         reuse_simulated_test_cases: bool = False,
         metadata: Optional[dict] = None,
         _print_assessment: Optional[bool] = True,
+        _upload_to_confident: Optional[bool] = True,
     ):
         if not framework and not vulnerabilities:
             raise ValueError(
@@ -429,6 +442,7 @@ class RedTeamer:
                     framework.load_dataset()
                     update_pbar(progress, task_id, advance_to_end=True)
 
+        start_time = time.time()
         if evaluation_model is not None:
             self.evaluation_model = evaluation_model
         if simulator_model is not None:
@@ -547,7 +561,8 @@ class RedTeamer:
 
             self.risk_assessment = RiskAssessment(
                 overview=construct_risk_assessment_overview(
-                    red_teaming_test_cases=red_teaming_test_cases
+                    red_teaming_test_cases=red_teaming_test_cases,
+                    run_duration=time.time() - start_time,
                 ),
                 test_cases=red_teaming_test_cases,
             )
@@ -555,6 +570,8 @@ class RedTeamer:
 
             if _print_assessment:
                 self._print_risk_assessment(self.risk_assessment)
+            if _upload_to_confident:
+                self._post_risk_assessment()
 
             return self.risk_assessment
 
@@ -895,6 +912,50 @@ class RedTeamer:
         console.print("\n" + "=" * 80)
         console.print("[bold magenta]LLM red teaming complete.[/bold magenta]")
         console.print("=" * 80 + "\n")
+
+    def _post_risk_assessment(self):
+        if not is_confident():
+            passing = 0
+            failing = 0
+            for tc in self.risk_assessment.test_cases:
+                if tc and tc.score is not None:
+                    if tc.score > 0:
+                        passing += 1
+                    else:
+                        failing += 1
+            pass_rate = round((passing / (passing + failing)) * 100, 2)
+
+            console.print(
+                f"\n\n[rgb(5,245,141)]✓[/rgb(5,245,141)] Risk Assessment completed 🎉! (time taken: {round(self.risk_assessment.overview.run_duration, 2)}s)\n"
+                f"» Test Results ({len(self.risk_assessment.test_cases)} total tests):\n",
+                f"  » Pass Rate: {pass_rate}% | Passed: [bold green]{passing}[/bold green] | Failed: [bold red]{failing}[/bold red]\n\n",
+                "=" * 80,
+                "\n\n» Want to share risk assessments with your team, or a place for your test cases to live? ❤️ 🏡\n"
+                "  » Run [bold]'deepteam login'[/bold] to analyze and save testing results on [rgb(106,0,255)]Confident AI[/rgb(106,0,255)].\n\n",
+            )
+            return
+
+        api = Api()
+        api_risk_assessment = map_risk_assessment_to_api(self.risk_assessment)
+        try:
+            body = api_risk_assessment.model_dump(
+                by_alias=True, exclude_none=True
+            )
+        except AttributeError:
+            # Pydantic version below 2.0
+            body = api_risk_assessment.dict(by_alias=True, exclude_none=True)
+
+        data, link = api.send_request(
+            method=HttpMethods.POST,
+            endpoint=Endpoints.RISK_ASSESSMENT_ENDPOINT,
+            body=body,
+        )
+
+        console.print(
+            "[rgb(5,245,141)]✓[/rgb(5,245,141)] Done 🎉! View risk assessment on Confident AI:"
+            f"[link={link}]{link}[/link]"
+        )
+        webbrowser.open(link)
 
     def _print_framework_overview_table(self, framework_results: dict):
 
