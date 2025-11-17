@@ -431,7 +431,9 @@ class TreeJailbreaking(BaseAttack):
 
             # Generate a response from the target LLM
             conversation_turns = self.build_turns_from_node(node)
-            target_response = self.model_callback(enhanced_attack, conversation_turns)
+            target_response = self.model_callback(
+                enhanced_attack, conversation_turns
+            )
 
             # Calculate the score for the enhanced attack
             judge_prompt = JailBreakingTemplate.linear_judge(
@@ -658,7 +660,9 @@ class TreeJailbreaking(BaseAttack):
 
         # Generate a response from the target LLM asynchronously
         conversation_turns = self.build_turns_from_node(node)
-        target_response = await self.model_callback(enhanced_attack, conversation_turns)
+        target_response = await self.model_callback(
+            enhanced_attack, conversation_turns
+        )
 
         # Calculate the score for the enhanced attack asynchronously
         judge_prompt = JailBreakingTemplate.linear_judge(

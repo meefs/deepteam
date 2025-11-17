@@ -13,6 +13,7 @@ from deepteam.attacks.multi_turn import (
     BadLikertJudge,
 )
 
+
 async def your_callback(input: str, turns: List[RTTurn]) -> str:
     return "I'm sorry but I can't answer this: " + input
 
