@@ -28,6 +28,8 @@ IntellectualPropertyLiteral = Literal[
 
 
 class IntellectualProperty(BaseVulnerability):
+    name: str = "Intellectual Property"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -299,4 +301,4 @@ class IntellectualProperty(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Intellectual Property"
+        return self.name

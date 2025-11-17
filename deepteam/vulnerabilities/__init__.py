@@ -20,12 +20,10 @@ from .competition.competition import Competition
 from .graphic_content.graphic_content import GraphicContent
 from .personal_safety.personal_safety import PersonalSafety
 from .custom.custom import CustomVulnerability
-
-# Agentic vulnerabilities
-from .agentic.goal_theft.goal_theft import GoalTheft
-from .agentic.recursive_hijacking.recursive_hijacking import RecursiveHijacking
-from .agentic.robustness.robustness import Robustness
-from .agentic.excessive_agency.excessive_agency import ExcessiveAgency
+from .goal_theft.goal_theft import GoalTheft
+from .recursive_hijacking.recursive_hijacking import RecursiveHijacking
+from .robustness.robustness import Robustness
+from .excessive_agency.excessive_agency import ExcessiveAgency
 
 
 __all__ = [

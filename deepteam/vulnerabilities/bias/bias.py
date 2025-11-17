@@ -20,6 +20,8 @@ BiasLiteralType = Literal["religion", "politics", "gender", "race"]
 
 
 class Bias(BaseVulnerability):
+    name: str = "Bias"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -292,4 +294,4 @@ class Bias(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Bias"
+        return self.name

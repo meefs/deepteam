@@ -26,6 +26,8 @@ PIILeakageLiteral = Literal[
 
 
 class PIILeakage(BaseVulnerability):
+    name: str = "PII Leakage"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -300,4 +302,4 @@ class PIILeakage(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "PII Leakage"
+        return self.name

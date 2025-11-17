@@ -264,25 +264,11 @@ class AttackSimulator:
         test_case: RTTestCase,
         ignore_errors: bool,
     ):
-        from deepteam.attacks.multi_turn import (
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            SequentialJailbreak,
-            TreeJailbreaking,
-        )
         from deepteam.test_case.test_case import RTTurn
-
-        MULTI_TURN_ATTACKS = [
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            TreeJailbreaking,
-            SequentialJailbreak,
-        ]
+        from deepteam.attacks.multi_turn import BaseMultiTurnAttack
 
         # Check if the attack is a multi-turn attack
-        if type(attack) in MULTI_TURN_ATTACKS:
+        if isinstance(attack, BaseMultiTurnAttack):
             # This is a multi-turn attack
             attack_input = test_case.input
             if attack_input is None:
@@ -292,7 +278,7 @@ class AttackSimulator:
             turns = [RTTurn(role="user", content=attack_input)]
 
             try:
-                res = attack._get_turns(
+                res: List[RTTurn] = attack._get_turns(
                     model_callback=self.model_callback,
                     turns=turns,
                     vulnerability=test_case.vulnerability,
@@ -300,6 +286,7 @@ class AttackSimulator:
                 )
 
                 test_case.turns = res
+                test_case.actual_output = res[-1].content
 
             except ModelRefusalError as e:
                 if ignore_errors:
@@ -374,23 +361,11 @@ class AttackSimulator:
         ignore_errors: bool,
     ):
         from deepteam.attacks.multi_turn import (
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            SequentialJailbreak,
-            TreeJailbreaking,
+            BaseMultiTurnAttack,
         )
         from deepteam.test_case.test_case import RTTurn
 
-        MULTI_TURN_ATTACKS = [
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            TreeJailbreaking,
-            SequentialJailbreak,
-        ]
-
-        if type(attack) in MULTI_TURN_ATTACKS:
+        if isinstance(attack, BaseMultiTurnAttack):
             # This is multi-turn attack
             attack_input = test_case.input
             if attack_input is None:
@@ -401,7 +376,7 @@ class AttackSimulator:
             turns = [RTTurn(role="user", content=attack_input)]
 
             try:
-                res = await attack._a_get_turns(
+                res: List[RTTurn] = await attack._a_get_turns(
                     model_callback=self.model_callback,
                     turns=turns,
                     vulnerability=test_case.vulnerability,
@@ -409,6 +384,7 @@ class AttackSimulator:
                 )
 
                 test_case.turns = res
+                test_case.actual_output = res[-1].content
 
             except ModelRefusalError as e:
                 if ignore_errors:

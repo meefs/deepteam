@@ -1,7 +1,7 @@
 import pytest
 
 from deepteam.vulnerabilities import GoalTheft
-from deepteam.vulnerabilities.agentic.goal_theft import GoalTheftType
+from deepteam.vulnerabilities.goal_theft import GoalTheftType
 from deepteam.test_case import RTTestCase
 
 

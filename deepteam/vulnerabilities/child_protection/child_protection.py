@@ -22,6 +22,8 @@ ChildProtectionLiteralType = Literal[
 
 
 class ChildProtection(BaseVulnerability):
+    name: str = "Child Protection"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -294,4 +296,4 @@ class ChildProtection(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Child Protection"
+        return self.name

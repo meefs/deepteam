@@ -25,6 +25,8 @@ SSRFLiteral = Literal[
 
 
 class SSRF(BaseVulnerability):
+    name: str = "SSRF"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -288,4 +290,4 @@ class SSRF(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "SSRF"
+        return self.name

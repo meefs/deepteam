@@ -1,5 +1,4 @@
 from typing import List, Dict, Any, Optional, Tuple, Union
-from pydantic import BaseModel
 from uuid import uuid4
 import json
 import random
@@ -7,9 +6,12 @@ import random
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.multi_turn.base_multi_turn_attack import (
+    BaseMultiTurnAttack,
+)
 from deepteam.attacks.multi_turn.crescendo_jailbreaking.template import (
     JailBreakingCrescendoTemplate,
 )
@@ -50,14 +52,14 @@ class MemorySystem:
         return new_conversation_id
 
 
-class CrescendoJailbreaking(BaseAttack):
+class CrescendoJailbreaking(BaseMultiTurnAttack):
 
     def __init__(
         self,
         weight: int = 1,
         max_rounds: int = 10,
         max_backtracks: int = 10,
-        turn_level_attacks: Optional[List[BaseAttack]] = None,
+        turn_level_attacks: Optional[List[BaseSingleTurnAttack]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = "gpt-4o-mini",
     ):
         self.weight = weight
@@ -192,7 +194,9 @@ class CrescendoJailbreaking(BaseAttack):
 
                 turns.append(RTTurn(role="user", content=current_attack))
 
-                last_response = self.generate_target_response(current_attack)
+                last_response = self.generate_target_response(
+                    current_attack, turns
+                )
                 update_pbar(progress, rounds_task_id)
 
                 if turn_level_attack is not None:
@@ -364,7 +368,7 @@ class CrescendoJailbreaking(BaseAttack):
                 turns.append(RTTurn(role="user", content=current_attack))
 
                 last_response = await self.a_generate_target_response(
-                    current_attack
+                    current_attack, turns
                 )
                 update_pbar(progress, rounds_task_id)
 
@@ -625,12 +629,14 @@ class CrescendoJailbreaking(BaseAttack):
         )
         return res.generated_question
 
-    def generate_target_response(self, attack_prompt: str) -> str:
+    def generate_target_response(
+        self, attack_prompt: str, turns: List[RTTurn]
+    ) -> str:
         self.memory.add_message(
             self.target_conversation_id,
             {"role": "user", "content": attack_prompt},
         )
-        response = self.model_callback(attack_prompt)
+        response = self.model_callback(attack_prompt, turns)
         self.memory.add_message(
             self.target_conversation_id,
             {"role": "assistant", "content": response},
@@ -727,12 +733,14 @@ class CrescendoJailbreaking(BaseAttack):
         )
         return res.generated_question
 
-    async def a_generate_target_response(self, attack_prompt: str) -> str:
+    async def a_generate_target_response(
+        self, attack_prompt: str, turns: List[RTTurn]
+    ) -> str:
         self.memory.add_message(
             self.target_conversation_id,
             {"role": "user", "content": attack_prompt},
         )
-        response = await self.model_callback(attack_prompt)
+        response = await self.model_callback(attack_prompt, turns)
         self.memory.add_message(
             self.target_conversation_id,
             {"role": "assistant", "content": response},

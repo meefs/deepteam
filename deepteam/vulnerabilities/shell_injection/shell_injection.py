@@ -25,6 +25,8 @@ ShellInjectionLiteral = Literal[
 
 
 class ShellInjection(BaseVulnerability):
+    name: str = "Shell Injection"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -289,4 +291,4 @@ class ShellInjection(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Shell Injection"
+        return self.name

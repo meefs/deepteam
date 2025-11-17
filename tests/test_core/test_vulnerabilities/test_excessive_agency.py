@@ -1,7 +1,7 @@
 import pytest
 
 from deepteam.vulnerabilities import ExcessiveAgency
-from deepteam.vulnerabilities.agentic.excessive_agency import (
+from deepteam.vulnerabilities.excessive_agency import (
     ExcessiveAgencyType,
 )
 from deepteam.test_case import RTTestCase

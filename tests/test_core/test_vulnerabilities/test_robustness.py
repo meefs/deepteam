@@ -1,7 +1,7 @@
 import pytest
 
 from deepteam.vulnerabilities import Robustness
-from deepteam.vulnerabilities.agentic.robustness import RobustnessType
+from deepteam.vulnerabilities.robustness import RobustnessType
 from deepteam.test_case import RTTestCase
 
 

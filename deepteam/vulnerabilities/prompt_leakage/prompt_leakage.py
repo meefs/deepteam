@@ -26,6 +26,8 @@ PromptLeakageLiteral = Literal[
 
 
 class PromptLeakage(BaseVulnerability):
+    name: str = "Prompt Leakage"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -297,4 +299,4 @@ class PromptLeakage(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Prompt Leakage"
+        return self.name

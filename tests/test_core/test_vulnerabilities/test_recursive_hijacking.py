@@ -1,7 +1,7 @@
 import pytest
 
 from deepteam.vulnerabilities import RecursiveHijacking
-from deepteam.vulnerabilities.agentic.recursive_hijacking import (
+from deepteam.vulnerabilities.recursive_hijacking import (
     RecursiveHijackingType,
 )
 from deepteam.test_case import RTTestCase
