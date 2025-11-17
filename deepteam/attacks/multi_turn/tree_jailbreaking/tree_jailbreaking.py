@@ -27,6 +27,8 @@ from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.test_case.test_case import RTTurn
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.vulnerabilities import BaseVulnerability
+from deepteam.attacks.multi_turn import BaseMultiTurnAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 
 class TreeNode:
@@ -48,13 +50,13 @@ class TreeNode:
         self.conversation_history = conversation_history or []
 
 
-class TreeJailbreaking(BaseAttack):
+class TreeJailbreaking(BaseMultiTurnAttack):
 
     def __init__(
         self,
         weight: int = 1,
         max_depth: int = 5,
-        turn_level_attacks: Optional[List[BaseAttack]] = None,
+        turn_level_attacks: Optional[List[BaseSingleTurnAttack]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = "gpt-4o-mini",
     ):
         self.weight = weight

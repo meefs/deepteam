@@ -4,7 +4,9 @@ import random
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.multi_turn.base_multi_turn_attack import (
+    BaseMultiTurnAttack,
+)
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.multi_turn.sequential_break.schema import (
     RewrittenDialogue,
@@ -27,16 +29,17 @@ from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.test_case.test_case import RTTurn
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.vulnerabilities import BaseVulnerability
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 
-class SequentialJailbreak(BaseAttack):
+class SequentialJailbreak(BaseMultiTurnAttack):
     def __init__(
         self,
         weight: int = 1,
         type: Optional[SequentialJailbreakTypeLiteral] = None,
         persona: Optional[DialogueTypeLiteral] = None,
         num_turns: int = 5,
-        turn_level_attacks: Optional[List[BaseAttack]] = None,
+        turn_level_attacks: Optional[List[BaseSingleTurnAttack]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = "gpt-4o-mini",
     ):
         self.weight = weight

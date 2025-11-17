@@ -264,25 +264,11 @@ class AttackSimulator:
         test_case: RTTestCase,
         ignore_errors: bool,
     ):
-        from deepteam.attacks.multi_turn import (
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            SequentialJailbreak,
-            TreeJailbreaking,
-        )
         from deepteam.test_case.test_case import RTTurn
-
-        MULTI_TURN_ATTACKS = [
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            TreeJailbreaking,
-            SequentialJailbreak,
-        ]
+        from deepteam.attacks.multi_turn import BaseMultiTurnAttack
 
         # Check if the attack is a multi-turn attack
-        if type(attack) in MULTI_TURN_ATTACKS:
+        if isinstance(attack, BaseMultiTurnAttack):
             # This is a multi-turn attack
             attack_input = test_case.input
             if attack_input is None:
@@ -375,23 +361,11 @@ class AttackSimulator:
         ignore_errors: bool,
     ):
         from deepteam.attacks.multi_turn import (
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            SequentialJailbreak,
-            TreeJailbreaking,
+            BaseMultiTurnAttack,
         )
         from deepteam.test_case.test_case import RTTurn
 
-        MULTI_TURN_ATTACKS = [
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            TreeJailbreaking,
-            SequentialJailbreak,
-        ]
-
-        if type(attack) in MULTI_TURN_ATTACKS:
+        if isinstance(attack, BaseMultiTurnAttack):
             # This is multi-turn attack
             attack_input = test_case.input
             if attack_input is None:

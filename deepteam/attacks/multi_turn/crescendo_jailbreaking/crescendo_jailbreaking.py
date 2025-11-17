@@ -1,5 +1,4 @@
 from typing import List, Dict, Any, Optional, Tuple, Union
-from pydantic import BaseModel
 from uuid import uuid4
 import json
 import random
@@ -7,9 +6,10 @@ import random
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
+from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
-from deepteam.attacks import BaseAttack
+from deepteam.attacks.multi_turn import BaseMultiTurnAttack
 from deepteam.attacks.multi_turn.crescendo_jailbreaking.template import (
     JailBreakingCrescendoTemplate,
 )
@@ -50,14 +50,14 @@ class MemorySystem:
         return new_conversation_id
 
 
-class CrescendoJailbreaking(BaseAttack):
+class CrescendoJailbreaking(BaseMultiTurnAttack):
 
     def __init__(
         self,
         weight: int = 1,
         max_rounds: int = 10,
         max_backtracks: int = 10,
-        turn_level_attacks: Optional[List[BaseAttack]] = None,
+        turn_level_attacks: Optional[List[BaseSingleTurnAttack]] = None,
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = "gpt-4o-mini",
     ):
         self.weight = weight

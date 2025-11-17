@@ -1,9 +1,9 @@
-from pydantic import BaseModel
 from typing import Optional, Union, List, Dict
 from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 import random
-from deepteam.attacks import BaseAttack
+
+from deepteam.attacks.multi_turn import BaseMultiTurnAttack
 from deepteam.attacks.multi_turn.bad_likert_judge.schema import (
     BLJJudge,
 )
@@ -24,7 +24,7 @@ from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.vulnerabilities import BaseVulnerability
 
 
-class BadLikertJudge(BaseAttack):
+class BadLikertJudge(BaseMultiTurnAttack):
     def __init__(
         self,
         weight: int = 1,
