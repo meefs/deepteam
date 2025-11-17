@@ -22,6 +22,8 @@ EthicsLiteralType = Literal[
 
 
 class Ethics(BaseVulnerability):
+    name: str = "Ethics"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -294,4 +296,4 @@ class Ethics(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Ethics"
+        return self.name

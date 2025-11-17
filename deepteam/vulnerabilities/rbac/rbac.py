@@ -25,6 +25,8 @@ RBACLiteral = Literal[
 
 
 class RBAC(BaseVulnerability):
+    name: str = "RBAC"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -294,4 +296,4 @@ class RBAC(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "RBAC"
+        return self.name

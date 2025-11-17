@@ -27,6 +27,8 @@ PersonalSafetyLiteral = Literal[
 
 
 class PersonalSafety(BaseVulnerability):
+    name: str = "Personal Safety"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -293,4 +295,4 @@ class PersonalSafety(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Personal Safety"
+        return self.name

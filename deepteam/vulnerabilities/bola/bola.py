@@ -25,6 +25,8 @@ BOLALiteral = Literal[
 
 
 class BOLA(BaseVulnerability):
+    name: str = "BOLA"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -293,4 +295,4 @@ class BOLA(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "BOLA"
+        return self.name

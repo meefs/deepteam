@@ -8,21 +8,24 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.utils import validate_model_callback_signature
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.agentic.excessive_agency import (
-    ExcessiveAgencyType,
+from deepteam.vulnerabilities.robustness import RobustnessType
+from deepteam.vulnerabilities.utils import validate_vulnerability_types
+from deepteam.metrics import (
+    HijackingMetric,
+    OverrelianceMetric,
+    BaseRedTeamingMetric,
 )
 from deepteam.test_case import RTTestCase
-from deepteam.vulnerabilities.utils import validate_vulnerability_types
-from deepteam.metrics import ExcessiveAgencyMetric, BaseRedTeamingMetric
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
-from .template import ExcessiveAgencyTemplate
+from .template import RobustnessTemplate
+
+RobustnessLiteral = Literal["input_overreliance", "hijacking"]
 
 
-ExcessiveAgencyLiteral = Literal["functionality", "permissions", "autonomy"]
+class Robustness(BaseVulnerability):
+    name: str = "Robustness"
 
-
-class ExcessiveAgency(BaseVulnerability):
     def __init__(
         self,
         async_mode: bool = True,
@@ -31,13 +34,13 @@ class ExcessiveAgency(BaseVulnerability):
             Union[str, DeepEvalBaseLLM]
         ] = "gpt-3.5-turbo-0125",
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
-        types: Optional[List[ExcessiveAgencyLiteral]] = [
-            type.value for type in ExcessiveAgencyType
+        types: Optional[List[RobustnessLiteral]] = [
+            type.value for type in RobustnessType
         ],
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=ExcessiveAgencyType
+            self.get_name(), types=types, allowed_type=RobustnessType
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -50,7 +53,7 @@ class ExcessiveAgency(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-    ) -> Dict[ExcessiveAgencyType, List[RTTestCase]]:
+    ) -> Dict[RobustnessType, List[RTTestCase]]:
         from deepteam.risks import getRiskCategory
 
         validate_model_callback_signature(
@@ -66,8 +69,8 @@ class ExcessiveAgency(BaseVulnerability):
 
         simulated_test_cases = self.simulate_attacks(purpose)
 
-        results: Dict[ExcessiveAgencyType, List[RTTestCase]] = {}
-        res: Dict[ExcessiveAgencyType, ExcessiveAgencyMetric] = {}
+        results: Dict[RobustnessType, List[RTTestCase]] = {}
+        res: Dict[RobustnessType, BaseRedTeamingMetric] = {}
         simulated_attacks: Dict[str, str] = {}
 
         for test_case in simulated_test_cases:
@@ -105,7 +108,7 @@ class ExcessiveAgency(BaseVulnerability):
         self,
         model_callback: CallbackType,
         purpose: Optional[str] = None,
-    ) -> Dict[ExcessiveAgencyType, List[RTTestCase]]:
+    ) -> Dict[RobustnessType, List[RTTestCase]]:
         from deepteam.risks import getRiskCategory
 
         validate_model_callback_signature(
@@ -115,8 +118,8 @@ class ExcessiveAgency(BaseVulnerability):
 
         simulated_test_cases = await self.a_simulate_attacks(purpose)
 
-        results: Dict[ExcessiveAgencyType, List[RTTestCase]] = {}
-        res: Dict[ExcessiveAgencyType, ExcessiveAgencyMetric] = {}
+        results: Dict[RobustnessType, List[RTTestCase]] = {}
+        res: Dict[RobustnessType, BaseRedTeamingMetric] = {}
         simulated_attacks: Dict[str, str] = {}
 
         async def process_attack(test_case: RTTestCase):
@@ -178,7 +181,7 @@ class ExcessiveAgency(BaseVulnerability):
         for type in self.types:
             templates[type] = templates.get(type, [])
             templates[type].append(
-                ExcessiveAgencyTemplate.generate_baseline_attacks(
+                RobustnessTemplate.generate_baseline_attacks(
                     type, attacks_per_vulnerability_type, self.purpose
                 )
             )
@@ -232,7 +235,7 @@ class ExcessiveAgency(BaseVulnerability):
         for type in self.types:
             templates[type] = templates.get(type, [])
             templates[type].append(
-                ExcessiveAgencyTemplate.generate_baseline_attacks(
+                RobustnessTemplate.generate_baseline_attacks(
                     type, attacks_per_vulnerability_type, self.purpose
                 )
             )
@@ -270,15 +273,27 @@ class ExcessiveAgency(BaseVulnerability):
 
         return simulated_test_cases
 
+    # TODO: Different metrics for different types. Forces us to use type in the `_get_metric` call.
     def _get_metric(
         self,
-        type: ExcessiveAgencyType,
+        type: RobustnessType,
     ) -> BaseRedTeamingMetric:
-        return ExcessiveAgencyMetric(
-            purpose=self.purpose,
-            model=self.evaluation_model,
-            async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode,
+        if type == RobustnessType.HIJACKING:
+            return HijackingMetric(
+                purpose=self.purpose,
+                model=self.evaluation_model,
+                async_mode=self.async_mode,
+                verbose_mode=self.verbose_mode,
+            )
+        if type == RobustnessType.INPUT_OVERRELIANCE:
+            return OverrelianceMetric(
+                purpose=self.purpose,
+                model=self.evaluation_model,
+                async_mode=self.async_mode,
+                verbose_mode=self.verbose_mode,
+            )
+        raise ValueError(
+            "Invalid type passed in the 'get_metric' function. Please pass an enum from 'RobustnessType'"
         )
 
     def is_vulnerable(self) -> bool:
@@ -292,4 +307,4 @@ class ExcessiveAgency(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Excessive Agency"
+        return self.name

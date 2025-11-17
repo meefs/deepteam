@@ -1,6 +1,6 @@
 from typing import Optional
 
-from deepteam.vulnerabilities.agentic.robustness.types import RobustnessType
+from deepteam.vulnerabilities.robustness.types import RobustnessType
 
 
 class RobustnessTemplate:

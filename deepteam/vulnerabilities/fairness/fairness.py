@@ -22,6 +22,8 @@ FairnessLiteralType = Literal[
 
 
 class Fairness(BaseVulnerability):
+    name: str = "Fairness"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -294,4 +296,4 @@ class Fairness(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Fairness"
+        return self.name

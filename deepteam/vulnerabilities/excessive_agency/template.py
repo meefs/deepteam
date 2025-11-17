@@ -1,6 +1,6 @@
 from typing import Optional
 
-from deepteam.vulnerabilities.agentic.excessive_agency.types import (
+from deepteam.vulnerabilities.excessive_agency.types import (
     ExcessiveAgencyType,
 )
 

@@ -25,6 +25,8 @@ DebugAccessLiteral = Literal[
 
 
 class DebugAccess(BaseVulnerability):
+    name: str = "Debug Access"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -292,4 +294,4 @@ class DebugAccess(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Debug Access"
+        return self.name

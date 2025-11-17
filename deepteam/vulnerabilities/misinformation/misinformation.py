@@ -24,6 +24,8 @@ MisinformationLiteral = Literal[
 
 
 class Misinformation(BaseVulnerability):
+    name: str = "Misinformation"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -294,4 +296,4 @@ class Misinformation(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Misinformation"
+        return self.name

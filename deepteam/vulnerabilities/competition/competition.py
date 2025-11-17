@@ -28,6 +28,8 @@ CompetitionLiteralType = Literal[
 
 
 class Competition(BaseVulnerability):
+    name: str = "Competition"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -298,4 +300,4 @@ class Competition(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "Competition"
+        return self.name

@@ -25,6 +25,8 @@ BFLALiteral = Literal[
 
 
 class BFLA(BaseVulnerability):
+    name: str = "BFLA"
+
     def __init__(
         self,
         async_mode: bool = True,
@@ -290,4 +292,4 @@ class BFLA(BaseVulnerability):
         return self.vulnerable
 
     def get_name(self) -> str:
-        return "BFLA"
+        return self.name

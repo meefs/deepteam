@@ -50,26 +50,26 @@ from deepteam.vulnerabilities.shell_injection.template import (
     ShellInjectionTemplate,
 )
 from deepteam.vulnerabilities.sql_injection.template import SQLInjectionTemplate
-from deepteam.vulnerabilities.agentic.robustness import RobustnessType
-from deepteam.vulnerabilities.agentic.robustness.template import (
+from deepteam.vulnerabilities.robustness import RobustnessType
+from deepteam.vulnerabilities.robustness.template import (
     RobustnessTemplate,
 )
-from deepteam.vulnerabilities.agentic.excessive_agency import (
+from deepteam.vulnerabilities.excessive_agency import (
     ExcessiveAgencyType,
 )
-from deepteam.vulnerabilities.agentic.excessive_agency.template import (
+from deepteam.vulnerabilities.excessive_agency.template import (
     ExcessiveAgencyTemplate,
 )
 
 # Import agentic vulnerability types
-from deepteam.vulnerabilities.agentic.goal_theft.types import GoalTheftType
-from deepteam.vulnerabilities.agentic.recursive_hijacking.types import (
+from deepteam.vulnerabilities.goal_theft.types import GoalTheftType
+from deepteam.vulnerabilities.recursive_hijacking.types import (
     RecursiveHijackingType,
 )
-from deepteam.vulnerabilities.agentic.goal_theft.template import (
+from deepteam.vulnerabilities.goal_theft.template import (
     GoalTheftTemplate,
 )
-from deepteam.vulnerabilities.agentic.recursive_hijacking.template import (
+from deepteam.vulnerabilities.recursive_hijacking.template import (
     RecursiveHijackingTemplate,
 )
 
