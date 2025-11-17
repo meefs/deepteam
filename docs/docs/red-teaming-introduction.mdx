@@ -387,8 +387,8 @@ There is **ONE** mandatory and **TEN** optional arguments when calling the `red_
 - [Optional] `vulnerabilities`: a list of type `BaseVulnerability`s that determines the weaknesses to detect for.
 - [Optional] `attacks`: a list of type `BaseAttack`s that determines the methods that will be simulated to expose the defined `vulnerabilities`.
 - [Optional] `framework`: an object of type `AISafetyFramework` that contains both `vulnerabilities` and `attacks` in it.
-- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.comhttps://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for simulating attacks. Defaulted to `"gpt-3.5-turbo-0125"`.
-- [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.comhttps://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for evaluation. Defaulted to `"gpt-4o"`.
+- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for simulating attacks. Defaulted to `"gpt-3.5-turbo-0125"`.
+- [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for evaluation. Defaulted to `"gpt-4o"`.
 - [Optional] `attacks_per_vulnerability_type`: an int that determines the number of attacks to be simulated per vulnerability type. Defaulted to `1`.
 - [Optional] `ignore_errors`: a boolean which when set to `True`, ignores all exceptions raised during red teaming. Defaulted to `False`.
 - [Optional] `async_mode`: a boolean specifying whether to enable async mode. Defaulted to `True`.
@@ -422,7 +422,7 @@ The `red_team()` function is a quick and easy way to red team LLM systems in a s
 To use the `RedTeamer`, instantiate a `RedTeamer` instance.
 
 ```python
-from deepteam.red_teaming import RedTeamer
+from deepteam.red_teamer import RedTeamer
 
 red_teamer = RedTeamer()
 ```
@@ -430,13 +430,13 @@ red_teamer = RedTeamer()
 There are **FIVE** optional parameters when creating a `RedTeamer`:
 
 - [Optional] `target_purpose`: a string specifying your target LLM application's intended purpose. This affects the passing and failing of simulated attacks that are evaluated. Defaulted to `None`.
-- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.comhttps://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for simulating attacks. Defaulted to `"gpt-3.5-turbo-0125"`.
-- [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.comhttps://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for evaluation. Defaulted to `"gpt-4o"`.
+- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for simulating attacks. Defaulted to `"gpt-3.5-turbo-0125"`.
+- [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for evaluation. Defaulted to `"gpt-4o"`.
 - [Optional] `async_mode`: a boolean specifying whether to enable async mode. Defaulted to `True`.
 - [Optional] `max_concurrent`: an integer that determines the maximum number of coroutines that can be ran in parallel. You can decrease this value if your models are running into rate limit errors. Defaulted to `10`.
 
 :::caution
-**All model interfaces in `deepteam` comes from `deepeval`**, and you can read [how to define a custom model of type `DeepEvalBaseLLM` here.](https://docs.confident-ai.comhttps://docs.confident-ai.com/guides/guides-using-custom-llms)
+**All model interfaces in `deepteam` comes from `deepeval`**, and you can read [how to define a custom model of type `DeepEvalBaseLLM` here.](https://docs.confident-ai.com/guides/guides-using-custom-llms)
 
 It is **strongly recommended** you define both the `simulator_model` and `evaluation_model` with a schema argument to avoid invalid JSON errors during large-scale scanning ([learn more here](https://docs.confident-ai.com/guides/guides-using-custom-llms)).
 :::
@@ -472,8 +472,8 @@ There is **ONE** mandatory and **NINE** optional arguments when calling the `red
 
 - `model_callback`: a callback of type `Callable[[str], str]` that wraps around the target LLM system you wish to red team.
 - [Optional] `framework`: an object of type `AISafetyFramework` that contains both `vulnerabilities` and `attacks` in it.
-- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.comhttps://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for simulating attacks. Defaulted to `"gpt-3.5-turbo-0125"`.
-- [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.comhttps://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for evaluation. Defaulted to `"gpt-4o"`.
+- [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for simulating attacks. Defaulted to `"gpt-3.5-turbo-0125"`.
+- [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for evaluation. Defaulted to `"gpt-4o"`.
 - [Optional] `attacks_per_vulnerability_type`: an int that determines the number of attacks to be simulated per vulnerability type. Defaulted to `1`.
 - [Optional] `ignore_errors`: a boolean which when set to `True`, ignores all exceptions raised during red teaming. Defaulted to `False`.
 - [Optional] `reuse_previous_attacks`: a boolean which when set to `True`, will reuse the previously simulated attacks from the last `red_team()` method run. These attacks can only be reused if they exist (i.e. if you have already ran `red_team()` at least once). Defaulted to `False`.

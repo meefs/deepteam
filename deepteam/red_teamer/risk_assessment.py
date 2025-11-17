@@ -187,7 +187,7 @@ def construct_risk_assessment_overview(
 
     errored = 0
     for test_case in red_teaming_test_cases:
-        if not test_case.attack_method or test_case.error:
+        if test_case.error:
             errored += 1
             continue
 
@@ -199,9 +199,10 @@ def construct_risk_assessment_overview(
         )
 
         # Group by attack method
-        if test_case.attack_method not in attack_method_to_cases:
-            attack_method_to_cases[test_case.attack_method] = []
-        attack_method_to_cases[test_case.attack_method].append(test_case)
+        if test_case.attack_method is not None:
+            if test_case.attack_method not in attack_method_to_cases:
+                attack_method_to_cases[test_case.attack_method] = []
+            attack_method_to_cases[test_case.attack_method].append(test_case)
 
     vulnerability_type_results = []
     attack_method_results = []
@@ -228,24 +229,25 @@ def construct_risk_assessment_overview(
         )
 
     # Stats per attack method
-    for attack_method, test_cases in attack_method_to_cases.items():
-        passing = sum(
-            1 for tc in test_cases if tc.score is not None and tc.score > 0
-        )
-        errored = sum(1 for tc in test_cases if tc.error is not None)
-        failing = len(test_cases) - passing - errored
-        valid_cases = len(test_cases) - errored
-        pass_rate = (passing / valid_cases) if valid_cases > 0 else 0.0
-
-        attack_method_results.append(
-            AttackMethodResult(
-                attack_method=attack_method,
-                pass_rate=pass_rate,
-                passing=passing,
-                failing=failing,
-                errored=errored,
+    if attack_method_to_cases is not None:
+        for attack_method, test_cases in attack_method_to_cases.items():
+            passing = sum(
+                1 for tc in test_cases if tc.score is not None and tc.score > 0
             )
-        )
+            errored = sum(1 for tc in test_cases if tc.error is not None)
+            failing = len(test_cases) - passing - errored
+            valid_cases = len(test_cases) - errored
+            pass_rate = (passing / valid_cases) if valid_cases > 0 else 0.0
+
+            attack_method_results.append(
+                AttackMethodResult(
+                    attack_method=attack_method,
+                    pass_rate=pass_rate,
+                    passing=passing,
+                    failing=failing,
+                    errored=errored,
+                )
+            )
 
     return RedTeamingOverview(
         vulnerability_type_results=vulnerability_type_results,

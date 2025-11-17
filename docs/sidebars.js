@@ -97,6 +97,9 @@ module.exports = {
           label: "Responsible AI",
           items: [
             "red-teaming-vulnerabilities-bias",
+            "red-teaming-vulnerabilities-child-protection",
+            "red-teaming-vulnerabilities-ethics",
+            "red-teaming-vulnerabilities-fairness",
             "red-teaming-vulnerabilities-toxicity",
           ],
           collapsed: true,
@@ -176,7 +179,14 @@ module.exports = {
       type: "category",
       label: "Guidelines & Frameworks",
       className: "sidebar-item-guidelines-frameworks root-sidebar-item",
-      items: ["red-teaming-guidelines-framework-introduction","red-teaming-owasp-top-10-for-llms", "red-teaming-nist-ai-rmf"],
+      items: [
+        "frameworks-introduction",
+        "frameworks-owasp-top-10-for-llms", 
+        "frameworks-nist-ai-rmf",
+        "frameworks-mitre-atlas",
+        "frameworks-beavertails",
+        "frameworks-aegis",
+      ],
       collapsed: false,
     },
     {

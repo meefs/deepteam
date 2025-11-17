@@ -1,6 +1,5 @@
 import random
 import asyncio
-from tqdm import tqdm
 from pydantic import BaseModel
 from typing import List, Optional, Union
 import inspect
@@ -10,6 +9,7 @@ from deepeval.metrics.utils import initialize_model
 from deepeval.metrics.utils import initialize_model
 
 from deepteam.attacks import BaseAttack
+from deepteam.utils import create_progress, add_pbar, update_pbar
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.errors import ModelRefusalError
@@ -50,8 +50,8 @@ class AttackSimulator:
         self,
         attacks_per_vulnerability_type: int,
         vulnerabilities: List[BaseVulnerability],
-        attacks: List[BaseAttack],
         ignore_errors: bool,
+        attacks: Optional[List[BaseAttack]] = None,
         simulator_model: DeepEvalBaseLLM = None,
         metadata: Optional[dict] = None,
     ) -> List[RTTestCase]:
@@ -60,42 +60,50 @@ class AttackSimulator:
         num_vulnerability_types = sum(
             len(v.get_types()) for v in vulnerabilities
         )
-        pbar = tqdm(
-            vulnerabilities,
-            desc=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
-        )
-        for vulnerability in pbar:
-            if simulator_model is not None:
-                vulnerability.simulator_model = simulator_model
-            test_cases.extend(
-                self.simulate_baseline_attacks(
-                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                    vulnerability=vulnerability,
-                    ignore_errors=ignore_errors,
-                    metadata=metadata,
+
+        progress = create_progress()
+        with progress:
+            task_id = add_pbar(
+                progress,
+                description=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
+                total=len(vulnerabilities),
+            )
+            for vulnerability in vulnerabilities:
+                if simulator_model is not None:
+                    vulnerability.simulator_model = simulator_model
+                test_cases.extend(
+                    self.simulate_baseline_attacks(
+                        attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                        vulnerability=vulnerability,
+                        ignore_errors=ignore_errors,
+                        metadata=metadata,
+                    )
                 )
-            )
-        # Enhance attacks by sampling from the provided distribution
-        enhanced_test_cases: List[RTTestCase] = []
-        pbar = tqdm(
-            test_cases,
-            desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
-        )
-        attack_weights = [attack.weight for attack in attacks]
+                update_pbar(progress, task_id)
 
-        for baseline_attack in pbar:
-            # Randomly sample an enhancement based on the distribution
-            sampled_attack = random.choices(
-                attacks, weights=attack_weights, k=1
-            )[0]
-            test_case = self.enhance_attack(
-                attack=sampled_attack,
-                test_case=baseline_attack,
-                ignore_errors=ignore_errors,
-            )
-            enhanced_test_cases.append(test_case)
+            if attacks is not None:
+                # Enhance attacks by sampling from the provided distribution
+                attack_weights = [attack.weight for attack in attacks]
 
-        self.test_cases.extend(enhanced_test_cases)
+                task_id_simulation = add_pbar(
+                    progress,
+                    description=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
+                    total=len(test_cases),
+                )
+
+                for test_case in test_cases:
+                    # Randomly sample an enhancement based on the distribution
+                    sampled_attack = random.choices(
+                        attacks, weights=attack_weights, k=1
+                    )[0]
+                    self.enhance_attack(
+                        attack=sampled_attack,
+                        test_case=test_case,
+                        ignore_errors=ignore_errors,
+                    )
+                    update_pbar(progress, task_id_simulation)
+
+        self.test_cases.extend(test_cases)
         return test_cases
 
     async def a_simulate(
@@ -115,75 +123,77 @@ class AttackSimulator:
         num_vulnerability_types = sum(
             len(v.get_types()) for v in vulnerabilities
         )
-        pbar = tqdm(
-            vulnerabilities,
-            desc=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
-        )
+        progress = create_progress()
+        with progress:
 
-        async def throttled_simulate_baseline_attack(vulnerability):
-            if simulator_model is not None:
-                vulnerability.simulator_model = simulator_model
-            async with semaphore:  # Throttling applied here
-                result = await self.a_simulate_baseline_attacks(
-                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                    vulnerability=vulnerability,
-                    ignore_errors=ignore_errors,
-                    metadata=metadata,
-                )
-                pbar.update(1)
-                return result
-
-        simulate_tasks = [
-            asyncio.create_task(
-                throttled_simulate_baseline_attack(vulnerability)
+            task_id_vuln = add_pbar(
+                progress,
+                description=f"💥 Generating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (for {num_vulnerability_types} vulnerability types across {len(vulnerabilities)} vulnerability(s))",
+                total=len(vulnerabilities),
             )
-            for vulnerability in vulnerabilities
-        ]
 
-        attack_results = await asyncio.gather(*simulate_tasks)
-        for result in attack_results:
-            test_cases.extend(result)
-        pbar.close()
+            async def throttled_simulate_baseline_attack(vulnerability):
+                if simulator_model is not None:
+                    vulnerability.simulator_model = simulator_model
+                async with semaphore:  # Throttling applied here
+                    result = await self.a_simulate_baseline_attacks(
+                        attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                        vulnerability=vulnerability,
+                        ignore_errors=ignore_errors,
+                        metadata=metadata,
+                    )
+                    update_pbar(progress, task_id_vuln)
+                    return result
 
-        # Enhance attacks by sampling from the provided distribution
-        enhanced_test_cases: List[RTTestCase] = []
-        pbar = tqdm(
-            total=len(test_cases),
-            desc=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
-        )
-
-        async def throttled_attack_method(
-            baseline_attack: RTTestCase,
-        ):
-            async with semaphore:  # Throttling applied here
-                # Randomly sample an enhancement based on the distribution
-                if not attacks:
-                    attack = BaselineAttack()
-                else:
-                    attack_weights = [attack.weight for attack in attacks]
-                    attack = random.choices(
-                        attacks, weights=attack_weights, k=1
-                    )[0]
-
-                result = await self.a_enhance_attack(
-                    attack=attack,
-                    test_case=baseline_attack,
-                    ignore_errors=ignore_errors,
+            simulate_tasks = [
+                asyncio.create_task(
+                    throttled_simulate_baseline_attack(vulnerability)
                 )
-                pbar.update(1)
-                return result
+                for vulnerability in vulnerabilities
+            ]
 
-        enhanced_test_cases.extend(
-            await asyncio.gather(
-                *[
-                    asyncio.create_task(throttled_attack_method(test_case))
-                    for test_case in test_cases
-                ]
-            )
-        )
-        pbar.close()
+            attack_results = await asyncio.gather(*simulate_tasks)
+            for result in attack_results:
+                test_cases.extend(result)
 
-        self.test_cases.extend(enhanced_test_cases)
+            if attacks is not None:
+                # Enhance attacks by sampling from the provided distribution
+                task_id_attack = add_pbar(
+                    progress,
+                    description=f"✨ Simulating {num_vulnerability_types * attacks_per_vulnerability_type} attacks (using {len(attacks)} method(s))",
+                    total=len(test_cases),
+                )
+
+                async def throttled_attack_method(
+                    test_case: RTTestCase,
+                ):
+                    async with semaphore:  # Throttling applied here
+                        # Randomly sample an enhancement based on the distribution
+                        if not attacks:
+                            attack = BaselineAttack()
+                        else:
+                            attack_weights = [
+                                attack.weight for attack in attacks
+                            ]
+                            attack = random.choices(
+                                attacks, weights=attack_weights, k=1
+                            )[0]
+
+                        await self.a_enhance_attack(
+                            attack=attack,
+                            test_case=test_case,
+                            ignore_errors=ignore_errors,
+                        )
+                        update_pbar(progress, task_id_attack)
+
+                await asyncio.gather(
+                    *[
+                        asyncio.create_task(throttled_attack_method(test_case))
+                        for test_case in test_cases
+                    ]
+                )
+
+        self.test_cases.extend(test_cases)
         return test_cases
 
     ##################################################
