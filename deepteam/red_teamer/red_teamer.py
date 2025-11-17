@@ -9,6 +9,7 @@ import inspect
 from rich import box
 from enum import Enum
 from rich.console import Console
+import webbrowser
 
 
 from deepeval.models import DeepEvalBaseLLM
@@ -706,4 +707,9 @@ class RedTeamer:
             endpoint=Endpoints.RISK_ASSESSMENT_ENDPOINT,
             body=body,
         )
-        print(data, link, "@@@")
+
+        console.print(
+            "[rgb(5,245,141)]✓[/rgb(5,245,141)] Done 🎉! View risk assessment on Confident AI:"
+            f"[link={link}]{link}[/link]"
+        )
+        webbrowser.open(link)

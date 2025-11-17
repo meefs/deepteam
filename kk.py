@@ -4,17 +4,17 @@ from deepteam.attacks.single_turn import Roleplay
 import os
 
 
-# async def your_callback(input: str) -> str:
-#     return "I'm sorry but I can't answer this: " + input
+async def your_callback(input: str) -> str:
+    return "I'm sorry but I can't answer this: " + input
 
 
-# print(os.environ.get("CONFIDENT_API_KEY"))
+print(os.environ.get("CONFIDENT_API_KEY"))
 
-# risk_assessment = red_team(
-#     attacks=[Roleplay()],
-#     vulnerabilities=[Bias(), BOLA()],
-#     model_callback=your_callback,
-# )
+risk_assessment = red_team(
+    attacks=[Roleplay()],
+    vulnerabilities=[Bias(), BOLA()],
+    model_callback=your_callback,
+)
 
 from deepteam.vulnerabilities.constants import (
     VULNERABILITY_NAMES,
