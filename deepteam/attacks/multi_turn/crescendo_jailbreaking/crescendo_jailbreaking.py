@@ -192,7 +192,9 @@ class CrescendoJailbreaking(BaseAttack):
 
                 turns.append(RTTurn(role="user", content=current_attack))
 
-                last_response = self.generate_target_response(current_attack)
+                last_response = self.generate_target_response(
+                    current_attack, turns
+                )
                 update_pbar(progress, rounds_task_id)
 
                 if turn_level_attack is not None:
@@ -364,7 +366,7 @@ class CrescendoJailbreaking(BaseAttack):
                 turns.append(RTTurn(role="user", content=current_attack))
 
                 last_response = await self.a_generate_target_response(
-                    current_attack
+                    current_attack, turns
                 )
                 update_pbar(progress, rounds_task_id)
 
@@ -625,12 +627,14 @@ class CrescendoJailbreaking(BaseAttack):
         )
         return res.generated_question
 
-    def generate_target_response(self, attack_prompt: str) -> str:
+    def generate_target_response(
+        self, attack_prompt: str, turns: List[RTTurn]
+    ) -> str:
         self.memory.add_message(
             self.target_conversation_id,
             {"role": "user", "content": attack_prompt},
         )
-        response = self.model_callback(attack_prompt)
+        response = self.model_callback(attack_prompt, turns)
         self.memory.add_message(
             self.target_conversation_id,
             {"role": "assistant", "content": response},
@@ -727,12 +731,14 @@ class CrescendoJailbreaking(BaseAttack):
         )
         return res.generated_question
 
-    async def a_generate_target_response(self, attack_prompt: str) -> str:
+    async def a_generate_target_response(
+        self, attack_prompt: str, turns: List[RTTurn]
+    ) -> str:
         self.memory.add_message(
             self.target_conversation_id,
             {"role": "user", "content": attack_prompt},
         )
-        response = await self.model_callback(attack_prompt)
+        response = await self.model_callback(attack_prompt, turns)
         self.memory.add_message(
             self.target_conversation_id,
             {"role": "assistant", "content": response},

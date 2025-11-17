@@ -175,7 +175,7 @@ class SequentialJailbreak(BaseAttack):
 
                 turns.append(RTTurn(role="user", content=current_attack))
 
-                assistant_response = model_callback(current_attack)
+                assistant_response = model_callback(current_attack, turns)
 
                 if turn_level_attack is not None:
                     turns.append(
@@ -361,7 +361,7 @@ class SequentialJailbreak(BaseAttack):
 
                 turns.append(RTTurn(role="user", content=current_attack))
 
-                assistant_response = await model_callback(current_attack)
+                assistant_response = await model_callback(current_attack, turns)
 
                 if turn_level_attack is not None:
                     turns.append(
