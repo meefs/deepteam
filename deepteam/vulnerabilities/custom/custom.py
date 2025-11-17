@@ -12,7 +12,7 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.metrics import BaseRedTeamingMetric, HarmMetric
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
-from deepteam.risks import getRiskCategory
+from deepteam.risk_categories.utils import getRiskCategory
 from deepteam.test_case import RTTestCase
 from .template import CustomVulnerabilityTemplate
 

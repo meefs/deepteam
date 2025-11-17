@@ -2,6 +2,7 @@ from deepteam import red_team
 from deepteam.vulnerabilities import Bias, BOLA
 from deepteam.attacks.single_turn import Roleplay
 import os
+from deepteam.frameworks import OWASPTop10
 
 
 async def your_callback(input: str) -> str:
@@ -11,9 +12,10 @@ async def your_callback(input: str) -> str:
 print(os.environ.get("CONFIDENT_API_KEY"))
 
 risk_assessment = red_team(
-    attacks=[Roleplay()],
-    vulnerabilities=[Bias(), BOLA()],
+    # attacks=[Roleplay()],
+    # vulnerabilities=[Bias(), BOLA()],
     model_callback=your_callback,
+    framework=OWASPTop10(),
 )
 
 from deepteam.vulnerabilities.constants import (

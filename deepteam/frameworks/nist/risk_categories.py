@@ -1,4 +1,4 @@
-from deepteam.frameworks.risk_category import RiskCategory
+from deepteam.risk_categories import RiskCategory
 from deepteam.vulnerabilities import (
     Bias,
     Toxicity,

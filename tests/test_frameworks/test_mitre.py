@@ -2,7 +2,7 @@ import pytest
 from deepteam.frameworks import MITRE
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
-from deepteam.frameworks.risk_category import RiskCategory
+from deepteam.risk_categories import RiskCategory
 from deepteam.frameworks.mitre.risk_categories import MITRE_CATEGORIES
 from deepteam import red_team
 

@@ -14,7 +14,7 @@ from deepteam.metrics import DebugAccessMetric, BaseRedTeamingMetric
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.test_case import RTTestCase
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
-from deepteam.risks import getRiskCategory
+from deepteam.risk_categories.utils import getRiskCategory
 from .template import DebugAccessTemplate
 
 DebugAccessLiteral = Literal[

@@ -19,7 +19,7 @@ from deepteam.test_case import RTTestCase
 from deepeval.utils import get_or_create_event_loop
 
 from deepteam.frameworks.frameworks import AISafetyFramework
-from deepteam.frameworks.risk_category import RiskCategory
+from deepteam.risk_categories import RiskCategory
 from deepteam.telemetry import capture_red_teamer_run
 from deepteam.attacks import BaseAttack
 from deepteam.utils import (
@@ -37,7 +37,7 @@ from deepteam.red_teamer.risk_assessment import (
     construct_risk_assessment_overview,
     RiskAssessment,
 )
-from deepteam.risks import getRiskCategory
+from deepteam.risk_categories.utils import getRiskCategory
 from deepteam.confident.api import Api, HttpMethods, Endpoints
 
 console = Console()
@@ -79,13 +79,13 @@ class RedTeamer:
         ignore_errors: bool = False,
         reuse_simulated_test_cases: bool = False,
         metadata: Optional[dict] = None,
-    ):
+    ) -> RiskAssessment:
         if not framework or framework._has_dataset:
             raise ValueError(
                 "Please pass in a valid framework that does not rely on a dataset."
             )
 
-        def assess_risk_category(category: RiskCategory):
+        def assess_risk_category(category: RiskCategory) -> RiskAssessment:
             return self.red_team(
                 model_callback=model_callback,
                 attacks=category.attacks,
@@ -99,7 +99,6 @@ class RedTeamer:
                 _print_assessment=False,
             )
 
-        results = {}
         progress = create_progress()
         with progress:
             task_id = add_pbar(
@@ -107,6 +106,8 @@ class RedTeamer:
                 description=f"⏳ Running red-teaming for {framework.get_name()} Framework",
                 total=len(framework.risk_categories),
             )
+
+            # Assess each risk category and populate its test_cases
             for risk_category in framework.risk_categories:
                 progress_2 = create_progress()
                 with progress_2:
@@ -115,12 +116,29 @@ class RedTeamer:
                         description=f"🖍️ Assessing risk-category: {risk_category.name}",
                         total=1,
                     )
-                    framework_assessment = assess_risk_category(risk_category)
-                    results[risk_category.name] = framework_assessment
+                    assessment = assess_risk_category(risk_category)
+                    risk_category.test_cases = assessment.test_cases
                     update_pbar(progress_2, risk_task_id, advance_to_end=True)
                 update_pbar(progress, task_id)
 
-        return results
+            # Aggregate all test cases from all risk categories
+            all_test_cases = []
+            total_duration = 0
+            for category in framework.risk_categories:
+                if category.test_cases:
+                    all_test_cases.extend(category.test_cases)
+
+            # Create the combined RiskAssessment
+            combined_assessment = RiskAssessment(
+                overview=construct_risk_assessment_overview(
+                    red_teaming_test_cases=all_test_cases,
+                    run_duration=total_duration,
+                ),
+                test_cases=all_test_cases,
+                risk_categories=framework.risk_categories,
+            )
+
+            return combined_assessment
 
     async def _a_framework_assessment(
         self,
@@ -132,13 +150,18 @@ class RedTeamer:
         ignore_errors: bool = False,
         reuse_simulated_test_cases: bool = False,
         metadata: Optional[dict] = None,
-    ) -> Dict[str, RiskAssessment]:
+    ) -> RiskAssessment:
         if not framework or framework._has_dataset:
             raise ValueError(
                 "Please pass in a valid framework that does not rely on a dataset."
             )
 
-        async def assess_risk_category(category: RiskCategory):
+        # Create a mapping of category to its assessment
+        category_to_task = {}
+
+        async def assess_risk_category(
+            category: RiskCategory,
+        ) -> RiskAssessment:
             progress_2 = create_progress()
             with progress_2:
                 risk_task_id = add_pbar(
@@ -163,28 +186,45 @@ class RedTeamer:
 
         progress = create_progress()
         with progress:
-
             tasks = {
-                asyncio.create_task(
-                    assess_risk_category(category)
-                ): category.name
+                asyncio.create_task(assess_risk_category(category)): category
                 for category in framework.risk_categories
             }
-
-            results = {}
 
             task_id = add_pbar(
                 progress,
                 description=f"⏳ Running red-teaming for {framework.get_name()} Framework",
                 total=len(framework.risk_categories),
             )
+
+            # Collect assessments and populate risk category test_cases
             for task in asyncio.as_completed(tasks):
-                result = await task
-                name = tasks[task]
-                results[name] = result
+                assessment = await task
+                category = tasks[task]
+                category.test_cases = assessment.test_cases
                 update_pbar(progress, task_id)
 
-            return results
+            # Aggregate all test cases from all risk categories
+            all_test_cases = []
+            total_duration = 0
+            for category in framework.risk_categories:
+                if category.test_cases:
+                    all_test_cases.extend(category.test_cases)
+
+            # Calculate total duration from all categories
+            # (Note: we'll need to track this properly if needed)
+
+            # Create the combined RiskAssessment
+            combined_assessment = RiskAssessment(
+                overview=construct_risk_assessment_overview(
+                    red_teaming_test_cases=all_test_cases,
+                    run_duration=total_duration,
+                ),
+                test_cases=all_test_cases,
+                risk_categories=framework.risk_categories,
+            )
+
+            return combined_assessment
 
     def red_team(
         self,
@@ -211,7 +251,7 @@ class RedTeamer:
             )
 
         if framework and not framework._has_dataset:
-            framework_assessment = self._framework_assessment(
+            risk_assessment = self._framework_assessment(
                 model_callback=model_callback,
                 simulator_model=simulator_model,
                 evaluation_model=evaluation_model,
@@ -221,10 +261,16 @@ class RedTeamer:
                 reuse_simulated_test_cases=reuse_simulated_test_cases,
                 metadata=metadata,
             )
-            self._print_framework_overview_table(
-                framework_results=framework_assessment
-            )
-            return framework_assessment
+            self.risk_assessment = risk_assessment
+            self.test_cases = risk_assessment.test_cases
+
+            # Print the framework overview table using risk categories
+            if risk_assessment.risk_categories:
+                self._print_framework_overview_table(
+                    risk_categories=risk_assessment.risk_categories
+                )
+
+            return risk_assessment
 
         if self.async_mode:
             validate_model_callback_signature(
@@ -379,11 +425,10 @@ class RedTeamer:
                     test_cases=red_teaming_test_cases,
                 )
                 self.test_cases = red_teaming_test_cases
-                self._print_risk_assessment()
-                self._post_risk_assessment()
 
                 if _print_assessment:
-                    self._print_risk_assessment(self.risk_assessment)
+                    self._print_risk_assessment()
+                    self._post_risk_assessment()
 
                 return self.risk_assessment
 
@@ -414,7 +459,7 @@ class RedTeamer:
 
         if framework and not framework._has_dataset:
             loop = get_or_create_event_loop()
-            framework_assessment = loop.run_until_complete(
+            risk_assessment = loop.run_until_complete(
                 await self._a_framework_assessment(
                     model_callback=model_callback,
                     simulator_model=simulator_model,
@@ -426,10 +471,16 @@ class RedTeamer:
                     metadata=metadata,
                 )
             )
-            self._print_framework_overview_table(
-                framework_results=framework_assessment
-            )
-            return framework_assessment
+            self.risk_assessment = risk_assessment
+            self.test_cases = risk_assessment.test_cases
+
+            # Print the framework overview table using risk categories
+            if risk_assessment.risk_categories:
+                self._print_framework_overview_table(
+                    risk_categories=risk_assessment.risk_categories
+                )
+
+            return risk_assessment
 
         if framework:
             if framework._has_dataset:
@@ -568,11 +619,10 @@ class RedTeamer:
                 test_cases=red_teaming_test_cases,
             )
             self.test_cases = red_teaming_test_cases
-            self._print_risk_assessment()
-            self._post_risk_assessment()
 
             if _print_assessment:
-                self._print_risk_assessment(self.risk_assessment)
+                self._print_risk_assessment()
+                self._post_risk_assessment()
 
             return self.risk_assessment
 
@@ -771,9 +821,13 @@ class RedTeamer:
         )
         return red_teaming_test_cases
 
-    def _print_risk_assessment(self, risk_assessment=None):
+    def _print_risk_assessment(
+        self, risk_assessment: Optional[RiskAssessment] = None
+    ):
         if risk_assessment is None:
-            return
+            risk_assessment = self.risk_assessment
+            if risk_assessment is None:
+                return
 
         console = Console()
 
@@ -953,13 +1007,21 @@ class RedTeamer:
             f"[link={link}]{link}[/link]"
         )
         webbrowser.open(link)
-        
-        
-    def _print_framework_overview_table(self, framework_results: dict):
 
-        for category_name in sorted(framework_results.keys()):
-            assessment = framework_results[category_name]
-            self._print_risk_assessment(assessment)
+    def _print_framework_overview_table(
+        self, risk_categories: List[RiskCategory]
+    ):
+        # Print individual risk assessments for each category
+        for category in sorted(risk_categories, key=lambda c: c.name):
+            if category.test_cases:
+                assessment = RiskAssessment(
+                    overview=construct_risk_assessment_overview(
+                        red_teaming_test_cases=category.test_cases,
+                        run_duration=0,
+                    ),
+                    test_cases=category.test_cases,
+                )
+                self._print_risk_assessment(assessment)
 
         console = Console()
 
@@ -989,30 +1051,32 @@ class RedTeamer:
         table.add_column("Vulnerabilities Tested", style="white", width=25)
         table.add_column("Attack Methods Used", style="white", width=25)
 
-        for category_name in sorted(framework_results.keys()):
-            assessment = framework_results[category_name]
+        for category in sorted(risk_categories, key=lambda c: c.name):
+            if not category.test_cases:
+                continue
 
-            overview = assessment.overview
+            # Calculate pass/fail/error stats from test cases
             passing = sum(
-                result.passing for result in overview.vulnerability_type_results
-            )
-            failing = sum(
-                result.failing for result in overview.vulnerability_type_results
+                1
+                for tc in category.test_cases
+                if tc.score is not None and tc.score > 0
             )
             errored = sum(
-                result.errored for result in overview.vulnerability_type_results
+                1 for tc in category.test_cases if tc.error is not None
             )
+            failing = len(category.test_cases) - passing - errored
 
             total = passing + failing
             pass_rate = passing / total if total > 0 else 0.0
 
-            vulnerability_groups = defaultdict(list)
-            for result in overview.vulnerability_type_results:
-                vulnerability_groups[result.vulnerability].append(
-                    result.vulnerability_type.value
-                )
-
+            # Get vulnerabilities directly from risk_category
             vuln_lines = []
+            vulnerability_groups = defaultdict(list)
+            for vuln in category.vulnerabilities:
+                vuln_name = vuln.get_name()
+                for vuln_type in vuln.get_types():
+                    vulnerability_groups[vuln_name].append(vuln_type.value)
+
             for (
                 vulnerability_name,
                 vulnerability_types,
@@ -1023,10 +1087,8 @@ class RedTeamer:
 
             vulnerabilty_names = "\n".join(vuln_lines) if vuln_lines else "N/A"
 
-            # ----- Attack methods (simple list) -----
-            attack_list = [
-                amr.attack_method for amr in overview.attack_method_results
-            ]
+            # Get attacks directly from risk_category
+            attack_list = [attack.get_name() for attack in category.attacks]
             attack_names = "\n".join(attack_list) if attack_list else "N/A"
 
             # Color-coded pass rate
@@ -1038,7 +1100,7 @@ class RedTeamer:
                 pass_rate_str = f"[bold red]{pass_rate:.0%}[/bold red]"
 
             table.add_row(
-                category_name,
+                category.name,
                 pass_rate_str,
                 str(passing),
                 str(failing),

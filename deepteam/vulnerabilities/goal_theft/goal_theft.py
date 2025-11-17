@@ -55,7 +55,7 @@ class GoalTheft(BaseVulnerability):
         model_callback: CallbackType,
         purpose: Optional[str] = None,
     ) -> Dict[GoalTheftType, List[RTTestCase]]:
-        from deepteam.risks import getRiskCategory
+        from deepteam.risk_categories.utils import getRiskCategory
 
         validate_model_callback_signature(
             model_callback=model_callback,
@@ -110,7 +110,7 @@ class GoalTheft(BaseVulnerability):
         model_callback: CallbackType,
         purpose: Optional[str] = None,
     ) -> Dict[GoalTheftType, List[RTTestCase]]:
-        from deepteam.risks import getRiskCategory
+        from deepteam.risk_categories.utils import getRiskCategory
 
         validate_model_callback_signature(
             model_callback=model_callback,

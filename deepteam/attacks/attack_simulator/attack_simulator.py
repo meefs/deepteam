@@ -1,6 +1,5 @@
 import random
 import asyncio
-from pydantic import BaseModel
 from typing import List, Optional, Union
 import inspect
 
@@ -264,25 +263,13 @@ class AttackSimulator:
         test_case: RTTestCase,
         ignore_errors: bool,
     ):
-        from deepteam.attacks.multi_turn import (
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            SequentialJailbreak,
-            TreeJailbreaking,
-        )
         from deepteam.test_case.test_case import RTTurn
-
-        MULTI_TURN_ATTACKS = [
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            TreeJailbreaking,
-            SequentialJailbreak,
-        ]
+        from deepteam.attacks.multi_turn.base_multi_turn_attack import (
+            BaseMultiTurnAttack,
+        )
 
         # Check if the attack is a multi-turn attack
-        if type(attack) in MULTI_TURN_ATTACKS:
+        if isinstance(attack, BaseMultiTurnAttack):
             # This is a multi-turn attack
             attack_input = test_case.input
             if attack_input is None:
@@ -292,11 +279,10 @@ class AttackSimulator:
             turns = [RTTurn(role="user", content=attack_input)]
 
             try:
-                res = attack._get_turns(
+                res = attack.progress(
                     model_callback=self.model_callback,
                     turns=turns,
                     vulnerability=test_case.vulnerability,
-                    vulnerability_type=test_case.vulnerability_type.value,
                 )
 
                 test_case.turns = res
@@ -310,7 +296,7 @@ class AttackSimulator:
             except Exception as e:
                 if ignore_errors:
                     test_case.error = (
-                        f"Error enhancing multi-turn attack: {str(e)}"
+                        f"Error progressing multi-turn attack: {str(e)}"
                     )
                     return test_case
                 else:
@@ -373,41 +359,27 @@ class AttackSimulator:
         test_case: RTTestCase,
         ignore_errors: bool,
     ):
-        from deepteam.attacks.multi_turn import (
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            SequentialJailbreak,
-            TreeJailbreaking,
-        )
         from deepteam.test_case.test_case import RTTurn
+        from deepteam.attacks.multi_turn.base_multi_turn_attack import (
+            BaseMultiTurnAttack,
+        )
 
-        MULTI_TURN_ATTACKS = [
-            BadLikertJudge,
-            CrescendoJailbreaking,
-            LinearJailbreaking,
-            TreeJailbreaking,
-            SequentialJailbreak,
-        ]
-
-        if type(attack) in MULTI_TURN_ATTACKS:
+        if isinstance(attack, BaseMultiTurnAttack):
             # This is multi-turn attack
             attack_input = test_case.input
             if attack_input is None:
                 return test_case
 
             test_case.attack_method = attack.get_name()
-            sig = inspect.signature(attack.a_enhance)
+            sig = inspect.signature(attack.a_progress)
             turns = [RTTurn(role="user", content=attack_input)]
 
             try:
-                res = await attack._a_get_turns(
+                res = await attack.a_progress(
                     model_callback=self.model_callback,
                     turns=turns,
                     vulnerability=test_case.vulnerability,
-                    vulnerability_type=test_case.vulnerability_type.value,
                 )
-
                 test_case.turns = res
 
             except ModelRefusalError as e:
@@ -418,7 +390,7 @@ class AttackSimulator:
                     raise
             except:
                 if ignore_errors:
-                    test_case.error = "Error enhancing attack"
+                    test_case.error = "Error progressing attack"
                     return test_case
                 else:
                     raise

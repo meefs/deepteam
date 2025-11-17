@@ -3,7 +3,7 @@ from deepteam.frameworks import NIST
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
 from deepteam.frameworks.nist.risk_categories import NIST_CATEGORIES
-from deepteam.frameworks.risk_category import RiskCategory
+from deepteam.risk_categories import RiskCategory
 from deepteam import red_team
 
 

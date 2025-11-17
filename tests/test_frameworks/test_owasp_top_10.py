@@ -3,7 +3,7 @@ from deepteam.frameworks import OWASPTop10
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
 from deepteam.frameworks.owasp.risk_categories import OWASP_CATEGORIES
-from deepteam.frameworks.risk_category import RiskCategory
+from deepteam.risk_categories import RiskCategory
 from deepteam import red_team
 
 

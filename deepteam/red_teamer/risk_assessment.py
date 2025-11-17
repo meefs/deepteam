@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field
-from typing import Dict, Optional, List, Any, Union
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Dict, Optional, List, Any, Union, TYPE_CHECKING
 import datetime
 import os
 import json
@@ -7,6 +7,7 @@ from enum import Enum
 
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.test_case import RTTestCase
+from deepteam.risk_categories.risk_category import RiskCategory
 
 
 class TestCasesList(list):
@@ -125,8 +126,10 @@ class EnumEncoder(json.JSONEncoder):
 
 
 class RiskAssessment(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     overview: RedTeamingOverview
     test_cases: List[RTTestCase]
+    risk_categories: Optional[List[RiskCategory]] = Field(None)
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -255,3 +258,6 @@ def construct_risk_assessment_overview(
         errored=errored,
         run_duration=run_duration,
     )
+
+
+RiskAssessment.model_rebuild()

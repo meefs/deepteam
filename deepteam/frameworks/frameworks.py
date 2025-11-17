@@ -18,5 +18,8 @@ class AISafetyFramework:
     attacks: Optional[List[BaseAttack]]
     _has_dataset: bool = False
 
+    def get_name(self) -> str:
+        return self.name
+
     class Config:
         arbitrary_types_allowed = True
