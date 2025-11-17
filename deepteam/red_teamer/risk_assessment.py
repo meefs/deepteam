@@ -97,6 +97,7 @@ class RedTeamingOverview(BaseModel):
     vulnerability_type_results: List[VulnerabilityTypeResult]
     attack_method_results: List[AttackMethodResult]
     errored: int
+    run_duration: float
 
     def to_df(self):
         import pandas as pd
@@ -176,7 +177,7 @@ class RiskAssessment(BaseModel):
 
 
 def construct_risk_assessment_overview(
-    red_teaming_test_cases: List[RTTestCase],
+    red_teaming_test_cases: List[RTTestCase], run_duration: float
 ) -> RedTeamingOverview:
     # Group test cases by vulnerability type
     vulnerability_type_to_cases: Dict[
@@ -253,4 +254,5 @@ def construct_risk_assessment_overview(
         vulnerability_type_results=vulnerability_type_results,
         attack_method_results=attack_method_results,
         errored=errored,
+        run_duration=run_duration,
     )

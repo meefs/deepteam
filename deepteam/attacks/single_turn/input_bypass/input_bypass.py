@@ -7,6 +7,8 @@ from deepteam.attacks.single_turn.input_bypass.template import (
 
 
 class InputBypass(BaseSingleTurnAttack):
+    name = "Input Bypass"
+
     def __init__(self, weight: int = 2, max_retries: int = 3):
         self.weight = weight  # Higher weight since this targets validation vulnerabilities
         self.max_retries = max_retries
@@ -44,4 +46,4 @@ class InputBypass(BaseSingleTurnAttack):
         return self.enhance(attack)
 
     def get_name(self) -> str:
-        return "Input Bypass"
+        return self.name

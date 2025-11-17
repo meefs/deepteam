@@ -32,6 +32,8 @@ from deepteam.vulnerabilities import BaseVulnerability
 
 
 class LinearJailbreaking(BaseMultiTurnAttack):
+    name = "Linear Jailbreaking"
+
     def __init__(
         self,
         weight: int = 1,
@@ -435,4 +437,4 @@ class LinearJailbreaking(BaseMultiTurnAttack):
         return result
 
     def get_name(self) -> str:
-        return "Linear Jailbreaking"
+        return self.name

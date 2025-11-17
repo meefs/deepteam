@@ -33,6 +33,8 @@ from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 
 class SequentialJailbreak(BaseMultiTurnAttack):
+    name = "Sequential Jailbreak"
+
     def __init__(
         self,
         weight: int = 1,
@@ -607,4 +609,4 @@ class SequentialJailbreak(BaseMultiTurnAttack):
         return result
 
     def get_name(self) -> str:
-        return "Sequential Jailbreak"
+        return self.name

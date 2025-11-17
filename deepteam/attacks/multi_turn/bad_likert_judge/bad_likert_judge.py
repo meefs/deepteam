@@ -28,6 +28,8 @@ from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 
 class BadLikertJudge(BaseMultiTurnAttack):
+    name = "Bad Likert Judge"
+
     def __init__(
         self,
         weight: int = 1,
@@ -469,7 +471,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
         return result
 
     def get_name(self) -> str:
-        return "Bad Likert Judge"
+        return self.name
 
     @classmethod
     def get_supported_categories(cls) -> list[str]:

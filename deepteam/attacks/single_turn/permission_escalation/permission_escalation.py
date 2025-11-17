@@ -7,6 +7,8 @@ from deepteam.attacks.single_turn.permission_escalation.template import (
 
 
 class PermissionEscalation(BaseSingleTurnAttack):
+    name = "Permission Escalation"
+
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight
         self.max_retries = max_retries
@@ -48,4 +50,4 @@ class PermissionEscalation(BaseSingleTurnAttack):
         return self.enhance(attack)
 
     def get_name(self) -> str:
-        return "Permission Escalation"
+        return self.name

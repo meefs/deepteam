@@ -3,6 +3,8 @@ from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 
 class Base64(BaseSingleTurnAttack):
+    name = "Base64"
+
     def __init__(self, weight: int = 1):
         self.weight = weight
 
@@ -11,4 +13,4 @@ class Base64(BaseSingleTurnAttack):
         return base64.b64encode(attack.encode()).decode()
 
     def get_name(self) -> str:
-        return "Base64"
+        return self.name

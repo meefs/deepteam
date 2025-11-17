@@ -7,6 +7,8 @@ from deepteam.attacks.single_turn.context_poisoning.template import (
 
 
 class ContextPoisoning(BaseSingleTurnAttack):
+    name = "Context Poisoning"
+
     def __init__(self, weight: int = 3, max_retries: int = 3):
         self.weight = weight  # Higher weight since memory poisoning can have persistent effects
         self.max_retries = max_retries
@@ -48,4 +50,4 @@ class ContextPoisoning(BaseSingleTurnAttack):
         return self.enhance(attack)
 
     def get_name(self) -> str:
-        return "Context Poisoning"
+        return self.name

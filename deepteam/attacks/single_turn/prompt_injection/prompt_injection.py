@@ -7,6 +7,8 @@ from deepteam.attacks.single_turn.prompt_injection.template import (
 
 
 class PromptInjection(BaseSingleTurnAttack):
+    name = "Prompt Injection"
+
     def __init__(self, weight: int = 1):
         self.weight = weight
 
@@ -22,4 +24,4 @@ class PromptInjection(BaseSingleTurnAttack):
         return self.enhance(attack)
 
     def get_name(self) -> str:
-        return "Prompt Injection"
+        return self.name

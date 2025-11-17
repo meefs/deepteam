@@ -21,6 +21,8 @@ from deepteam.attacks.attack_simulator.utils import (
 
 
 class Multilingual(BaseSingleTurnAttack):
+    name = "Multilingual"
+
     def __init__(self, weight: int = 1, max_retries: int = 5):
         self.weight = weight
         self.max_retries = max_retries
@@ -153,4 +155,4 @@ class Multilingual(BaseSingleTurnAttack):
         return attack
 
     def get_name(self) -> str:
-        return "Multilingual"
+        return self.name

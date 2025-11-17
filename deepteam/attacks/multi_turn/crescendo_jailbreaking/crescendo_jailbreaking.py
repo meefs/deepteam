@@ -53,6 +53,7 @@ class MemorySystem:
 
 
 class CrescendoJailbreaking(BaseMultiTurnAttack):
+    name = "Crescendo Jailbreaking"
 
     def __init__(
         self,
@@ -788,4 +789,4 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
         return eval_response.value, eval_response.metadata
 
     def get_name(self) -> str:
-        return "Crescendo Jailbreaking"
+        return self.name

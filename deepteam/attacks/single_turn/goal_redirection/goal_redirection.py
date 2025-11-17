@@ -7,6 +7,8 @@ from deepteam.attacks.single_turn.goal_redirection.template import (
 
 
 class GoalRedirection(BaseSingleTurnAttack):
+    name = "Goal Redirection"
+
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight
         self.max_retries = max_retries
@@ -48,4 +50,4 @@ class GoalRedirection(BaseSingleTurnAttack):
         return self.enhance(attack)
 
     def get_name(self) -> str:
-        return "Goal Redirection"
+        return self.name
