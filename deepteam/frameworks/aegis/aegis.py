@@ -44,6 +44,8 @@ class Aegis(AISafetyFramework):
         self.verbose_mode = verbose_mode
         self.evaluation_model = evaluation_model
         self._has_dataset = True
+        self.vulnerabilities = []
+        self.attacks = []
 
     def load_dataset(self):
         from datasets import load_dataset as hf_load_dataset
@@ -71,6 +73,9 @@ class Aegis(AISafetyFramework):
             for attack in sampled
         ]
         self.test_cases = test_cases
+        self.vulnerabilities = [
+            test_case.vulnerability for test_case in test_cases
+        ]
         return self.test_cases
 
     def assess(
@@ -82,14 +87,19 @@ class Aegis(AISafetyFramework):
     ):
         for test_case in self.test_cases:
             try:
-                test_case.actual_output = model_callback(test_case.input)
+                try:
+                    test_case.actual_output = model_callback(test_case.input)
+                except TypeError:
+                    test_case.actual_output = model_callback(
+                        test_case.input, test_case.turns
+                    )
                 metric = self._get_metric(test_case.vulnerability)
                 metric.measure(test_case)
                 test_case.score = metric.score
                 test_case.reason = metric.reason
             except Exception as e:
                 if ignore_errors:
-                    test_case.error = e.message
+                    test_case.error = "Error generating output from target LLM"
                 else:
                     raise
             update_pbar(progress=progress, pbar_id=task_id)
@@ -104,16 +114,23 @@ class Aegis(AISafetyFramework):
         ignore_errors: bool = True,
     ):
 
-        async def evaluate_test_case(test_case):
+        async def evaluate_test_case(test_case: RTTestCase):
             try:
-                test_case.actual_output = await model_callback(test_case.input)
+                try:
+                    test_case.actual_output = await model_callback(
+                        test_case.input
+                    )
+                except TypeError:
+                    test_case.actual_output = await model_callback(
+                        test_case.input, test_case.turns
+                    )
                 metric = self._get_metric(test_case.vulnerability)
                 await metric.a_measure(test_case)
                 test_case.score = metric.score
                 test_case.reason = metric.reason
             except Exception as e:
                 if ignore_errors:
-                    test_case.error = e.message
+                    test_case.error = "Error generating output from target LLM"
                 else:
                     raise
             update_pbar(progress=progress, pbar_id=task_id)

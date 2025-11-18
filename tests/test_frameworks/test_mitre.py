@@ -1,5 +1,6 @@
 import pytest
 from deepteam.frameworks import MITRE
+from deepteam.red_teamer.risk_assessment import RiskAssessment
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
 from deepteam.frameworks.risk_category import RiskCategory
@@ -181,5 +182,5 @@ class TestMITRE:
             async_mode=False,
             ignore_errors=True,
         )
-        assert isinstance(risk_assessment, dict)
+        assert isinstance(risk_assessment, RiskAssessment)
         assert risk_assessment is not None

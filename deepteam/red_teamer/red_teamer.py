@@ -68,123 +68,6 @@ class RedTeamer:
             max_concurrent=max_concurrent,
         )
 
-    def _framework_assessment(
-        self,
-        model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM = None,
-        evaluation_model: DeepEvalBaseLLM = None,
-        framework: Optional[AISafetyFramework] = None,
-        attacks_per_vulnerability_type: int = 1,
-        ignore_errors: bool = False,
-        reuse_simulated_test_cases: bool = False,
-        metadata: Optional[dict] = None,
-    ):
-        if not framework or framework._has_dataset:
-            raise ValueError(
-                "Please pass in a valid framework that does not rely on a dataset."
-            )
-
-        def assess_risk_category(category: RiskCategory):
-            return self.red_team(
-                model_callback=model_callback,
-                attacks=category.attacks,
-                vulnerabilities=category.vulnerabilities,
-                simulator_model=simulator_model,
-                evaluation_model=evaluation_model,
-                ignore_errors=ignore_errors,
-                reuse_simulated_test_cases=reuse_simulated_test_cases,
-                metadata=metadata,
-                attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                _print_assessment=False,
-            )
-
-        results = {}
-        progress = create_progress()
-        with progress:
-            task_id = add_pbar(
-                progress,
-                description=f"⏳ Running red-teaming for {framework.get_name()} Framework",
-                total=len(framework.risk_categories),
-            )
-            for risk_category in framework.risk_categories:
-                progress_2 = create_progress()
-                with progress_2:
-                    risk_task_id = add_pbar(
-                        progress_2,
-                        description=f"🖍️ Assessing risk-category: {risk_category.name}",
-                        total=1,
-                    )
-                    framework_assessment = assess_risk_category(risk_category)
-                    results[risk_category.name] = framework_assessment
-                    update_pbar(progress_2, risk_task_id, advance_to_end=True)
-                update_pbar(progress, task_id)
-
-        return results
-
-    async def _a_framework_assessment(
-        self,
-        model_callback: CallbackType,
-        simulator_model: DeepEvalBaseLLM = None,
-        evaluation_model: DeepEvalBaseLLM = None,
-        framework: Optional[AISafetyFramework] = None,
-        attacks_per_vulnerability_type: int = 1,
-        ignore_errors: bool = False,
-        reuse_simulated_test_cases: bool = False,
-        metadata: Optional[dict] = None,
-    ) -> Dict[str, RiskAssessment]:
-        if not framework or framework._has_dataset:
-            raise ValueError(
-                "Please pass in a valid framework that does not rely on a dataset."
-            )
-
-        async def assess_risk_category(category: RiskCategory):
-            progress_2 = create_progress()
-            with progress_2:
-                risk_task_id = add_pbar(
-                    progress_2,
-                    description=f"🖍️ Assessing risk-category: {category.name}",
-                    total=1,
-                )
-                assessment = await self.a_red_team(
-                    model_callback=model_callback,
-                    attacks=category.attacks,
-                    vulnerabilities=category.vulnerabilities,
-                    simulator_model=simulator_model,
-                    evaluation_model=evaluation_model,
-                    ignore_errors=ignore_errors,
-                    reuse_simulated_test_cases=reuse_simulated_test_cases,
-                    metadata=metadata,
-                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                    _print_assessment=False,
-                )
-                update_pbar(progress_2, risk_task_id, advance_to_end=True)
-                return assessment
-
-        progress = create_progress()
-        with progress:
-
-            tasks = {
-                asyncio.create_task(
-                    assess_risk_category(category)
-                ): category.name
-                for category in framework.risk_categories
-            }
-
-            results = {}
-
-            task_id = add_pbar(
-                progress,
-                description=f"⏳ Running red-teaming for {framework.get_name()} Framework",
-                total=len(framework.risk_categories),
-            )
-            for task in asyncio.as_completed(tasks):
-                result = await task
-                name = tasks[task]
-                results[name] = result
-                update_pbar(progress, task_id)
-
-            return results
-
     def red_team(
         self,
         model_callback: CallbackType,
@@ -194,7 +77,7 @@ class RedTeamer:
         evaluation_model: DeepEvalBaseLLM = None,
         framework: Optional[AISafetyFramework] = None,
         attacks_per_vulnerability_type: int = 1,
-        ignore_errors: bool = False,
+        ignore_errors: bool = True,
         reuse_simulated_test_cases: bool = False,
         metadata: Optional[dict] = None,
         _print_assessment: Optional[bool] = True,
@@ -209,22 +92,6 @@ class RedTeamer:
             raise ValueError(
                 "You can only pass either 'framework' or 'attacks' and 'vulnerabilities' at the same time"
             )
-
-        if framework and not framework._has_dataset:
-            framework_assessment = self._framework_assessment(
-                model_callback=model_callback,
-                simulator_model=simulator_model,
-                evaluation_model=evaluation_model,
-                framework=framework,
-                attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                ignore_errors=ignore_errors,
-                reuse_simulated_test_cases=reuse_simulated_test_cases,
-                metadata=metadata,
-            )
-            self._print_framework_overview_table(
-                framework_results=framework_assessment
-            )
-            return framework_assessment
 
         if self.async_mode:
             validate_model_callback_signature(
@@ -248,6 +115,22 @@ class RedTeamer:
                 )
             )
         else:
+            if framework and not framework._has_dataset:
+                risk_assessment = self._assess_framework(
+                    model_callback=model_callback,
+                    simulator_model=simulator_model,
+                    evaluation_model=evaluation_model,
+                    framework=framework,
+                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                    ignore_errors=ignore_errors,
+                    reuse_simulated_test_cases=reuse_simulated_test_cases,
+                    metadata=metadata,
+                )
+                if _upload_to_confident:
+                    self.risk_assessment = risk_assessment
+                    self._post_risk_assessment()
+                return risk_assessment
+
             if framework and framework._has_dataset:
                 progress = create_progress()
                 with progress:
@@ -412,23 +295,20 @@ class RedTeamer:
             )
 
         if framework and not framework._has_dataset:
-            loop = get_or_create_event_loop()
-            framework_assessment = loop.run_until_complete(
-                await self._a_framework_assessment(
-                    model_callback=model_callback,
-                    simulator_model=simulator_model,
-                    evaluation_model=evaluation_model,
-                    framework=framework,
-                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-                    ignore_errors=ignore_errors,
-                    reuse_simulated_test_cases=reuse_simulated_test_cases,
-                    metadata=metadata,
-                )
+            risk_assessment = await self._a_assess_framework(
+                model_callback=model_callback,
+                simulator_model=simulator_model,
+                evaluation_model=evaluation_model,
+                framework=framework,
+                attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                ignore_errors=ignore_errors,
+                reuse_simulated_test_cases=reuse_simulated_test_cases,
+                metadata=metadata,
             )
-            self._print_framework_overview_table(
-                framework_results=framework_assessment
-            )
-            return framework_assessment
+            if _upload_to_confident:
+                self.risk_assessment = risk_assessment
+                self._post_risk_assessment()
+            return risk_assessment
 
         if framework:
             if framework._has_dataset:
@@ -958,10 +838,22 @@ class RedTeamer:
         webbrowser.open(link)
 
     def _print_framework_overview_table(self, framework_results: dict):
+        all_test_cases = []
+        total_duration = 0
+        for assessment in framework_results.values():
+            if assessment:
+                all_test_cases.extend(assessment.test_cases)
+                total_duration += assessment.overview.run_duration
 
-        for category_name in sorted(framework_results.keys()):
-            assessment = framework_results[category_name]
-            self._print_risk_assessment(assessment)
+        if all_test_cases:
+            aggregated_assessment = RiskAssessment(
+                overview=construct_risk_assessment_overview(
+                    red_teaming_test_cases=all_test_cases,
+                    run_duration=total_duration,
+                ),
+                test_cases=all_test_cases,
+            )
+            self._print_risk_assessment(aggregated_assessment)
 
         console = Console()
 
@@ -1052,3 +944,150 @@ class RedTeamer:
         console.print("\n")
         console.print(table)
         console.print("\n" + "=" * 80)
+
+    def _assess_framework(
+        self,
+        model_callback: CallbackType,
+        simulator_model: DeepEvalBaseLLM = None,
+        evaluation_model: DeepEvalBaseLLM = None,
+        framework: Optional[AISafetyFramework] = None,
+        attacks_per_vulnerability_type: int = 1,
+        ignore_errors: bool = False,
+        reuse_simulated_test_cases: bool = False,
+        metadata: Optional[dict] = None,
+    ) -> RiskAssessment:
+        if not framework or framework._has_dataset:
+            raise ValueError(
+                "Please pass in a valid framework that does not rely on a dataset."
+            )
+
+        def assess_risk_category(category: RiskCategory):
+            return self.red_team(
+                model_callback=model_callback,
+                attacks=category.attacks,
+                vulnerabilities=category.vulnerabilities,
+                simulator_model=simulator_model,
+                evaluation_model=evaluation_model,
+                ignore_errors=ignore_errors,
+                reuse_simulated_test_cases=reuse_simulated_test_cases,
+                metadata=metadata,
+                attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                _print_assessment=False,
+                _upload_to_confident=False,
+            )
+
+        results: Dict[str, RiskAssessment] = {}
+        progress = create_progress()
+        with progress:
+            task_id = add_pbar(
+                progress,
+                description=f"⏳ Running red-teaming for {framework.get_name()} Framework",
+                total=len(framework.risk_categories),
+            )
+            for risk_category in framework.risk_categories:
+                progress_2 = create_progress()
+                with progress_2:
+                    risk_task_id = add_pbar(
+                        progress_2,
+                        description=f"🖍️ Assessing risk-category: {risk_category.name}",
+                        total=1,
+                    )
+                    framework_assessment = assess_risk_category(risk_category)
+                    results[risk_category.name] = framework_assessment
+                    update_pbar(progress_2, risk_task_id, advance_to_end=True)
+                update_pbar(progress, task_id)
+
+        self._print_framework_overview_table(framework_results=results)
+
+        all_test_cases = []
+        total_duration = 0
+        for assessment in results.values():
+            all_test_cases.extend(assessment.test_cases)
+            total_duration += assessment.overview.run_duration
+
+        return RiskAssessment(
+            overview=construct_risk_assessment_overview(
+                red_teaming_test_cases=all_test_cases,
+                run_duration=total_duration,
+            ),
+            test_cases=all_test_cases,
+        )
+
+    async def _a_assess_framework(
+        self,
+        model_callback: CallbackType,
+        simulator_model: DeepEvalBaseLLM = None,
+        evaluation_model: DeepEvalBaseLLM = None,
+        framework: Optional[AISafetyFramework] = None,
+        attacks_per_vulnerability_type: int = 1,
+        ignore_errors: bool = False,
+        reuse_simulated_test_cases: bool = False,
+        metadata: Optional[dict] = None,
+    ) -> RiskAssessment:
+        if not framework or framework._has_dataset:
+            raise ValueError(
+                "Please pass in a valid framework that does not rely on a dataset."
+            )
+
+        semaphore = asyncio.Semaphore(self.max_concurrent)
+
+        async def a_assess_risk_category(category: RiskCategory):
+            async with semaphore:
+                progress_2 = create_progress()
+                with progress_2:
+                    risk_task_id = add_pbar(
+                        progress_2,
+                        description=f"🖍️ Assessing risk-category: {category.name}",
+                        total=1,
+                    )
+                    assessment = await self.a_red_team(
+                        model_callback=model_callback,
+                        attacks=category.attacks,
+                        vulnerabilities=category.vulnerabilities,
+                        simulator_model=simulator_model,
+                        evaluation_model=evaluation_model,
+                        ignore_errors=ignore_errors,
+                        reuse_simulated_test_cases=reuse_simulated_test_cases,
+                        metadata=metadata,
+                        attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                        _print_assessment=False,
+                        _upload_to_confident=False,
+                    )
+                    update_pbar(progress_2, risk_task_id, advance_to_end=True)
+                return category.name, assessment
+
+        progress = create_progress()
+        with progress:
+
+            tasks = [
+                a_assess_risk_category(category)
+                for category in framework.risk_categories
+            ]
+
+            results: Dict[str, RiskAssessment] = {}
+
+            task_id = add_pbar(
+                progress,
+                description=f"⏳ Running red-teaming for {framework.get_name()} Framework",
+                total=len(framework.risk_categories),
+            )
+            for task_future in asyncio.as_completed(tasks):
+                name, result = await task_future
+                results[name] = result
+                update_pbar(progress, task_id)
+
+            self._print_framework_overview_table(framework_results=results)
+
+            all_test_cases = []
+            total_duration = 0
+            for assessment in results.values():
+                all_test_cases.extend(assessment.test_cases)
+                total_duration += assessment.overview.run_duration
+
+            return RiskAssessment(
+                overview=construct_risk_assessment_overview(
+                    red_teaming_test_cases=all_test_cases,
+                    run_duration=total_duration,
+                ),
+                test_cases=all_test_cases,
+            )

@@ -48,12 +48,7 @@ class CustomVulnerability(BaseVulnerability):
         self.evaluation_model = evaluation_model
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
-        self.metric = HarmMetric(
-            harm_category=self.criteria,
-            model=self.evaluation_model,
-            async_mode=self.async_mode,
-            verbose_mode=self.verbose_mode,
-        )
+        self.metric = None
         super().__init__(self.types)
 
     def get_name(self) -> str:
@@ -295,6 +290,13 @@ class CustomVulnerability(BaseVulnerability):
         return simulated_test_cases
 
     def _get_metric(self, type: Enum) -> BaseRedTeamingMetric:
+        if self.metric is None:
+            self.metric = HarmMetric(
+                harm_category=self.criteria,
+                model=self.evaluation_model,
+                async_mode=self.async_mode,
+                verbose_mode=self.verbose_mode,
+            )
         return self.metric
 
     def is_vulnerable(self) -> bool:

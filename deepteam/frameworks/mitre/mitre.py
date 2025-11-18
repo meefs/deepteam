@@ -51,10 +51,14 @@ class MITRE(AISafetyFramework):
         self.description = "MITRE ATLAS mapping for LLM/ML adversarial techniques (project-specific) to understand and defend against threats specific to AI and ML systems."
         self.categories = categories
         self.risk_categories = []
+        self.vulnerabilities = []
+        self.attacks = []
         for category in categories:
             for risk_category in MITRE_CATEGORIES:
                 if risk_category.name == category:
                     self.risk_categories.append(risk_category)
+                    self.vulnerabilities.extend(risk_category.vulnerabilities)
+                    self.attacks.extend(risk_category.attacks)
 
     def get_name(self):
         return "MITRE ATLAS"

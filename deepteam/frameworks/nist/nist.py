@@ -32,10 +32,14 @@ class NIST(AISafetyFramework):
         self.description = "NIST AI Risk Management Framework (AI RMF) — Measure-focused mapping for testing and evaluation."
         self.categories = categories
         self.risk_categories = []
+        self.vulnerabilities = []
+        self.attacks = []
         for category in categories:
             for risk_category in NIST_CATEGORIES:
                 if risk_category.name == category:
                     self.risk_categories.append(risk_category)
+                    self.vulnerabilities.extend(risk_category.vulnerabilities)
+                    self.attacks.extend(risk_category.attacks)
 
     def get_name(self):
         return "NIST AI RMF"

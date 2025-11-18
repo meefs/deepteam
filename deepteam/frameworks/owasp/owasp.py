@@ -66,13 +66,16 @@ class OWASPTop10(AISafetyFramework):
     ):
         self.name = "OWASP"
         self.description = "The OWASP Top 10 for LLMs 2025"
-        self.risk_categories = OWASP_CATEGORIES
         self.categories = categories
         self.risk_categories = []
+        self.vulnerabilities = []
+        self.attacks = []
         for category in categories:
             for risk_category in OWASP_CATEGORIES:
                 if risk_category.name == category:
                     self.risk_categories.append(risk_category)
+                    self.vulnerabilities.extend(risk_category.vulnerabilities)
+                    self.attacks.extend(risk_category.attacks)
 
     def get_name(self):
         return "OWASP"
