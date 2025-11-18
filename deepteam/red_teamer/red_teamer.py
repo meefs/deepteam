@@ -93,22 +93,6 @@ class RedTeamer:
                 "You can only pass either 'framework' or 'attacks' and 'vulnerabilities' at the same time"
             )
 
-        # if framework and not framework._has_dataset:
-        #     risk_assessment = self._assess_framework(
-        #         model_callback=model_callback,
-        #         simulator_model=simulator_model,
-        #         evaluation_model=evaluation_model,
-        #         framework=framework,
-        #         attacks_per_vulnerability_type=attacks_per_vulnerability_type,
-        #         ignore_errors=ignore_errors,
-        #         reuse_simulated_test_cases=reuse_simulated_test_cases,
-        #         metadata=metadata,
-        #     )
-        #     if _upload_to_confident:
-        #         self.risk_assessment = risk_assessment
-        #         self._post_risk_assessment()
-        #     return risk_assessment
-
         if self.async_mode:
             validate_model_callback_signature(
                 model_callback=model_callback,
@@ -131,6 +115,22 @@ class RedTeamer:
                 )
             )
         else:
+            if framework and not framework._has_dataset:
+                risk_assessment = self._assess_framework(
+                    model_callback=model_callback,
+                    simulator_model=simulator_model,
+                    evaluation_model=evaluation_model,
+                    framework=framework,
+                    attacks_per_vulnerability_type=attacks_per_vulnerability_type,
+                    ignore_errors=ignore_errors,
+                    reuse_simulated_test_cases=reuse_simulated_test_cases,
+                    metadata=metadata,
+                )
+                if _upload_to_confident:
+                    self.risk_assessment = risk_assessment
+                    self._post_risk_assessment()
+                return risk_assessment
+
             if framework and framework._has_dataset:
                 progress = create_progress()
                 with progress:
