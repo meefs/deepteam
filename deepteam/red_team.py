@@ -16,7 +16,7 @@ def red_team(
     simulator_model: DeepEvalBaseLLM = "gpt-4o-mini",
     evaluation_model: DeepEvalBaseLLM = "gpt-4o-mini",
     attacks_per_vulnerability_type: int = 1,
-    ignore_errors: bool = False,
+    ignore_errors: bool = True,
     async_mode: bool = True,
     max_concurrent: int = 10,
     target_purpose: Optional[str] = None,

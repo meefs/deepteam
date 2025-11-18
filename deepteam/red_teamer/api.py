@@ -33,7 +33,7 @@ class APIRTTurn(TurnApi):
 
 class APIRTTestCase(BaseModel):
     input: str
-    actual_output: str = Field(alias="actualOutput")
+    actual_output: Optional[str] = Field(None, alias="actualOutput")
     retrieval_context: Optional[List[str]] = Field(
         None, alias="retrievalContext"
     )
@@ -47,7 +47,7 @@ class APIRTTestCase(BaseModel):
 
     vulnerability: str = Field(alias="vulnerability")
     vulnerability_type: str = Field(alias="vulnerabilityType")
-    attack_method: str = Field(alias="attackMethod")
+    attack_method: Optional[str] = Field(None, alias="attackMethod")
     risk_category: str = Field(alias="riskCategory")
 
     order: int

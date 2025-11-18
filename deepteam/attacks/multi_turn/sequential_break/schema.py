@@ -24,3 +24,19 @@ class QuestionBankJudge(BaseModel):
 
 class GameEnvironmentJudge(BaseModel):
     classification: Literal["Harmful", "Not harmful"]
+
+
+class ImprovedAttack(BaseModel):
+    improved_attack: str
+
+
+class AdaptiveDialogueTemplate(BaseModel):
+    template: str
+
+
+class AdaptiveQuestionBankTemplate(BaseModel):
+    template: str
+
+
+class AdaptiveGameEnvironmentTemplate(BaseModel):
+    template: str

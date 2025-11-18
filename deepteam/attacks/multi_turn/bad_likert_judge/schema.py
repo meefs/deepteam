@@ -19,3 +19,7 @@ class RefinedExample(BaseModel):
 class BLJJudge(BaseModel):
     classification: Literal["Harmful", "Not harmful"]
     reasoning: str
+
+
+class NewAttackPrompt(BaseModel):
+    new_attack_prompt: str
