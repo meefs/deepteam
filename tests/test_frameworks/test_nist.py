@@ -1,5 +1,6 @@
 import pytest
 from deepteam.frameworks import NIST
+from deepteam.red_teamer.risk_assessment import RiskAssessment
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
 from deepteam.frameworks.nist.risk_categories import NIST_CATEGORIES
@@ -186,5 +187,5 @@ class TestNIST:
             ignore_errors=True,
         )
 
-        assert isinstance(risk_assessment, dict)
+        assert isinstance(risk_assessment, RiskAssessment)
         assert risk_assessment is not None

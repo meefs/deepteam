@@ -2,8 +2,10 @@ import random
 from deepteam import red_team
 from deepteam.frameworks import MITRE
 
+
 def mock_model_callback(prompt: str, turns=None) -> str:
     return "This request violates internal policy."
+
 
 categories = [
     "reconnaissance",
