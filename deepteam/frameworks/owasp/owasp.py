@@ -20,21 +20,20 @@ Each category includes:
 Reference: https://genai.owasp.org/llm-top-10/
 """
 
-ALLOWED_TYPES = [
-    "LLM_01",
-    "LLM_02",
-    "LLM_03",
-    "LLM_04",
-    "LLM_05",
-    "LLM_06",
-    "LLM_07",
-    "LLM_08",
-    "LLM_09",
-    "LLM_10",
-]
-
-
 class OWASPTop10(AISafetyFramework):
+    name: str = "OWASP"
+    ALLOWED_TYPES = [
+        "LLM_01",
+        "LLM_02",
+        "LLM_03",
+        "LLM_04",
+        "LLM_05",
+        "LLM_06",
+        "LLM_07",
+        "LLM_08",
+        "LLM_09",
+        "LLM_10",
+    ]
 
     def __init__(
         self,

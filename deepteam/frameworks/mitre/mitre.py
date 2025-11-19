@@ -16,17 +16,17 @@ Each category includes:
 Reference: https://attack.mitre.org
 """
 
-ALLOWED_TYPES = [
-    "reconnaissance",
-    "resource_development",
-    "initial_access",
-    "ml_attack_staging",
-    "exfiltration",
-    "impact",
-]
-
-
 class MITRE(AISafetyFramework):
+    name = "MITRE"
+    ALLOWED_TYPES = [
+        "reconnaissance",
+        "resource_development",
+        "initial_access",
+        "ml_attack_staging",
+        "exfiltration",
+        "impact",
+    ]
+
     def __init__(
         self,
         categories: List[
