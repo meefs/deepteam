@@ -1,6 +1,8 @@
 import time
 import inspect
-from typing import Optional, List, Iterable, AsyncIterable, Any, Callable
+import os
+from contextlib import contextmanager
+from typing import Optional, List, Callable
 from rich.progress import (
     Progress,
     SpinnerColumn,
@@ -8,9 +10,14 @@ from rich.progress import (
     BarColumn,
     TaskProgressColumn,
     TimeElapsedColumn,
-    TimeRemainingColumn,
 )
 from deepteam.test_case import RTTurn
+
+PROGRESS_ENABLED = os.getenv("DEEPTEAM_SHOW_PROGRESS", "true").lower() in (
+    "true",
+    "1",
+    "yes",
+)
 
 
 def validate_model_callback_signature(
@@ -40,7 +47,16 @@ def format_turns(turns: List[RTTurn]):
     return formatted_turns
 
 
-def create_progress() -> Progress:
+@contextmanager
+def _null_progress():
+    """No-op context manager for when progress is disabled."""
+    yield None
+
+
+def create_progress(enabled: Optional[bool] = None) -> Progress:
+    if enabled is False or (enabled is None and not PROGRESS_ENABLED):
+        return _null_progress()
+
     return Progress(
         SpinnerColumn(),
         TextColumn("[bold bright_white]{task.description}", justify="left"),
@@ -55,9 +71,12 @@ def create_progress() -> Progress:
 
 
 def add_pbar(
-    progress: Optional[Progress], description: str, total: Optional[int] = None
+    progress: Optional[Progress],
+    description: str,
+    total: Optional[int] = None,
+    enabled: Optional[bool] = None,
 ) -> Optional[int]:
-    if progress is None:
+    if progress is None or not hasattr(progress, "add_task"):
         return None
     return progress.add_task(description, total=total)
 
