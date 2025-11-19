@@ -29,6 +29,7 @@ Reference: https://huggingface.co/datasets/nvidia/Aegis-AI-Content-Safety-Datase
 
 class Aegis(AISafetyFramework):
     _DATASET = "nvidia/Aegis-AI-Content-Safety-Dataset-1.0"
+    name = "Aegis"
 
     def __init__(
         self,

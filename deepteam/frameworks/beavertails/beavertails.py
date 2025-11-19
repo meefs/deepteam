@@ -30,6 +30,7 @@ Reference: https://huggingface.co/datasets/PKU-Alignment/BeaverTails
 
 class BeaverTails(AISafetyFramework):
     _DATASET = "PKU-Alignment/BeaverTails"
+    name = "BeaverTails"
 
     def __init__(
         self,
