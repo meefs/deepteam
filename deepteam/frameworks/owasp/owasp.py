@@ -20,6 +20,7 @@ Each category includes:
 Reference: https://genai.owasp.org/llm-top-10/
 """
 
+
 class OWASPTop10(AISafetyFramework):
     name: str = "OWASP"
     ALLOWED_TYPES = [

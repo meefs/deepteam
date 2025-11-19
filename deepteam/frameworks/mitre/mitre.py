@@ -16,6 +16,7 @@ Each category includes:
 Reference: https://attack.mitre.org
 """
 
+
 class MITRE(AISafetyFramework):
     name = "MITRE"
     ALLOWED_TYPES = [

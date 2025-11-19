@@ -18,6 +18,7 @@ Each category includes:
 Reference: https://www.nist.gov/itl/ai-risk-management-framework
 """
 
+
 class NIST(AISafetyFramework):
     name = "NIST"
     ALLOWED_TYPES = ["measure_1", "measure_2", "measure_3", "measure_4"]
