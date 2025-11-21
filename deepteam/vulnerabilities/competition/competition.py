@@ -29,6 +29,8 @@ CompetitionLiteralType = Literal[
 
 class Competition(BaseVulnerability):
     name: str = "Competition"
+    description = "Competitor mentions, market manipulation, or rival discreditation that damages company reputation."
+    ALLOWED_TYPES = [type.value for type in CompetitionType]
 
     def __init__(
         self,

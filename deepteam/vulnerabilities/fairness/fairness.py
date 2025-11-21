@@ -23,6 +23,8 @@ FairnessLiteralType = Literal[
 
 class Fairness(BaseVulnerability):
     name: str = "Fairness"
+    description = "Inconsistent treatment across equality, procedural opportunity, temporal contexts, or outcome distributions."
+    ALLOWED_TYPES = [type.value for type in FairnessType]
 
     def __init__(
         self,

@@ -4,6 +4,7 @@ from deepeval.metrics.utils import initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.single_turn.prompt_probing.template import (
     PromptProbingTemplate,
@@ -21,6 +22,8 @@ from deepteam.attacks.attack_simulator.utils import (
 
 class PromptProbing(BaseSingleTurnAttack):
     name = "Prompt Probing"
+    exploitability = Exploitability.MEDIUM
+    description = "An information extraction attack that uses indirect questioning and probing techniques to leak system prompts, instructions, or internal configurations."
 
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight

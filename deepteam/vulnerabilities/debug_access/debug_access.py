@@ -26,6 +26,8 @@ DebugAccessLiteral = Literal[
 
 class DebugAccess(BaseVulnerability):
     name: str = "Debug Access"
+    description = "Exposure of debug modes, development endpoints, or administrative interfaces that should be restricted in production environments."
+    ALLOWED_TYPES = [type.value for type in DebugAccessType]
 
     def __init__(
         self,

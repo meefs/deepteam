@@ -29,6 +29,8 @@ IntellectualPropertyLiteral = Literal[
 
 class IntellectualProperty(BaseVulnerability):
     name: str = "Intellectual Property"
+    description = "Copyright violations, trademark infringement, or imitation of protected intellectual property without authorization."
+    ALLOWED_TYPES = [type.value for type in IntellectualPropertyType]
 
     def __init__(
         self,

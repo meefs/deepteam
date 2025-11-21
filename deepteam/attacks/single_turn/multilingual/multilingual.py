@@ -6,6 +6,7 @@ from deepeval.models import DeepEvalBaseLLM
 
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.multilingual.template import (
     MultilingualTemplate,
 )
@@ -22,6 +23,8 @@ from deepteam.attacks.attack_simulator.utils import (
 
 class Multilingual(BaseSingleTurnAttack):
     name = "Multilingual"
+    exploitability = Exploitability.MEDIUM
+    description = "A translation-based attack that converts prompts into low-resource or non-English languages to exploit weaker safety training in multilingual models."
 
     def __init__(self, weight: int = 1, max_retries: int = 5):
         self.weight = weight

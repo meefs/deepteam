@@ -22,6 +22,8 @@ ToxicityLiteral = Literal["profanity", "insults", "threats", "mockery"]
 
 class Toxicity(BaseVulnerability):
     name: str = "Toxicity"
+    description = "Harmful or offensive language including profanity, insults, threats, or mockery toward individuals or groups."
+    ALLOWED_TYPES = [type.value for type in ToxicityType]
 
     def __init__(
         self,

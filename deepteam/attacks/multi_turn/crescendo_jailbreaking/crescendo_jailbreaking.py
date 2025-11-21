@@ -7,6 +7,7 @@ from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
 from deepteam.attacks.multi_turn.base_multi_turn_attack import (
@@ -54,6 +55,8 @@ class MemorySystem:
 
 class CrescendoJailbreaking(BaseMultiTurnAttack):
     name = "Crescendo Jailbreaking"
+    exploitability = Exploitability.LOW
+    description = "A progressive multi-turn attack that gradually escalates from benign questions to harmful requests through conversational memory, with adaptive backtracking on refusals."
 
     def __init__(
         self,

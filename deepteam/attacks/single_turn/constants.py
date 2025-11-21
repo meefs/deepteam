@@ -1,4 +1,5 @@
 from typing import Dict
+from dataclasses import dataclass
 
 from .base_single_turn_attack import BaseSingleTurnAttack
 from .base64 import Base64
@@ -45,3 +46,19 @@ SINGLE_TURN_ATTACK_CLASSES_MAP: Dict[str, BaseSingleTurnAttack] = {
 SINGLE_TURN_ATTACK_NAMES = sorted(
     v.name for v in SINGLE_TURN_ATTACK_CLASSES_MAP.values()
 )
+
+
+@dataclass
+class AttackInfo:
+    description: str
+    exploitability: str
+
+
+# Map attack names to their description and exploitability
+SINGLE_TURN_ATTACK_INFO_MAP: Dict[str, AttackInfo] = {
+    name: AttackInfo(
+        description=attack_class.description,
+        exploitability=attack_class.exploitability.value,
+    )
+    for name, attack_class in SINGLE_TURN_ATTACK_CLASSES_MAP.items()
+}

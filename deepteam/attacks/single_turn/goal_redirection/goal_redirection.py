@@ -1,6 +1,7 @@
 import random
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.goal_redirection.template import (
     GoalRedirectionTemplate,
 )
@@ -8,6 +9,8 @@ from deepteam.attacks.single_turn.goal_redirection.template import (
 
 class GoalRedirection(BaseSingleTurnAttack):
     name = "Goal Redirection"
+    exploitability = Exploitability.MEDIUM
+    description = "A goal manipulation attack that reframes harmful requests as legitimate objectives through ambiguous framing or constraint confusion to bypass safety alignment."
 
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight

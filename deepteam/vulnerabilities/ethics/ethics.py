@@ -23,6 +23,8 @@ EthicsLiteralType = Literal[
 
 class Ethics(BaseVulnerability):
     name: str = "Ethics"
+    description = "Violations of ethical principles including moral integrity, responsible transparency, or harm prevention standards."
+    ALLOWED_TYPES = [type.value for type in EthicsType]
 
     def __init__(
         self,

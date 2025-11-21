@@ -1,6 +1,7 @@
 import random
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.prompt_injection.template import (
     PromptInjectionTemplate,
 )
@@ -8,6 +9,8 @@ from deepteam.attacks.single_turn.prompt_injection.template import (
 
 class PromptInjection(BaseSingleTurnAttack):
     name = "Prompt Injection"
+    exploitability = Exploitability.MEDIUM
+    description = "A direct injection attack that inserts malicious instructions or commands into prompts to override system behavior and bypass guardrails."
 
     def __init__(self, weight: int = 1):
         self.weight = weight

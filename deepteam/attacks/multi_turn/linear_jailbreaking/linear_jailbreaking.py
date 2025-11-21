@@ -19,6 +19,7 @@ from deepteam.attacks.attack_simulator.utils import (
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.multi_turn.base_multi_turn_attack import (
     BaseMultiTurnAttack,
 )
@@ -33,6 +34,8 @@ from deepteam.vulnerabilities import BaseVulnerability
 
 class LinearJailbreaking(BaseMultiTurnAttack):
     name = "Linear Jailbreaking"
+    exploitability = Exploitability.LOW
+    description = "An iterative multi-turn attack that uses LLM-as-judge feedback to refine prompts across turns, systematically improving attack effectiveness until jailbreak succeeds."
 
     def __init__(
         self,

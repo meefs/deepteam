@@ -1,6 +1,7 @@
 import random
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.context_poisoning.template import (
     ContextPoisoningTemplate,
 )
@@ -8,6 +9,8 @@ from deepteam.attacks.single_turn.context_poisoning.template import (
 
 class ContextPoisoning(BaseSingleTurnAttack):
     name = "Context Poisoning"
+    exploitability = Exploitability.MEDIUM
+    description = "A context manipulation attack that injects misleading environmental information or priming cues to influence the model's responses toward harmful outputs."
 
     def __init__(self, weight: int = 3, max_retries: int = 3):
         self.weight = weight  # Higher weight since memory poisoning can have persistent effects

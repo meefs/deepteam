@@ -11,3 +11,5 @@ class RiskCategory:
     name: str
     vulnerabilities: List[BaseVulnerability]
     attacks: List[BaseAttack]
+    description: Optional[str] = None
+    _display_name: Optional[str] = None

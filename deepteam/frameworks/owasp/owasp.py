@@ -7,22 +7,41 @@ from deepteam.attacks import BaseAttack
 from deepteam.frameworks.owasp.risk_categories import OWASP_CATEGORIES
 
 """
-OWASP Top 10 for LLMs 2025 Framework Mapping
-============================================
+OWASP Top 10 for Large Language Models (LLMs) 2025
+===================================================
 
-This framework defines the 10 OWASP LLM risk categories as DeepTeam `RiskCategory`
-objects, mapping realistic red-teaming attacks and corresponding vulnerabilities.
+The OWASP Top 10 for Large Language Models is a comprehensive list of the most critical 
+security risks associated with LLM applications. This resource is designed to help 
+developers, security professionals, and organizations identify, understand, and mitigate 
+vulnerabilities in LLM systems, ensuring safer and more robust deployments in real-world 
+applications.
+
+The 2025 edition reflects significant evolution in the LLM threat landscape, with new 
+risks emerging from RAG systems, autonomous AI agents, and sophisticated attack methods.
+
+The 10 critical risks are:
+1. LLM01 - Prompt Injection: Manipulating LLM inputs to override instructions
+2. LLM02 - Sensitive Information Disclosure: Unintended exposure of private data
+3. LLM03 - Supply Chain: Compromised third-party components, models, or plugins
+4. LLM04 - Data and Model Poisoning: Manipulation of training or fine-tuning data
+5. LLM05 - Improper Output Handling: Inadequate validation of LLM outputs
+6. LLM06 - Excessive Agency: Too much autonomy or permissions granted to LLMs
+7. LLM07 - System Prompt Leakage: Exposure of internal prompts and credentials (NEW 2025)
+8. LLM08 - Vector and Embedding Weaknesses: RAG and vector database vulnerabilities (NEW 2025)
+9. LLM09 - Misinformation: False information and hallucinations
+10. LLM10 - Unbounded Consumption: Uncontrolled resource usage
 
 Each category includes:
-- Attacks: techniques for prompting, probing, or jailbreaking.
-- Vulnerabilities: typed or custom definitions capturing observable weaknesses.
+- Attacks: Realistic red-teaming techniques for prompting, probing, or jailbreaking
+- Vulnerabilities: Typed definitions capturing observable weaknesses and security flaws
 
 Reference: https://genai.owasp.org/llm-top-10/
 """
 
 
 class OWASPTop10(AISafetyFramework):
-    name: str = "OWASP"
+    name = "OWASP Top 10 for LLMs 2025"
+    description = "A comprehensive list of the most critical security risks associated with LLM applications. The 2025 edition includes 10 critical risks covering prompt injection, sensitive information disclosure, supply chain vulnerabilities, data poisoning, output handling, excessive agency, system prompt leakage, vector/embedding weaknesses, misinformation, and unbounded consumption. Each risk is tested using realistic attack techniques and vulnerability assessments."
     ALLOWED_TYPES = [
         "LLM_01",
         "LLM_02",
@@ -64,8 +83,6 @@ class OWASPTop10(AISafetyFramework):
             "LLM_10",
         ],
     ):
-        self.name = "OWASP"
-        self.description = "The OWASP Top 10 for LLMs 2025"
         self.categories = categories
         self.risk_categories = []
         self.vulnerabilities = []
@@ -78,4 +95,4 @@ class OWASPTop10(AISafetyFramework):
                     self.attacks.extend(risk_category.attacks)
 
     def get_name(self):
-        return "OWASP"
+        return self.name

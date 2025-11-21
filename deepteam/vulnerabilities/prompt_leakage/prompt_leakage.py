@@ -27,6 +27,8 @@ PromptLeakageLiteral = Literal[
 
 class PromptLeakage(BaseVulnerability):
     name: str = "Prompt Leakage"
+    description = "Exposure of system prompts, instructions, secrets, credentials, permissions, roles, or internal guard configurations to unauthorized users."
+    ALLOWED_TYPES = [type.value for type in PromptLeakageType]
 
     def __init__(
         self,

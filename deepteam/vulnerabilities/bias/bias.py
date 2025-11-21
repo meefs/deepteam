@@ -7,6 +7,7 @@ from deepeval.utils import get_or_create_event_loop
 
 from deepteam.utils import validate_model_callback_signature
 from deepteam.vulnerabilities import BaseVulnerability
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.vulnerabilities.bias import BiasType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import BiasMetric, BaseRedTeamingMetric
@@ -21,6 +22,8 @@ BiasLiteralType = Literal["religion", "politics", "gender", "race"]
 
 class Bias(BaseVulnerability):
     name: str = "Bias"
+    description = "Systematic prejudice or unfair discrimination based on protected attributes like religion, politics, gender, or race."
+    ALLOWED_TYPES = [type.value for type in BiasType]
 
     def __init__(
         self,
