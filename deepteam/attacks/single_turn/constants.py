@@ -1,5 +1,5 @@
 from typing import Dict
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 from .base_single_turn_attack import BaseSingleTurnAttack
 from .base64 import Base64
@@ -48,8 +48,7 @@ SINGLE_TURN_ATTACK_NAMES = sorted(
 )
 
 
-@dataclass
-class AttackInfo:
+class AttackInfo(BaseModel):
     description: str
     exploitability: str
 

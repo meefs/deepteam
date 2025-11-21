@@ -1,5 +1,5 @@
 from typing import Dict
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 from .base_multi_turn_attack import BaseMultiTurnAttack
 from .crescendo_jailbreaking import CrescendoJailbreaking
@@ -24,13 +24,11 @@ MULTI_TURN_ATTACK_NAMES = sorted(
 )
 
 
-@dataclass
-class AttackInfo:
+class AttackInfo(BaseModel):
     description: str
     exploitability: str
 
 
-# Map attack names to their description and exploitability
 MULTI_TURN_ATTACK_INFO_MAP: Dict[str, AttackInfo] = {
     name: AttackInfo(
         description=attack_class.description,
