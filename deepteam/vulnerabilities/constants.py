@@ -1,4 +1,6 @@
 from typing import Dict, List
+from dataclasses import dataclass
+
 from .base_vulnerability import BaseVulnerability
 from .bias.bias import Bias
 from .toxicity.toxicity import Toxicity
@@ -74,34 +76,17 @@ VULNERABILITY_CLASSES_MAP: Dict[str, BaseVulnerability] = {
     ]
 }
 
-VULNERABILITY_TYPES_MAP: Dict[str, List[str]] = {
-    Bias.name: [e.value for e in BiasType],
-    Toxicity.name: [e.value for e in ToxicityType],
-    Misinformation.name: [e.value for e in MisinformationType],
-    IllegalActivity.name: [e.value for e in IllegalActivityType],
-    PromptLeakage.name: [e.value for e in PromptLeakageType],
-    PIILeakage.name: [e.value for e in PIILeakageType],
-    BFLA.name: [e.value for e in BFLAType],
-    BOLA.name: [e.value for e in BOLAType],
-    RBAC.name: [e.value for e in RBACType],
-    DebugAccess.name: [e.value for e in DebugAccessType],
-    ShellInjection.name: [e.value for e in ShellInjectionType],
-    SQLInjection.name: [e.value for e in SQLInjectionType],
-    SSRF.name: [e.value for e in SSRFType],
-    IntellectualProperty.name: [e.value for e in IntellectualPropertyType],
-    Competition.name: [e.value for e in CompetitionType],
-    GraphicContent.name: [e.value for e in GraphicContentType],
-    PersonalSafety.name: [e.value for e in PersonalSafetyType],
-    GoalTheft.name: [e.value for e in GoalTheftType],
-    RecursiveHijacking.name: [e.value for e in RecursiveHijackingType],
-    Robustness.name: [e.value for e in RobustnessType],
-    ExcessiveAgency.name: [e.value for e in ExcessiveAgencyType],
-}
 
-VULNERABILITY_NAMES = sorted(v.name for v in VULNERABILITY_CLASSES_MAP.values())
+@dataclass
+class VulnerabilityInfo:
+    description: str
+    allowed_types: List[str]
 
-# Map vulnerability names to their descriptions
-VULNERABILITY_NAME_TO_DESCRIPTION_MAP: Dict[str, str] = {
-    name: vuln_class.description
+
+VULNERABILITY_INFO_MAP: Dict[str, VulnerabilityInfo] = {
+    name: VulnerabilityInfo(
+        description=vuln_class.description,
+        allowed_types=vuln_class.ALLOWED_TYPES,
+    )
     for name, vuln_class in VULNERABILITY_CLASSES_MAP.items()
 }

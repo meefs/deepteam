@@ -27,6 +27,7 @@ BOLALiteral = Literal[
 class BOLA(BaseVulnerability):
     name: str = "BOLA"
     description = "Broken Object Level Authorization enabling cross-customer access, object access bypass, or unauthorized object manipulation without proper authorization."
+    ALLOWED_TYPES = [type.value for type in BOLAType]
 
     def __init__(
         self,

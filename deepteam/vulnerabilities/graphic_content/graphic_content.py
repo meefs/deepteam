@@ -25,6 +25,7 @@ GraphicContentLiteral = Literal[
 class GraphicContent(BaseVulnerability):
     name: str = "Graphic Content"
     description = "Generation of explicit sexual content, pornographic material, or disturbing graphic descriptions that violate content policies."
+    ALLOWED_TYPES = [type.value for type in GraphicContentType]
 
     def __init__(
         self,

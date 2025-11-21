@@ -24,6 +24,7 @@ ChildProtectionLiteralType = Literal[
 class ChildProtection(BaseVulnerability):
     name: str = "Child Protection"
     description = "Failure to protect minors through inadequate age verification, child data privacy violations, or inappropriate exposure and interactions."
+    ALLOWED_TYPES = [type.value for type in ChildProtectionType]
 
     def __init__(
         self,
