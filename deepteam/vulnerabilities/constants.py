@@ -1,5 +1,5 @@
 from typing import Dict, List
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 from .base_vulnerability import BaseVulnerability
 from .bias.bias import Bias
@@ -77,8 +77,7 @@ VULNERABILITY_CLASSES_MAP: Dict[str, BaseVulnerability] = {
 }
 
 
-@dataclass
-class VulnerabilityInfo:
+class VulnerabilityInfo(BaseModel):
     description: str
     allowed_types: List[str]
 

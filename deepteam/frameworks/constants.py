@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional
-from dataclasses import dataclass
+from pydantic import BaseModel
 from .aegis.aegis import Aegis
 from .frameworks import AISafetyFramework
 from .beavertails.beavertails import BeaverTails
@@ -19,8 +19,7 @@ FRAMEWORKS_MAP: Dict[str, AISafetyFramework] = {
 DATASET_FRAMEWORKS_MAP = {f.name: f for f in [Aegis, BeaverTails]}
 
 
-@dataclass
-class RiskCategoryInfo:
+class RiskCategoryInfo(BaseModel):
     name: str
     vulnerability_types: List[str]
     description: Optional[str] = None
