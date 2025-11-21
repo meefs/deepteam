@@ -1,14 +1,55 @@
+from typing import Dict, List, Optional
+from dataclasses import dataclass
 from .aegis.aegis import Aegis
+from .frameworks import AISafetyFramework
 from .beavertails.beavertails import BeaverTails
 from .owasp.owasp import OWASPTop10
 from .nist.nist import NIST
 from .mitre.mitre import MITRE
+from .risk_category import RiskCategory
+from .owasp.risk_categories import OWASP_CATEGORIES
+from .nist.risk_categories import NIST_CATEGORIES
+from .mitre.risk_categories import MITRE_CATEGORIES
 
 
-FRAMEWORKS_MAP = {f.name: f for f in [OWASPTop10, NIST, MITRE]}
-
-FRAMEWORK_RISK_CATEGORIES_MAP = {
-    f.name: f.ALLOWED_TYPES for f in [OWASPTop10, NIST, MITRE]
+FRAMEWORKS_MAP: Dict[str, AISafetyFramework] = {
+    f.name: f for f in [OWASPTop10, NIST, MITRE]
 }
 
 DATASET_FRAMEWORKS_MAP = {f.name: f for f in [Aegis, BeaverTails]}
+
+
+@dataclass
+class RiskCategoryInfo:
+    name: str
+    vulnerability_types: List[str]
+    description: Optional[str] = None
+    display_name: Optional[str] = None
+    attacks: Optional[List[str]] = None
+
+
+def _flatten_vulnerability_types(risk_category: RiskCategory) -> List[str]:
+    vulnerability_types = []
+    for vulnerability in risk_category.vulnerabilities:
+        vulnerability_types.extend(vulnerability.ALLOWED_TYPES)
+    return vulnerability_types
+
+
+def _serialize_risk_category(risk_category: RiskCategory) -> RiskCategoryInfo:
+    vulnerability_types = _flatten_vulnerability_types(risk_category)
+    attack_names = [attack.get_name() for attack in risk_category.attacks]
+
+    return RiskCategoryInfo(
+        name=risk_category.name,
+        vulnerability_types=vulnerability_types,
+        attacks=attack_names,
+        description=risk_category.description,
+        display_name=risk_category._display_name,
+    )
+
+
+FRAMEWORK_RISK_CATEGORY_MAPPING: Dict[str, List[RiskCategoryInfo]] = {
+    OWASPTop10.name: [_serialize_risk_category(rc) for rc in OWASP_CATEGORIES],
+    NIST.name: [_serialize_risk_category(rc) for rc in NIST_CATEGORIES],
+    MITRE.name: [_serialize_risk_category(rc) for rc in MITRE_CATEGORIES],
+}

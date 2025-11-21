@@ -22,7 +22,6 @@ from deepteam.vulnerabilities import (
     SQLInjection,
     CustomVulnerability,
 )
-from deepteam.attacks import BaseAttack
 from deepteam.attacks.single_turn import (
     Base64,
     GrayBox,
