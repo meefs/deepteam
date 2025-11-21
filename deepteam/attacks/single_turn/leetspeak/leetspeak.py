@@ -1,8 +1,11 @@
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 
 
 class Leetspeak(BaseSingleTurnAttack):
     name = "Leetspeak"
+    exploitability = Exploitability.HIGH
+    description = "A character substitution attack that replaces letters with numbers and symbols (e.g., 'a' → '4') to evade keyword-based detection."
 
     def __init__(self, weight: int = 1):
         self.weight = weight

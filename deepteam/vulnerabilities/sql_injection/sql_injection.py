@@ -26,6 +26,7 @@ SQLInjectionLiteral = Literal[
 
 class SQLInjection(BaseVulnerability):
     name: str = "SQL Injection"
+    description = "Malicious SQL query generation using blind, union-based, or error-based injection techniques to manipulate database operations."
 
     def __init__(
         self,

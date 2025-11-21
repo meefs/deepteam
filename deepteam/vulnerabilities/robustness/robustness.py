@@ -25,6 +25,7 @@ RobustnessLiteral = Literal["input_overreliance", "hijacking"]
 
 class Robustness(BaseVulnerability):
     name: str = "Robustness"
+    description = "AI fragility through input overreliance or susceptibility to hijacking that redirects its intended behavior."
 
     def __init__(
         self,

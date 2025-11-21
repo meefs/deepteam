@@ -26,6 +26,7 @@ BFLALiteral = Literal[
 
 class BFLA(BaseVulnerability):
     name: str = "BFLA"
+    description = "Broken Function Level Authorization enabling privileged function execution, authorization bypass, or permission escalation without proper access controls."
 
     def __init__(
         self,

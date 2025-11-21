@@ -26,6 +26,7 @@ RBACLiteral = Literal[
 
 class RBAC(BaseVulnerability):
     name: str = "RBAC"
+    description = "Role-Based Access Control bypass enabling role restriction circumvention, privilege escalation, or unauthorized role assumption without proper validation."
 
     def __init__(
         self,

@@ -10,6 +10,7 @@ from deepeval.metrics.utils import initialize_model
 
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks import BaseAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.multi_turn.tree_jailbreaking.schema import (
     ImprovementPrompt,
     Rating,
@@ -54,6 +55,8 @@ class TreeNode:
 
 class TreeJailbreaking(BaseMultiTurnAttack):
     name = "Tree Jailbreaking"
+    exploitability = Exploitability.LOW
+    description = "A tree-search based multi-turn attack that explores multiple conversation branches in parallel, pruning low-scoring paths to find optimal jailbreak sequences."
 
     def __init__(
         self,

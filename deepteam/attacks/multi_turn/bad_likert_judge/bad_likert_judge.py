@@ -6,6 +6,7 @@ import random
 from deepteam.attacks.multi_turn.base_multi_turn_attack import (
     BaseMultiTurnAttack,
 )
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.multi_turn.bad_likert_judge.schema import (
     BLJJudge,
     LikertExamples,
@@ -32,6 +33,8 @@ from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 class BadLikertJudge(BaseMultiTurnAttack):
     name = "Bad Likert Judge"
+    exploitability = Exploitability.LOW
+    description = "An adaptive multi-turn attack that uses Likert scale scoring and iterative refinement to gradually guide the model toward harmful responses through feedback-driven escalation."
 
     def __init__(
         self,

@@ -5,6 +5,7 @@ from deepeval.metrics.utils import initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.roleplay.template import (
     RoleplayTemplate,
 )
@@ -22,6 +23,8 @@ from deepteam.attacks.attack_simulator.utils import (
 
 class Roleplay(BaseSingleTurnAttack):
     name = "Roleplay"
+    exploitability = Exploitability.MEDIUM
+    description = "A persona-based attack that instructs the model to adopt a fictional character, expert role, or alternate identity to justify generating harmful content."
 
     def __init__(
         self,

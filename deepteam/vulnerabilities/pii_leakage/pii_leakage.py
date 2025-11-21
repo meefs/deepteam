@@ -27,6 +27,7 @@ PIILeakageLiteral = Literal[
 
 class PIILeakage(BaseVulnerability):
     name: str = "PII Leakage"
+    description = "Disclosure of personally identifiable information through direct disclosure, API/database access, session leaks, or social manipulation."
 
     def __init__(
         self,

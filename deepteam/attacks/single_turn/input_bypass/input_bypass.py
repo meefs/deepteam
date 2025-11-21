@@ -1,6 +1,7 @@
 import random
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.input_bypass.template import (
     InputBypassTemplate,
 )
@@ -8,6 +9,8 @@ from deepteam.attacks.single_turn.input_bypass.template import (
 
 class InputBypass(BaseSingleTurnAttack):
     name = "Input Bypass"
+    exploitability = Exploitability.MEDIUM
+    description = "A validation bypass attack that uses exception handling, security overrides, or operational necessity framing to circumvent input filtering mechanisms."
 
     def __init__(self, weight: int = 2, max_retries: int = 3):
         self.weight = weight  # Higher weight since this targets validation vulnerabilities

@@ -1,6 +1,7 @@
 import random
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.system_override.template import (
     SystemOverrideTemplate,
 )
@@ -8,6 +9,8 @@ from deepteam.attacks.single_turn.system_override.template import (
 
 class SystemOverride(BaseSingleTurnAttack):
     name = "System Override"
+    exploitability = Exploitability.MEDIUM
+    description = "An authority spoofing attack that impersonates system commands, admin calls, or maintenance protocols to override safety constraints and gain unauthorized access."
 
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight

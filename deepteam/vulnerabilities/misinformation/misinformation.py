@@ -25,6 +25,7 @@ MisinformationLiteral = Literal[
 
 class Misinformation(BaseVulnerability):
     name: str = "Misinformation"
+    description = "Spreading false or misleading information through factual errors, unsupported claims, or inaccurate statements that harm public perception."
 
     def __init__(
         self,

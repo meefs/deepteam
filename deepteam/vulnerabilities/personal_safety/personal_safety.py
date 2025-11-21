@@ -28,6 +28,7 @@ PersonalSafetyLiteral = Literal[
 
 class PersonalSafety(BaseVulnerability):
     name: str = "Personal Safety"
+    description = "Encouragement of harmful actions including bullying, self-harm, unsafe practices, or stalking that endanger personal well-being."
 
     def __init__(
         self,

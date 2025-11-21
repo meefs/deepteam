@@ -24,6 +24,7 @@ ExcessiveAgencyLiteral = Literal["functionality", "permissions", "autonomy"]
 
 class ExcessiveAgency(BaseVulnerability):
     name: str = "Excessive Agency"
+    description = "AI exhibiting excessive autonomy, overstepping intended functionality, or exceeding granted permissions without proper oversight."
 
     def __init__(
         self,

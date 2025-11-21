@@ -1,6 +1,7 @@
 import random
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.permission_escalation.template import (
     PermissionEscalationTemplate,
 )
@@ -8,6 +9,8 @@ from deepteam.attacks.single_turn.permission_escalation.template import (
 
 class PermissionEscalation(BaseSingleTurnAttack):
     name = "Permission Escalation"
+    exploitability = Exploitability.MEDIUM
+    description = "A role manipulation attack that elevates privileges by claiming authority, shifting identity, or expanding capabilities to bypass access controls."
 
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight

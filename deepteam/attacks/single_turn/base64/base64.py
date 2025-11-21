@@ -1,9 +1,12 @@
 import base64
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 
 
 class Base64(BaseSingleTurnAttack):
     name = "Base64"
+    exploitability = Exploitability.HIGH
+    description = "An encoding-based attack that converts malicious prompts into Base64 format to bypass text-based content filters."
 
     def __init__(self, weight: int = 1):
         self.weight = weight

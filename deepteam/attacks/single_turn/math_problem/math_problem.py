@@ -5,6 +5,7 @@ from deepeval.metrics.utils import initialize_model
 
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.math_problem.template import (
     MathProblemTemplate,
 )
@@ -21,6 +22,8 @@ from deepteam.attacks.attack_simulator.utils import (
 
 class MathProblem(BaseSingleTurnAttack):
     name = "Math Problem"
+    exploitability = Exploitability.LOW
+    description = "A mathematical encoding attack that disguises harmful instructions as formal logic or proof problems, then requests translation to natural language."
 
     def __init__(
         self,

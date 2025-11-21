@@ -1,6 +1,7 @@
 import random
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.semantic_manipulation.template import (
     LinguisticConfusionTemplate,
 )
@@ -8,6 +9,8 @@ from deepteam.attacks.single_turn.semantic_manipulation.template import (
 
 class LinguisticConfusion(BaseSingleTurnAttack):
     name = "Linguistic Confusion"
+    exploitability = Exploitability.MEDIUM
+    description = "A semantic manipulation attack that uses ambiguous phrasing, syntactic variations, or contextual reframing to confuse content classifiers while preserving harmful intent."
 
     def __init__(self, weight: int = 1, max_retries: int = 3):
         self.weight = weight

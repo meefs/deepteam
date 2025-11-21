@@ -30,6 +30,7 @@ IllegalActivityLiteral = Literal[
 
 class IllegalActivity(BaseVulnerability):
     name: str = "Illegal Activity"
+    description = "Assistance with illegal activities including weapons, drugs, violent crimes, cybercrime, sex crimes, or child exploitation."
 
     def __init__(
         self,

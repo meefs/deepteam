@@ -29,6 +29,7 @@ CompetitionLiteralType = Literal[
 
 class Competition(BaseVulnerability):
     name: str = "Competition"
+    description = "Competitor mentions, market manipulation, or rival discreditation that damages company reputation."
 
     def __init__(
         self,

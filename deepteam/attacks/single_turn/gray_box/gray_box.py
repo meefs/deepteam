@@ -5,6 +5,7 @@ from deepeval.metrics.utils import initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.single_turn.gray_box.template import GrayBoxTemplate
 from deepteam.attacks.single_turn.gray_box.schema import (
@@ -20,6 +21,8 @@ from deepteam.attacks.attack_simulator.utils import (
 
 class GrayBox(BaseSingleTurnAttack):
     name = "Gray Box"
+    exploitability = Exploitability.LOW
+    description = "A knowledge-leveraging attack that exploits partial information about the model's architecture, training data, or system prompts to craft targeted adversarial inputs."
 
     def __init__(self, weight: int = 1, max_retries: int = 5):
         self.weight = weight

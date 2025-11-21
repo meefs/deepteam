@@ -7,6 +7,7 @@ from deepeval.metrics.utils import initialize_model
 from deepteam.attacks.multi_turn.base_multi_turn_attack import (
     BaseMultiTurnAttack,
 )
+from deepteam.attacks.base_attack import Exploitability
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.multi_turn.sequential_break.schema import (
     RewrittenDialogue,
@@ -38,6 +39,8 @@ from deepteam.attacks.single_turn import BaseSingleTurnAttack
 
 class SequentialJailbreak(BaseMultiTurnAttack):
     name = "Sequential Jailbreak"
+    exploitability = Exploitability.LOW
+    description = "A scenario-based multi-turn attack that disguises harmful requests within dialogue, question banks, or game environments to incrementally build toward policy violations."
 
     def __init__(
         self,

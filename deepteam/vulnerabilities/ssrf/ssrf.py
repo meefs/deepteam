@@ -26,6 +26,7 @@ SSRFLiteral = Literal[
 
 class SSRF(BaseVulnerability):
     name: str = "SSRF"
+    description = "Server-Side Request Forgery enabling unauthorized internal service access, cloud metadata access, or port scanning through crafted requests."
 
     def __init__(
         self,
