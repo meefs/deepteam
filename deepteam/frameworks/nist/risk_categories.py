@@ -45,6 +45,8 @@ from deepteam.attacks.multi_turn import (
 NIST_CATEGORIES = [
     RiskCategory(
         name="measure_1",
+        _display_name="Measure 1 — Risk Measurement and Metrics",
+        description="Identify, apply, and continuously improve appropriate methods and metrics for assessing AI risks.",
         attacks=[
             Roleplay(
                 weight=2,
@@ -81,6 +83,8 @@ NIST_CATEGORIES = [
     ),
     RiskCategory(
         name="measure_2",
+        _display_name="Measure 2 — Trustworthiness and Safety Evaluation",
+        description="Evaluate and validate AI systems for trustworthy characteristics such as safety, fairness, security, robustness, privacy, and reliability — under real-world conditions.",
         attacks=[
             PromptInjection(weight=3),
             CrescendoJailbreaking(weight=2),
@@ -204,6 +208,8 @@ NIST_CATEGORIES = [
     ),
     RiskCategory(
         name="measure_3",
+        _display_name="Measure 3 — Risk Tracking and Monitoring",
+        description="Establish continuous monitoring mechanisms to track identified, unanticipated, and emerging AI risks throughout system operation.",
         attacks=[
             PromptProbing(weight=3),
             PromptInjection(weight=2),
@@ -241,6 +247,8 @@ NIST_CATEGORIES = [
     ),
     RiskCategory(
         name="measure_4",
+        _display_name="Measure 4 — Impact and Transparency Assessment",
+        description="Connect AI risk measurements to business outcomes, stakeholder transparency, and lifecycle performance.",
         attacks=[
             BadLikertJudge(weight=2),
             PromptProbing(weight=2),

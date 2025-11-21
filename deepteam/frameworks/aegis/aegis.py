@@ -12,16 +12,40 @@ from deepteam.test_case import RTTestCase
 from deepteam.metrics import HarmMetric
 
 """
-Aegis Content Safety Framework Mapping
-======================================
+NVIDIA Aegis AI Content Safety Dataset Framework
+=================================================
 
-This framework evaluates models using the NVIDIA Aegis (Nemotron) Content Safety Dataset,
-mapping 13 safety-critical harm categories to sampled adversarial user messages.
+The Aegis framework integrates the NVIDIA Aegis AI Content Safety Dataset — an open-source 
+dataset aligned with NVIDIA's Content Safety Taxonomy across 13 critical harm categories. 
+Aegis enables DeepTeam to perform dataset-driven red teaming using real human-labeled 
+safety violations to validate model robustness against harmful or unsafe user inputs.
+
+Aegis focuses on real-world unsafe content from public conversations. This allows 
+evaluation of model refusal behaviors and fine-tuning of safety filters using authentic, 
+labeled harm categories.
+
+The dataset covers 13 harm domains:
+- sexual_content
+- violence
+- hate_speech
+- self_harm
+- misinformation
+- privacy_violation
+- child_exploitation
+- drugs
+- terrorism
+- and more
+
+How it works:
+1. Loads the Aegis dataset from Hugging Face
+2. Filters unsafe samples labeled under NVIDIA's harm taxonomy
+3. Randomly samples num_attacks test cases
+4. Evaluates how well the model identifies, refuses, or mitigates these harmful prompts
 
 Each test case includes:
-- Input: Real harmful user messages from the Aegis dataset.
-- Vulnerability: Labeled harm category indicating expected safety violation.
-- Metric: Harm scoring using the evaluation model.
+- Input: Real harmful user messages from public conversations (Aegis dataset)
+- Vulnerability: Labeled harm category indicating expected safety violation
+- Metric: Harm scoring using the evaluation model
 
 Reference: https://huggingface.co/datasets/nvidia/Aegis-AI-Content-Safety-Dataset-1.0
 """
@@ -30,6 +54,7 @@ Reference: https://huggingface.co/datasets/nvidia/Aegis-AI-Content-Safety-Datase
 class Aegis(AISafetyFramework):
     _DATASET = "nvidia/Aegis-AI-Content-Safety-Dataset-1.0"
     name = "Aegis"
+    description = "A dataset-driven safety framework that uses the NVIDIA Aegis AI Content Safety Dataset — an open-source dataset aligned with NVIDIA's Content Safety Taxonomy. Tests models using real human-labeled safety violations from public conversations across 13 critical harm categories including sexual content, violence, hate speech, self-harm, misinformation, privacy violations, child exploitation, drugs, and terrorism. Enables evaluation of model refusal behaviors and fine-tuning of safety filters using authentic, labeled harm categories."
 
     def __init__(
         self,
@@ -38,8 +63,6 @@ class Aegis(AISafetyFramework):
         verbose_mode: bool = False,
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
     ):
-        self.name = "Aegis"
-        self.description = "Nemotron Content Safety Dataset V1, formerly known as Aegis AI Content Safety Dataset, is an open-source content safety dataset (CC-BY-4.0), which adheres to Nvidia's content safety taxonomy, covering 13 critical risk categories"
         self.num_attacks = num_attacks
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -151,4 +174,4 @@ class Aegis(AISafetyFramework):
         )
 
     def get_name(self):
-        return "Aegis"
+        return self.name

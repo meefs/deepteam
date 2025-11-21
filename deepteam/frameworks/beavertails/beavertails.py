@@ -12,17 +12,44 @@ from deepteam.test_case import RTTestCase
 from deepteam.metrics import HarmMetric
 
 """
-BeaverTails Safety Framework Mapping
-====================================
+BeaverTails Dataset-Driven Safety Framework
+============================================
 
-This framework evaluates model safety using the BeaverTails dataset, a human-labeled
-collection of unsafe QA pairs across 14 harm categories. It samples harmful prompts
-and maps them to corresponding vulnerability categories.
+The BeaverTails framework integrates the BeaverTails dataset — a large, human-labeled 
+collection of harmful and borderline prompts — to enable dataset-driven red teaming 
+against real-world adversarial inputs. BeaverTails is designed to surface safety failures 
+across a wide range of harm categories (abuse, illegal instructions, privacy violations, 
+self-harm, sexual content, misinformation, and more) by testing how models respond to 
+actual annotated malicious prompts.
+
+BeaverTails focuses on sampling real harmful prompts from a curated dataset rather than 
+synthetic generation. This provides higher-fidelity signals for model behavior in the wild 
+and helps validate safety defenses, content filters, and ingestion pipelines.
+
+The dataset includes 14 harm subcategories:
+- animal_abuse
+- child_abuse
+- discrimination / hate_speech
+- drug_abuse, weapons
+- financial_crime
+- misinformation
+- privacy_violation
+- self_harm
+- sexually_explicit
+- terrorism
+- violence
+- and more
+
+How it works:
+1. Loads the dataset using Hugging Face's datasets with the specified BeaverTails split
+2. Filters out unsafe test cases to focus only on potentially harmful attacks
+3. Randomly samples num_attacks prompts
+4. Evaluates if the model appropriately refuses and handles the harmful attacks from dataset
 
 Each test case includes:
-- Input: Unsafe user prompts from BeaverTails.
-- Vulnerability: One or more harm categories assigned in the dataset.
-- Metric: Harm scoring using the selected evaluation model.
+- Input: Real unsafe user prompts from BeaverTails dataset
+- Vulnerability: One or more harm categories assigned in the dataset
+- Metric: Harm scoring using the selected evaluation model
 
 Reference: https://huggingface.co/datasets/PKU-Alignment/BeaverTails
 """
@@ -31,6 +58,7 @@ Reference: https://huggingface.co/datasets/PKU-Alignment/BeaverTails
 class BeaverTails(AISafetyFramework):
     _DATASET = "PKU-Alignment/BeaverTails"
     name = "BeaverTails"
+    description = "A dataset-driven safety framework that uses the BeaverTails dataset — a large, human-labeled collection of harmful and borderline prompts. Tests models against real-world adversarial inputs across 14 harm categories including abuse, illegal instructions, privacy violations, self-harm, sexual content, and misinformation. Provides higher-fidelity signals by sampling actual annotated malicious prompts rather than synthetic generation, helping validate safety defenses and content filters."
 
     def __init__(
         self,
@@ -40,8 +68,6 @@ class BeaverTails(AISafetyFramework):
         verbose_mode: bool = False,
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
     ):
-        self.name = "BeaverTails"
-        self.description = "BeaverTails is an AI safety-focused collection comprising a series of datasets, it contains human-labeled data consisting of question-answer (QA) pairs from 14 different harm categories."
         self.num_attacks = num_attacks
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -156,4 +182,4 @@ class BeaverTails(AISafetyFramework):
         )
 
     def get_name(self):
-        return "BeaverTails"
+        return self.name

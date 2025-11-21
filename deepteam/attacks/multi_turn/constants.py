@@ -1,4 +1,5 @@
 from typing import Dict
+from dataclasses import dataclass
 
 from .base_multi_turn_attack import BaseMultiTurnAttack
 from .crescendo_jailbreaking import CrescendoJailbreaking
@@ -21,3 +22,19 @@ MULTI_TURN_ATTACK_CLASSES_MAP: Dict[str, BaseMultiTurnAttack] = {
 MULTI_TURN_ATTACK_NAMES = sorted(
     v.name for v in MULTI_TURN_ATTACK_CLASSES_MAP.values()
 )
+
+
+@dataclass
+class AttackInfo:
+    description: str
+    exploitability: str
+
+
+# Map attack names to their description and exploitability
+MULTI_TURN_ATTACK_INFO_MAP: Dict[str, AttackInfo] = {
+    name: AttackInfo(
+        description=attack_class.description,
+        exploitability=attack_class.exploitability.value,
+    )
+    for name, attack_class in MULTI_TURN_ATTACK_CLASSES_MAP.items()
+}

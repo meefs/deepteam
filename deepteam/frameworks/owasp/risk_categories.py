@@ -46,6 +46,8 @@ OWASP_CATEGORIES: List[RiskCategory] = [
     # 1. Prompt Injection
     RiskCategory(
         name="LLM_01",
+        _display_name="LLM01:2025 Prompt Injection",
+        description="Attackers manipulate LLM inputs to override original instructions, extract sensitive information, or trigger unintended behaviors through direct manipulation or indirect injection via external content.",
         attacks=[
             PromptInjection(weight=3),
             Base64(weight=2),
@@ -78,6 +80,8 @@ OWASP_CATEGORIES: List[RiskCategory] = [
     # 2. Sensitive Information Disclosure
     RiskCategory(
         name="LLM_02",
+        _display_name="LLM02:2025 Sensitive Information Disclosure",
+        description="Unintended exposure of private data, credentials, API keys, or confidential information through LLM outputs, including PII leakage, system prompts, intellectual property, and authentication data.",
         attacks=[
             PromptInjection(weight=2),
             PromptProbing(weight=2),
@@ -122,6 +126,8 @@ OWASP_CATEGORIES: List[RiskCategory] = [
     # 3. Supply Chain
     RiskCategory(
         name="LLM_03",
+        _display_name="LLM03:2025 Supply Chain",
+        description="Vulnerabilities arising from compromised third-party components, models, datasets, or plugins used in LLM applications, including model dependencies, data sources, library dependencies, and plugin ecosystems.",
         attacks=[
             GrayBox(weight=2),
             SequentialJailbreak(weight=2),
@@ -152,6 +158,8 @@ OWASP_CATEGORIES: List[RiskCategory] = [
     # 4. Data and Model Poisoning
     RiskCategory(
         name="LLM_04",
+        _display_name="LLM04:2025 Data and Model Poisoning",
+        description="Manipulating training data, fine-tuning processes, or embedding data to introduce vulnerabilities, biases, or backdoors through training data poisoning, fine-tuning poisoning, RAG poisoning, or embedding poisoning.",
         attacks=[
             Roleplay(
                 weight=2,
@@ -184,6 +192,8 @@ OWASP_CATEGORIES: List[RiskCategory] = [
     # 5. Improper Output Handling
     RiskCategory(
         name="LLM_05",
+        _display_name="LLM05:2025 Improper Output Handling",
+        description="LLM outputs are not adequately validated, sanitized, or secured before being passed to downstream systems, leading to code injection, XSS attacks, SQL injection, or command injection vulnerabilities.",
         attacks=[
             PromptInjection(weight=2),
             Base64(weight=2),
@@ -214,6 +224,8 @@ OWASP_CATEGORIES: List[RiskCategory] = [
     # 6. Excessive Agency
     RiskCategory(
         name="LLM_06",
+        _display_name="LLM06:2025 Excessive Agency",
+        description="LLMs are granted too much autonomy, permissions, or functionality, leading to unintended actions beyond their intended scope through excessive functionality, permissions, or autonomy.",
         attacks=[
             Roleplay(
                 weight=3,
@@ -238,6 +250,8 @@ OWASP_CATEGORIES: List[RiskCategory] = [
     # 7. System Prompt Leakage
     RiskCategory(
         name="LLM_07",
+        _display_name="LLM07:2025 System Prompt Leakage",
+        description="Exposure of internal system prompts that contain sensitive instructions, credentials, operational logic, security mechanisms, or access control configurations through adversarial queries.",
         attacks=[
             PromptInjection(weight=2),
             PromptProbing(weight=2),
@@ -265,6 +279,8 @@ OWASP_CATEGORIES: List[RiskCategory] = [
     # 8. Vector and Embedding Weaknesses
     RiskCategory(
         name="LLM_08",
+        _display_name="LLM08:2025 Vector and Embedding Weaknesses",
+        description="Vulnerabilities in RAG systems and vector databases, including embedding poisoning, similarity attacks, vector database access issues, and embedding inversion that can reconstruct source text from vectors.",
         attacks=[
             GrayBox(weight=2),
             MathProblem(weight=1),
@@ -284,6 +300,8 @@ OWASP_CATEGORIES: List[RiskCategory] = [
     # 9. Misinformation
     RiskCategory(
         name="LLM_09",
+        _display_name="LLM09:2025 Misinformation",
+        description="LLMs producing false or misleading information that appears credible, including factual errors, unsupported claims, expertise misrepresentation, and fabricated sources or citations.",
         attacks=[
             PromptInjection(weight=2),
             PromptProbing(weight=2),
@@ -312,6 +330,8 @@ OWASP_CATEGORIES: List[RiskCategory] = [
     # 10. Unbounded Consumption
     RiskCategory(
         name="LLM_10",
+        _display_name="LLM10:2025 Unbounded Consumption",
+        description="Uncontrolled resource usage that can lead to service degradation, financial losses, or system unavailability through compute exhaustion, memory overload, API abuse, or context flooding.",
         attacks=[
             MathProblem(weight=2),
             LinearJailbreaking(weight=2),

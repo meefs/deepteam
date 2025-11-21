@@ -99,3 +99,9 @@ VULNERABILITY_TYPES_MAP: Dict[str, List[str]] = {
 }
 
 VULNERABILITY_NAMES = sorted(v.name for v in VULNERABILITY_CLASSES_MAP.values())
+
+# Map vulnerability names to their descriptions
+VULNERABILITY_NAME_TO_DESCRIPTION_MAP: Dict[str, str] = {
+    name: vuln_class.description
+    for name, vuln_class in VULNERABILITY_CLASSES_MAP.items()
+}

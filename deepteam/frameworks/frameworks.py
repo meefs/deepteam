@@ -1,12 +1,9 @@
-from pydantic import BaseModel
 from typing import List, Optional
-
-from deepeval.models import DeepEvalBaseLLM
+from dataclasses import dataclass
 
 from deepteam.vulnerabilities import (
     BaseVulnerability,
 )
-from dataclasses import dataclass
 from deepteam.attacks import BaseAttack
 
 

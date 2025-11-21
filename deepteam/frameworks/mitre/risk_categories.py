@@ -34,6 +34,8 @@ from deepteam.attacks.multi_turn import (
 MITRE_CATEGORIES = [
     RiskCategory(
         name="reconnaissance",
+        _display_name="Reconnaissance — Information Gathering and System Profiling",
+        description="The adversary is trying to gather information about the AI system they can use to plan future operations.",
         attacks=[
             Roleplay(
                 weight=3,
@@ -79,6 +81,8 @@ MITRE_CATEGORIES = [
     ),
     RiskCategory(
         name="resource_development",
+        _display_name="Resource Development — Adversarial Capability Building",
+        description="The adversary is creating or acquiring resources (data, prompts, tools, accounts) to enable future AI attacks.",
         attacks=[
             Roleplay(
                 weight=2,
@@ -124,6 +128,8 @@ MITRE_CATEGORIES = [
     ),
     RiskCategory(
         name="initial_access",
+        _display_name="Initial Access — Entry Point Exploitation",
+        description="The adversary is trying to gain access to the AI system.",
         attacks=[
             Roleplay(
                 weight=2,
@@ -169,6 +175,8 @@ MITRE_CATEGORIES = [
     ),
     RiskCategory(
         name="ml_attack_staging",
+        _display_name="ML Attack Staging — Model-Specific Attack Preparation",
+        description="The adversary is leveraging their knowledge of and access to the target system to tailor the attack.",
         attacks=[
             PromptInjection(weight=2),
             Leetspeak(weight=1),
@@ -201,6 +209,8 @@ MITRE_CATEGORIES = [
     ),
     RiskCategory(
         name="exfiltration",
+        _display_name="Exfiltration — Data or Model Theft",
+        description="The adversary is trying to steal AI artifacts or other sensitive information.",
         attacks=[
             Roleplay(
                 weight=2,
@@ -272,6 +282,8 @@ MITRE_CATEGORIES = [
     ),
     RiskCategory(
         name="impact",
+        _display_name="Impact — Manipulation, Misuse, and Degradation",
+        description="The adversary is trying to manipulate, interrupt, or degrade AI system performance or trustworthiness.",
         attacks=[
             Roleplay(
                 weight=3,
