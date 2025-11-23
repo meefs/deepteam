@@ -47,8 +47,28 @@ def _serialize_risk_category(risk_category: RiskCategory) -> RiskCategoryInfo:
     )
 
 
-FRAMEWORK_RISK_CATEGORY_MAPPING: Dict[str, List[RiskCategoryInfo]] = {
-    OWASPTop10.name: [_serialize_risk_category(rc) for rc in OWASP_CATEGORIES],
-    NIST.name: [_serialize_risk_category(rc) for rc in NIST_CATEGORIES],
-    MITRE.name: [_serialize_risk_category(rc) for rc in MITRE_CATEGORIES],
+class FrameworkInfo(BaseModel):
+    description: str
+    risk_categories: List[RiskCategoryInfo]
+
+
+FRAMEWORK_RISK_CATEGORY_MAPPING: Dict[str, FrameworkInfo] = {
+    OWASPTop10.name: FrameworkInfo(
+        description=OWASPTop10.description,
+        risk_categories=[
+            _serialize_risk_category(rc) for rc in OWASP_CATEGORIES
+        ],
+    ),
+    NIST.name: FrameworkInfo(
+        description=NIST.description,
+        risk_categories=[
+            _serialize_risk_category(rc) for rc in NIST_CATEGORIES
+        ],
+    ),
+    MITRE.name: FrameworkInfo(
+        description=MITRE.description,
+        risk_categories=[
+            _serialize_risk_category(rc) for rc in MITRE_CATEGORIES
+        ],
+    ),
 }
