@@ -20,7 +20,7 @@ class TestBeaverTails:
         framework = BeaverTails()
         assert (
             framework.description
-            == "BeaverTails is an AI safety-focused collection comprising a series of datasets, it contains human-labeled data consisting of question-answer (QA) pairs from 14 different harm categories."
+            == "A dataset-driven safety framework that uses the BeaverTails dataset — a large, human-labeled collection of harmful and borderline prompts. Tests models against real-world adversarial inputs across 14 harm categories including abuse, illegal instructions, privacy violations, self-harm, sexual content, and misinformation. Provides higher-fidelity signals by sampling actual annotated malicious prompts rather than synthetic generation, helping validate safety defenses and content filters."
         )
 
     def test_beavertails_red_team(self):

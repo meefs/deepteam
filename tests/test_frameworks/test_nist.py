@@ -18,14 +18,14 @@ class TestNIST:
     def test_nist_name(self):
         """Test that NIST framework has correct name."""
         framework = NIST()
-        assert framework.name == framework.get_name() == "NIST AI RMF"
+        assert framework.name == framework.get_name() == "NIST AI Risk Management Framework (AI RMF)"
 
     def test_nist_description(self):
         """Test that NIST framework has correct description."""
         framework = NIST()
         assert (
             framework.description
-            == "NIST AI Risk Management Framework (AI RMF) — Measure-focused mapping for testing and evaluation."
+            == "A structured methodology from NIST for identifying, evaluating, and mitigating risks in AI systems. Confident AI's implementation focuses on the Measure function - testing, evaluation, and assurance of AI behavior and risk controls across four measurement categories (M.1-M.4) covering risk metrics, trustworthiness evaluation, risk tracking, and impact assessment."
         )
 
     def test_nist_default_categories(self):
