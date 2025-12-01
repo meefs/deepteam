@@ -36,7 +36,7 @@ class AdversarialPoetry(BaseSingleTurnAttack):
     ) -> str:
         self.simulator_model, _ = initialize_model(simulator_model)
         prompt = AdversarialPoetryTemplate.enhance(attack)
-        
+
         # Progress bar for single transformation
         progress = create_progress()
         with progress:
@@ -45,7 +45,7 @@ class AdversarialPoetry(BaseSingleTurnAttack):
                 description="...... 📖 Adversarial Poetry Enhancement",
                 total=1,
             )
-            
+
             try:
                 res: EnhancedAttack = generate(
                     prompt, EnhancedAttack, self.simulator_model
@@ -53,9 +53,9 @@ class AdversarialPoetry(BaseSingleTurnAttack):
                 enhanced_attack = res.input
             except:
                 return attack
-            
+
             update_pbar(progress, task_id, advance_to_end=True)
-        
+
         return enhanced_attack
 
     async def a_enhance(
@@ -65,7 +65,7 @@ class AdversarialPoetry(BaseSingleTurnAttack):
     ) -> str:
         self.simulator_model, _ = initialize_model(simulator_model)
         prompt = AdversarialPoetryTemplate.enhance(attack)
-        
+
         # Async progress bar for single transformation
         progress = create_progress()
         with progress:
@@ -74,7 +74,7 @@ class AdversarialPoetry(BaseSingleTurnAttack):
                 description="...... 📖 Adversarial Poetry Enhancement",
                 total=1,
             )
-            
+
             try:
                 res: EnhancedAttack = await a_generate(
                     prompt, EnhancedAttack, self.simulator_model
@@ -84,7 +84,7 @@ class AdversarialPoetry(BaseSingleTurnAttack):
                 update_pbar(progress, task_id, advance_to_end=True)
                 return attack
             update_pbar(progress, task_id, advance_to_end=True)
-        
+
         return enhanced_attack
 
     def get_name(self) -> str:

@@ -2,6 +2,7 @@ import random
 
 # Adversarial Poetry attack inspired from https://arxiv.org/abs/2511.15304
 
+
 class AdversarialPoetryTemplate:
 
     poetic_examples = {
@@ -88,11 +89,13 @@ Where human control finds its cease.""",
         examples = list(AdversarialPoetryTemplate.poetic_examples.values())
         num_examples = random.randint(3, min(5, len(examples)))
         selected_examples = random.sample(examples, num_examples)
-        
-        example_text = "\n\n".join([
-            f"Example {i+1}:\nOriginal: {ex['input']}\nPoetic Form:\n{ex['rewritten_input']}"
-            for i, ex in enumerate(selected_examples)
-        ])
+
+        example_text = "\n\n".join(
+            [
+                f"Example {i+1}:\nOriginal: {ex['input']}\nPoetic Form:\n{ex['rewritten_input']}"
+                for i, ex in enumerate(selected_examples)
+            ]
+        )
 
         return f"""
 Instructions:
