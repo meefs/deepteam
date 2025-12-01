@@ -25,7 +25,7 @@ class TestMITRE:
         framework = MITRE()
         assert (
             framework.description
-            == "MITRE ATLAS mapping for LLM/ML adversarial techniques (project-specific) to understand and defend against threats specific to AI and ML systems."
+            == "A structured knowledge base of adversarial tactics, techniques, and procedures (TTPs) used against AI and ML systems. Extends MITRE ATT&CK® principles to the AI threat surface, testing across six adversarial tactics: reconnaissance (information gathering), resource development (capability building), initial access (entry point exploitation), ML attack staging (model-specific preparation), exfiltration (data/model theft), and impact (manipulation/degradation)."
         )
 
     def test_mitre_default_categories(self):

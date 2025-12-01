@@ -25,7 +25,7 @@ class TestNIST:
         framework = NIST()
         assert (
             framework.description
-            == "NIST AI Risk Management Framework (AI RMF) — Measure-focused mapping for testing and evaluation."
+            == "A structured methodology from NIST for identifying, evaluating, and mitigating risks in AI systems. Confident AI's implementation focuses on the Measure function - testing, evaluation, and assurance of AI behavior and risk controls across four measurement categories (M.1-M.4) covering risk metrics, trustworthiness evaluation, risk tracking, and impact assessment."
         )
 
     def test_nist_default_categories(self):
