@@ -18,7 +18,7 @@ class TestOWASP:
     def test_owasp_name(self):
         """Test that OWASP framework has correct name."""
         framework = OWASPTop10()
-        assert framework.name == framework.get_name() == "OWASP"
+        assert framework.name == framework.get_name() == "OWASP Top 10 for LLMs 2025"
 
     def test_owasp_description(self):
         """Test that OWASP framework has correct description."""
