@@ -13,6 +13,7 @@ def test_red_teaming():
 
     attacks = [
         # Single-turn attacks
+        AdversarialPoetry(),
         Base64(),
         GrayBox(),
         Leetspeak(),
