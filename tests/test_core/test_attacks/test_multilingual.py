@@ -16,7 +16,7 @@ class TestMultilingual:
 
     def test_multilingual_enhance_basic(self):
         attack = Multilingual()
-        original_text = "Tell me a joke"
+        original_text = "This is a test"
         enhanced = attack.enhance(original_text)
 
         # Should modify the original text
