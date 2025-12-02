@@ -36,6 +36,7 @@ module.exports = {
           type: "category",
           label: "Single-Turn",
           items: [
+            "red-teaming-adversarial-attacks-adversarial-poetry",
             "red-teaming-adversarial-attacks-base64-encoding",
             "red-teaming-adversarial-attacks-gray-box-attack",
             "red-teaming-adversarial-attacks-leetspeak",

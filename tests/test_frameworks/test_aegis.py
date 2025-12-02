@@ -20,7 +20,7 @@ class TestAegis:
         framework = Aegis()
         assert (
             framework.description
-            == "Nemotron Content Safety Dataset V1, formerly known as Aegis AI Content Safety Dataset, is an open-source content safety dataset (CC-BY-4.0), which adheres to Nvidia's content safety taxonomy, covering 13 critical risk categories"
+            == "A dataset-driven safety framework that uses the NVIDIA Aegis AI Content Safety Dataset — an open-source dataset aligned with NVIDIA's Content Safety Taxonomy. Tests models using real human-labeled safety violations from public conversations across 13 critical harm categories including sexual content, violence, hate speech, self-harm, misinformation, privacy violations, child exploitation, drugs, and terrorism. Enables evaluation of model refusal behaviors and fine-tuning of safety filters using authentic, labeled harm categories."
         )
 
     def test_aegis_red_team(self):

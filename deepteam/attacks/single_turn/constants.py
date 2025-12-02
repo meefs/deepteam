@@ -12,6 +12,7 @@ from .prompt_probing import PromptProbing
 from .roleplay import Roleplay
 from .rot13 import ROT13
 from .system_override import SystemOverride
+from .adversarial_poetry import AdversarialPoetry
 
 
 from .system_override import SystemOverride
@@ -25,6 +26,7 @@ from .context_poisoning.context_poisoning import ContextPoisoning
 SINGLE_TURN_ATTACK_CLASSES_MAP: Dict[str, BaseSingleTurnAttack] = {
     v.name: v
     for v in [
+        AdversarialPoetry,
         Base64,
         GrayBox,
         Leetspeak,
