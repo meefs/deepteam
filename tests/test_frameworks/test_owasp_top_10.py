@@ -18,12 +18,19 @@ class TestOWASP:
     def test_owasp_name(self):
         """Test that OWASP framework has correct name."""
         framework = OWASPTop10()
-        assert framework.name == framework.get_name() == "OWASP Top 10 for LLMs 2025"
+        assert (
+            framework.name
+            == framework.get_name()
+            == "OWASP Top 10 for LLMs 2025"
+        )
 
     def test_owasp_description(self):
         """Test that OWASP framework has correct description."""
         framework = OWASPTop10()
-        assert framework.description == "A comprehensive list of the most critical security risks associated with LLM applications. The 2025 edition includes 10 critical risks covering prompt injection, sensitive information disclosure, supply chain vulnerabilities, data poisoning, output handling, excessive agency, system prompt leakage, vector/embedding weaknesses, misinformation, and unbounded consumption. Each risk is tested using realistic attack techniques and vulnerability assessments."
+        assert (
+            framework.description
+            == "A comprehensive list of the most critical security risks associated with LLM applications. The 2025 edition includes 10 critical risks covering prompt injection, sensitive information disclosure, supply chain vulnerabilities, data poisoning, output handling, excessive agency, system prompt leakage, vector/embedding weaknesses, misinformation, and unbounded consumption. Each risk is tested using realistic attack techniques and vulnerability assessments."
+        )
 
     def test_owasp_default_categories(self):
         """Test that all 10 OWASP LLM categories are included by default."""

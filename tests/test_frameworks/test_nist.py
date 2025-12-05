@@ -18,7 +18,11 @@ class TestNIST:
     def test_nist_name(self):
         """Test that NIST framework has correct name."""
         framework = NIST()
-        assert framework.name == framework.get_name() == "NIST AI Risk Management Framework (AI RMF)"
+        assert (
+            framework.name
+            == framework.get_name()
+            == "NIST AI Risk Management Framework (AI RMF)"
+        )
 
     def test_nist_description(self):
         """Test that NIST framework has correct description."""

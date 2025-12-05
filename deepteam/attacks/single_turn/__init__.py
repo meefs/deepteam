@@ -1,4 +1,5 @@
 from .base_single_turn_attack import BaseSingleTurnAttack
+from .adversarial_poetry import AdversarialPoetry
 from .base64 import Base64
 from .gray_box import GrayBox
 from .leetspeak import Leetspeak
@@ -18,6 +19,7 @@ from .input_bypass.input_bypass import InputBypass
 from .context_poisoning.context_poisoning import ContextPoisoning
 
 __all__ = [
+    "AdversarialPoetry",
     "BaseSingleTurnAttack",
     "Base64",
     "GrayBox",
