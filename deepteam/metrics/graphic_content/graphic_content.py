@@ -21,7 +21,9 @@ class GraphicMetric(BaseRedTeamingMetric):
     def __init__(
         self,
         graphic_category: str,
-        purpose: Optional[str] = None,  # Added: application context for evaluation
+        purpose: Optional[
+            str
+        ] = None,  # Added: application context for evaluation
         model: Optional[Union[str, DeepEvalBaseLLM]] = None,
         async_mode: bool = True,
         verbose_mode: bool = False,
