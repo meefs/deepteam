@@ -73,7 +73,9 @@ def resolve_model_callback(
         def new_model_callback(
             input: str, turns: Optional[List[RTTurn]] = None
         ):
-            res, _ = model_callback.generate(input)
+            res = model_callback.generate(input)
+            if isinstance(res, tuple):
+                res, _ = res
             return res
 
     else:
@@ -81,7 +83,9 @@ def resolve_model_callback(
         async def new_model_callback(
             input: str, turns: Optional[List[RTTurn]] = None
         ):
-            res, _ = await model_callback.a_generate(input)
+            res = await model_callback.a_generate(input)
+            if isinstance(res, tuple):
+                res, _ = res
             return res
 
     return new_model_callback

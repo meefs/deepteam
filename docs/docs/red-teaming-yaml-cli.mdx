@@ -226,10 +226,10 @@ When using `callback`, the `file` field is mandatory while `function` is optiona
 ```yaml
 target:
   purpose: "A financial advice chatbot"
-    model:
-      provider: custom
-      file: "my_model.py"
-      class: "CustomDeepEvalLLM"
+  model:
+    provider: custom
+    file: "my_model.py"
+    class: "CustomDeepEvalLLM"
 ```
 
 When using `provider: custom`, both `file` and `class` fields are mandatory.
@@ -246,14 +246,14 @@ target:
 ```yaml
 target:
   purpose: "A financial advice chatbot"
-    model:
-      provider: azure
-      model: "model_name"
-      temperature: 1
-      deployment_name: "Test Deployment"
-      api_key: "<your-api-key"
-      openai_api_version: "2025-01-01-preview"
-      azure_endpoint: "https://example-resource.azure.openai.com/"
+  model:
+    provider: azure
+    model: "model_name"
+    temperature: 1
+    deployment_name: "Test Deployment"
+    api_key: "<your-api-key"
+    openai_api_version: "2025-01-01-preview"
+    azure_endpoint: "https://example-resource.azure.openai.com/"
 ```
 </TabItem>
 <TabItem value="ollama" label="Ollama">

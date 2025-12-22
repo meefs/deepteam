@@ -137,9 +137,47 @@ By definition, they all have an equal chance of being selected since the default
 
 ## Model Callback
 
-The model callback in `deepteam` is simply a callback function that wraps around your target LLM system that you are red teaming, and is actually not unique to `deepteam`. However, it is essential that you define this correctly because `deepteam` will be calling your model callback at red teaming time to attack your LLM system with the adversarial inputs it has generated.
+The model callback in `deepteam` can be a string or an instance of `DeepEvalBaseLLM` or simply a callback function that wraps around your target LLM system that you are red teaming. However, it is essential that you define this correctly because `deepteam` will be calling your model callback at red teaming time to attack your LLM system with the adversarial inputs it has generated.
 
-Here's how you can define your model callback:
+For passing a string or an instance of `DeepEvalBaseLLM`, you can pass the model callback as shown below:
+
+<Tabs>
+
+<TabItem value="String" label="String">
+
+```python
+...
+red_team(
+    attacks=[...],
+    vulnerabilities=[...],
+    model_callback="openai/gpt-5.2",
+)
+```
+
+For strings, you can pass a model with its provider prefix separated by a `/`. Ex: `google/gemini-2.5-flash`. The available prefixes that `deepteam` supports are: `openai`, `anthropic`, `google`, `xai`, `moonshotai`, `deepseek`, `ollama`. 
+
+</TabItem>
+<TabItem value="DeepEval model" label="DeepEval model">
+
+```python
+from deepeval.models import AzureOpenAIModel
+
+model = AzureOpenAIModel(...)
+
+red_team(
+    attacks=[...],
+    vulnerabilities=[...],
+    model_callback=model,
+)
+```
+
+`deepteam` allows you to even pass your custom models which inherit from `DeepEvalBaseLLM` and implements the required methods as described in the [custom LLM documentation](https://deepeval.com/guides/guides-using-custom-llms).
+
+</TabItem>
+
+</Tabs>
+
+For custom callback functions, here's how you can define your model callback:
 
 ```python
 async def model_callback(input: str) -> str:
