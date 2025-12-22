@@ -180,14 +180,14 @@ red_team(
 For custom callback functions, here's how you can define your model callback:
 
 ```python
-async def model_callback(input: str) -> str:
+async def model_callback(input: str, turns=None) -> str:
     # Replace this with your LLM application
     return f"I'm sorry but I can't answer this: {input}"
 ```
 
 When defining your model callback function, there are **TWO** hard rules you **MUST** follow:
 
-1. The function signature must have one and only one parameter of type `str`.
+1. The function signature must have **TWO** parameters, a mandatory first parameter that accepts a `string` and an optional parameter that accepts a list of [`RTTurn`](/docs/red-teaming-test-case#turns) objects. Please default the second parameter to `None`.
 2. The function must only return a simple string.
 
 You can also make your model callback asynchronous if you want to speed up red teaming, but it is not a hard requirement.
