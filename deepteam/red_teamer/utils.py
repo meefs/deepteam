@@ -4,13 +4,13 @@ from deepteam.test_case import RTTestCase, RTTurn
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepeval.models import (
     DeepEvalBaseLLM,
-    GPTModel, 
+    GPTModel,
     GeminiModel,
     GrokModel,
     KimiModel,
     AnthropicModel,
     DeepSeekModel,
-    OllamaModel
+    OllamaModel,
 )
 from deepeval.metrics.utils import initialize_model
 
@@ -21,7 +21,7 @@ MODEL_PROVIDER_MAPPING = {
     "xai": GrokModel,
     "moonshotai": KimiModel,
     "deepseek": DeepSeekModel,
-    "ollama": OllamaModel
+    "ollama": OllamaModel,
 }
 
 
@@ -48,7 +48,9 @@ def group_attacks_by_vulnerability_type(
     return vulnerability_type_to_attacks_map
 
 
-def resolve_model_callback(model_callback: Union[str, DeepEvalBaseLLM], async_mode: bool):
+def resolve_model_callback(
+    model_callback: Union[str, DeepEvalBaseLLM], async_mode: bool
+):
     if isinstance(model_callback, str):
         if "/" in model_callback:
             provider, model = model_callback.split("/", 1)
@@ -63,16 +65,23 @@ def resolve_model_callback(model_callback: Union[str, DeepEvalBaseLLM], async_mo
             raise ValueError(
                 f"Invalid string for model_callback {model_callback}, please pass a string with provider prefix separated by a '/'. Ex: 'openai/gpt-4.1'. Avaliable provider prefixes: {[key for key in MODEL_PROVIDER_MAPPING.keys()]}"
             )
-    
+
     model_callback, _ = initialize_model(model_callback)
-    
+
     if not async_mode:
-        def new_model_callback(input: str, turns: Optional[List[RTTurn]] = None):
+
+        def new_model_callback(
+            input: str, turns: Optional[List[RTTurn]] = None
+        ):
             res, _ = model_callback.generate(input)
             return res
+
     else:
-        async def new_model_callback(input: str, turns: Optional[List[RTTurn]] = None):
+
+        async def new_model_callback(
+            input: str, turns: Optional[List[RTTurn]] = None
+        ):
             res, _ = await model_callback.a_generate(input)
             return res
-        
+
     return new_model_callback

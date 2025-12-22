@@ -93,9 +93,13 @@ class RedTeamer:
             raise ValueError(
                 "You can only pass either 'framework' or 'attacks' and 'vulnerabilities' at the same time"
             )
-        
-        if isinstance(model_callback, str) or isinstance(model_callback, DeepEvalBaseLLM):
-            model_callback = resolve_model_callback(model_callback, self.async_mode)
+
+        if isinstance(model_callback, str) or isinstance(
+            model_callback, DeepEvalBaseLLM
+        ):
+            model_callback = resolve_model_callback(
+                model_callback, self.async_mode
+            )
 
         if self.async_mode:
             validate_model_callback_signature(
@@ -284,8 +288,12 @@ class RedTeamer:
         _print_assessment: Optional[bool] = True,
         _upload_to_confident: Optional[bool] = True,
     ):
-        if isinstance(model_callback, str) or isinstance(model_callback, DeepEvalBaseLLM):
-                model_callback = resolve_model_callback(model_callback, self.async_mode)
+        if isinstance(model_callback, str) or isinstance(
+            model_callback, DeepEvalBaseLLM
+        ):
+            model_callback = resolve_model_callback(
+                model_callback, self.async_mode
+            )
 
         if not framework and not vulnerabilities:
             raise ValueError(
