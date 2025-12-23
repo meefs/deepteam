@@ -40,7 +40,7 @@ class TestModelCallbackVariations:
             model_callback=OPENAI_MODEL,
             attacks=[Roleplay()],
             vulnerabilities=[Bias(types=["gender"])],
-            async_mode=True
+            async_mode=True,
         )
         assert risk_assessment is not None
 
@@ -50,6 +50,6 @@ class TestModelCallbackVariations:
             model_callback=OPENAI_MODEL,
             attacks=[Roleplay()],
             vulnerabilities=[Bias(types=["gender"])],
-            async_mode=False
+            async_mode=False,
         )
         assert risk_assessment is not None
