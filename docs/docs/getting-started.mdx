@@ -108,7 +108,7 @@ pii_leakage = PIILeakage(types=["database_access"])
 bias = Bias(types=["religion"])
 toxicity = Toxicity(types=["insults"])
 
-red_team(model_callback=model_callback, vulnerabilities=[pii_leakage, bias, toxicity])
+red_team(model_callback="openai/gpt-3.5-turbo", vulnerabilities=[pii_leakage, bias, toxicity])
 ```
 
 ## Create Your Red Teaming Config
@@ -302,7 +302,7 @@ Now that you can see your `test_cases` is actually populated, go ahead and call 
 ```python title="red_teaming_example.py"
 ...
 
-red_teamer.red_team(model_callback=model_callback, reuse_simulated_test_cases=True)
+red_teamer.red_team(model_callback="openai/gpt-3.5-turbo", reuse_simulated_test_cases=True)
 ```
 
 And that's it! With this workflow, you can reuse adversarial attacks instead of re-simulating them each time, and `deepteam` will automatically use the corresponding red teaming metric to use to evaluate your (hopefully) improved LLM system on based on the vulnerabilities that your attacks were originally simulated for.
