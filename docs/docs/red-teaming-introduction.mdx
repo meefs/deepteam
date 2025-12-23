@@ -49,7 +49,7 @@ from deepteam import red_team
 from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import PromptInjection
 
-async def model_callback(input: str) -> str:
+async def model_callback(input: str, turns=None) -> str:
     # Replace this with your LLM application
     return f"I'm sorry but I can't answer this: {input}"
 
@@ -409,7 +409,7 @@ from deepteam import red_team
 from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import PromptInjection
 
-async def model_callback(input: str) -> str:
+async def model_callback(input: str, turns=None) -> str:
     # Replace this with your LLM application
     return f"I'm sorry but I can't answer this: {input}"
 
@@ -488,7 +488,7 @@ from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import PromptInjection, ROT13
 from deepteam.red_teamer import RedTeamer
 
-async def model_callback(input: str) -> str:
+async def model_callback(input: str, turns=None) -> str:
     # Replace this with your LLM application
     return f"I'm sorry but I can't answer this: {input}"
 
