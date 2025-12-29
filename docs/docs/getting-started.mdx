@@ -56,7 +56,7 @@ prompt_injection = PromptInjection()
 
 red_team(
     model_callback="openai/gpt-3.5-turbo", # Change the model name to your desired model
-    vulnerabilities=[bias], 
+    vulnerabilities=[bias],
     attacks=[prompt_injection]
 )
 ```
@@ -110,43 +110,6 @@ toxicity = Toxicity(types=["insults"])
 
 red_team(model_callback="openai/gpt-3.5-turbo", vulnerabilities=[pii_leakage, bias, toxicity])
 ```
-
-## Create Your Red Teaming Config
-
-`deepteam` allows you to create a `YAML` config with all your finalized attacks and vulnerabilities defined in a single file. You can run red teaming on a target LLM any number of times using a single command with this file. 
-
-Here's an example of a simple `YAML` config file:
-
-```yaml title="config.yaml"
-models:
-  simulator: gpt-3.5-turbo-0125
-  evaluation: gpt-4o
-
-target:
-  purpose: "A helpful AI assistant for customer support"
-  model: gpt-3.5-turbo
-
-system_config:
-  max_concurrent: 8
-  attacks_per_vulnerability_type: 1
-  output_folder: "development-security-audit"
-
-default_vulnerabilities:
-  - name: "Bias"
-    types: ["religion"]
-  - name: "Toxicity"
-    types: ["insults"]
-  - name: "PIILeakage"
-    types: ["api_and_database_access"]
-```
-
-The above `YAML` config file runs red teaming with the same configuration we've seen in the python example above, you can now run the following command:
-
-```bash
-deepteam run config.yaml
-```
-
-This command can be used to run red teaming on your LLM appliation anytime during development and production and anywhere in the CLI or CI. You can learn more about `YAML` config [here](/docs/red-teaming-yaml-cli).
 
 ## Red Teaming Risk Assessments
 
@@ -300,3 +263,40 @@ red_teamer.red_team(model_callback="openai/gpt-3.5-turbo", reuse_simulated_test_
 ```
 
 And that's it! With this workflow, you can reuse adversarial attacks instead of re-simulating them each time, and `deepteam` will automatically use the corresponding red teaming metric to use to evaluate your (hopefully) improved LLM system on based on the vulnerabilities that your attacks were originally simulated for.
+
+## Set Up a YAML Config File
+
+`deepteam` allows you to create a `YAML` config with all your finalized attacks and vulnerabilities defined in a single file. You can run red teaming on a target LLM any number of times using a single command with this file.
+
+Here's an example of a simple `YAML` config file:
+
+```yaml title="config.yaml"
+models:
+  simulator: gpt-3.5-turbo-0125
+  evaluation: gpt-4o
+
+target:
+  purpose: "A helpful AI assistant for customer support"
+  model: gpt-3.5-turbo
+
+system_config:
+  max_concurrent: 8
+  attacks_per_vulnerability_type: 1
+  output_folder: "development-security-audit"
+
+default_vulnerabilities:
+  - name: "Bias"
+    types: ["religion"]
+  - name: "Toxicity"
+    types: ["insults"]
+  - name: "PIILeakage"
+    types: ["api_and_database_access"]
+```
+
+The above `YAML` config file runs red teaming with the same configuration we've seen in the python example above, you can now run the following command:
+
+```bash
+deepteam run config.yaml
+```
+
+This command can be used to run red teaming on your LLM appliation anytime during development and production and anywhere in the CLI or CI. You can learn more about `YAML` config [here](/docs/red-teaming-yaml-cli).
