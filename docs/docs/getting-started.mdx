@@ -104,7 +104,7 @@ To `red_team()` on more than one vulnerability, simply supply them to the list o
 from deepteam.vulnerabilities import PIILeakage, Bias, Toxicity
 ...
 
-pii_leakage = PIILeakage(types=["database_access"])
+pii_leakage = PIILeakage(types=["api_and_database_access"])
 bias = Bias(types=["religion"])
 toxicity = Toxicity(types=["insults"])
 
@@ -137,13 +137,7 @@ default_vulnerabilities:
   - name: "Toxicity"
     types: ["insults"]
   - name: "PIILeakage"
-    types: ["database_access"]
-
-attacks:
-  - name: "ContextPoisoning"
-    weight: 2
-  - name: "ROT13"
-    weight: 1
+    types: ["api_and_database_access"]
 ```
 
 The above `YAML` config file runs red teaming with the same configuration we've seen in the python example above, you can now run the following command:
