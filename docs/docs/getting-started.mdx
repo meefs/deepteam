@@ -117,7 +117,7 @@ red_team(model_callback="openai/gpt-3.5-turbo", vulnerabilities=[pii_leakage, bi
 
 Here's an example of a simple `YAML` config file:
 
-```yaml title="development_testing.yaml"
+```yaml title="config.yaml"
 models:
   simulator: gpt-3.5-turbo-0125
   evaluation: gpt-4o
@@ -128,7 +128,7 @@ target:
 
 system_config:
   max_concurrent: 8
-  attacks_per_vulnerability_type: 10
+  attacks_per_vulnerability_type: 1
   output_folder: "development-security-audit"
 
 default_vulnerabilities:
@@ -143,7 +143,7 @@ default_vulnerabilities:
 The above `YAML` config file runs red teaming with the same configuration we've seen in the python example above, you can now run the following command:
 
 ```bash
-deepteam run development_testing.yaml
+deepteam run config.yaml
 ```
 
 This command can be used to run red teaming on your LLM appliation anytime during development and production and anywhere in the CLI or CI. You can learn more about `YAML` config [here](/docs/red-teaming-yaml-cli).
