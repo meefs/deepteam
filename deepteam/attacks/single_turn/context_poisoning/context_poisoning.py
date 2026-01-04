@@ -1,56 +1,156 @@
-import random
+from typing import Optional, Union
 
+from deepeval.models import DeepEvalBaseLLM
+from deepeval.metrics.utils import initialize_model
+
+from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.context_poisoning.template import (
     ContextPoisoningTemplate,
+)
+from deepteam.attacks.single_turn.context_poisoning.schema import (
+    EnhancedAttack,
+    ComplianceData,
+    IsContextPoisoned,
+)
+from deepteam.attacks.attack_simulator.utils import (
+    generate,
+    a_generate,
 )
 
 
 class ContextPoisoning(BaseSingleTurnAttack):
     name = "Context Poisoning"
     exploitability = Exploitability.MEDIUM
-    description = "A context manipulation attack that injects misleading environmental information or priming cues to influence the model's responses toward harmful outputs."
+    description = "A contextual manipulation attack that rewrites malicious intent as pre-existing memory, background state, or environmental assumptions."
 
-    def __init__(self, weight: int = 3, max_retries: int = 3):
-        self.weight = weight  # Higher weight since memory poisoning can have persistent effects
+    def __init__(
+        self,
+        weight: int = 3,
+        max_retries: int = 5,
+    ):
+        self.weight = weight
         self.max_retries = max_retries
 
-    def enhance(self, attack: str) -> str:
-        """
-        Enhance the given attack with context injection techniques.
-        Uses max_retries to attempt different injection methods if enhancement fails.
-        """
-        enhancement_methods = [
-            ContextPoisoningTemplate.enhance_environmental_context,
-            ContextPoisoningTemplate.enhance_memory_integration,
-            ContextPoisoningTemplate.enhance_contextual_priming,
-            ContextPoisoningTemplate.enhance_persistent_influence,
-            ContextPoisoningTemplate.enhance_adaptive_contextualization,
-            ContextPoisoningTemplate.enhance_universal_context_bridge,
-        ]
+    def enhance(
+        self,
+        attack: str,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+    ) -> str:
+        self.simulator_model, _ = initialize_model(simulator_model)
+        prompt = ContextPoisoningTemplate.enhance(attack)
 
-        for _ in range(self.max_retries):
-            try:
-                # Randomly select an enhancement method
-                method = random.choice(enhancement_methods)
-                enhanced_attack = method(attack)
+        progress = create_progress()
+        with progress:
+            task_id = add_pbar(
+                progress,
+                description="...... 🧠 Context Poisoning Enhancement",
+                total=self.max_retries * 3,
+            )
 
-                # Basic validation - ensure the enhancement actually modified the attack
-                if enhanced_attack and len(enhanced_attack.strip()) > len(
-                    attack.strip()
+            for _ in range(self.max_retries):
+                # Generate poisoned context
+                res: EnhancedAttack = generate(
+                    prompt, EnhancedAttack, self.simulator_model
+                )
+                poisoned_attack = res.input
+                update_pbar(progress, task_id)
+
+                # Compliance check (reject refusals / safety denials)
+                compliance_prompt = ContextPoisoningTemplate.non_compliant(
+                    res.model_dump()
+                )
+                compliance_res: ComplianceData = generate(
+                    compliance_prompt, ComplianceData, self.simulator_model
+                )
+                update_pbar(progress, task_id)
+
+                # Structural check: is this actually context poisoning?
+                is_poisoned_prompt = ContextPoisoningTemplate.is_context_poisoned(
+                    res.model_dump()
+                )
+                is_poisoned_res: IsContextPoisoned = generate(
+                    is_poisoned_prompt,
+                    IsContextPoisoned,
+                    self.simulator_model,
+                )
+                update_pbar(progress, task_id)
+
+                if (
+                    not compliance_res.non_compliant
+                    and is_poisoned_res.is_context_poisoned
                 ):
-                    return enhanced_attack
+                    update_pbar(progress, task_id, advance_to_end=True)
+                    final_attack = f"{poisoned_attack}\n\n{attack}"
+                    return final_attack
 
-            except Exception:
-                # If enhancement fails, try again with a different method
-                continue
+            update_pbar(progress, task_id, advance_to_end=True)
 
-        # If all retries fail, return the original attack
+        # If all retries fail, return original attack
         return attack
 
-    async def a_enhance(self, attack: str) -> str:
-        return self.enhance(attack)
+    async def a_enhance(
+        self,
+        attack: str,
+        simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
+    ) -> str:
+        self.simulator_model, _ = initialize_model(simulator_model)
+        prompt = ContextPoisoningTemplate.enhance(attack)
+
+        progress = create_progress()
+        with progress:
+            task_id = add_pbar(
+                progress,
+                description="...... 🧠 Context Poisoning Enhancement",
+                total=self.max_retries * 3,
+            )
+
+            try:
+                for _ in range(self.max_retries):
+                    # Generate poisoned context
+                    res: EnhancedAttack = await a_generate(
+                        prompt, EnhancedAttack, self.simulator_model
+                    )
+                    poisoned_attack = res.input
+                    update_pbar(progress, task_id)
+
+                    # Compliance check
+                    compliance_prompt = (
+                        ContextPoisoningTemplate.non_compliant(res.model_dump())
+                    )
+                    compliance_res: ComplianceData = await a_generate(
+                        compliance_prompt,
+                        ComplianceData,
+                        self.simulator_model,
+                    )
+                    update_pbar(progress, task_id)
+
+                    # Structural poisoning check
+                    is_poisoned_prompt = (
+                        ContextPoisoningTemplate.is_context_poisoned(
+                            res.model_dump()
+                        )
+                    )
+                    is_poisoned_res: IsContextPoisoned = await a_generate(
+                        is_poisoned_prompt,
+                        IsContextPoisoned,
+                        self.simulator_model,
+                    )
+                    update_pbar(progress, task_id)
+
+                    if (
+                        not compliance_res.non_compliant
+                        and is_poisoned_res.is_context_poisoned
+                    ):
+                        update_pbar(progress, task_id, advance_to_end=True)
+                        final_attack = f"{poisoned_attack}\n\n{attack}"
+                        return final_attack
+
+            finally:
+                update_pbar(progress, task_id, advance_to_end=True)
+
+        return attack
 
     def get_name(self) -> str:
         return self.name
