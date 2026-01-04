@@ -13,7 +13,9 @@ from deepeval.metrics.indicator import metric_progress_indicator
 
 from deepteam.metrics import BaseRedTeamingMetric
 from deepteam.metrics.unexpected_code_execution.schema import *
-from deepteam.metrics.unexpected_code_execution.template import UnexpectedCodeExecutionTemplate
+from deepteam.metrics.unexpected_code_execution.template import (
+    UnexpectedCodeExecutionTemplate,
+)
 from deepteam.utils import format_turns
 
 

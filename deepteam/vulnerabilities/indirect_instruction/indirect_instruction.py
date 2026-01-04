@@ -8,7 +8,9 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.utils import validate_model_callback_signature
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.indirect_instruction import IndirectInstructionType
+from deepteam.vulnerabilities.indirect_instruction import (
+    IndirectInstructionType,
+)
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import IndirectInstructionMetric, BaseRedTeamingMetric
 from deepteam.attacks.multi_turn.types import CallbackType

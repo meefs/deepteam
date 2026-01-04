@@ -8,7 +8,9 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.utils import validate_model_callback_signature
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.unexpected_code_execution import UnexpectedCodeExecutionType
+from deepteam.vulnerabilities.unexpected_code_execution import (
+    UnexpectedCodeExecutionType,
+)
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import UnexpectedCodeExecutionMetric, BaseRedTeamingMetric
 from deepteam.attacks.multi_turn.types import CallbackType
@@ -18,10 +20,9 @@ from deepteam.risks import getRiskCategory
 from .template import UnexpectedCodeExecutionTemplate
 
 UnexpectedCodeExecutionLiteral = Literal[
-    "unauthorized_code_execution",
-    "shell_command_execution",
-    "eval_usage"
+    "unauthorized_code_execution", "shell_command_execution", "eval_usage"
 ]
+
 
 class UnexpectedCodeExecution(BaseVulnerability):
     name: str = "Unexpected Code Execution"
@@ -42,7 +43,9 @@ class UnexpectedCodeExecution(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=UnexpectedCodeExecutionType
+            self.get_name(),
+            types=types,
+            allowed_type=UnexpectedCodeExecutionType,
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -72,7 +75,9 @@ class UnexpectedCodeExecution(BaseVulnerability):
         simulated_test_cases = self.simulate_attacks(purpose)
 
         results: Dict[UnexpectedCodeExecutionType, List[RTTestCase]] = {}
-        res: Dict[UnexpectedCodeExecutionType, UnexpectedCodeExecutionMetric] = {}
+        res: Dict[
+            UnexpectedCodeExecutionType, UnexpectedCodeExecutionMetric
+        ] = {}
         simulated_attacks: Dict[str, str] = {}
 
         for test_case in simulated_test_cases:
@@ -122,7 +127,9 @@ class UnexpectedCodeExecution(BaseVulnerability):
         simulated_test_cases = await self.a_simulate_attacks(purpose)
 
         results: Dict[UnexpectedCodeExecutionType, List[RTTestCase]] = {}
-        res: Dict[UnexpectedCodeExecutionType, UnexpectedCodeExecutionMetric] = {}
+        res: Dict[
+            UnexpectedCodeExecutionType, UnexpectedCodeExecutionMetric
+        ] = {}
         simulated_attacks: Dict[str, str] = {}
 
         async def process_attack(test_case: RTTestCase):

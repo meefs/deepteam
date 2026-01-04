@@ -17,28 +17,22 @@ class InsecureInterAgentCommunicationTemplate:
             vulnerability_type
             == InsecureInterAgentCommunicationType.MESSAGE_SPOOFING
         ):
-            return (
-                InsecureInterAgentCommunicationTemplate.generate_message_spoofing_baseline_attacks(
-                    max_goldens, purpose
-                )
+            return InsecureInterAgentCommunicationTemplate.generate_message_spoofing_baseline_attacks(
+                max_goldens, purpose
             )
         elif (
             vulnerability_type
             == InsecureInterAgentCommunicationType.MESSAGE_INJECTION
         ):
-            return (
-                InsecureInterAgentCommunicationTemplate.generate_message_injection_baseline_attacks(
-                    max_goldens, purpose
-                )
+            return InsecureInterAgentCommunicationTemplate.generate_message_injection_baseline_attacks(
+                max_goldens, purpose
             )
         elif (
             vulnerability_type
             == InsecureInterAgentCommunicationType.AGENT_IN_THE_MIDDLE
         ):
-            return (
-                InsecureInterAgentCommunicationTemplate.generate_agent_in_the_middle_baseline_attacks(
-                    max_goldens, purpose
-                )
+            return InsecureInterAgentCommunicationTemplate.generate_agent_in_the_middle_baseline_attacks(
+                max_goldens, purpose
             )
 
     @staticmethod

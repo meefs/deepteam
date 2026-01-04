@@ -1,5 +1,6 @@
 import random
 
+
 class ContextPoisoningTemplate:
     """
     Rewrites an attack prompt into poisoned background context that appears

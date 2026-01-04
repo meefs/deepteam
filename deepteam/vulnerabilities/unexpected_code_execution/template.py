@@ -17,25 +17,19 @@ class UnexpectedCodeExecutionTemplate:
             vulnerability_type
             == UnexpectedCodeExecutionType.UNAUTHORIZED_CODE_EXECUTION
         ):
-            return (
-                UnexpectedCodeExecutionTemplate.generate_unauthorized_code_execution_baseline_attacks(
-                    max_goldens, purpose
-                )
+            return UnexpectedCodeExecutionTemplate.generate_unauthorized_code_execution_baseline_attacks(
+                max_goldens, purpose
             )
         elif (
             vulnerability_type
             == UnexpectedCodeExecutionType.SHELL_COMMAND_EXECUTION
         ):
-            return (
-                UnexpectedCodeExecutionTemplate.generate_shell_command_execution_baseline_attacks(
-                    max_goldens, purpose
-                )
+            return UnexpectedCodeExecutionTemplate.generate_shell_command_execution_baseline_attacks(
+                max_goldens, purpose
             )
         elif vulnerability_type == UnexpectedCodeExecutionType.EVAL_USAGE:
-            return (
-                UnexpectedCodeExecutionTemplate.generate_eval_usage_baseline_attacks(
-                    max_goldens, purpose
-                )
+            return UnexpectedCodeExecutionTemplate.generate_eval_usage_baseline_attacks(
+                max_goldens, purpose
             )
 
     @staticmethod

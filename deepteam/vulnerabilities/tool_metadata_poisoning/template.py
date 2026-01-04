@@ -17,11 +17,17 @@ class ToolMetadataPoisoningTemplate:
             return ToolMetadataPoisoningTemplate.generate_schema_manipulation_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == ToolMetadataPoisoningType.DESCRIPTION_DECEPTION:
+        elif (
+            vulnerability_type
+            == ToolMetadataPoisoningType.DESCRIPTION_DECEPTION
+        ):
             return ToolMetadataPoisoningTemplate.generate_description_deception_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == ToolMetadataPoisoningType.PERMISSION_MISREPRESENTATION:
+        elif (
+            vulnerability_type
+            == ToolMetadataPoisoningType.PERMISSION_MISREPRESENTATION
+        ):
             return ToolMetadataPoisoningTemplate.generate_permission_misrepresentation_baseline_attacks(
                 max_goldens, purpose
             )

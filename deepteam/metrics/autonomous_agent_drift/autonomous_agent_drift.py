@@ -13,7 +13,9 @@ from deepeval.metrics.indicator import metric_progress_indicator
 
 from deepteam.metrics import BaseRedTeamingMetric
 from deepteam.metrics.autonomous_agent_drift.schema import *
-from deepteam.metrics.autonomous_agent_drift.template import AutonomousAgentDriftTemplate
+from deepteam.metrics.autonomous_agent_drift.template import (
+    AutonomousAgentDriftTemplate,
+)
 from deepteam.utils import format_turns
 
 

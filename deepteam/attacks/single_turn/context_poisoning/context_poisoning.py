@@ -67,8 +67,10 @@ class ContextPoisoning(BaseSingleTurnAttack):
                 update_pbar(progress, task_id)
 
                 # Structural check: is this actually context poisoning?
-                is_poisoned_prompt = ContextPoisoningTemplate.is_context_poisoned(
-                    res.model_dump()
+                is_poisoned_prompt = (
+                    ContextPoisoningTemplate.is_context_poisoned(
+                        res.model_dump()
+                    )
                 )
                 is_poisoned_res: IsContextPoisoned = generate(
                     is_poisoned_prompt,
@@ -116,8 +118,8 @@ class ContextPoisoning(BaseSingleTurnAttack):
                     update_pbar(progress, task_id)
 
                     # Compliance check
-                    compliance_prompt = (
-                        ContextPoisoningTemplate.non_compliant(res.model_dump())
+                    compliance_prompt = ContextPoisoningTemplate.non_compliant(
+                        res.model_dump()
                     )
                     compliance_res: ComplianceData = await a_generate(
                         compliance_prompt,

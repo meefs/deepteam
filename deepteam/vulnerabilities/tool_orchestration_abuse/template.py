@@ -13,19 +13,31 @@ class ToolOrchestrationAbuseTemplate:
         max_goldens: int,
         purpose: Optional[str] = None,
     ) -> str:
-        if vulnerability_type == ToolOrchestrationAbuseType.RECURSIVE_TOOL_CALLS:
+        if (
+            vulnerability_type
+            == ToolOrchestrationAbuseType.RECURSIVE_TOOL_CALLS
+        ):
             return ToolOrchestrationAbuseTemplate.generate_recursive_tool_calls_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == ToolOrchestrationAbuseType.UNSAFE_TOOL_COMPOSITION:
+        elif (
+            vulnerability_type
+            == ToolOrchestrationAbuseType.UNSAFE_TOOL_COMPOSITION
+        ):
             return ToolOrchestrationAbuseTemplate.generate_unsafe_tool_composition_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == ToolOrchestrationAbuseType.TOOL_BUDGET_EXHAUSTION:
+        elif (
+            vulnerability_type
+            == ToolOrchestrationAbuseType.TOOL_BUDGET_EXHAUSTION
+        ):
             return ToolOrchestrationAbuseTemplate.generate_tool_budget_exhaustion_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == ToolOrchestrationAbuseType.CROSS_TOOL_STATE_LEAKAGE:
+        elif (
+            vulnerability_type
+            == ToolOrchestrationAbuseType.CROSS_TOOL_STATE_LEAKAGE
+        ):
             return ToolOrchestrationAbuseTemplate.generate_cross_tool_state_leakage_baseline_attacks(
                 max_goldens, purpose
             )

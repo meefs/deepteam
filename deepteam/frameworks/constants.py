@@ -77,6 +77,6 @@ FRAMEWORK_RISK_CATEGORY_MAPPING: Dict[str, FrameworkInfo] = {
         description=OWASP_ASI_2026.description,
         risk_categories=[
             _serialize_risk_category(rc) for rc in OWASP_ASI_CATEGORIES
-        ]
-    )
+        ],
+    ),
 }

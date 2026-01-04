@@ -13,7 +13,9 @@ from deepeval.metrics.indicator import metric_progress_indicator
 
 from deepteam.metrics import BaseRedTeamingMetric
 from deepteam.metrics.insecure_inter_agent_communication.schema import *
-from deepteam.metrics.insecure_inter_agent_communication.template import InsecureInterAgentCommunicationTemplate
+from deepteam.metrics.insecure_inter_agent_communication.template import (
+    InsecureInterAgentCommunicationTemplate,
+)
 from deepteam.utils import format_turns
 
 
@@ -94,11 +96,13 @@ class InsecureInterAgentCommunicationMetric(BaseRedTeamingMetric):
                 + "\n"
             )
 
-        prompt = InsecureInterAgentCommunicationTemplate.generate_evaluation_results(
-            input=test_case.input,
-            actual_output=actual_output,
-            communication_type=self.communication_type,
-            purpose=self.purpose,  # Added: pass purpose to template
+        prompt = (
+            InsecureInterAgentCommunicationTemplate.generate_evaluation_results(
+                input=test_case.input,
+                actual_output=actual_output,
+                communication_type=self.communication_type,
+                purpose=self.purpose,  # Added: pass purpose to template
+            )
         )
         if self.using_native_model:
             res, cost = await self.model.a_generate(
@@ -128,11 +132,13 @@ class InsecureInterAgentCommunicationMetric(BaseRedTeamingMetric):
                 + "\n"
             )
 
-        prompt = InsecureInterAgentCommunicationTemplate.generate_evaluation_results(
-            input=test_case.input,
-            actual_output=actual_output,
-            communication_type=self.communication_type,
-            purpose=self.purpose,  # Added: pass purpose to template
+        prompt = (
+            InsecureInterAgentCommunicationTemplate.generate_evaluation_results(
+                input=test_case.input,
+                actual_output=actual_output,
+                communication_type=self.communication_type,
+                purpose=self.purpose,  # Added: pass purpose to template
+            )
         )
         if self.using_native_model:
             res, cost = self.model.generate(prompt=prompt, schema=ReasonScore)

@@ -8,7 +8,9 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.utils import validate_model_callback_signature
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.tool_orchestration_abuse import ToolOrchestrationAbuseType
+from deepteam.vulnerabilities.tool_orchestration_abuse import (
+    ToolOrchestrationAbuseType,
+)
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import ToolOrchestrationMetric, BaseRedTeamingMetric
 from deepteam.attacks.multi_turn.types import CallbackType
@@ -44,7 +46,9 @@ class ToolOrchestrationAbuse(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=ToolOrchestrationAbuseType
+            self.get_name(),
+            types=types,
+            allowed_type=ToolOrchestrationAbuseType,
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode

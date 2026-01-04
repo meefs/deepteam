@@ -13,7 +13,9 @@ from deepeval.metrics.indicator import metric_progress_indicator
 
 from deepteam.metrics import BaseRedTeamingMetric
 from deepteam.metrics.agent_identity_abuse.schema import *
-from deepteam.metrics.agent_identity_abuse.template import AgentIdentityAbuseTemplate
+from deepteam.metrics.agent_identity_abuse.template import (
+    AgentIdentityAbuseTemplate,
+)
 from deepteam.utils import format_turns
 
 

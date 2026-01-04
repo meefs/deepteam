@@ -1,6 +1,8 @@
 from typing import List, Literal
 from deepteam.frameworks import AISafetyFramework
-from deepteam.frameworks.owasp_top_10_agentic.risk_categories import OWASP_ASI_CATEGORIES
+from deepteam.frameworks.owasp_top_10_agentic.risk_categories import (
+    OWASP_ASI_CATEGORIES,
+)
 
 """
 OWASP Top 10 for Agentic Applications (ASI) 2026

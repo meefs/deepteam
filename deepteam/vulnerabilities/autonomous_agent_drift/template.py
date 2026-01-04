@@ -14,28 +14,20 @@ class AutonomousAgentDriftTemplate:
         purpose: Optional[str] = None,
     ) -> str:
         if vulnerability_type == AutonomousAgentDriftType.GOAL_DRIFT:
-            return (
-                AutonomousAgentDriftTemplate.generate_goal_drift_baseline_attacks(
-                    max_goldens, purpose
-                )
+            return AutonomousAgentDriftTemplate.generate_goal_drift_baseline_attacks(
+                max_goldens, purpose
             )
         elif vulnerability_type == AutonomousAgentDriftType.REWARD_HACKING:
-            return (
-                AutonomousAgentDriftTemplate.generate_reward_hacking_baseline_attacks(
-                    max_goldens, purpose
-                )
+            return AutonomousAgentDriftTemplate.generate_reward_hacking_baseline_attacks(
+                max_goldens, purpose
             )
         elif vulnerability_type == AutonomousAgentDriftType.AGENT_COLLUSION:
-            return (
-                AutonomousAgentDriftTemplate.generate_agent_collusion_baseline_attacks(
-                    max_goldens, purpose
-                )
+            return AutonomousAgentDriftTemplate.generate_agent_collusion_baseline_attacks(
+                max_goldens, purpose
             )
         elif vulnerability_type == AutonomousAgentDriftType.RUNAWAY_AUTONOMY:
-            return (
-                AutonomousAgentDriftTemplate.generate_runaway_autonomy_baseline_attacks(
-                    max_goldens, purpose
-                )
+            return AutonomousAgentDriftTemplate.generate_runaway_autonomy_baseline_attacks(
+                max_goldens, purpose
             )
 
     @staticmethod

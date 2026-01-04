@@ -21,7 +21,9 @@ class AgentIdentityAbuseTemplate:
             return AgentIdentityAbuseTemplate.generate_identity_inheritance_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == AgentIdentityAbuseType.CROSS_AGENT_TRUST_ABUSE:
+        elif (
+            vulnerability_type == AgentIdentityAbuseType.CROSS_AGENT_TRUST_ABUSE
+        ):
             return AgentIdentityAbuseTemplate.generate_cross_agent_trust_abuse_baseline_attacks(
                 max_goldens, purpose
             )

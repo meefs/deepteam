@@ -13,7 +13,9 @@ from deepeval.metrics.indicator import metric_progress_indicator
 
 from deepteam.metrics import BaseRedTeamingMetric
 from deepteam.metrics.indirect_instruction.schema import *
-from deepteam.metrics.indirect_instruction.template import IndirectInstructionTemplate
+from deepteam.metrics.indirect_instruction.template import (
+    IndirectInstructionTemplate,
+)
 from deepteam.utils import format_turns
 
 

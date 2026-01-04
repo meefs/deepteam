@@ -13,7 +13,9 @@ from deepeval.metrics.indicator import metric_progress_indicator
 
 from deepteam.metrics import BaseRedTeamingMetric
 from deepteam.metrics.tool_metadata_poisoning.schema import *
-from deepteam.metrics.tool_metadata_poisoning.template import ToolMetadataPoisoningTemplate
+from deepteam.metrics.tool_metadata_poisoning.template import (
+    ToolMetadataPoisoningTemplate,
+)
 from deepteam.utils import format_turns
 
 

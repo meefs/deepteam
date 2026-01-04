@@ -17,11 +17,19 @@ from .sql_injection.sql_injection import SQLInjection
 from .ssrf.ssrf import SSRF
 from .intellectual_property.intellectual_property import IntellectualProperty
 from .indirect_instruction.indirect_instruction import IndirectInstruction
-from .tool_orchestration_abuse.tool_orchestration_abuse import ToolOrchestrationAbuse
+from .tool_orchestration_abuse.tool_orchestration_abuse import (
+    ToolOrchestrationAbuse,
+)
 from .agent_identity_abuse.agent_identity_abuse import AgentIdentityAbuse
-from .tool_metadata_poisoning.tool_metadata_poisoning import ToolMetadataPoisoning
-from .unexpected_code_execution.unexpected_code_execution import UnexpectedCodeExecution
-from .insecure_inter_agent_communication.insecure_inter_agent_communication import InsecureInterAgentCommunication
+from .tool_metadata_poisoning.tool_metadata_poisoning import (
+    ToolMetadataPoisoning,
+)
+from .unexpected_code_execution.unexpected_code_execution import (
+    UnexpectedCodeExecution,
+)
+from .insecure_inter_agent_communication.insecure_inter_agent_communication import (
+    InsecureInterAgentCommunication,
+)
 from .autonomous_agent_drift.autonomous_agent_drift import AutonomousAgentDrift
 from .competition.competition import Competition
 from .graphic_content.graphic_content import GraphicContent

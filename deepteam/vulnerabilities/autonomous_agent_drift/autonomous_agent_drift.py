@@ -8,7 +8,9 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.utils import validate_model_callback_signature
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.autonomous_agent_drift import AutonomousAgentDriftType
+from deepteam.vulnerabilities.autonomous_agent_drift import (
+    AutonomousAgentDriftType,
+)
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import AutonomousAgentDriftMetric, BaseRedTeamingMetric
 from deepteam.attacks.multi_turn.types import CallbackType
@@ -24,9 +26,12 @@ AutonomousAgentDriftLiteral = Literal[
     "runaway_autonomy",
 ]
 
+
 class AutonomousAgentDrift(BaseVulnerability):
     name: str = "Autonomous Agent Drift"
-    description: str = "Deviation of autonomous agents from intended goals or constraints without explicit attacker prompting, including goal drift, reward hacking, collusion, and runaway autonomy."
+    description: str = (
+        "Deviation of autonomous agents from intended goals or constraints without explicit attacker prompting, including goal drift, reward hacking, collusion, and runaway autonomy."
+    )
     ALLOWED_TYPES = [type.value for type in AutonomousAgentDriftType]
 
     def __init__(

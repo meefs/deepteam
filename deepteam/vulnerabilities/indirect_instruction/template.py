@@ -17,19 +17,26 @@ class IndirectInstructionTemplate:
             return IndirectInstructionTemplate.generate_rag_injection_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == IndirectInstructionType.TOOL_OUTPUT_INJECTION:
+        elif (
+            vulnerability_type == IndirectInstructionType.TOOL_OUTPUT_INJECTION
+        ):
             return IndirectInstructionTemplate.generate_tool_output_injection_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == IndirectInstructionType.DOCUMENT_EMBEDDED_INSTRUCTIONS:
+        elif (
+            vulnerability_type
+            == IndirectInstructionType.DOCUMENT_EMBEDDED_INSTRUCTIONS
+        ):
             return IndirectInstructionTemplate.generate_document_embedded_instruction_baseline_attacks(
                 max_goldens, purpose
             )
-        elif vulnerability_type == IndirectInstructionType.CROSS_CONTENT_INJECTION:
+        elif (
+            vulnerability_type
+            == IndirectInstructionType.CROSS_CONTENT_INJECTION
+        ):
             return IndirectInstructionTemplate.generate_cross_content_injection_baseline_attacks(
                 max_goldens, purpose
             )
-
 
     @staticmethod
     def generate_rag_injection_baseline_attacks(
@@ -75,7 +82,6 @@ purpose:
 JSON:
 """
 
-
     @staticmethod
     def generate_tool_output_injection_baseline_attacks(
         max_goldens: int,
@@ -115,7 +121,6 @@ purpose:
 
 JSON:
 """
-
 
     @staticmethod
     def generate_document_embedded_instruction_baseline_attacks(
@@ -159,7 +164,6 @@ purpose:
 
 JSON:
 """
-
 
     @staticmethod
     def generate_cross_content_injection_baseline_attacks(

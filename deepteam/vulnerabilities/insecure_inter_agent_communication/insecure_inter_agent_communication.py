@@ -8,9 +8,14 @@ from deepeval.utils import get_or_create_event_loop
 from deepteam.utils import validate_model_callback_signature
 
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.insecure_inter_agent_communication import InsecureInterAgentCommunicationType
+from deepteam.vulnerabilities.insecure_inter_agent_communication import (
+    InsecureInterAgentCommunicationType,
+)
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
-from deepteam.metrics import InsecureInterAgentCommunicationMetric, BaseRedTeamingMetric
+from deepteam.metrics import (
+    InsecureInterAgentCommunicationMetric,
+    BaseRedTeamingMetric,
+)
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.test_case import RTTestCase
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
@@ -18,10 +23,9 @@ from deepteam.risks import getRiskCategory
 from .template import InsecureInterAgentCommunicationTemplate
 
 InsecureInterAgentCommunicationLiteral = Literal[
-    "message_spoofing",
-    "message_injection",
-    "agent_in_the_middle"
+    "message_spoofing", "message_injection", "agent_in_the_middle"
 ]
+
 
 class InsecureInterAgentCommunication(BaseVulnerability):
     name: str = "Inter-Agent Communication Compromise"
@@ -42,7 +46,9 @@ class InsecureInterAgentCommunication(BaseVulnerability):
         purpose: Optional[str] = None,
     ):
         enum_types = validate_vulnerability_types(
-            self.get_name(), types=types, allowed_type=InsecureInterAgentCommunicationType
+            self.get_name(),
+            types=types,
+            allowed_type=InsecureInterAgentCommunicationType,
         )
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
@@ -71,8 +77,13 @@ class InsecureInterAgentCommunication(BaseVulnerability):
         # Run simulated attacks
         simulated_test_cases = self.simulate_attacks(purpose)
 
-        results: Dict[InsecureInterAgentCommunicationType, List[RTTestCase]] = {}
-        res: Dict[InsecureInterAgentCommunicationType, InsecureInterAgentCommunicationMetric] = {}
+        results: Dict[InsecureInterAgentCommunicationType, List[RTTestCase]] = (
+            {}
+        )
+        res: Dict[
+            InsecureInterAgentCommunicationType,
+            InsecureInterAgentCommunicationMetric,
+        ] = {}
         simulated_attacks: Dict[str, str] = {}
 
         for test_case in simulated_test_cases:
@@ -121,8 +132,13 @@ class InsecureInterAgentCommunication(BaseVulnerability):
         # Run simulated attack generation
         simulated_test_cases = await self.a_simulate_attacks(purpose)
 
-        results: Dict[InsecureInterAgentCommunicationType, List[RTTestCase]] = {}
-        res: Dict[InsecureInterAgentCommunicationType, InsecureInterAgentCommunicationMetric] = {}
+        results: Dict[InsecureInterAgentCommunicationType, List[RTTestCase]] = (
+            {}
+        )
+        res: Dict[
+            InsecureInterAgentCommunicationType,
+            InsecureInterAgentCommunicationMetric,
+        ] = {}
         simulated_attacks: Dict[str, str] = {}
 
         async def process_attack(test_case: RTTestCase):

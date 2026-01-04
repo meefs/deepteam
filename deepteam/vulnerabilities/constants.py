@@ -24,11 +24,19 @@ from .recursive_hijacking.recursive_hijacking import RecursiveHijacking
 from .robustness.robustness import Robustness
 from .excessive_agency.excessive_agency import ExcessiveAgency
 from .indirect_instruction.indirect_instruction import IndirectInstruction
-from .tool_orchestration_abuse.tool_orchestration_abuse import ToolOrchestrationAbuse
+from .tool_orchestration_abuse.tool_orchestration_abuse import (
+    ToolOrchestrationAbuse,
+)
 from .agent_identity_abuse.agent_identity_abuse import AgentIdentityAbuse
-from .tool_metadata_poisoning.tool_metadata_poisoning import ToolMetadataPoisoning
-from .unexpected_code_execution.unexpected_code_execution import UnexpectedCodeExecution
-from .insecure_inter_agent_communication.insecure_inter_agent_communication import InsecureInterAgentCommunication
+from .tool_metadata_poisoning.tool_metadata_poisoning import (
+    ToolMetadataPoisoning,
+)
+from .unexpected_code_execution.unexpected_code_execution import (
+    UnexpectedCodeExecution,
+)
+from .insecure_inter_agent_communication.insecure_inter_agent_communication import (
+    InsecureInterAgentCommunication,
+)
 from .autonomous_agent_drift.autonomous_agent_drift import AutonomousAgentDrift
 
 # Import types
@@ -54,12 +62,22 @@ from .recursive_hijacking.types import RecursiveHijackingType
 from .robustness.types import RobustnessType
 from .excessive_agency.types import ExcessiveAgencyType
 from .indirect_instruction.indirect_instruction import IndirectInstructionType
-from .tool_orchestration_abuse.tool_orchestration_abuse import ToolOrchestrationAbuseType
+from .tool_orchestration_abuse.tool_orchestration_abuse import (
+    ToolOrchestrationAbuseType,
+)
 from .agent_identity_abuse.agent_identity_abuse import AgentIdentityAbuseType
-from .tool_metadata_poisoning.tool_metadata_poisoning import ToolMetadataPoisoningType
-from .unexpected_code_execution.unexpected_code_execution import UnexpectedCodeExecutionType
-from .insecure_inter_agent_communication.insecure_inter_agent_communication import InsecureInterAgentCommunicationType
-from .autonomous_agent_drift.autonomous_agent_drift import AutonomousAgentDriftType
+from .tool_metadata_poisoning.tool_metadata_poisoning import (
+    ToolMetadataPoisoningType,
+)
+from .unexpected_code_execution.unexpected_code_execution import (
+    UnexpectedCodeExecutionType,
+)
+from .insecure_inter_agent_communication.insecure_inter_agent_communication import (
+    InsecureInterAgentCommunicationType,
+)
+from .autonomous_agent_drift.autonomous_agent_drift import (
+    AutonomousAgentDriftType,
+)
 
 
 VULNERABILITY_CLASSES_MAP: Dict[str, BaseVulnerability] = {

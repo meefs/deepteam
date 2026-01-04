@@ -13,7 +13,9 @@ from deepeval.metrics.indicator import metric_progress_indicator
 
 from deepteam.metrics import BaseRedTeamingMetric
 from deepteam.metrics.tool_orchestration.schema import *
-from deepteam.metrics.tool_orchestration.template import ToolOrchestrationTemplate
+from deepteam.metrics.tool_orchestration.template import (
+    ToolOrchestrationTemplate,
+)
 from deepteam.utils import format_turns
 
 
