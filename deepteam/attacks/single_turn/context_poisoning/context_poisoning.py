@@ -27,7 +27,7 @@ class ContextPoisoning(BaseSingleTurnAttack):
 
     def __init__(
         self,
-        weight: int = 3,
+        weight: int = 1,
         max_retries: int = 5,
     ):
         self.weight = weight
