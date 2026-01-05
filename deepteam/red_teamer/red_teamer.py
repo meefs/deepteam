@@ -1088,7 +1088,7 @@ class RedTeamer:
                 name, result = await task_future
                 results[name] = result
                 update_pbar(progress, task_id)
-            
+
             update_pbar(progress, task_id, advance_to_end=True)
 
         self._print_framework_overview_table(framework_results=results)
