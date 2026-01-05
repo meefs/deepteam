@@ -1,7 +1,9 @@
 import pytest
 
 from deepteam.vulnerabilities import IndirectInstruction
-from deepteam.vulnerabilities.indirect_instruction import IndirectInstructionType
+from deepteam.vulnerabilities.indirect_instruction import (
+    IndirectInstructionType,
+)
 from deepteam.test_case import RTTestCase
 
 
@@ -15,33 +17,43 @@ class TestIndirectInstruction:
             "cross_context_injection",
         ]
         indirect_instruction = IndirectInstruction(types=types)
-        assert sorted(type.value for type in indirect_instruction.types) == sorted(types)
+        assert sorted(
+            type.value for type in indirect_instruction.types
+        ) == sorted(types)
 
     def test_indirect_instruction_all_types_default(self):
         indirect_instruction = IndirectInstruction()
-        assert sorted(type.value for type in indirect_instruction.types) == sorted(
-            type.value for type in IndirectInstructionType
-        )
+        assert sorted(
+            type.value for type in indirect_instruction.types
+        ) == sorted(type.value for type in IndirectInstructionType)
 
     def test_indirect_instruction_rag_injection(self):
         types = ["rag_injection"]
         indirect_instruction = IndirectInstruction(types=types)
-        assert sorted(type.value for type in indirect_instruction.types) == sorted(types)
+        assert sorted(
+            type.value for type in indirect_instruction.types
+        ) == sorted(types)
 
     def test_indirect_instruction_tool_output_injection(self):
         types = ["tool_output_injection"]
         indirect_instruction = IndirectInstruction(types=types)
-        assert sorted(type.value for type in indirect_instruction.types) == sorted(types)
+        assert sorted(
+            type.value for type in indirect_instruction.types
+        ) == sorted(types)
 
     def test_indirect_instruction_document_embedded_instructions(self):
         types = ["document_embedded_instructions"]
         indirect_instruction = IndirectInstruction(types=types)
-        assert sorted(type.value for type in indirect_instruction.types) == sorted(types)
+        assert sorted(
+            type.value for type in indirect_instruction.types
+        ) == sorted(types)
 
     def test_indirect_instruction_cross_context_injection(self):
         types = ["cross_context_injection"]
         indirect_instruction = IndirectInstruction(types=types)
-        assert sorted(type.value for type in indirect_instruction.types) == sorted(types)
+        assert sorted(
+            type.value for type in indirect_instruction.types
+        ) == sorted(types)
 
     def test_indirect_instruction_all_types_invalid(self):
         types = [
@@ -62,7 +74,9 @@ class TestIndirectInstruction:
 
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
-        assert all(tc.vulnerability == "Indirect Instruction" for tc in test_cases)
+        assert all(
+            tc.vulnerability == "Indirect Instruction" for tc in test_cases
+        )
         assert all(
             tc.vulnerability_type == IndirectInstructionType.RAG_INJECTION
             for tc in test_cases
@@ -81,10 +95,13 @@ class TestIndirectInstruction:
         )
 
         assert indirect_instruction.is_vulnerable() is not None
-        assert indirect_instruction.simulated_attacks is not None and isinstance(
-            indirect_instruction.simulated_attacks, dict
+        assert (
+            indirect_instruction.simulated_attacks is not None
+            and isinstance(indirect_instruction.simulated_attacks, dict)
         )
-        assert indirect_instruction.res is not None and isinstance(indirect_instruction.res, dict)
+        assert indirect_instruction.res is not None and isinstance(
+            indirect_instruction.res, dict
+        )
         assert IndirectInstructionType.TOOL_OUTPUT_INJECTION in results
         assert len(results[IndirectInstructionType.TOOL_OUTPUT_INJECTION]) == 1
         test_case = results[IndirectInstructionType.TOOL_OUTPUT_INJECTION][0]
@@ -98,14 +115,18 @@ class TestIndirectInstruction:
         indirect_instruction = IndirectInstruction(
             async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
         )
-        metric = indirect_instruction._get_metric(IndirectInstructionType.TOOL_OUTPUT_INJECTION)
+        metric = indirect_instruction._get_metric(
+            IndirectInstructionType.TOOL_OUTPUT_INJECTION
+        )
         assert isinstance(metric, IndirectInstructionMetric)
         assert metric.async_mode is True
         assert metric.verbose_mode is True
 
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
-        indirect_instruction = IndirectInstruction(types=["cross_context_injection"], async_mode=True)
+        indirect_instruction = IndirectInstruction(
+            types=["cross_context_injection"], async_mode=True
+        )
 
         async def dummy_model_callback(prompt):
             return prompt
@@ -115,12 +136,17 @@ class TestIndirectInstruction:
         )
 
         assert indirect_instruction.is_vulnerable() is not None
-        assert indirect_instruction.simulated_attacks is not None and isinstance(
-            indirect_instruction.simulated_attacks, dict
+        assert (
+            indirect_instruction.simulated_attacks is not None
+            and isinstance(indirect_instruction.simulated_attacks, dict)
         )
-        assert indirect_instruction.res is not None and isinstance(indirect_instruction.res, dict)
+        assert indirect_instruction.res is not None and isinstance(
+            indirect_instruction.res, dict
+        )
         assert IndirectInstructionType.CROSS_CONTENT_INJECTION in results
-        assert len(results[IndirectInstructionType.CROSS_CONTENT_INJECTION]) == 1
+        assert (
+            len(results[IndirectInstructionType.CROSS_CONTENT_INJECTION]) == 1
+        )
         test_case = results[IndirectInstructionType.CROSS_CONTENT_INJECTION][0]
         assert hasattr(test_case, "score")
         assert hasattr(test_case, "reason")

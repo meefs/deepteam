@@ -3,7 +3,9 @@ from deepteam.frameworks import OWASP_ASI_2026
 from deepteam.red_teamer.risk_assessment import RiskAssessment
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.attacks import BaseAttack
-from deepteam.frameworks.owasp_top_10_agentic.risk_categories import OWASP_ASI_CATEGORIES
+from deepteam.frameworks.owasp_top_10_agentic.risk_categories import (
+    OWASP_ASI_CATEGORIES,
+)
 from deepteam.frameworks.risk_category import RiskCategory
 from deepteam import red_team
 

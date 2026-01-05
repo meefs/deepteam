@@ -48,7 +48,7 @@ def test_red_teaming():
         ToolMetadataPoisoning(),
         UnexpectedCodeExecution(),
         InsecureInterAgentCommunication(),
-        AutonomousAgentDrift(),        
+        AutonomousAgentDrift(),
         custom_vulnerability,
     ]
 
