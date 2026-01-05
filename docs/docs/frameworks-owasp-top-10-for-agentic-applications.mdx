@@ -1,7 +1,7 @@
 ---
 id: frameworks-owasp-top-10-for-agentic-applications
-title: OWASP Top 10 for Agentic Applications
-sidebar_label: OWASP Top 10 for Agentic Applications
+title: OWASP Top 10 for Agents
+sidebar_label: OWASP Top 10 for Agents
 ---
 
 The **OWASP Top 10 for Agentic Applications (ASI)** identifies the most critical security risks introduced by autonomous and semi-autonomous AI agents. Unlike traditional LLM applications, agentic systems combine reasoning, memory, tools, and multi-step execution, introducing new classes of vulnerabilities that extend beyond prompt-level attacks.
@@ -115,7 +115,7 @@ red_team(
 ```
 
 :::tip
-Implement tool orchestration limits, budget constraints, and composition rules. Monitor for unusual tool call patterns that indicate exploitation attempts.
+Please pass the information on what tools your agent has access to in the `target_purpose` filed of `red_team` method for more accurate and rigourous testing.
 :::
 
 ## 3. Agent Identity & Privilege Abuse (ASI03:2026)
@@ -255,7 +255,6 @@ Memory poisoning can have long-lasting effects since agents rely on historical c
 - **Agent-in-the-Middle**: Interception and modification of agent messages
 - **Message Injection**: Insertion of malicious instructions into agent communication
 - **Message Spoofing**: Forging messages that appear to come from trusted agents
-- **Protocol Manipulation**: Exploiting weaknesses in agent communication protocols
 
 ```python
 from deepteam.frameworks import OWASP_ASI_2026
@@ -433,7 +432,7 @@ The OWASP ASI Top 10 builds upon and extends the OWASP Top 10 for LLMs. Each age
 | **ASI09: Trust Exploitation** | LLM01, LLM05, LLM06, LLM09 | Automation bias and authority misuse                           |
 | **ASI10: Rogue Agents**       | LLM02, LLM09               | **New** - behavioral drift and misalignment                    |
 
-### Key Insights
+### Key Changes to Note
 
 **Amplification Effect**: Agentic risks often combine multiple LLM vulnerabilities. For example, ASI01 (Agent Goal Hijack) merges prompt injection (LLM01) with excessive autonomy (LLM06), but the autonomous multi-step execution amplifies the impact beyond single-response attacks.
 

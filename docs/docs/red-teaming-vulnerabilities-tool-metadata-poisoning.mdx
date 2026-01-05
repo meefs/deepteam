@@ -4,7 +4,7 @@ title: Tool Metadata Poisoning
 sidebar_label: Tool Metadata Poisoning
 ---
 
-The `Tool Metadata Poisoning` vulnerability evaluates whether the **target LLM or agent system** can be misled by **malicious or manipulated tool metadata**. More specifically, it tests whether the system can be influenced into unsafe or unauthorized behavior through **tampered schemas, deceptive descriptions, incorrect permission signals, or poisoned tool registries**.
+The `ToolMetadataPoisoning` vulnerability evaluates whether the **target LLM or agent system** can be misled by **malicious or manipulated tool metadata**. More specifically, it tests whether the system can be influenced into unsafe or unauthorized behavior through **tampered schemas, deceptive descriptions, incorrect permission signals, or poisoned tool registries**.
 
 This vulnerability is especially critical for **tool-augmented LLMs, function-calling systems, agent frameworks, and plugin ecosystems**, where models rely on metadata to decide *what tools to trust and how to use them*.
 
@@ -33,13 +33,13 @@ There are **FIVE** optional parameters when creating a `ToolMetadataPoisoning` v
 - [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to `'gpt-4o'`.
 - [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
 - [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
-- [Optional] `types`: a list of `types` of `Tool Metadata Poisoning` to test through. Defaulted to all `types` available:
+- [Optional] `types`: a list of `types` of `ToolMetadataPoisoning` to test through. Defaulted to all `types` available:
   - `schema_manipulation`: Tests whether malformed or misleading tool schemas can cause unsafe tool usage.
   - `description_deception`: Tests whether deceptive tool descriptions influence the model’s decision-making.
   - `permission_misrepresentation`: Tests whether false permission or safety claims can bypass safeguards.
   - `registry_poisoning`: Tests whether poisoned or untrusted tool registries are incorrectly trusted.
 
-[Click here](#types) to learn more about the `types` in `Tool Metadata Poisoning`.
+[Click here](#types) to learn more about the `types` in `ToolMetadataPoisoning`.
 
 ### As a standalone
 
@@ -63,7 +63,7 @@ The `assess` method has **ONE** mandatory and **ONE** optional parameters:
 
 ## Types
 
-There are 4 `types` you can choose from in the `Tool Metadata Poisoning` vulnerability:
+There are 4 `types` you can choose from in the `ToolMetadataPoisoning` vulnerability:
 
 | **Category**                     | **Example Prompt**                                                                                                                               | **Expected Behavior**                                                      |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
