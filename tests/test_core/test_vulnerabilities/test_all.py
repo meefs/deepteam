@@ -42,6 +42,13 @@ def test_red_teaming():
         RecursiveHijacking(),
         Robustness(),
         ExcessiveAgency(),
+        IndirectInstruction(),
+        ToolOrchestrationAbuse(),
+        AgentIdentityAbuse(),
+        ToolMetadataPoisoning(),
+        UnexpectedCodeExecution(),
+        InsecureInterAgentCommunication(),
+        AutonomousAgentDrift(),        
         custom_vulnerability,
     ]
 
