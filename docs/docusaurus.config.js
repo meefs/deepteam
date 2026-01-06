@@ -32,7 +32,7 @@ module.exports = {
     ],
   ],
 
-  title: "DeepTeam - The Open-Source LLM Red Teaming Framework",
+  title: "DeepTeam by Confident AI - The LLM Red Teaming Framework",
   tagline: "Red Teaming Framework for LLMs",
   favicon: "img/fav.ico",
 
