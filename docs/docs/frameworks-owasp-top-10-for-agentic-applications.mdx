@@ -1,7 +1,7 @@
 ---
 id: frameworks-owasp-top-10-for-agentic-applications
-title: OWASP Top 10 for Agents
-sidebar_label: OWASP Top 10 for Agents
+title: OWASP Top 10 for Agents 2026
+sidebar_label: OWASP Top 10 for Agents 2026
 ---
 
 The **OWASP Top 10 for Agentic Applications (ASI)** identifies the most critical security risks introduced by autonomous and semi-autonomous AI agents. Unlike traditional LLM applications, agentic systems combine reasoning, memory, tools, and multi-step execution, introducing new classes of vulnerabilities that extend beyond prompt-level attacks.
@@ -76,8 +76,8 @@ vulnerabilities = owasp_asi.vulnerabilities
 
 # Modify attributes for your specific testing context if needed
 red_team(
-    model_callback=your_model_callback, 
-    attacks=attacks, 
+    model_callback=your_model_callback,
+    attacks=attacks,
     vulnerabilities=vulnerabilities
 )
 ```
@@ -108,8 +108,8 @@ vulnerabilities = owasp_asi.vulnerabilities
 
 # Modify attributes for your specific testing context if needed
 red_team(
-    model_callback=your_model_callback, 
-    attacks=attacks, 
+    model_callback=your_model_callback,
+    attacks=attacks,
     vulnerabilities=vulnerabilities
 )
 ```
@@ -140,8 +140,8 @@ vulnerabilities = owasp_asi.vulnerabilities
 
 # Modify attributes for your specific testing context if needed
 red_team(
-    model_callback=your_model_callback, 
-    attacks=attacks, 
+    model_callback=your_model_callback,
+    attacks=attacks,
     vulnerabilities=vulnerabilities
 )
 ```
@@ -172,8 +172,8 @@ vulnerabilities = owasp_asi.vulnerabilities
 
 # Modify attributes for your specific testing context if needed
 red_team(
-    model_callback=your_model_callback, 
-    attacks=attacks, 
+    model_callback=your_model_callback,
+    attacks=attacks,
     vulnerabilities=vulnerabilities
 )
 ```
@@ -204,8 +204,8 @@ vulnerabilities = owasp_asi.vulnerabilities
 
 # Modify attributes for your specific testing context if needed
 red_team(
-    model_callback=your_model_callback, 
-    attacks=attacks, 
+    model_callback=your_model_callback,
+    attacks=attacks,
     vulnerabilities=vulnerabilities
 )
 ```
@@ -236,8 +236,8 @@ vulnerabilities = owasp_asi.vulnerabilities
 
 # Modify attributes for your specific testing context if needed
 red_team(
-    model_callback=your_model_callback, 
-    attacks=attacks, 
+    model_callback=your_model_callback,
+    attacks=attacks,
     vulnerabilities=vulnerabilities
 )
 ```
@@ -267,8 +267,8 @@ vulnerabilities = owasp_asi.vulnerabilities
 
 # Modify attributes for your specific testing context if needed
 red_team(
-    model_callback=your_model_callback, 
-    attacks=attacks, 
+    model_callback=your_model_callback,
+    attacks=attacks,
     vulnerabilities=vulnerabilities
 )
 ```
@@ -299,8 +299,8 @@ vulnerabilities = owasp_asi.vulnerabilities
 
 # Modify attributes for your specific testing context if needed
 red_team(
-    model_callback=your_model_callback, 
-    attacks=attacks, 
+    model_callback=your_model_callback,
+    attacks=attacks,
     vulnerabilities=vulnerabilities
 )
 ```
@@ -331,8 +331,8 @@ vulnerabilities = owasp_asi.vulnerabilities
 
 # Modify attributes for your specific testing context if needed
 red_team(
-    model_callback=your_model_callback, 
-    attacks=attacks, 
+    model_callback=your_model_callback,
+    attacks=attacks,
     vulnerabilities=vulnerabilities
 )
 ```
@@ -363,8 +363,8 @@ vulnerabilities = owasp_asi.vulnerabilities
 
 # Modify attributes for your specific testing context if needed
 red_team(
-    model_callback=your_model_callback, 
-    attacks=attacks, 
+    model_callback=your_model_callback,
+    attacks=attacks,
     vulnerabilities=vulnerabilities
 )
 ```
@@ -446,6 +446,7 @@ The OWASP ASI Top 10 builds upon and extends the OWASP Top 10 for LLMs. Each age
 
 :::tip
 **Testing Strategy**: If you're building agentic systems, test against **both** frameworks:
+
 - Use the **OWASP Top 10 for LLMs** to validate foundational model security
 - Use the **OWASP ASI Top 10** to assess agentic-specific risks like tool orchestration, inter-agent communication, and cascading failures
 

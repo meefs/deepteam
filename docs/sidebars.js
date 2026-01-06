@@ -166,8 +166,15 @@ module.exports = {
       className: "sidebar-item-guidelines-frameworks root-sidebar-item",
       items: [
         "frameworks-introduction",
-        "frameworks-owasp-top-10-for-llms", 
-        "frameworks-owasp-top-10-for-agentic-applications",
+        {
+          type: "category",
+          label: "OWASP",
+          items: [
+            "frameworks-owasp-top-10-for-llms", 
+            "frameworks-owasp-top-10-for-agentic-applications",
+          ],
+          collapsed: false,
+        },
         "frameworks-nist-ai-rmf",
         "frameworks-mitre-atlas",
         "frameworks-beavertails",
