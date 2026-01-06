@@ -1008,6 +1008,7 @@ class RedTeamer:
                     results[risk_category.name] = framework_assessment
                     update_pbar(progress_2, risk_task_id, advance_to_end=True)
                 update_pbar(progress, task_id)
+            update_pbar(progress, task_id, advance_to_end=True)
 
         self._print_framework_overview_table(framework_results=results)
 
@@ -1088,18 +1089,20 @@ class RedTeamer:
                 results[name] = result
                 update_pbar(progress, task_id)
 
-            self._print_framework_overview_table(framework_results=results)
+            update_pbar(progress, task_id, advance_to_end=True)
 
-            all_test_cases = []
-            total_duration = 0
-            for assessment in results.values():
-                all_test_cases.extend(assessment.test_cases)
-                total_duration += assessment.overview.run_duration
+        self._print_framework_overview_table(framework_results=results)
 
-            return RiskAssessment(
-                overview=construct_risk_assessment_overview(
-                    red_teaming_test_cases=all_test_cases,
-                    run_duration=total_duration,
-                ),
-                test_cases=all_test_cases,
-            )
+        all_test_cases = []
+        total_duration = 0
+        for assessment in results.values():
+            all_test_cases.extend(assessment.test_cases)
+            total_duration += assessment.overview.run_duration
+
+        return RiskAssessment(
+            overview=construct_risk_assessment_overview(
+                red_teaming_test_cases=all_test_cases,
+                run_duration=total_duration,
+            ),
+            test_cases=all_test_cases,
+        )

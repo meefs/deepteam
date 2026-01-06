@@ -24,7 +24,21 @@ from .hijacking.hijacking import HijackingMetric
 from .intellectual_property.intellectual_property import (
     IntellectualPropertyMetric,
 )
-
+from .indirect_instruction.indirect_instruction import IndirectInstructionMetric
+from .tool_orchestration.tool_orchestration import ToolOrchestrationMetric
+from .agent_identity_abuse.agent_identity_abuse import AgentIdentityAbuseMetric
+from .tool_metadata_poisoning.tool_metadata_poisoning import (
+    ToolMetadataPoisoningMetric,
+)
+from .unexpected_code_execution.unexpected_code_execution import (
+    UnexpectedCodeExecutionMetric,
+)
+from .insecure_inter_agent_communication.insecure_inter_agent_communication import (
+    InsecureInterAgentCommunicationMetric,
+)
+from .autonomous_agent_drift.autonomous_agent_drift import (
+    AutonomousAgentDriftMetric,
+)
 
 # Agentic metrics
 from .agentic.unauthorized_execution.unauthorized_execution import (
