@@ -47,7 +47,7 @@ class ContextFlooding(BaseSingleTurnAttack):
         while len(expanded) < self.target_chars:
             expanded += "\n\n" + base
 
-        trimmed = expanded[:self.target_chars]
+        trimmed = expanded[: self.target_chars]
 
         if " " in trimmed:
             trimmed = trimmed.rsplit(" ", 1)[0]
