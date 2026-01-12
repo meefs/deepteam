@@ -11,6 +11,7 @@ from .roleplay import Roleplay
 from .rot13 import ROT13
 from .character_stream import CharacterStream
 from .context_flooding import ContextFlooding
+from .embedded_instruction_json import EmbeddedInstructionJSON
 
 # Generic enhancement attacks (moved from agentic)
 from .system_override.system_override import SystemOverride
@@ -33,6 +34,8 @@ __all__ = [
     "Roleplay",
     "ROT13",
     "CharacterStream",
+    "ContextFlooding",
+    "EmbeddedInstructionJSON",
     "SystemOverride",
     "PermissionEscalation",
     "LinguisticConfusion",
