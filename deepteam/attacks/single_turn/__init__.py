@@ -9,6 +9,7 @@ from .prompt_injection import PromptInjection
 from .prompt_probing import PromptProbing
 from .roleplay import Roleplay
 from .rot13 import ROT13
+from .character_stream import CharacterStream
 
 # Generic enhancement attacks (moved from agentic)
 from .system_override.system_override import SystemOverride
@@ -30,6 +31,7 @@ __all__ = [
     "PromptProbing",
     "Roleplay",
     "ROT13",
+    "CharacterStream",
     "SystemOverride",
     "PermissionEscalation",
     "LinguisticConfusion",
