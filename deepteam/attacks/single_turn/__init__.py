@@ -10,6 +10,7 @@ from .prompt_probing import PromptProbing
 from .roleplay import Roleplay
 from .rot13 import ROT13
 from .character_stream import CharacterStream
+from .context_flooding import ContextFlooding
 
 # Generic enhancement attacks (moved from agentic)
 from .system_override.system_override import SystemOverride
