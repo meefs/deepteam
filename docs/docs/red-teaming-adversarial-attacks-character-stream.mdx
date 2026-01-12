@@ -8,7 +8,7 @@ import AttackTagsDisplayer from "@site/src/components/AttackTagsDisplayer";
 
 <AttackTagsDisplayer singleTurn={true} />
 
-The `CharacterStream` attack method encodes a baseline attack by adding spaces between each character.
+The `CharacterStream` attack method enhances a baseline attack by adding spaces between each character, simulating character-by-character input that can bypass simple input filters.
 
 ## Usage
 
@@ -32,7 +32,7 @@ There are **ONE** optional parameter when creating a `CharacterStream` attack:
 - [Optional] `weight`: an integer that determines this attack method's selection probability, proportional to the total weight sum of all `attacks` during red teaming. Defaulted to `1`.
 
 :::note
-The `weight` is only applicable for the `red_team` function and does not  when used as a standalone.
+The `weight` is only applicable for the `red_team` function and does not apply when used as a standalone.
 :::
 
 ### As a standalone
