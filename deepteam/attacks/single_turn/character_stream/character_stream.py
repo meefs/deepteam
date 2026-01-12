@@ -13,7 +13,7 @@ class CharacterStream(BaseSingleTurnAttack):
     def enhance(self, attack: str) -> str:
         """Enhance the attack using Base64 encoding."""
         return " ".join(attack)
-    
+
     async def a_enhance(self, attack):
         return self.enhance(attack)
 

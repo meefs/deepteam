@@ -4,7 +4,9 @@ from typing import Optional, Dict, Any, Literal
 
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.base_attack import Exploitability
-from deepteam.attacks.single_turn.embedded_instruction_json.template import DEFAULT_JSON
+from deepteam.attacks.single_turn.embedded_instruction_json.template import (
+    DEFAULT_JSON,
+)
 
 
 ContextPosition = Literal["start", "middle", "end"]
@@ -35,7 +37,9 @@ class EmbeddedInstructionJSON(BaseSingleTurnAttack):
         if json_template is not None and not isinstance(json_template, dict):
             raise ValueError("json_template must be a dict")
         if attack_position not in {"start", "middle", "end"}:
-            raise ValueError("attack_position must be one of: start, middle, end")
+            raise ValueError(
+                "attack_position must be one of: start, middle, end"
+            )
 
         self.base_json = json_template or DEFAULT_JSON
 
@@ -43,36 +47,36 @@ class EmbeddedInstructionJSON(BaseSingleTurnAttack):
         return max(1, len(text) // 4)
 
     def _grow(self, data: Dict[str, Any], index: int) -> None:
-        data.setdefault("metadata", {}).setdefault("extensions", []).append({
-            "id": f"meta_ext_{index}",
-            "source": "internal",
-            "details": {
-                "note": f"additional metadata context {index}",
-                "flags": {
-                    "active": True,
-                    "priority": index % 3
-                }
+        data.setdefault("metadata", {}).setdefault("extensions", []).append(
+            {
+                "id": f"meta_ext_{index}",
+                "source": "internal",
+                "details": {
+                    "note": f"additional metadata context {index}",
+                    "flags": {"active": True, "priority": index % 3},
+                },
             }
-        })
+        )
 
-        data.setdefault("processing", {}).setdefault("steps", []).append({
-            "name": f"aux_step_{index}",
-            "status": "completed",
-            "duration_ms": 10 + index,
-            "output": {
-                "summary": f"processing output {index}",
-                "metrics": {
-                    "count": index,
-                    "success": True
-                }
+        data.setdefault("processing", {}).setdefault("steps", []).append(
+            {
+                "name": f"aux_step_{index}",
+                "status": "completed",
+                "duration_ms": 10 + index,
+                "output": {
+                    "summary": f"processing output {index}",
+                    "metrics": {"count": index, "success": True},
+                },
             }
-        })
+        )
 
-        data.setdefault("context", {}).setdefault("history", []).append({
-            "event": f"auto_generated_{index}",
-            "actor": "system",
-            "timestamp": f"2024-03-18T10:{30 + index:02d}:00Z"
-        })
+        data.setdefault("context", {}).setdefault("history", []).append(
+            {
+                "event": f"auto_generated_{index}",
+                "actor": "system",
+                "timestamp": f"2024-03-18T10:{30 + index:02d}:00Z",
+            }
+        )
 
     def _nest(self, payload: str) -> Dict[str, Any]:
         root: Dict[str, Any] = {}
@@ -96,9 +100,7 @@ class EmbeddedInstructionJSON(BaseSingleTurnAttack):
         if self.attack_position == "middle":
             mid = len(items) // 2
             return dict(
-                items[:mid]
-                + [("deep_context", deep_context)]
-                + items[mid:]
+                items[:mid] + [("deep_context", deep_context)] + items[mid:]
             )
 
         return {**data, "deep_context": deep_context}

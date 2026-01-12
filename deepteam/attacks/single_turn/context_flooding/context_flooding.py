@@ -1,11 +1,12 @@
 from typing import Literal, Optional
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.base_attack import Exploitability
-from deepteam.attacks.single_turn.context_flooding.template import DEFAULT_PREFIXES
+from deepteam.attacks.single_turn.context_flooding.template import (
+    DEFAULT_PREFIXES,
+)
 
-ContextFloodingPrefixType = Literal[
-    "enterprise", "logs", "transcript"
-]
+ContextFloodingPrefixType = Literal["enterprise", "logs", "transcript"]
+
 
 class ContextFlooding(BaseSingleTurnAttack):
     name = "ContextFlooding"
@@ -13,7 +14,7 @@ class ContextFlooding(BaseSingleTurnAttack):
     description = "A single-turn attack that floods the LLM's context with long pre-defined prefixes to hit a target token size."
 
     def __init__(
-        self, 
+        self,
         weight: int = 1,
         target_tokens: int = 4000,
         prefix: Optional[str] = None,
@@ -37,7 +38,7 @@ class ContextFlooding(BaseSingleTurnAttack):
     def _estimate_tokens(self, text: str) -> int:
         # Approximate: 1 token ≈ 4 characters
         return max(1, len(text) // 4)
-        
+
     def _generate_prefix(self) -> str:
         base = self.prefix.strip()
         expanded = base
@@ -54,13 +55,12 @@ class ContextFlooding(BaseSingleTurnAttack):
 
         return trimmed
 
-
     def enhance(self, attack: str) -> str:
         prefix = self._generate_prefix()
         final_attack = f"{prefix}\n\n{attack}"
 
         return final_attack.strip()
-    
+
     async def a_enhance(self, attack):
         return self.enhance(attack)
 
