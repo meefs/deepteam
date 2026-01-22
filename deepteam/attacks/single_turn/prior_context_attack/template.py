@@ -1,6 +1,6 @@
 class PriorContextTemplate:
     """
-    Generates a high-fidelity, domain-specific 'fake history' that mimics 
+    Generates a high-fidelity, domain-specific 'fake history' that mimics
     internal company logs, emails, and verification states.
     """
 

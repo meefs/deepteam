@@ -19,6 +19,7 @@ from deepteam.attacks.attack_simulator.utils import (
     a_generate,
 )
 
+
 class PriorContextAttack(BaseSingleTurnAttack):
     name = "Prior Context Attack"
     exploitability = Exploitability.HIGH
@@ -33,7 +34,7 @@ class PriorContextAttack(BaseSingleTurnAttack):
     ):
         """
         :param target_reference: Description of the system (e.g. "Finance Agent").
-        :param context_style: Optional. Force a specific style like 'JSON_LOGS', 'EMAIL_THREAD'. 
+        :param context_style: Optional. Force a specific style like 'JSON_LOGS', 'EMAIL_THREAD'.
                               If None, the template picks randomly.
         """
         self.target_reference = target_reference
@@ -47,10 +48,10 @@ class PriorContextAttack(BaseSingleTurnAttack):
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
         self.simulator_model, _ = initialize_model(simulator_model)
-        
+
         prompt = PriorContextTemplate.enhance(
-            attack, 
-            self.target_reference, 
+            attack,
+            self.target_reference,
         )
 
         progress = create_progress()
@@ -76,10 +77,8 @@ class PriorContextAttack(BaseSingleTurnAttack):
                 )
                 update_pbar(progress, task_id)
 
-                is_valid_prompt = (
-                    PriorContextTemplate.is_valid_context(
-                        res.model_dump()
-                    )
+                is_valid_prompt = PriorContextTemplate.is_valid_context(
+                    res.model_dump()
                 )
                 is_valid_res: IsContextValid = generate(
                     is_valid_prompt,
@@ -93,7 +92,7 @@ class PriorContextAttack(BaseSingleTurnAttack):
                     and is_valid_res.is_valid_context
                 ):
                     update_pbar(progress, task_id, advance_to_end=True)
-                    
+
                     final_attack = f"{generated_context}\n\nUSER: {attack}"
                     return final_attack
 
@@ -108,8 +107,8 @@ class PriorContextAttack(BaseSingleTurnAttack):
     ) -> str:
         self.simulator_model, _ = initialize_model(simulator_model)
         prompt = PriorContextTemplate.enhance(
-            attack, 
-            self.target_reference, 
+            attack,
+            self.target_reference,
         )
 
         progress = create_progress()
@@ -138,10 +137,8 @@ class PriorContextAttack(BaseSingleTurnAttack):
                     )
                     update_pbar(progress, task_id)
 
-                    is_valid_prompt = (
-                        PriorContextTemplate.is_valid_context(
-                            res.model_dump()
-                        )
+                    is_valid_prompt = PriorContextTemplate.is_valid_context(
+                        res.model_dump()
                     )
                     is_valid_res: IsContextValid = await a_generate(
                         is_valid_prompt,
@@ -162,6 +159,6 @@ class PriorContextAttack(BaseSingleTurnAttack):
                 update_pbar(progress, task_id, advance_to_end=True)
 
         return attack
-        
+
     def get_name(self) -> str:
         return self.name
