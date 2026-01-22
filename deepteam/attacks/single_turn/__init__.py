@@ -13,6 +13,10 @@ from .character_stream import CharacterStream
 from .context_flooding import ContextFlooding
 from .embedded_instruction_json import EmbeddedInstructionJSON
 
+from .prior_context_attack import PriorContextAttack
+from .authority_escalation import AuthorityEscalation
+from .emotional_manipulation import EmotionalManipulation
+
 # Generic enhancement attacks (moved from agentic)
 from .system_override.system_override import SystemOverride
 from .permission_escalation.permission_escalation import PermissionEscalation

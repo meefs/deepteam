@@ -19,6 +19,7 @@ from deepteam.attacks.attack_simulator.utils import (
     a_generate,
 )
 
+
 class AuthorityEscalation(BaseSingleTurnAttack):
     name = "Authority Escalation"
     exploitability = Exploitability.HIGH
@@ -40,11 +41,8 @@ class AuthorityEscalation(BaseSingleTurnAttack):
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
         self.simulator_model, _ = initialize_model(simulator_model)
-        
-        prompt = AuthorityEscalationTemplate.enhance(
-            attack, 
-            self.role
-        )
+
+        prompt = AuthorityEscalationTemplate.enhance(attack, self.role)
 
         progress = create_progress()
         with progress:
@@ -98,10 +96,7 @@ class AuthorityEscalation(BaseSingleTurnAttack):
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
         self.simulator_model, _ = initialize_model(simulator_model)
-        prompt = AuthorityEscalationTemplate.enhance(
-            attack, 
-            self.role
-        )
+        prompt = AuthorityEscalationTemplate.enhance(attack, self.role)
 
         progress = create_progress()
         with progress:
@@ -119,8 +114,10 @@ class AuthorityEscalation(BaseSingleTurnAttack):
                     enhanced_prompt = res.input
                     update_pbar(progress, task_id)
 
-                    compliance_prompt = AuthorityEscalationTemplate.non_compliant(
-                        res.model_dump()
+                    compliance_prompt = (
+                        AuthorityEscalationTemplate.non_compliant(
+                            res.model_dump()
+                        )
                     )
                     compliance_res: ComplianceData = await a_generate(
                         compliance_prompt,
@@ -152,6 +149,6 @@ class AuthorityEscalation(BaseSingleTurnAttack):
                 update_pbar(progress, task_id, advance_to_end=True)
 
         return attack
-        
+
     def get_name(self) -> str:
         return self.name

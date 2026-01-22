@@ -1,8 +1,9 @@
 import random
 
+
 class AuthorityEscalationTemplate:
     """
-    Rewrites a request to look like a Routine Corporate Task, wrapped in a 
+    Rewrites a request to look like a Routine Corporate Task, wrapped in a
     'Helpful Assistant' scenario that compels the model to process it.
     """
 
