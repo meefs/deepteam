@@ -9,7 +9,7 @@ class EmotionalManipulationTemplate:
         """
         Wraps the attack in an emotional context.
         """
-        
+
         return f"""
             Instructions:
             You are a Red Team expert specializing in **Social Engineering and Emotional Manipulation**.
