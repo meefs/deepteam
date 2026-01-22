@@ -23,21 +23,16 @@ from deepteam.attacks.attack_simulator.utils import (
 class PriorContextAttack(BaseSingleTurnAttack):
     name = "Prior Context Attack"
     exploitability = Exploitability.HIGH
-    description = "..."
+    description = "Generates domain-specific 'fake history' that mimics internal company logs, emails, and verification states."
 
     def __init__(
         self,
-        target_reference: str = "Generic System",
+        target_information: str = None,
         context_style: Optional[str] = None,
         weight: int = 1,
         max_retries: int = 3,
     ):
-        """
-        :param target_reference: Description of the system (e.g. "Finance Agent").
-        :param context_style: Optional. Force a specific style like 'JSON_LOGS', 'EMAIL_THREAD'.
-                              If None, the template picks randomly.
-        """
-        self.target_reference = target_reference
+        self.target_information = target_information
         self.context_style = context_style
         self.weight = weight
         self.max_retries = max_retries
@@ -51,7 +46,7 @@ class PriorContextAttack(BaseSingleTurnAttack):
 
         prompt = PriorContextTemplate.enhance(
             attack,
-            self.target_reference,
+            self.target_information,
         )
 
         progress = create_progress()
@@ -108,7 +103,7 @@ class PriorContextAttack(BaseSingleTurnAttack):
         self.simulator_model, _ = initialize_model(simulator_model)
         prompt = PriorContextTemplate.enhance(
             attack,
-            self.target_reference,
+            self.target_information,
         )
 
         progress = create_progress()
