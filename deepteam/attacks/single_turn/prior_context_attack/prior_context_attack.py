@@ -27,7 +27,7 @@ class PriorContextAttack(BaseSingleTurnAttack):
 
     def __init__(
         self,
-        target_information: str = None,
+        target_information: str,
         context_style: Optional[str] = None,
         weight: int = 1,
         max_retries: int = 3,

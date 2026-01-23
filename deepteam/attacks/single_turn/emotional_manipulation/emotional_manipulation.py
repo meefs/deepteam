@@ -29,7 +29,7 @@ class EmotionalManipulation(BaseSingleTurnAttack):
 
     def __init__(
         self,
-        emotion: Optional[Union[EmotionLiteral, str]] = None,
+        emotion: EmotionLiteral = None,
         weight: int = 1,
         max_retries: int = 3,
     ):
@@ -85,6 +85,7 @@ class EmotionalManipulation(BaseSingleTurnAttack):
                     not compliance_res.non_compliant
                     and is_valid_res.is_valid_context
                 ):
+                    self.emotion = res.emotion_strategy
                     update_pbar(progress, task_id, advance_to_end=True)
 
                     return enhanced_prompt
@@ -145,7 +146,9 @@ class EmotionalManipulation(BaseSingleTurnAttack):
                         not compliance_res.non_compliant
                         and is_valid_res.is_valid_context
                     ):
+                        self.emotion = res.emotion_strategy
                         update_pbar(progress, task_id, advance_to_end=True)
+                        
                         return enhanced_prompt
 
             finally:
