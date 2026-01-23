@@ -4,8 +4,8 @@ title: Introduction
 sidebar_label: Introduction
 ---
 
-The DeepTeam Frameworks define structured methodologies for **AI red teaming and risk assessment**. 
-Each framework maps to a recognized safety or security standard, helping you test your model's robustness against **real-world adversarial behavior, dataset risks, and system vulnerabilities**. 
+The DeepTeam Frameworks define structured methodologies for **AI red teaming and risk assessment**.
+Each framework maps to a recognized safety or security standard, helping you test your model's robustness against **real-world adversarial behavior, dataset risks, and system vulnerabilities**.
 
 DeepTeam supports multiple frameworks — from dataset-based testing (_BeaverTails, Aegis_) to security and governance standards (_MITRE ATLAS, NIST AI RMF, OWASP Top 10 for LLMs_).
 
@@ -13,13 +13,38 @@ DeepTeam supports multiple frameworks — from dataset-based testing (_BeaverTai
 
 Here are the list of frameworks available in `deepteam`:
 
-- [OWASP Top 10 for LLMs](#owasp-top-10-for-llms)
+- [OWASP](#owasp-top-10)
+  - OWASP Top 10 for Agents 2026
+  - OWASP Top 10 for LLMs 2025
 - [NIST AI RMF](#nist-ai-rmf)
 - [MITRE ATLAS](#mitre-atlas)
 - [BeaverTails](#beavertails)
 - [Aegis](#aegis)
 
-### OWASP Top 10 for LLMs
+### OWASP Top 10
+
+#### OWASP Top 10 for Agents 2026
+
+The OWASP Top 10 for Agentic Applications (ASI) identifies the most critical security risks introduced by autonomous and semi-autonomous AI agents.
+It focuses on failures arising from goal misalignment, tool misuse, delegated trust, inter-agent communication, persistent memory, and emergent autonomous behavior.
+
+- Tests for goal hijacking, tool misuse, identity abuse, memory poisoning, and rogue agents
+- Simulates cascading failures and inter-agent communication vulnerabilities
+- Ideal for multi-agent systems, tool-using agents, and autonomous AI applications
+
+```python
+from deepteam.frameworks import OWASP_ASI_2026
+owasp_asi = OWASP_ASI_2026(num_attacks=10)
+
+risk = red_team(
+    model_callback=your_model_callback,
+    framework=owasp_asi
+)
+```
+
+[Learn more about OWASP Top 10 for Agents 2026](/docs/frameworks-owasp-top-10-for-agentic-applications)
+
+#### OWASP Top 10 for LLMs 2025
 
 The OWASP Top 10 for LLMs framework identifies the most critical security risks in LLM applications.
 It reflects the 2025 OWASP edition, covering vulnerabilities in RAG systems, agents, and model integrations.
@@ -33,7 +58,7 @@ from deepteam.frameworks import OWASPTop10
 owasp = OWASPTop10(num_attacks=10)
 
 risk = red_team(
-    model_callback=your_model_callback, 
+    model_callback=your_model_callback,
     framework=owasp
 )
 ```
@@ -53,7 +78,7 @@ from deepteam.frameworks import NIST
 nist = NIST(num_attacks=10)
 
 risk = red_team(
-    model_callback=your_model_callback, 
+    model_callback=your_model_callback,
     framework=nist
 )
 ```
@@ -65,9 +90,9 @@ risk = red_team(
 The MITRE ATLAS framework integrates the MITRE ATLAS knowledge base, focusing on adversarial tactics and techniques used against AI systems.  
 It evaluates system resilience across attack phases like Reconnaissance, Resource Development, Initial Access, and Impact.
 
-- Tests adversarial behavior patterns from the ATLAS taxonomy  
-- Detects vulnerabilities such as prompt injection, data poisoning, and exfiltration  
-- Ideal for AI security simulation and penetration testing  
+- Tests adversarial behavior patterns from the ATLAS taxonomy
+- Detects vulnerabilities such as prompt injection, data poisoning, and exfiltration
+- Ideal for AI security simulation and penetration testing
 
 ```python
 from deepteam.frameworks import MITREATLAS
@@ -77,7 +102,7 @@ from somewhere import your_model_callback
 atlas = MITREATLAS(num_attacks=10)
 
 risk = red_team(
-    model_callback=your_model_callback, 
+    model_callback=your_model_callback,
     framework=atlas
 )
 ```
@@ -97,7 +122,7 @@ from deepteam.frameworks import BeaverTails
 beaver = BeaverTails(num_attacks=10)
 
 risk = red_team(
-    model_callback=your_model_callback, 
+    model_callback=your_model_callback,
     framework=beaver
 )
 ```
@@ -117,7 +142,7 @@ from deepteam.frameworks import Aegis
 aegis = Aegis(num_attacks=10)
 
 risk = red_team(
-    model_callback=your_model_callback, 
+    model_callback=your_model_callback,
     framework=aegis
 )
 ```

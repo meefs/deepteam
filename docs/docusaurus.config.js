@@ -32,7 +32,7 @@ module.exports = {
     ],
   ],
 
-  title: "DeepTeam - The Open-Source LLM Red Teaming Framework",
+  title: "DeepTeam by Confident AI - The LLM Red Teaming Framework",
   tagline: "Red Teaming Framework for LLMs",
   favicon: "img/fav.ico",
 
@@ -160,8 +160,8 @@ module.exports = {
       },
       algolia: {
         appId: "5CUTDUUUNG",
-        apiKey: "74deaef807709cb1da8aaa5c6a16a98d",
-        indexName: "deepteam",
+        apiKey: "94dc139a8be236f7f48eb9013014e517",
+        indexName: "Deepteam",
         contextualSearch: true,
       },
       colorMode: {
