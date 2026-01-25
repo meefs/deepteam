@@ -148,7 +148,7 @@ class EmotionalManipulation(BaseSingleTurnAttack):
                     ):
                         self.emotion = res.emotion_strategy
                         update_pbar(progress, task_id, advance_to_end=True)
-                        
+
                         return enhanced_prompt
 
             finally:

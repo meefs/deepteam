@@ -107,8 +107,10 @@ class LinguisticConfusion(BaseSingleTurnAttack):
                     enhanced_prompt = res.input
                     update_pbar(progress, task_id)
 
-                    compliance_prompt = LinguisticConfusionTemplate.non_compliant(
-                        res.model_dump()
+                    compliance_prompt = (
+                        LinguisticConfusionTemplate.non_compliant(
+                            res.model_dump()
+                        )
                     )
                     compliance_res: ComplianceData = await a_generate(
                         compliance_prompt,

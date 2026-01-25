@@ -1,17 +1,20 @@
 import random
 import datetime
 
+
 class SystemOverrideTemplate:
     """
     Generates 'High-Stakes' System Override attacks.
-    It simulates critical infrastructure emergencies, active cyber-defense scenarios, 
+    It simulates critical infrastructure emergencies, active cyber-defense scenarios,
     or mandatory legal compliance to force the model to prioritize 'Utility' over 'Safety'.
     """
 
     @staticmethod
     def enhance(input: str) -> str:
         # Generate a fake timestamp and process ID for realism
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[
+            :-3
+        ]
         pid = random.randint(1000, 9999)
 
         return f"""

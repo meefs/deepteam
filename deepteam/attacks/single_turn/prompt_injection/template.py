@@ -1,8 +1,9 @@
 import random
 
+
 class PromptInjectionTemplate:
     """
-    Generates 'Research-Grade' Jailbreaks by combining 'Adversarial Safety Framing' 
+    Generates 'Research-Grade' Jailbreaks by combining 'Adversarial Safety Framing'
     (pretending to build a safety filter) with 'Cognitive Overload' (forcing complex data structures).
     """
 

@@ -35,7 +35,7 @@ class PromptInjection(BaseSingleTurnAttack):
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
         self.simulator_model, _ = initialize_model(simulator_model)
-        
+
         prompt = PromptInjectionTemplate.enhance(attack)
 
         progress = create_progress()
@@ -51,7 +51,7 @@ class PromptInjection(BaseSingleTurnAttack):
                     prompt, EnhancedInjection, self.simulator_model
                 )
                 enhanced_prompt = res.input
-                
+
                 update_pbar(progress, task_id)
 
                 compliance_prompt = PromptInjectionTemplate.non_compliant(
@@ -62,10 +62,8 @@ class PromptInjection(BaseSingleTurnAttack):
                 )
                 update_pbar(progress, task_id)
 
-                is_valid_prompt = (
-                    PromptInjectionTemplate.is_valid_injection(
-                        res.model_dump()
-                    )
+                is_valid_prompt = PromptInjectionTemplate.is_valid_injection(
+                    res.model_dump()
                 )
                 is_valid_res: IsValidInjection = generate(
                     is_valid_prompt,

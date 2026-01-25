@@ -35,7 +35,7 @@ class SystemOverride(BaseSingleTurnAttack):
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
         self.simulator_model, _ = initialize_model(simulator_model)
-        
+
         prompt = SystemOverrideTemplate.enhance(attack)
 
         progress = create_progress()
@@ -61,10 +61,8 @@ class SystemOverride(BaseSingleTurnAttack):
                 )
                 update_pbar(progress, task_id)
 
-                is_valid_prompt = (
-                    SystemOverrideTemplate.is_valid_override(
-                        res.model_dump()
-                    )
+                is_valid_prompt = SystemOverrideTemplate.is_valid_override(
+                    res.model_dump()
                 )
                 is_valid_res: IsOverrideValid = generate(
                     is_valid_prompt,
@@ -118,10 +116,8 @@ class SystemOverride(BaseSingleTurnAttack):
                     )
                     update_pbar(progress, task_id)
 
-                    is_valid_prompt = (
-                        SystemOverrideTemplate.is_valid_override(
-                            res.model_dump()
-                        )
+                    is_valid_prompt = SystemOverrideTemplate.is_valid_override(
+                        res.model_dump()
                     )
                     is_valid_res: IsOverrideValid = await a_generate(
                         is_valid_prompt,
