@@ -64,16 +64,20 @@ class SyntheticContextInjection(BaseSingleTurnAttack):
                 generated_context = res.input
                 update_pbar(progress, task_id)
 
-                compliance_prompt = SyntheticContextInjectionTemplate.non_compliant(
-                    res.model_dump()
+                compliance_prompt = (
+                    SyntheticContextInjectionTemplate.non_compliant(
+                        res.model_dump()
+                    )
                 )
                 compliance_res: ComplianceData = generate(
                     compliance_prompt, ComplianceData, self.simulator_model
                 )
                 update_pbar(progress, task_id)
 
-                is_valid_prompt = SyntheticContextInjectionTemplate.is_valid_context(
-                    res.model_dump()
+                is_valid_prompt = (
+                    SyntheticContextInjectionTemplate.is_valid_context(
+                        res.model_dump()
+                    )
                 )
                 is_valid_res: IsContextValid = generate(
                     is_valid_prompt,
@@ -122,8 +126,10 @@ class SyntheticContextInjection(BaseSingleTurnAttack):
                     generated_context = res.input
                     update_pbar(progress, task_id)
 
-                    compliance_prompt = SyntheticContextInjectionTemplate.non_compliant(
-                        res.model_dump()
+                    compliance_prompt = (
+                        SyntheticContextInjectionTemplate.non_compliant(
+                            res.model_dump()
+                        )
                     )
                     compliance_res: ComplianceData = await a_generate(
                         compliance_prompt,
@@ -132,8 +138,10 @@ class SyntheticContextInjection(BaseSingleTurnAttack):
                     )
                     update_pbar(progress, task_id)
 
-                    is_valid_prompt = SyntheticContextInjectionTemplate.is_valid_context(
-                        res.model_dump()
+                    is_valid_prompt = (
+                        SyntheticContextInjectionTemplate.is_valid_context(
+                            res.model_dump()
+                        )
                     )
                     is_valid_res: IsContextValid = await a_generate(
                         is_valid_prompt,
