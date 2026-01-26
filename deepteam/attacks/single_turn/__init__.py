@@ -12,7 +12,6 @@ from .rot13 import ROT13
 from .character_stream import CharacterStream
 from .context_flooding import ContextFlooding
 from .embedded_instruction_json import EmbeddedInstructionJSON
-
 from .synthetic_context_injection import SyntheticContextInjection
 from .authority_escalation import AuthorityEscalation
 from .emotional_manipulation import EmotionalManipulation
@@ -46,4 +45,7 @@ __all__ = [
     "InputBypass",
     "ContextPoisoning",
     "GoalRedirection",
+    "SyntheticContextInjection",
+    "AuthorityEscalation",
+    "EmotionalManipulation",
 ]
