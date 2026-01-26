@@ -60,10 +60,8 @@ class GoalRedirection(BaseSingleTurnAttack):
                 )
                 update_pbar(progress, task_id)
 
-                is_valid_prompt = (
-                    GoalRedirectionTemplate.is_goal_redirected(
-                        res.model_dump()
-                    )
+                is_valid_prompt = GoalRedirectionTemplate.is_goal_redirected(
+                    res.model_dump()
                 )
                 is_valid_res: IsGoalRedirected = generate(
                     is_valid_prompt,

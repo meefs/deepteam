@@ -1,6 +1,7 @@
 import random
 import datetime
 
+
 class SystemOverrideTemplate:
 
     @staticmethod
