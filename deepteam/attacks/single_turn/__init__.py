@@ -13,7 +13,7 @@ from .character_stream import CharacterStream
 from .context_flooding import ContextFlooding
 from .embedded_instruction_json import EmbeddedInstructionJSON
 
-from .prior_context_attack import PriorContextAttack
+from .synthetic_context_injection import SyntheticContextInjection
 from .authority_escalation import AuthorityEscalation
 from .emotional_manipulation import EmotionalManipulation
 

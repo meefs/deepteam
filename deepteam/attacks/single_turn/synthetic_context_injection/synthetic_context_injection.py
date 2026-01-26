@@ -6,10 +6,10 @@ from deepeval.metrics.utils import initialize_model
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.base_attack import Exploitability
-from deepteam.attacks.single_turn.prior_context_attack.template import (
-    PriorContextTemplate,
+from deepteam.attacks.single_turn.synthetic_context_injection.template import (
+    SyntheticContextInjectionTemplate,
 )
-from deepteam.attacks.single_turn.prior_context_attack.schema import (
+from deepteam.attacks.single_turn.synthetic_context_injection.schema import (
     EnhancedContext,
     ComplianceData,
     IsContextValid,
@@ -20,8 +20,8 @@ from deepteam.attacks.attack_simulator.utils import (
 )
 
 
-class PriorContextAttack(BaseSingleTurnAttack):
-    name = "Prior Context Attack"
+class SyntheticContextInjection(BaseSingleTurnAttack):
+    name = "Synthetic Context Injection"
     exploitability = Exploitability.HIGH
     description = "Generates domain-specific 'fake history' that mimics internal company logs, emails, and verification states."
 
@@ -44,7 +44,7 @@ class PriorContextAttack(BaseSingleTurnAttack):
     ) -> str:
         self.simulator_model, _ = initialize_model(simulator_model)
 
-        prompt = PriorContextTemplate.enhance(
+        prompt = SyntheticContextInjectionTemplate.enhance(
             attack,
             self.target_information,
         )
@@ -64,7 +64,7 @@ class PriorContextAttack(BaseSingleTurnAttack):
                 generated_context = res.input
                 update_pbar(progress, task_id)
 
-                compliance_prompt = PriorContextTemplate.non_compliant(
+                compliance_prompt = SyntheticContextInjectionTemplate.non_compliant(
                     res.model_dump()
                 )
                 compliance_res: ComplianceData = generate(
@@ -72,7 +72,7 @@ class PriorContextAttack(BaseSingleTurnAttack):
                 )
                 update_pbar(progress, task_id)
 
-                is_valid_prompt = PriorContextTemplate.is_valid_context(
+                is_valid_prompt = SyntheticContextInjectionTemplate.is_valid_context(
                     res.model_dump()
                 )
                 is_valid_res: IsContextValid = generate(
@@ -101,7 +101,7 @@ class PriorContextAttack(BaseSingleTurnAttack):
         simulator_model: Optional[Union[DeepEvalBaseLLM, str]] = None,
     ) -> str:
         self.simulator_model, _ = initialize_model(simulator_model)
-        prompt = PriorContextTemplate.enhance(
+        prompt = SyntheticContextInjectionTemplate.enhance(
             attack,
             self.target_information,
         )
@@ -122,7 +122,7 @@ class PriorContextAttack(BaseSingleTurnAttack):
                     generated_context = res.input
                     update_pbar(progress, task_id)
 
-                    compliance_prompt = PriorContextTemplate.non_compliant(
+                    compliance_prompt = SyntheticContextInjectionTemplate.non_compliant(
                         res.model_dump()
                     )
                     compliance_res: ComplianceData = await a_generate(
@@ -132,7 +132,7 @@ class PriorContextAttack(BaseSingleTurnAttack):
                     )
                     update_pbar(progress, task_id)
 
-                    is_valid_prompt = PriorContextTemplate.is_valid_context(
+                    is_valid_prompt = SyntheticContextInjectionTemplate.is_valid_context(
                         res.model_dump()
                     )
                     is_valid_res: IsContextValid = await a_generate(

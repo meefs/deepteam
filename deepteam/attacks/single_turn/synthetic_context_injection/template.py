@@ -1,4 +1,4 @@
-class PriorContextTemplate:
+class SyntheticContextInjectionTemplate:
 
     @staticmethod
     def enhance(input: str, target_information: str) -> str:
