@@ -284,16 +284,16 @@ ollama run deepseek-r1:1.5b
 
 :::
 
-To use **Ollama** models for your red teaming, run `deepeval set-ollama <model>` in your CLI. For example:
+To use **Ollama** models for your red teaming, run `deepeval set-ollama --model <model>` in your CLI. For example:
 
 ```bash
-deepeval set-ollama deepseek-r1:1.5b
+deepeval set-ollama --model deepseek-r1:1.5b
 ```
 
 Optionally, you can specify the **base URL** of your local Ollama model instance if you've defined a custom port. The default base URL is set to `http://localhost:11434`.
 
 ```bash
-deepeval set-ollama deepseek-r1:1.5b \
+deepeval set-ollama --model deepseek-r1:1.5b \
     --base-url="http://localhost:11434"
 ```
 
