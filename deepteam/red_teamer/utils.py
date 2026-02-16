@@ -76,7 +76,10 @@ def resolve_model_callback(
             res = model_callback.generate(input)
             if isinstance(res, tuple):
                 res, _ = res
-            return res
+            return RTTurn(
+                role="assistant",
+                content=res
+            )
 
     else:
 
@@ -86,6 +89,9 @@ def resolve_model_callback(
             res = await model_callback.a_generate(input)
             if isinstance(res, tuple):
                 res, _ = res
-            return res
+            return RTTurn(
+                role="assistant",
+                content=res
+            )
 
     return new_model_callback

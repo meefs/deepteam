@@ -514,7 +514,6 @@ class RedTeamer:
             try:
                 sig = inspect.signature(model_callback)
                 if "turns" in sig.parameters:
-                    # We're calling model_callback here so we should expect the return object and parse fields here
                     model_response: RTTurn = model_callback(
                         simulated_test_case.input, simulated_test_case.turns
                     )
