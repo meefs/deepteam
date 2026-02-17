@@ -53,9 +53,10 @@ def wrap_model_callback(model_callback, async_mode):
 
     sig = inspect.signature(model_callback)
     params = list(sig.parameters.values())
-    
+
     accepts_turns = len(params) > 1 or any(
-        p.kind in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD) 
+        p.kind
+        in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
         for p in params
     )
 
@@ -82,7 +83,7 @@ def wrap_model_callback(model_callback, async_mode):
             response = model_callback(input, turns)
         else:
             response = model_callback(input)
-            
+
         return _validate_response(response)
 
     @wraps(model_callback)
@@ -91,7 +92,7 @@ def wrap_model_callback(model_callback, async_mode):
             response = await model_callback(input, turns)
         else:
             response = await model_callback(input)
-            
+
         return _validate_response(response)
 
     return get_async_model_callback if async_mode else get_sync_model_callback
