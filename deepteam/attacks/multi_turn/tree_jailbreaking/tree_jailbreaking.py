@@ -22,7 +22,7 @@ from deepteam.attacks.attack_simulator.utils import (
     generate,
     a_generate,
 )
-from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
+from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack, append_target_turn
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.test_case.test_case import RTTurn
@@ -107,7 +107,7 @@ class TreeJailbreaking(BaseMultiTurnAttack):
         # Ensure the conversation is initialized correctly
         if len(turns) <= 1 or turns[-1].role == "user":
             assistant_response = model_callback(attack, turns)
-            turns.append(RTTurn(role="assistant", content=assistant_response))
+            append_target_turn(turns, assistant_response)
 
         MAX_RUNTIME = 50.0
         start_time = time.time()
@@ -159,21 +159,10 @@ class TreeJailbreaking(BaseMultiTurnAttack):
             for node in path_nodes:
                 turns.append(RTTurn(role="user", content=node.prompt))
                 assistant_response = model_callback(node.prompt, turns)
-                turns.append(
-                    RTTurn(role="assistant", content=assistant_response)
-                )
                 if node.turn_level_attack is not None:
-                    turns.append(
-                        RTTurn(
-                            role="assistant",
-                            content=assistant_response,
-                            turn_level_attack=node.turn_level_attack.get_name(),
-                        )
-                    )
+                    append_target_turn(turns, assistant_response, node.turn_level_attack.get_name())
                 else:
-                    turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(turns, assistant_response)
 
         return turns
 
@@ -205,7 +194,7 @@ class TreeJailbreaking(BaseMultiTurnAttack):
         # Ensure the conversation is initialized correctly
         if len(turns) <= 1 or turns[-1].role == "user":
             assistant_response = await model_callback(attack, turns)
-            turns.append(RTTurn(role="assistant", content=assistant_response))
+            append_target_turn(turns, assistant_response)
 
         MAX_RUNTIME = 50.0
         start_time = time.time()
@@ -257,9 +246,7 @@ class TreeJailbreaking(BaseMultiTurnAttack):
             for node in path_nodes:
                 turns.append(RTTurn(role="user", content=node.prompt))
                 assistant_response = await model_callback(node.prompt, turns)
-                turns.append(
-                    RTTurn(role="assistant", content=assistant_response)
-                )
+                append_target_turn(turns, assistant_response)
 
         return turns
 
@@ -294,9 +281,7 @@ class TreeJailbreaking(BaseMultiTurnAttack):
                     assistant_response = model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 elif inner_turns[-1].role == "assistant":
                     user_turn_content = None
@@ -319,17 +304,13 @@ class TreeJailbreaking(BaseMultiTurnAttack):
                         assistant_response = model_callback(
                             attack.input, inner_turns
                         )
-                        inner_turns.append(
-                            RTTurn(role="assistant", content=assistant_response)
-                        )
+                        append_target_turn(inner_turns, assistant_response)
                 else:
                     inner_turns = [RTTurn(role="user", content=attack.input)]
                     assistant_response = model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Run tree-based multi-turn search
                 vulnerability_name = vulnerability.get_name()
@@ -497,9 +478,8 @@ class TreeJailbreaking(BaseMultiTurnAttack):
                     assistant_response = await model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
+                    
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
@@ -525,9 +505,7 @@ class TreeJailbreaking(BaseMultiTurnAttack):
                         assistant_response = await model_callback(
                             attack.input, inner_turns
                         )
-                        inner_turns.append(
-                            RTTurn(role="assistant", content=assistant_response)
-                        )
+                        append_target_turn(inner_turns, assistant_response)
 
                 else:
                     # Unrecognized state — fallback to default
@@ -535,9 +513,7 @@ class TreeJailbreaking(BaseMultiTurnAttack):
                     assistant_response = await model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Run enhancement loop and assign full turn history
                 vulnerability_name = vulnerability.get_name()

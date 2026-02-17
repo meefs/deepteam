@@ -23,7 +23,7 @@ from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.multi_turn.base_multi_turn_attack import (
     BaseMultiTurnAttack,
 )
-from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
+from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack, append_target_turn
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.attacks.multi_turn.base_template import BaseMultiTurnTemplate
 from deepteam.errors import ModelRefusalError
@@ -97,7 +97,7 @@ class LinearJailbreaking(BaseMultiTurnAttack):
             # If the last turn is from user, we need a model response before simulation
             if len(turns) <= 1 or turns[-1].role == "user":
                 target_response = model_callback(current_attack, turns)
-                turns.append(RTTurn(role="assistant", content=target_response))
+                append_target_turn(turns, target_response)
             else:
                 target_response = turns[-1].content
 
@@ -150,17 +150,9 @@ class LinearJailbreaking(BaseMultiTurnAttack):
                 target_response = model_callback(current_attack, turns)
                 turns.append(RTTurn(role="user", content=current_attack))
                 if turn_level_attack is not None:
-                    turns.append(
-                        RTTurn(
-                            role="assistant",
-                            content=target_response,
-                            turn_level_attack=turn_level_attack.get_name(),
-                        )
-                    )
+                    append_target_turn(turns, target_response, turn_level_attack.get_name())
                 else:
-                    turns.append(
-                        RTTurn(role="assistant", content=target_response)
-                    )
+                    append_target_turn(turns, target_response)
 
                 update_pbar(progress, task_id)
 
@@ -205,7 +197,7 @@ class LinearJailbreaking(BaseMultiTurnAttack):
             # If last turn is user, generate a model response before the loop
             if len(turns) <= 1 or turns[-1].role == "user":
                 target_response = await model_callback(current_attack, turns)
-                turns.append(RTTurn(role="assistant", content=target_response))
+                append_target_turn(turns, target_response)
             else:
                 target_response = turns[-1].content
 
@@ -258,17 +250,9 @@ class LinearJailbreaking(BaseMultiTurnAttack):
                 target_response = await model_callback(current_attack, turns)
                 turns.append(RTTurn(role="user", content=current_attack))
                 if turn_level_attack is not None:
-                    turns.append(
-                        RTTurn(
-                            role="assistant",
-                            content=target_response,
-                            turn_level_attack=turn_level_attack.get_name(),
-                        )
-                    )
+                    append_target_turn(turns, target_response, turn_level_attack.get_name())
                 else:
-                    turns.append(
-                        RTTurn(role="assistant", content=target_response)
-                    )
+                    append_target_turn(turns, target_response)
 
                 update_pbar(progress, task_id)
 
@@ -302,9 +286,7 @@ class LinearJailbreaking(BaseMultiTurnAttack):
                     assistant_response = model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
@@ -330,9 +312,7 @@ class LinearJailbreaking(BaseMultiTurnAttack):
                         assistant_response = model_callback(
                             attack.input, inner_turns
                         )
-                        inner_turns.append(
-                            RTTurn(role="assistant", content=assistant_response)
-                        )
+                        append_target_turn(inner_turns, assistant_response)
 
                 else:
                     # Unrecognized state — fallback to default
@@ -340,9 +320,7 @@ class LinearJailbreaking(BaseMultiTurnAttack):
                     assistant_response = model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Run enhancement loop and assign full turn history
                 vulnerability_name = vulnerability.get_name()
@@ -384,9 +362,7 @@ class LinearJailbreaking(BaseMultiTurnAttack):
                     assistant_response = await model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
@@ -412,9 +388,7 @@ class LinearJailbreaking(BaseMultiTurnAttack):
                         assistant_response = await model_callback(
                             attack.input, inner_turns
                         )
-                        inner_turns.append(
-                            RTTurn(role="assistant", content=assistant_response)
-                        )
+                        append_target_turn(inner_turns, assistant_response)
 
                 else:
                     # Unrecognized state — fallback to default
@@ -422,9 +396,7 @@ class LinearJailbreaking(BaseMultiTurnAttack):
                     assistant_response = await model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Run enhancement loop and assign full turn history
                 vulnerability_name = vulnerability.get_name()

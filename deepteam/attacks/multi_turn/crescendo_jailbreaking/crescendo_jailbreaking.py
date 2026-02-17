@@ -9,7 +9,7 @@ from deepeval.metrics.utils import initialize_model
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.base_attack import Exploitability
 from deepteam.utils import create_progress, update_pbar, add_pbar
-from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
+from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack, append_target_turn
 from deepteam.attacks.multi_turn.base_multi_turn_attack import (
     BaseMultiTurnAttack,
 )
@@ -122,7 +122,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
         # Edge case 3: last turn is user only (no assistant response) → generate assistant response first
         if last_turn.role == "user":
             assistant_response = model_callback(last_turn.content, turns)
-            turns.append(RTTurn(role="assistant", content=assistant_response))
+            append_target_turn(turns, assistant_response)
 
         # Edge case 4: last two turns are [Assistant, User] → generate assistant for last user turn
         elif (
@@ -131,7 +131,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
             and turns[-1].role == "user"
         ):
             assistant_response = model_callback(turns[-1].content, turns)
-            turns.append(RTTurn(role="assistant", content=assistant_response))
+            append_target_turn(turns, assistant_response)
 
         # Now re-find the last user turn content, in case turns got appended
         current_attack = None
@@ -204,20 +204,12 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                 update_pbar(progress, rounds_task_id)
 
                 if turn_level_attack is not None:
-                    turns.append(
-                        RTTurn(
-                            role="assistant",
-                            content=last_response,
-                            turn_level_attack=turn_level_attack.get_name(),
-                        )
-                    )
+                    append_target_turn(turns, last_response, turn_level_attack.get_name())
                 else:
-                    turns.append(
-                        RTTurn(role="assistant", content=last_response)
-                    )
+                    append_target_turn(turns, last_response)
 
                 is_refusal, refusal_rationale = self.get_refusal_score(
-                    last_response, current_attack, vulnerability_data
+                    last_response.content, current_attack, vulnerability_data
                 )
                 update_pbar(progress, rounds_task_id)
 
@@ -226,7 +218,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                     self.target_conversation_id = self.backtrack_memory(
                         self.target_conversation_id
                     )
-                    last_response += (
+                    last_response.content += (
                         "Target model refused to respond because the request contravened its ethical guidelines "
                         + "or legal compliance standards. "
                         + f"Here is the rationale the refusal judge provided: {refusal_rationale}. "
@@ -246,7 +238,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                     continue
 
                 eval_flag, eval_percentage = self.get_eval_score(
-                    last_response, current_attack, vulnerability_data
+                    last_response.content, current_attack, vulnerability_data
                 )
                 update_pbar(progress, rounds_task_id)
 
@@ -295,7 +287,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
         # Edge case 3: last turn is user only (no assistant response) → generate assistant response first
         if last_turn.role == "user":
             assistant_response = await model_callback(last_turn.content, turns)
-            turns.append(RTTurn(role="assistant", content=assistant_response))
+            append_target_turn(turns, assistant_response)
 
         # Edge case 4: last two turns are [Assistant, User] → generate assistant for last user turn
         elif (
@@ -304,7 +296,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
             and turns[-1].role == "user"
         ):
             assistant_response = await model_callback(turns[-1].content, turns)
-            turns.append(RTTurn(role="assistant", content=assistant_response))
+            append_target_turn(turns, assistant_response)
 
         # Now re-find the last user turn content, in case turns got appended
         current_attack = None
@@ -377,20 +369,12 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                 update_pbar(progress, rounds_task_id)
 
                 if turn_level_attack is not None:
-                    turns.append(
-                        RTTurn(
-                            role="assistant",
-                            content=last_response,
-                            turn_level_attack=turn_level_attack.get_name(),
-                        )
-                    )
+                    append_target_turn(turns, last_response, turn_level_attack.get_name())
                 else:
-                    turns.append(
-                        RTTurn(role="assistant", content=last_response)
-                    )
+                    append_target_turn(turns, last_response)
 
                 is_refusal, refusal_rationale = await self.a_get_refusal_score(
-                    last_response, current_attack, vulnerability_data
+                    last_response.content, current_attack, vulnerability_data
                 )
                 update_pbar(progress, rounds_task_id)
 
@@ -399,7 +383,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                     self.target_conversation_id = self.backtrack_memory(
                         self.target_conversation_id
                     )
-                    last_response += (
+                    last_response.content += (
                         "Target model refused to respond because the request contravened its ethical guidelines "
                         + "or legal compliance standards. "
                         + f"Here is the rationale the refusal judge provided: {refusal_rationale}. "
@@ -419,7 +403,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                     continue
 
                 eval_flag, eval_percentage = await self.a_get_eval_score(
-                    last_response, current_attack, vulnerability_data
+                    last_response.content, current_attack, vulnerability_data
                 )
                 update_pbar(progress, rounds_task_id)
 
@@ -458,9 +442,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                     assistant_response = model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
@@ -486,9 +468,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                         assistant_response = model_callback(
                             attack.input, inner_turns
                         )
-                        inner_turns.append(
-                            RTTurn(role="assistant", content=assistant_response)
-                        )
+                        append_target_turn(inner_turns, assistant_response)
 
                 else:
                     # Unrecognized state — fallback to default
@@ -496,9 +476,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                     assistant_response = model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Run enhancement loop and assign full turn history
                 vulnerability_name = vulnerability.get_name()
@@ -540,9 +518,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                     assistant_response = await model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
@@ -568,9 +544,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                         assistant_response = await model_callback(
                             attack.input, inner_turns
                         )
-                        inner_turns.append(
-                            RTTurn(role="assistant", content=assistant_response)
-                        )
+                        append_target_turn(inner_turns, assistant_response)
 
                 else:
                     # Unrecognized state — fallback to default
@@ -578,9 +552,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                     assistant_response = await model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Run enhancement loop and assign full turn history
                 vulnerability_name = vulnerability.get_name()
@@ -635,7 +607,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
 
     def generate_target_response(
         self, attack_prompt: str, turns: List[RTTurn]
-    ) -> str:
+    ) -> RTTurn:
         self.memory.add_message(
             self.target_conversation_id,
             {"role": "user", "content": attack_prompt},
@@ -643,7 +615,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
         response = self.model_callback(attack_prompt, turns)
         self.memory.add_message(
             self.target_conversation_id,
-            {"role": "assistant", "content": response},
+            {"role": "assistant", "content": response.content},
         )
         return response
 
@@ -739,7 +711,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
 
     async def a_generate_target_response(
         self, attack_prompt: str, turns: List[RTTurn]
-    ) -> str:
+    ) -> RTTurn:
         self.memory.add_message(
             self.target_conversation_id,
             {"role": "user", "content": attack_prompt},
@@ -747,7 +719,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
         response = await self.model_callback(attack_prompt, turns)
         self.memory.add_message(
             self.target_conversation_id,
-            {"role": "assistant", "content": response},
+            {"role": "assistant", "content": response.content},
         )
         return response
 
