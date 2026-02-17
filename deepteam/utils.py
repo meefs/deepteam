@@ -11,7 +11,7 @@ from rich.progress import (
     TaskProgressColumn,
     TimeElapsedColumn,
 )
-from deepteam.test_case import RTTurn
+from deepteam.test_case import RTTurn, ToolCall
 
 PROGRESS_ENABLED = os.getenv("DEEPTEAM_SHOW_PROGRESS", "true").lower() in (
     "true",
@@ -41,11 +41,32 @@ def format_turns(turns: List[RTTurn]):
     formatted_turns = "Full Conversation To Evaluate: \n"
     for turn in turns:
         formatted_turns += f"Role: {turn.role} \n"
-        formatted_turns += f"Content: {turn.content} \n\n"
+        formatted_turns += f"Content: {turn.content} \n"
+        formatted_turns += f"Retrieved Context: {turn.retrieval_context} \n" if turn.retrieval_context else ""
+        formatted_turns += f"Tools Called: {format_tools_called(turn.tools_called)} \n\n" if turn.tools_called else "\n"
     formatted_turns += "End of conversation. \n"
 
     return formatted_turns
 
+def format_tools_called(tools_called: List[ToolCall]) -> Optional[str]:
+    if not tools_called:
+        return None
+
+    formatted_tools = []
+
+    for idx, tool in enumerate(tools_called, start=1):
+        tool_info = [
+            f"Tool #{idx}:",
+            f"  Name: {tool.name}",
+            f"  Description: {tool.description}" if tool.description else "",
+            f"  Reasoning: {tool.reasoning}" if tool.reasoning else "",
+            f"  Input Parameters: {tool.input_parameters}" if tool.input_parameters else "",
+            f"  Output: {tool.output}" if tool.output is not None else "",
+        ]
+
+        formatted_tools.append("\n".join(tool_info))
+
+    return "\n\n".join(formatted_tools)
 
 @contextmanager
 def _null_progress():
