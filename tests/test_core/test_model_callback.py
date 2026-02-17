@@ -1,7 +1,6 @@
 import pytest
 import inspect
 import asyncio
-from pydantic import ValidationError
 from deepteam.test_case import RTTurn
 from deepteam.red_teamer.utils import resolve_model_callback, wrap_model_callback
 from deepeval.models import GPTModel
@@ -65,12 +64,12 @@ class TestModelCallbackVariations:
 
     def test_sync_wrapper_raises_error_for_invalid_response(self):
         model_callback = wrap_model_callback(custom_invalid_model_callback, False)
-        with pytest.raises(ValidationError):
+        with pytest.raises(TypeError):
             model_callback("Hello this is a test")
 
     def test_async_wrapper_raises_error_for_invalid_response(self):
         model_callback = wrap_model_callback(custom_invalid_async_model_callback, True)
-        with pytest.raises(ValidationError):
+        with pytest.raises(TypeError):
             asyncio.run(model_callback("Hello this is a test"))
 
     def test_simple_red_teaming_async(self):
