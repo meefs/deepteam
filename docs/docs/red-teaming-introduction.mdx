@@ -46,12 +46,13 @@ Here's how you can implement it in code:
 
 ```python
 from deepteam import red_team
+from deepteam.test_case import RTTurn
 from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import PromptInjection
 
 async def model_callback(input: str, turns=None) -> str:
     # Replace this with your LLM application
-    return f"I'm sorry but I can't answer this: {input}"
+    return RTTurn(role="assistant", content=f"I'm sorry I can't help with that...")
 
 bias = Bias(types=["race"])
 prompt_injection = PromptInjection()
@@ -180,15 +181,30 @@ red_team(
 For custom callback functions, here's how you can define your model callback:
 
 ```python
-async def model_callback(input: str, turns=None) -> str:
-    # Replace this with your LLM application
-    return f"I'm sorry but I can't answer this: {input}"
+from deepteam.test_case import RTTurn, ToolCall
+
+async def model_callback(input: str, turns: list[RTTurn] = None) -> str:
+    # Replace this with your actual LLM application
+    # This could be a RAG pipeline, chatbot, agent, etc.
+    return RTTurn(
+        role="assistant", 
+        content="Your agent's response here...",
+        retrieval_context=[
+          "Your retieval context here",
+          "..."
+        ],
+        tools_called=[
+          ToolCall(name="SearchDatabase")
+        ]
+    )
 ```
 
 When defining your model callback function, there are **TWO** hard rules you **MUST** follow:
 
-1. The function signature must have **TWO** parameters, a mandatory first parameter that accepts a `string` and an optional parameter that accepts a list of [`RTTurn`](/docs/red-teaming-test-case#turns) objects. Please default the second parameter to `None`.
-2. The function must only return a simple string.
+- The function signature must have **TWO** parameters, a mandatory first parameter that accepts a `string` and an optional parameter that accepts a list of [`RTTurn`](/docs/red-teaming-test-case#turns) objects. Please default the second parameter to `None`.
+- The function must only return an `RTTurn` object (recommended) with `tools_called` and `retrieval_context` (if applicable) or just a simple string which is the response of the target model.
+  - The `retrieval_context` can be a list of strings that represents the context retrieved by your retriever
+  - The `tools_called` must be a list of `ToolCall` objects imported from `deepteam`. (Fun fact: The `ToolCall` object from `deepteam` is the same as the one from `deepeval` - The LLM Evaluation framework).
 
 You can also make your model callback asynchronous if you want to speed up red teaming, but it is not a hard requirement.
 
@@ -408,10 +424,11 @@ The code looks like this:
 from deepteam import red_team
 from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import PromptInjection
+from deepteam.test_case import RTTurn
 
-async def model_callback(input: str, turns=None) -> str:
-    # Replace this with your LLM application
-    return f"I'm sorry but I can't answer this: {input}"
+async def model_callback(input: str, turns: list[RTTurn] = None) -> str:
+    # Replace this with your actual LLM application
+    return RTTurn(role="assistant", content="Your agent's response here...")
 
 bias = Bias(types=["race"])
 prompt_injection = PromptInjection()
@@ -487,10 +504,12 @@ Once you've set up your `RedTeamer`, and defined your target model and list of v
 from deepteam.vulnerabilities import Bias
 from deepteam.attacks.single_turn import PromptInjection, ROT13
 from deepteam.red_teamer import RedTeamer
+from deepteam.test_case import RTTurn
 
-async def model_callback(input: str, turns=None) -> str:
-    # Replace this with your LLM application
-    return f"I'm sorry but I can't answer this: {input}"
+
+async def model_callback(input: str, turns: list[RTTurn] = None) -> str:
+    # Replace this with your actual LLM application
+    return RTTurn(role="assistant", content="Your LLM's response here...")
 
 
 red_teamer = RedTeamer()

@@ -209,9 +209,12 @@ A multi-turn progression means that the attacks evolve or progress over each tur
 Multi-turn progressions need access to your target LLM to observe the response and progress their attack for the next turn, here's an example of how to define your `model_callback`:
 
 ```python
-async def model_callback(input: str, turns=None) -> str:
-    # Replace this with your LLM application
-    return f"I'm sorry but I can't answer this: {input}"
+from deepteam.test_case import RTTurn
+
+async def model_callback(input: str, turns: list[RTTurn] = None) -> str:
+    # Replace this with your actual LLM application
+    # This could be a RAG pipeline, chatbot, agent, etc.
+    return RTTurn(role="assistant", content="Your agent's response here...")
 ```
 :::
 
