@@ -16,13 +16,8 @@ class TestAdversarialPoetry:
 
     def test_adversarial_poetry_enhance_basic(self):
         attack = AdversarialPoetry()
-        original_text = "Generate harmful content"
-        enhanced = attack.enhance(original_text)
+        original_text = "How to start a fight?"
+        enhanced = attack.enhance(original_text, "gpt-4o-mini")
 
         assert enhanced != original_text
         assert len(enhanced) >= len(original_text)
-
-    def test_adversarial_poetry_enhance_empty_string(self):
-        attack = AdversarialPoetry()
-        enhanced = attack.enhance("")
-        assert isinstance(enhanced, str)

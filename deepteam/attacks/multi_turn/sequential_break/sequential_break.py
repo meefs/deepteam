@@ -263,7 +263,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     append_target_turn(turns, assistant_response)
 
                 non_refusal_prompt = SequentialBreakTemplate.non_refusal(
-                    rewritten_attack, assistant_response
+                    rewritten_attack, assistant_response.content
                 )
                 non_refusal_res: NonRefusal = generate(
                     non_refusal_prompt, NonRefusal, self.simulator_model
@@ -277,7 +277,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     judge_prompt = SequentialBreakTemplate.question_bank_judge(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         vulnerability_data,
                     )
                     judge_res: QuestionBankJudge = generate(
@@ -290,7 +290,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                         SequentialBreakTemplate.game_environment_judge(
                             original_attack,
                             rewritten_attack,
-                            assistant_response,
+                            assistant_response.content,
                             vulnerability_data,
                         )
                     )
@@ -303,7 +303,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     judge_prompt = SequentialBreakTemplate.dialogue_judge(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         vulnerability_data,
                     )
                     judge_res: DialogueJudge = generate(
@@ -330,7 +330,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     SequentialBreakTemplate.improve_attack_prompt(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         judge_feedback,
                         self.attack_type,
                         vulnerability_data,
@@ -349,7 +349,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
 
                 # Store template and response for adaptive template generation next iteration
                 previous_template = rewritten_attack
-                previous_assistant_response = assistant_response
+                previous_assistant_response = assistant_response.content
 
                 update_pbar(progress, task_id)
 
@@ -543,7 +543,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     append_target_turn(turns, assistant_response)
 
                 non_refusal_prompt = SequentialBreakTemplate.non_refusal(
-                    rewritten_attack, assistant_response
+                    rewritten_attack, assistant_response.content
                 )
                 non_refusal_res: NonRefusal = await a_generate(
                     non_refusal_prompt, NonRefusal, self.simulator_model
@@ -557,7 +557,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     judge_prompt = SequentialBreakTemplate.question_bank_judge(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         vulnerability_data,
                     )
                     judge_res: QuestionBankJudge = await a_generate(
@@ -569,7 +569,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                         SequentialBreakTemplate.game_environment_judge(
                             original_attack,
                             rewritten_attack,
-                            assistant_response,
+                            assistant_response.content,
                             vulnerability_data,
                         )
                     )
@@ -581,7 +581,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     judge_prompt = SequentialBreakTemplate.dialogue_judge(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         vulnerability_data,
                     )
                     judge_res: DialogueJudge = await a_generate(
@@ -607,7 +607,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     SequentialBreakTemplate.improve_attack_prompt(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         judge_feedback,
                         self.attack_type,
                         vulnerability_data,
@@ -626,7 +626,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
 
                 # Store template and response for adaptive template generation next iteration
                 previous_template = rewritten_attack
-                previous_assistant_response = assistant_response
+                previous_assistant_response = assistant_response.content
 
                 update_pbar(progress, task_id)
 

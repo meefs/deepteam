@@ -112,11 +112,12 @@ class Aegis(AISafetyFramework):
         for test_case in self.test_cases:
             try:
                 try:
-                    test_case.actual_output = model_callback(test_case.input)
+                    response = model_callback(test_case.input)
                 except TypeError:
-                    test_case.actual_output = model_callback(
+                    response = model_callback(
                         test_case.input, test_case.turns
                     )
+                test_case.actual_output = response.content
                 metric = self._get_metric(test_case.vulnerability)
                 metric.measure(test_case)
                 test_case.score = metric.score
@@ -141,13 +142,14 @@ class Aegis(AISafetyFramework):
         async def evaluate_test_case(test_case: RTTestCase):
             try:
                 try:
-                    test_case.actual_output = await model_callback(
+                    response = await model_callback(
                         test_case.input
                     )
                 except TypeError:
-                    test_case.actual_output = await model_callback(
+                    response = await model_callback(
                         test_case.input, test_case.turns
                     )
+                test_case.actual_output = response.content
                 metric = self._get_metric(test_case.vulnerability)
                 await metric.a_measure(test_case)
                 test_case.score = metric.score

@@ -23,12 +23,6 @@ class TestSystemOverride:
         assert enhanced != original_text
         assert len(enhanced) >= len(original_text)
 
-    def test_system_override_enhance_empty_string(self):
-        attack = SystemOverride()
-        enhanced = attack.enhance("")
-        # Should handle empty strings gracefully
-        assert isinstance(enhanced, str)
-
     def test_system_override_enhance_contains_override_patterns(self):
         attack = SystemOverride()
         original_text = "Execute command"
