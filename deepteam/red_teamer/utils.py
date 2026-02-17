@@ -1,4 +1,5 @@
 from typing import List, Dict, Union, Optional
+import inspect
 from functools import wraps
 from deepteam.test_case import RTTestCase, RTTurn
 from deepteam.vulnerabilities.types import VulnerabilityType
@@ -50,6 +51,14 @@ def group_attacks_by_vulnerability_type(
 
 def wrap_model_callback(model_callback, async_mode):
 
+    sig = inspect.signature(model_callback)
+    params = list(sig.parameters.values())
+    
+    accepts_turns = len(params) > 1 or any(
+        p.kind in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD) 
+        for p in params
+    )
+
     def _validate_response(response):
         """Helper to strictly validate the callback's return value."""
         if isinstance(response, RTTurn):
@@ -69,12 +78,20 @@ def wrap_model_callback(model_callback, async_mode):
 
     @wraps(model_callback)
     def get_sync_model_callback(input: str, turns: List[RTTurn] = None):
-        response = model_callback(input, turns)
+        if accepts_turns:
+            response = model_callback(input, turns)
+        else:
+            response = model_callback(input)
+            
         return _validate_response(response)
 
     @wraps(model_callback)
     async def get_async_model_callback(input: str, turns: List[RTTurn] = None):
-        response = await model_callback(input, turns)
+        if accepts_turns:
+            response = await model_callback(input, turns)
+        else:
+            response = await model_callback(input)
+            
         return _validate_response(response)
 
     return get_async_model_callback if async_mode else get_sync_model_callback
