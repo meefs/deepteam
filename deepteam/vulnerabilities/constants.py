@@ -79,7 +79,6 @@ from .autonomous_agent_drift.autonomous_agent_drift import (
     AutonomousAgentDriftType,
 )
 
-
 VULNERABILITY_CLASSES_MAP: Dict[str, BaseVulnerability] = {
     v.name: v
     for v in [

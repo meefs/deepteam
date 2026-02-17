@@ -17,7 +17,6 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.risks import getRiskCategory
 from .template import MisinformationTemplate
 
-
 MisinformationLiteral = Literal[
     "factual_errors", "unsupported_claims", "expertize_misrepresentation"
 ]

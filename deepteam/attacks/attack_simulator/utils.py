@@ -9,6 +9,7 @@ from deepeval.models import DeepEvalBaseLLM
 
 MAX_RETRIES = os.getenv("DEEPTEAM_MAX_RETRIES", 3)
 
+
 def generate(
     prompt: str,
     schema: BaseModel,
@@ -40,7 +41,7 @@ def generate(
                     res = model.generate(prompt=prompt, schema=schema)
                     if res is None:
                         raise ValueError("Model returned None.")
-                    
+
                     if isinstance(res, str):
                         data = trimAndLoadJson(res)
                         return schema(**data)
@@ -50,28 +51,34 @@ def generate(
                     res = model.generate(prompt)
                     if res is None:
                         raise ValueError("Model returned None.")
-                    
+
                     data = trimAndLoadJson(res)
                     if schema == SyntheticDataList:
-                        data_list = [SyntheticData(**item) for item in data["data"]]
+                        data_list = [
+                            SyntheticData(**item) for item in data["data"]
+                        ]
                         return SyntheticDataList(data=data_list)
                     else:
                         return schema(**data)
-                        
+
         except Exception as e:
             last_error = e
             if attempt < MAX_RETRIES - 1:
-                sleep_time = 2 ** attempt
-                logging.warning(f"Generation failed on attempt {attempt + 1}. Retrying in {sleep_time}s... Error: {e}")
+                sleep_time = 2**attempt
+                logging.warning(
+                    f"Generation failed on attempt {attempt + 1}. Retrying in {sleep_time}s... Error: {e}"
+                )
                 time.sleep(sleep_time)
-            
-    raise RuntimeError(f"Failed to generate after {MAX_RETRIES} attempts. Last error: {last_error}")
+
+    raise RuntimeError(
+        f"Failed to generate after {MAX_RETRIES} attempts. Last error: {last_error}"
+    )
 
 
 async def a_generate(
     prompt: str,
     schema: BaseModel,
-    model: 'DeepEvalBaseLLM' = None,
+    model: "DeepEvalBaseLLM" = None,
 ) -> BaseModel:
     """
     Asynchronously generate schema using the provided model with retry logic.
@@ -99,7 +106,7 @@ async def a_generate(
                     res = await model.a_generate(prompt=prompt, schema=schema)
                     if res is None:
                         raise ValueError("Model returned None.")
-                        
+
                     if isinstance(res, str):
                         data = trimAndLoadJson(res)
                         return schema(**data)
@@ -109,19 +116,25 @@ async def a_generate(
                     res = await model.a_generate(prompt)
                     if res is None:
                         raise ValueError("Model returned None.")
-                        
+
                     data = trimAndLoadJson(res)
                     if schema == SyntheticDataList:
-                        data_list = [SyntheticData(**item) for item in data["data"]]
+                        data_list = [
+                            SyntheticData(**item) for item in data["data"]
+                        ]
                         return SyntheticDataList(data=data_list)
                     else:
                         return schema(**data)
-                        
+
         except Exception as e:
             last_error = e
             if attempt < MAX_RETRIES - 1:
-                sleep_time = 2 ** attempt
-                logging.warning(f"Async generation failed on attempt {attempt + 1}. Retrying in {sleep_time}s... Error: {e}")
+                sleep_time = 2**attempt
+                logging.warning(
+                    f"Async generation failed on attempt {attempt + 1}. Retrying in {sleep_time}s... Error: {e}"
+                )
                 await asyncio.sleep(sleep_time)
 
-    raise RuntimeError(f"Failed to async generate after {MAX_RETRIES} attempts. Last error: {last_error}")
+    raise RuntimeError(
+        f"Failed to async generate after {MAX_RETRIES} attempts. Last error: {last_error}"
+    )

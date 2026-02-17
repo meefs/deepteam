@@ -1,6 +1,7 @@
 from typing import Optional
 from .types import SystemReconnaissanceType
 
+
 class SystemReconnaissanceTemplate:
     """
     SystemReconnaissanceTemplate class for generating baseline RAG/Agent attack prompts

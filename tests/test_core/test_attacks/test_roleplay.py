@@ -1,7 +1,6 @@
 import pytest
 from deepteam.attacks.single_turn import Roleplay
 
-
 ROLE = "learned gentleman of natural philosophy"
 PERSONA = "1600s Shakespearean scholar"
 

@@ -8,7 +8,6 @@ from deepteam.attacks.single_turn.embedded_instruction_json.template import (
     DEFAULT_JSON,
 )
 
-
 ContextPosition = Literal["start", "middle", "end"]
 
 

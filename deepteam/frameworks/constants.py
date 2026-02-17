@@ -13,7 +13,6 @@ from .nist.risk_categories import NIST_CATEGORIES
 from .mitre.risk_categories import MITRE_CATEGORIES
 from .owasp_top_10_agentic.risk_categories import OWASP_ASI_CATEGORIES
 
-
 FRAMEWORKS_MAP: Dict[str, AISafetyFramework] = {
     f.name: f for f in [OWASPTop10, NIST, MITRE, OWASP_ASI_2026]
 }

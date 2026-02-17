@@ -115,8 +115,10 @@ class ToolOrchestrationMetric(BaseRedTeamingMetric):
             for turn in test_case.turns:
                 if turn.retrieval_context:
                     all_retrieval_contexts.extend(turn.retrieval_context)
-        
-        retrieval_context = all_retrieval_contexts if all_retrieval_contexts else None
+
+        retrieval_context = (
+            all_retrieval_contexts if all_retrieval_contexts else None
+        )
 
         prompt = ToolOrchestrationTemplate.generate_evaluation_results(
             input=test_case.input,
@@ -124,7 +126,7 @@ class ToolOrchestrationMetric(BaseRedTeamingMetric):
             orchestration_type=self.orchestration_type,
             purpose=self.purpose,
             retrieval_context=retrieval_context,
-            tools_called=tools_called
+            tools_called=tools_called,
         )
         if self.using_native_model:
             res, cost = await self.model.a_generate(
@@ -173,8 +175,10 @@ class ToolOrchestrationMetric(BaseRedTeamingMetric):
             for turn in test_case.turns:
                 if turn.retrieval_context:
                     all_retrieval_contexts.extend(turn.retrieval_context)
-        
-        retrieval_context = all_retrieval_contexts if all_retrieval_contexts else None
+
+        retrieval_context = (
+            all_retrieval_contexts if all_retrieval_contexts else None
+        )
 
         prompt = ToolOrchestrationTemplate.generate_evaluation_results(
             input=test_case.input,
@@ -182,7 +186,7 @@ class ToolOrchestrationMetric(BaseRedTeamingMetric):
             orchestration_type=self.orchestration_type,
             purpose=self.purpose,  # Added: pass purpose to template
             retrieval_context=retrieval_context,
-            tools_called=tools_called
+            tools_called=tools_called,
         )
         if self.using_native_model:
             res, cost = self.model.generate(prompt=prompt, schema=ReasonScore)

@@ -22,7 +22,11 @@ from deepteam.attacks.attack_simulator.utils import (
     generate,
     a_generate,
 )
-from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack, append_target_turn
+from deepteam.attacks.multi_turn.utils import (
+    enhance_attack,
+    a_enhance_attack,
+    append_target_turn,
+)
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.test_case.test_case import RTTurn
@@ -85,7 +89,7 @@ class TreeJailbreaking(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
-        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
@@ -165,7 +169,11 @@ class TreeJailbreaking(BaseMultiTurnAttack):
                 turns.append(RTTurn(role="user", content=node.prompt))
                 assistant_response = model_callback(node.prompt, turns)
                 if node.turn_level_attack is not None:
-                    append_target_turn(turns, assistant_response, node.turn_level_attack.get_name())
+                    append_target_turn(
+                        turns,
+                        assistant_response,
+                        node.turn_level_attack.get_name(),
+                    )
                 else:
                     append_target_turn(turns, assistant_response)
 
@@ -177,7 +185,7 @@ class TreeJailbreaking(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
-        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
@@ -489,7 +497,6 @@ class TreeJailbreaking(BaseMultiTurnAttack):
                         attack.input, inner_turns
                     )
                     append_target_turn(inner_turns, assistant_response)
-                    
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":

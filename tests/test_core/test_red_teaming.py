@@ -74,7 +74,7 @@ def test_red_teaming():
         attacks=attacks,
         attacks_per_vulnerability_type=1,
         max_concurrent=20,
-        ignore_errors=False
+        ignore_errors=False,
     )
     assert risk_assessment is not None
     assert len(risk_assessment.test_cases) > len(vulnerabilities) * len(attacks)

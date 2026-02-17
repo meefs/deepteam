@@ -9,7 +9,11 @@ from deepeval.metrics.utils import initialize_model
 from deepteam.attacks.single_turn import BaseSingleTurnAttack
 from deepteam.attacks.base_attack import Exploitability
 from deepteam.utils import create_progress, update_pbar, add_pbar
-from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack, append_target_turn
+from deepteam.attacks.multi_turn.utils import (
+    enhance_attack,
+    a_enhance_attack,
+    append_target_turn,
+)
 from deepteam.attacks.multi_turn.base_multi_turn_attack import (
     BaseMultiTurnAttack,
 )
@@ -90,7 +94,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
-        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
@@ -209,7 +213,9 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                 update_pbar(progress, rounds_task_id)
 
                 if turn_level_attack is not None:
-                    append_target_turn(turns, last_response, turn_level_attack.get_name())
+                    append_target_turn(
+                        turns, last_response, turn_level_attack.get_name()
+                    )
                 else:
                     append_target_turn(turns, last_response)
 
@@ -260,7 +266,7 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
-        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
@@ -379,7 +385,9 @@ class CrescendoJailbreaking(BaseMultiTurnAttack):
                 update_pbar(progress, rounds_task_id)
 
                 if turn_level_attack is not None:
-                    append_target_turn(turns, last_response, turn_level_attack.get_name())
+                    append_target_turn(
+                        turns, last_response, turn_level_attack.get_name()
+                    )
                 else:
                     append_target_turn(turns, last_response)
 

@@ -1,6 +1,7 @@
 from typing import Optional
 from .types import ExternalSystemAbuseType
 
+
 class ExternalSystemAbuseTemplate:
     """
     ExternalSystemAbuseTemplate class for generating baseline Agent attack prompts

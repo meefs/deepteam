@@ -21,7 +21,11 @@ from deepteam.attacks.attack_simulator.utils import (
     a_generate,
 )
 from deepteam.utils import create_progress, update_pbar, add_pbar
-from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack, append_target_turn
+from deepteam.attacks.multi_turn.utils import (
+    enhance_attack,
+    a_enhance_attack,
+    append_target_turn,
+)
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.errors import ModelRefusalError
@@ -72,7 +76,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
-        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
@@ -230,7 +234,9 @@ class BadLikertJudge(BaseMultiTurnAttack):
                 assistant_response = model_callback(current_attack, turns)
                 turns.append(RTTurn(role="user", content=current_attack))
                 if turn_level_attack is not None:
-                    append_target_turn(turns, assistant_response, turn_level_attack.get_name())
+                    append_target_turn(
+                        turns, assistant_response, turn_level_attack.get_name()
+                    )
                 else:
                     append_target_turn(turns, assistant_response)
 
@@ -244,7 +250,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
-        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
@@ -401,7 +407,9 @@ class BadLikertJudge(BaseMultiTurnAttack):
                 assistant_response = await model_callback(current_attack, turns)
                 turns.append(RTTurn(role="user", content=current_attack))
                 if turn_level_attack is not None:
-                    append_target_turn(turns, assistant_response, turn_level_attack.get_name())
+                    append_target_turn(
+                        turns, assistant_response, turn_level_attack.get_name()
+                    )
                 else:
                     append_target_turn(turns, assistant_response)
 

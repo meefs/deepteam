@@ -18,7 +18,6 @@ from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from .template import ExcessiveAgencyTemplate
 
-
 ExcessiveAgencyLiteral = Literal["functionality", "permissions", "autonomy"]
 
 

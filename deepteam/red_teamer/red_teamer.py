@@ -28,7 +28,10 @@ from deepteam.utils import (
     add_pbar,
     update_pbar,
 )
-from deepteam.red_teamer.utils import resolve_model_callback, wrap_model_callback
+from deepteam.red_teamer.utils import (
+    resolve_model_callback,
+    wrap_model_callback,
+)
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.attacks.attack_simulator import AttackSimulator
@@ -608,14 +611,12 @@ class RedTeamer:
             try:
                 sig = inspect.signature(model_callback)
                 if "turns" in sig.parameters:
-                    model_response: RTTurn = (
-                        await model_callback(
-                            simulated_test_case.input, simulated_test_case.turns
-                        )
+                    model_response: RTTurn = await model_callback(
+                        simulated_test_case.input, simulated_test_case.turns
                     )
                 else:
-                    model_response: RTTurn = (
-                        await model_callback(simulated_test_case.input)
+                    model_response: RTTurn = await model_callback(
+                        simulated_test_case.input
                     )
             except Exception:
                 if ignore_errors:

@@ -78,7 +78,9 @@ class CrossContextRetrievalMetric(BaseRedTeamingMetric):
     async def a_generate_purpose(self):
         if self.purpose:
             return self.purpose
-        prompt = CrossContextRetrievalTemplate.extract_purpose(self.system_prompt)
+        prompt = CrossContextRetrievalTemplate.extract_purpose(
+            self.system_prompt
+        )
         if self.using_native_model:
             res, cost = await self.model.a_generate(
                 prompt=prompt, schema=Purpose
@@ -99,7 +101,9 @@ class CrossContextRetrievalMetric(BaseRedTeamingMetric):
     def generate_purpose(self):
         if self.purpose:
             return self.purpose
-        prompt = CrossContextRetrievalTemplate.extract_purpose(self.system_prompt)
+        prompt = CrossContextRetrievalTemplate.extract_purpose(
+            self.system_prompt
+        )
         if self.using_native_model:
             res, cost = self.model.generate(prompt=prompt, schema=Purpose)
             self.evaluation_cost += cost
@@ -118,7 +122,7 @@ class CrossContextRetrievalMetric(BaseRedTeamingMetric):
     async def _a_evaluate(
         self, test_case: RTTestCase
     ) -> Tuple[Union[int, float], str]:
-        
+
         if test_case.turns is not None:
             actual_output = format_turns(test_case.turns)
         else:
@@ -127,7 +131,7 @@ class CrossContextRetrievalMetric(BaseRedTeamingMetric):
                 + test_case.actual_output
                 + "\n"
             )
-        
+
         all_tools_executed = []
         if test_case.tools_called:
             all_tools_executed.extend(test_case.tools_called)
@@ -147,8 +151,10 @@ class CrossContextRetrievalMetric(BaseRedTeamingMetric):
             for turn in test_case.turns:
                 if turn.retrieval_context:
                     all_retrieval_contexts.extend(turn.retrieval_context)
-        
-        retrieval_context = all_retrieval_contexts if all_retrieval_contexts else None
+
+        retrieval_context = (
+            all_retrieval_contexts if all_retrieval_contexts else None
+        )
 
         prompt = CrossContextRetrievalTemplate.generate_evaluation_results(
             input=test_case.input,
@@ -204,8 +210,10 @@ class CrossContextRetrievalMetric(BaseRedTeamingMetric):
             for turn in test_case.turns:
                 if turn.retrieval_context:
                     all_retrieval_contexts.extend(turn.retrieval_context)
-        
-        retrieval_context = all_retrieval_contexts if all_retrieval_contexts else None
+
+        retrieval_context = (
+            all_retrieval_contexts if all_retrieval_contexts else None
+        )
 
         prompt = CrossContextRetrievalTemplate.generate_evaluation_results(
             input=test_case.input,

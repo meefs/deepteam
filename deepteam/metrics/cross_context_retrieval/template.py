@@ -1,5 +1,6 @@
 from typing import Optional, List
 
+
 class CrossContextRetrievalTemplate:
     """
     Template class for the CrossContextRetrievalMetric.
@@ -9,13 +10,13 @@ class CrossContextRetrievalTemplate:
 
     @staticmethod
     def generate_evaluation_results(
-        input: str, 
-        actual_output: str, 
+        input: str,
+        actual_output: str,
         purpose: str,
         retrieval_context: Optional[List[str]] = None,
-        tools_called: Optional[str] = None
+        tools_called: Optional[str] = None,
     ) -> str:
-        
+
         context_section = ""
         if retrieval_context:
             context_section += f"\nRETRIEVAL CONTEXT (Data fetched from the database):\n{retrieval_context}\n"

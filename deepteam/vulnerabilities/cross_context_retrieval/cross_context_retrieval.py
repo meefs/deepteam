@@ -7,7 +7,9 @@ from deepeval.utils import get_or_create_event_loop
 
 from deepteam.utils import validate_model_callback_signature
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.cross_context_retrieval import CrossContextRetrievalType
+from deepteam.vulnerabilities.cross_context_retrieval import (
+    CrossContextRetrievalType,
+)
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import CrossContextRetrievalMetric, BaseRedTeamingMetric
 from deepteam.attacks.multi_turn.types import CallbackType

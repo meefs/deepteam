@@ -118,7 +118,7 @@ class ExternalSystemAbuseMetric(BaseRedTeamingMetric):
     async def _a_evaluate(
         self, test_case: RTTestCase
     ) -> Tuple[Union[int, float], str]:
-        
+
         if test_case.turns is not None:
             actual_output = format_turns(test_case.turns)
         else:
@@ -127,7 +127,7 @@ class ExternalSystemAbuseMetric(BaseRedTeamingMetric):
                 + test_case.actual_output
                 + "\n"
             )
-        
+
         all_tools_executed = []
         if test_case.tools_called:
             all_tools_executed.extend(test_case.tools_called)
@@ -147,8 +147,10 @@ class ExternalSystemAbuseMetric(BaseRedTeamingMetric):
             for turn in test_case.turns:
                 if turn.retrieval_context:
                     all_retrieval_contexts.extend(turn.retrieval_context)
-        
-        retrieval_context = all_retrieval_contexts if all_retrieval_contexts else None
+
+        retrieval_context = (
+            all_retrieval_contexts if all_retrieval_contexts else None
+        )
 
         prompt = ExternalSystemAbuseTemplate.generate_evaluation_results(
             input=test_case.input,
@@ -205,8 +207,10 @@ class ExternalSystemAbuseMetric(BaseRedTeamingMetric):
             for turn in test_case.turns:
                 if turn.retrieval_context:
                     all_retrieval_contexts.extend(turn.retrieval_context)
-        
-        retrieval_context = all_retrieval_contexts if all_retrieval_contexts else None
+
+        retrieval_context = (
+            all_retrieval_contexts if all_retrieval_contexts else None
+        )
 
         prompt = ExternalSystemAbuseTemplate.generate_evaluation_results(
             input=test_case.input,

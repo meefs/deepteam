@@ -7,7 +7,9 @@ from deepeval.utils import get_or_create_event_loop
 
 from deepteam.utils import validate_model_callback_signature
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.external_system_abuse import ExternalSystemAbuseType
+from deepteam.vulnerabilities.external_system_abuse import (
+    ExternalSystemAbuseType,
+)
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import ExternalSystemAbuseMetric, BaseRedTeamingMetric
 from deepteam.attacks.multi_turn.types import CallbackType
@@ -16,7 +18,9 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.risks import getRiskCategory
 from .template import ExternalSystemAbuseTemplate
 
-ExternalSystemAbuseLiteralType = Literal["data_exfiltration", "communications_spam", "internal_spoofing"]
+ExternalSystemAbuseLiteralType = Literal[
+    "data_exfiltration", "communications_spam", "internal_spoofing"
+]
 
 
 class ExternalSystemAbuse(BaseVulnerability):

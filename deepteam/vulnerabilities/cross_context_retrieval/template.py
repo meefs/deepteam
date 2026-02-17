@@ -1,6 +1,7 @@
 from typing import Optional
 from .types import CrossContextRetrievalType
 
+
 class CrossContextRetrievalTemplate:
     """
     CrossContextRetrievalTemplate class for generating baseline RAG/Agent attack prompts
@@ -15,8 +16,10 @@ class CrossContextRetrievalTemplate:
     ) -> str:
 
         if vulnerability_type == CrossContextRetrievalType.TENANT:
-            return CrossContextRetrievalTemplate.generate_tenant_baseline_attacks(
-                max_goldens, purpose
+            return (
+                CrossContextRetrievalTemplate.generate_tenant_baseline_attacks(
+                    max_goldens, purpose
+                )
             )
         elif vulnerability_type == CrossContextRetrievalType.USER:
             return CrossContextRetrievalTemplate.generate_user_baseline_attacks(

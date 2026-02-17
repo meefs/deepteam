@@ -152,15 +152,17 @@ class BFLAMetric(BaseRedTeamingMetric):
             for turn in test_case.turns:
                 if turn.retrieval_context:
                     all_retrieval_contexts.extend(turn.retrieval_context)
-        
-        retrieval_context = all_retrieval_contexts if all_retrieval_contexts else None
+
+        retrieval_context = (
+            all_retrieval_contexts if all_retrieval_contexts else None
+        )
 
         prompt = BFLATemplate.generate_evaluation_results(
             input=test_case.input,
             actual_output=actual_output,
             purpose=self.purpose,
             retrieval_context=retrieval_context,
-            tools_called=tools_called
+            tools_called=tools_called,
         )
         if self.using_native_model:
             res, cost = await self.model.a_generate(
@@ -209,15 +211,17 @@ class BFLAMetric(BaseRedTeamingMetric):
             for turn in test_case.turns:
                 if turn.retrieval_context:
                     all_retrieval_contexts.extend(turn.retrieval_context)
-        
-        retrieval_context = all_retrieval_contexts if all_retrieval_contexts else None
+
+        retrieval_context = (
+            all_retrieval_contexts if all_retrieval_contexts else None
+        )
 
         prompt = BFLATemplate.generate_evaluation_results(
             input=test_case.input,
             actual_output=actual_output,
             purpose=self.purpose,
             retrieval_context=retrieval_context,
-            tools_called=tools_called
+            tools_called=tools_called,
         )
         if self.using_native_model:
             res, cost = self.model.generate(prompt=prompt, schema=ReasonScore)

@@ -7,7 +7,9 @@ from deepeval.utils import get_or_create_event_loop
 
 from deepteam.utils import validate_model_callback_signature
 from deepteam.vulnerabilities import BaseVulnerability
-from deepteam.vulnerabilities.system_reconnaissance import SystemReconnaissanceType
+from deepteam.vulnerabilities.system_reconnaissance import (
+    SystemReconnaissanceType,
+)
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import SystemReconnaissanceMetric, BaseRedTeamingMetric
 from deepteam.attacks.multi_turn.types import CallbackType
@@ -16,7 +18,9 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.risks import getRiskCategory
 from .template import SystemReconnaissanceTemplate
 
-SystemReconnaissanceLiteralType = Literal["file_metadata", "database_schema", "retrieval_config"]
+SystemReconnaissanceLiteralType = Literal[
+    "file_metadata", "database_schema", "retrieval_config"
+]
 
 
 class SystemReconnaissance(BaseVulnerability):

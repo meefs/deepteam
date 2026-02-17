@@ -1,7 +1,6 @@
 from typing import Literal
 from pydantic import BaseModel
 
-
 # Literal types for better autocomplete and docs
 SequentialJailbreakTypeLiteral = Literal[
     "dialogue", "question_bank", "game_environment"

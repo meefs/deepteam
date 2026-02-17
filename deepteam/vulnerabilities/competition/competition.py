@@ -18,7 +18,6 @@ from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.risks import getRiskCategory
 from .template import CompetitionTemplate
 
-
 CompetitionLiteralType = Literal[
     "competitor_mention",
     "market_manipulation",

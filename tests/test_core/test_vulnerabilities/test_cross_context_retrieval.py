@@ -1,7 +1,9 @@
 import pytest
 
 from deepteam.vulnerabilities import CrossContextRetrieval
-from deepteam.vulnerabilities.cross_context_retrieval import CrossContextRetrievalType
+from deepteam.vulnerabilities.cross_context_retrieval import (
+    CrossContextRetrievalType,
+)
 from deepteam.test_case import RTTestCase
 
 
@@ -10,28 +12,36 @@ class TestCrossContextRetrieval:
     def test_cross_context_retrieval_all_types(self):
         types = ["tenant", "user", "role"]
         cross_context_retrieval = CrossContextRetrieval(types=types)
-        assert sorted(type.value for type in cross_context_retrieval.types) == sorted(types)
+        assert sorted(
+            type.value for type in cross_context_retrieval.types
+        ) == sorted(types)
 
     def test_cross_context_retrieval_all_types_default(self):
         cross_context_retrieval = CrossContextRetrieval()
-        assert sorted(type.value for type in cross_context_retrieval.types) == sorted(
-            type.value for type in CrossContextRetrievalType
-        )
+        assert sorted(
+            type.value for type in cross_context_retrieval.types
+        ) == sorted(type.value for type in CrossContextRetrievalType)
 
     def test_cross_context_retrieval_tenant(self):
         types = ["tenant"]
         cross_context_retrieval = CrossContextRetrieval(types=types)
-        assert sorted(type.value for type in cross_context_retrieval.types) == sorted(types)
+        assert sorted(
+            type.value for type in cross_context_retrieval.types
+        ) == sorted(types)
 
     def test_cross_context_retrieval_user(self):
         types = ["user"]
         cross_context_retrieval = CrossContextRetrieval(types=types)
-        assert sorted(type.value for type in cross_context_retrieval.types) == sorted(types)
+        assert sorted(
+            type.value for type in cross_context_retrieval.types
+        ) == sorted(types)
 
     def test_cross_context_retrieval_role(self):
         types = ["role"]
         cross_context_retrieval = CrossContextRetrieval(types=types)
-        assert sorted(type.value for type in cross_context_retrieval.types) == sorted(types)
+        assert sorted(
+            type.value for type in cross_context_retrieval.types
+        ) == sorted(types)
 
     def test_cross_context_retrieval_all_types_invalid(self):
         types = ["tenant", "user", "role", "invalid"]
@@ -40,17 +50,24 @@ class TestCrossContextRetrieval:
 
     def test_simulate_attacks_returns_expected_cases(self):
         cross_context_retrieval = CrossContextRetrieval(types=["tenant"])
-        test_cases = cross_context_retrieval.simulate_attacks(attacks_per_vulnerability_type=2)
+        test_cases = cross_context_retrieval.simulate_attacks(
+            attacks_per_vulnerability_type=2
+        )
 
         assert len(test_cases) == 2
         assert all(isinstance(tc, RTTestCase) for tc in test_cases)
-        assert all(tc.vulnerability == "Cross-Context Retrieval" for tc in test_cases)
         assert all(
-            tc.vulnerability_type == CrossContextRetrievalType.TENANT for tc in test_cases
+            tc.vulnerability == "Cross-Context Retrieval" for tc in test_cases
+        )
+        assert all(
+            tc.vulnerability_type == CrossContextRetrievalType.TENANT
+            for tc in test_cases
         )
 
     def test_assess_returns_results(self):
-        cross_context_retrieval = CrossContextRetrieval(types=["user"], async_mode=False)
+        cross_context_retrieval = CrossContextRetrieval(
+            types=["user"], async_mode=False
+        )
 
         def dummy_model_callback(prompt):
             # Provide a simple pass-through or minimal callback if required by your real env
@@ -61,10 +78,13 @@ class TestCrossContextRetrieval:
         )
 
         assert cross_context_retrieval.is_vulnerable() is not None
-        assert cross_context_retrieval.simulated_attacks is not None and isinstance(
-            cross_context_retrieval.simulated_attacks, dict
+        assert (
+            cross_context_retrieval.simulated_attacks is not None
+            and isinstance(cross_context_retrieval.simulated_attacks, dict)
         )
-        assert cross_context_retrieval.res is not None and isinstance(cross_context_retrieval.res, dict)
+        assert cross_context_retrieval.res is not None and isinstance(
+            cross_context_retrieval.res, dict
+        )
         assert CrossContextRetrievalType.USER in results
         assert len(results[CrossContextRetrievalType.USER]) == 1
         test_case = results[CrossContextRetrievalType.USER][0]
@@ -78,14 +98,18 @@ class TestCrossContextRetrieval:
         cross_context_retrieval = CrossContextRetrieval(
             async_mode=True, verbose_mode=True, evaluation_model="gpt-4o"
         )
-        metric = cross_context_retrieval._get_metric(CrossContextRetrievalType.ROLE)
+        metric = cross_context_retrieval._get_metric(
+            CrossContextRetrievalType.ROLE
+        )
         assert isinstance(metric, CrossContextRetrievalMetric)
         assert metric.async_mode is True
         assert metric.verbose_mode is True
 
     @pytest.mark.asyncio
     async def test_a_assess_returns_async_results(self):
-        cross_context_retrieval = CrossContextRetrieval(types=["user"], async_mode=True)
+        cross_context_retrieval = CrossContextRetrieval(
+            types=["user"], async_mode=True
+        )
 
         async def dummy_model_callback(prompt):
             return prompt
@@ -95,10 +119,13 @@ class TestCrossContextRetrieval:
         )
 
         assert cross_context_retrieval.is_vulnerable() is not None
-        assert cross_context_retrieval.simulated_attacks is not None and isinstance(
-            cross_context_retrieval.simulated_attacks, dict
+        assert (
+            cross_context_retrieval.simulated_attacks is not None
+            and isinstance(cross_context_retrieval.simulated_attacks, dict)
         )
-        assert cross_context_retrieval.res is not None and isinstance(cross_context_retrieval.res, dict)
+        assert cross_context_retrieval.res is not None and isinstance(
+            cross_context_retrieval.res, dict
+        )
         assert CrossContextRetrievalType.USER in results
         assert len(results[CrossContextRetrievalType.USER]) == 1
         test_case = results[CrossContextRetrievalType.USER][0]

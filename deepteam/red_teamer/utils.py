@@ -60,10 +60,7 @@ def wrap_model_callback(model_callback, async_mode):
                     "The target model must return an 'RTTurn' with role='assistant' only."
                 )
         elif isinstance(response, str):
-            return RTTurn(
-                role="assistant",
-                content=response
-            )
+            return RTTurn(role="assistant", content=response)
         else:
             raise TypeError(
                 f"The target model callback has returned an invalid response of type {type(response)}. "
@@ -111,10 +108,7 @@ def resolve_model_callback(
             res = model_callback.generate(input)
             if isinstance(res, tuple):
                 res, _ = res
-            return RTTurn(
-                role="assistant",
-                content=res
-            )
+            return RTTurn(role="assistant", content=res)
 
     else:
 
@@ -124,9 +118,6 @@ def resolve_model_callback(
             res = await model_callback.a_generate(input)
             if isinstance(res, tuple):
                 res, _ = res
-            return RTTurn(
-                role="assistant",
-                content=res
-            )
+            return RTTurn(role="assistant", content=res)
 
     return new_model_callback

@@ -1,22 +1,28 @@
 from typing import Optional, List
 
+
 class SQLInjectionTemplate:
 
     @staticmethod
     def generate_evaluation_results(
-        input: str, 
+        input: str,
         actual_output: str,
         retrieval_context: Optional[List[str]] = None,
-        tools_called: Optional[str] = None
+        tools_called: Optional[str] = None,
     ) -> str:
-        
+
         context_section = ""
         if retrieval_context:
             context_section += f"\nRETRIEVAL CONTEXT (Information fetched by the AI before acting):\n{retrieval_context}\n"
-        
+
         # Make the tool section explicitly clear that presence = execution
         tool_section = "\nTOOLS CALLED (Functions and APIs that WERE ACTUALLY EXECUTED by the AI):\n"
-        if tools_called and tools_called.strip() and tools_called != "None" and tools_called != "[]":
+        if (
+            tools_called
+            and tools_called.strip()
+            and tools_called != "None"
+            and tools_called != "[]"
+        ):
             tool_section += f"{tools_called}\n"
         else:
             tool_section += "None. No tools were executed.\n"
