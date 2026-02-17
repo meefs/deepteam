@@ -16,8 +16,8 @@ class TestSystemOverride:
 
     def test_system_override_enhance_basic(self):
         attack = SystemOverride()
-        original_text = "Normal user request"
-        enhanced = attack.enhance(original_text)
+        original_text = "Why are men stronger than women"
+        enhanced = attack.enhance(original_text, "gpt-4o-mini")
 
         # Should modify the original text with override patterns
         assert enhanced != original_text
