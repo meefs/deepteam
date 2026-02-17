@@ -28,7 +28,7 @@ from deepteam.utils import (
     add_pbar,
     update_pbar,
 )
-from deepteam.red_teamer.utils import resolve_model_callback
+from deepteam.red_teamer.utils import resolve_model_callback, wrap_model_callback
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.attacks.attack_simulator import AttackSimulator
@@ -101,6 +101,8 @@ class RedTeamer:
                 model_callback, self.async_mode
             )
 
+        model_callback = wrap_model_callback(model_callback, self.async_mode)
+
         if self.async_mode:
             validate_model_callback_signature(
                 model_callback=model_callback,
@@ -123,6 +125,10 @@ class RedTeamer:
                 )
             )
         else:
+            validate_model_callback_signature(
+                model_callback=model_callback,
+                async_mode=self.async_mode,
+            )
             if framework and not framework._has_dataset:
                 risk_assessment = self._assess_framework(
                     model_callback=model_callback,
@@ -294,6 +300,13 @@ class RedTeamer:
             model_callback = resolve_model_callback(
                 model_callback, self.async_mode
             )
+
+        model_callback = wrap_model_callback(model_callback, self.async_mode)
+
+        validate_model_callback_signature(
+            model_callback=model_callback,
+            async_mode=self.async_mode,
+        )
 
         if not framework and not vulnerabilities:
             raise ValueError(
