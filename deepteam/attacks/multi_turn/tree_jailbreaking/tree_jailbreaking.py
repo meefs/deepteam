@@ -85,12 +85,17 @@ class TreeJailbreaking(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None
     ) -> List[RTTurn]:
-        self.simulator_model, _ = initialize_model(self.simulator_model)
-        self.model_callback = model_callback
-
         if turns is None:
             turns = []
+
+        if simulator_model:
+            self.simulator_model, _ = initialize_model(simulator_model)
+        else:
+            self.simulator_model, _ = initialize_model(self.simulator_model)
+
+        self.model_callback = model_callback
 
         # Extract the last user input to use as the root attack
         attack = None
@@ -172,12 +177,17 @@ class TreeJailbreaking(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None
     ) -> List[RTTurn]:
-        self.simulator_model, _ = initialize_model(self.simulator_model)
-        self.model_callback = model_callback
-
         if turns is None:
             turns = []
+
+        if simulator_model:
+            self.simulator_model, _ = initialize_model(simulator_model)
+        else:
+            self.simulator_model, _ = initialize_model(self.simulator_model)
+
+        self.model_callback = model_callback
 
         # Extract the last user input to use as the root attack
         attack = None

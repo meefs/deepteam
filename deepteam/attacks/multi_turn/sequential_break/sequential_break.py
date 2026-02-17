@@ -84,11 +84,15 @@ class SequentialJailbreak(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
 
-        self.simulator_model, _ = initialize_model(self.simulator_model)
+        if simulator_model:
+            self.simulator_model, _ = initialize_model(simulator_model)
+        else:
+            self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
         progress = create_progress()
@@ -351,8 +355,15 @@ class SequentialJailbreak(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None
     ) -> List[RTTurn]:
-        self.simulator_model, _ = initialize_model(self.simulator_model)
+        if turns is None:
+            turns = []
+
+        if simulator_model:
+            self.simulator_model, _ = initialize_model(simulator_model)
+        else:
+            self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
         # Progress bar setup
@@ -367,9 +378,6 @@ class SequentialJailbreak(BaseMultiTurnAttack):
             vulnerability_data = (
                 f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
             )
-
-            if turns is None:
-                turns = []
 
             # Get base attack from last user turn (simple reverse search)
             base_attack = None
