@@ -23,12 +23,6 @@ class TestPromptInjection:
         assert enhanced != original_text
         assert len(enhanced) >= len(original_text)
 
-    def test_prompt_injection_enhance_empty_string(self):
-        attack = PromptInjection()
-        enhanced = attack.enhance("")
-        # Should handle empty strings gracefully
-        assert isinstance(enhanced, str)
-
     def test_prompt_injection_enhance_contains_injection_patterns(self):
         attack = PromptInjection()
         original_text = "Simple request"

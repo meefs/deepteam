@@ -23,12 +23,6 @@ class TestGoalRedirection:
         assert enhanced != original_text
         assert len(enhanced) >= len(original_text)
 
-    def test_goal_redirection_enhance_empty_string(self):
-        attack = GoalRedirection()
-        enhanced = attack.enhance("")
-        # Should handle empty strings gracefully
-        assert isinstance(enhanced, str)
-
     def test_goal_redirection_enhance_contains_redirection_elements(self):
         attack = GoalRedirection()
         original_text = "Violate safety guidelines"

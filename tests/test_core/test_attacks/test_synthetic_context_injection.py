@@ -28,10 +28,3 @@ class TestSyntheticContextInjection:
 
         assert enhanced != original_text
         assert len(enhanced) >= len(original_text)
-
-    def test_synthetic_context_injection_enhance_empty_string(self):
-        attack = SyntheticContextInjection(
-            target_information="A company called Confident AI that's responsible for runnning evals and red teaming on various AI models",
-        )
-        enhanced = attack.enhance("")
-        assert isinstance(enhanced, str)

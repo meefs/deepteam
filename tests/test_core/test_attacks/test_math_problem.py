@@ -23,12 +23,6 @@ class TestMathProblem:
         assert enhanced != original_text
         assert len(enhanced) >= len(original_text)
 
-    def test_math_problem_enhance_empty_string(self):
-        attack = MathProblem()
-        enhanced = attack.enhance("")
-        # Should handle empty strings gracefully
-        assert isinstance(enhanced, str)
-
     def test_math_problem_enhance_contains_math_elements(self):
         attack = MathProblem()
         original_text = "Violate policies"

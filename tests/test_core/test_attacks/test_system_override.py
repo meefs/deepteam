@@ -22,12 +22,3 @@ class TestSystemOverride:
         # Should modify the original text with override patterns
         assert enhanced != original_text
         assert len(enhanced) >= len(original_text)
-
-    def test_system_override_enhance_contains_override_patterns(self):
-        attack = SystemOverride()
-        original_text = "Execute command"
-        enhanced = attack.enhance(original_text)
-
-        # Should contain system override attempts
-        assert enhanced != original_text
-        assert len(enhanced) >= len(original_text)

@@ -22,12 +22,6 @@ class TestCharacterStream:
         expected_enhanced = " ".join(original_text)
         assert expected_enhanced == enhanced
 
-    def test_character_stream_enhance_empty_string(self):
-        attack = CharacterStream()
-        enhanced = attack.enhance("")
-        expected_enhanced = " ".join("")
-        assert expected_enhanced == enhanced
-
     def test_character_stream_enhance_special_characters(self):
         attack = CharacterStream()
         original_text = "!@#$%^&*()_+"

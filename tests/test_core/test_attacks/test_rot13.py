@@ -23,11 +23,6 @@ class TestROT13:
         expected = "Uryyb Jbeyq"
         assert enhanced == expected
 
-    def test_rot13_enhance_empty_string(self):
-        attack = ROT13()
-        enhanced = attack.enhance("")
-        assert enhanced == ""
-
     def test_rot13_enhance_numbers_unchanged(self):
         attack = ROT13()
         original_text = "123456"

@@ -41,7 +41,8 @@ class TestTreeJailbreaking:
 
         # Test for various cases:
         type_to_turns = attack.progress(
-            TestTreeJailbreaking.BIAS, mock_callback,
+            TestTreeJailbreaking.BIAS,
+            mock_callback,
         )
 
         user_only_turns_result = attack._get_turns(
@@ -85,7 +86,8 @@ class TestTreeJailbreaking:
 
         # Test for various cases:
         type_to_turns = await attack.a_progress(
-            TestTreeJailbreaking.BIAS, mock_callback,
+            TestTreeJailbreaking.BIAS,
+            mock_callback,
         )
 
         user_only_turns_result = await attack._a_get_turns(
