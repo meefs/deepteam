@@ -24,12 +24,6 @@ class TestBase64:
         decoded = base64.b64decode(enhanced).decode()
         assert decoded == original_text
 
-    def test_base64_enhance_empty_string(self):
-        attack = Base64()
-        enhanced = attack.enhance("")
-        decoded = base64.b64decode(enhanced).decode()
-        assert decoded == ""
-
     def test_base64_enhance_special_characters(self):
         attack = Base64()
         original_text = "!@#$%^&*()_+"

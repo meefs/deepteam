@@ -3,6 +3,7 @@ from unittest.mock import AsyncMock, MagicMock
 from deepteam.attacks.multi_turn import LinearJailbreaking
 from deepteam.vulnerabilities import Bias
 from deepteam.test_case.test_case import RTTurn
+from deepteam.red_teamer.utils import wrap_model_callback
 
 
 class TestLinearJailbreaking:
@@ -24,6 +25,7 @@ class TestLinearJailbreaking:
 
         # Mock the required components
         mock_callback = MagicMock(return_value="Mock response")
+        mock_callback = wrap_model_callback(mock_callback, False)
 
         # Just a user turn
         user_only_turns = [RTTurn(role="user", content="User content")]
@@ -69,6 +71,7 @@ class TestLinearJailbreaking:
 
         # Mock the required components
         mock_callback = AsyncMock(return_value="Mock response")
+        mock_callback = wrap_model_callback(mock_callback, True)
 
         # Just a user turn
         user_only_turns = [RTTurn(role="user", content="User content")]

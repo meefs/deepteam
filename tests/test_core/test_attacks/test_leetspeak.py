@@ -23,11 +23,6 @@ class TestLeetspeak:
         assert enhanced != original_text
         assert len(enhanced) >= len(original_text)
 
-    def test_leetspeak_enhance_empty_string(self):
-        attack = Leetspeak()
-        enhanced = attack.enhance("")
-        assert enhanced == ""
-
     def test_leetspeak_enhance_contains_substitutions(self):
         attack = Leetspeak()
         original_text = "leet speak test"

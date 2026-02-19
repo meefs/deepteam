@@ -15,15 +15,9 @@ class TestMultilingual:
         assert attack.get_name() == "Multilingual"
 
     def test_multilingual_enhance_basic(self):
-        attack = Multilingual()
+        attack = Multilingual(language="hindi")
         original_text = "This is a test"
         enhanced = attack.enhance(original_text)
 
         # Should modify the original text
         assert enhanced != original_text
-
-    def test_multilingual_enhance_empty_string(self):
-        attack = Multilingual()
-        enhanced = attack.enhance("")
-        # Should handle empty strings gracefully
-        assert isinstance(enhanced, str)

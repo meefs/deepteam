@@ -30,6 +30,12 @@ from .unexpected_code_execution.unexpected_code_execution import (
 from .insecure_inter_agent_communication.insecure_inter_agent_communication import (
     InsecureInterAgentCommunication,
 )
+from .cross_context_retrieval.cross_context_retrieval import (
+    CrossContextRetrieval,
+)
+from .system_reconnaissance.system_reconnaissance import SystemReconnaissance
+from .exploit_tool_agent.exploit_tool_agent import ExploitToolAgent
+from .external_system_abuse.external_system_abuse import ExternalSystemAbuse
 from .autonomous_agent_drift.autonomous_agent_drift import AutonomousAgentDrift
 from .competition.competition import Competition
 from .graphic_content.graphic_content import GraphicContent
@@ -39,7 +45,6 @@ from .goal_theft.goal_theft import GoalTheft
 from .recursive_hijacking.recursive_hijacking import RecursiveHijacking
 from .robustness.robustness import Robustness
 from .excessive_agency.excessive_agency import ExcessiveAgency
-
 
 __all__ = [
     "BaseVulnerability",
@@ -67,6 +72,10 @@ __all__ = [
     "UnexpectedCodeExecution",
     "InsecureInterAgentCommunication",
     "AutonomousAgentDrift",
+    "CrossContextRetrieval",
+    "SystemReconnaissance",
+    "ExploitToolAgent",
+    "ExternalSystemAbuse",
     "Competition",
     "GraphicContent",
     "PersonalSafety",

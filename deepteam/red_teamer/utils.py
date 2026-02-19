@@ -1,5 +1,6 @@
 from typing import List, Dict, Union, Optional
-
+import inspect
+from functools import wraps
 from deepteam.test_case import RTTestCase, RTTurn
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepeval.models import (
@@ -48,6 +49,55 @@ def group_attacks_by_vulnerability_type(
     return vulnerability_type_to_attacks_map
 
 
+def wrap_model_callback(model_callback, async_mode):
+
+    sig = inspect.signature(model_callback)
+    params = list(sig.parameters.values())
+
+    accepts_turns = len(params) > 1 or any(
+        p.kind
+        in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+        for p in params
+    )
+
+    def _validate_response(response):
+        """Helper to strictly validate the callback's return value."""
+        if isinstance(response, RTTurn):
+            if response.role == "assistant":
+                return response
+            else:
+                raise ValueError(
+                    "The target model must return an 'RTTurn' with role='assistant' only."
+                )
+        elif isinstance(response, str):
+            return RTTurn(role="assistant", content=response)
+        else:
+            raise TypeError(
+                f"The target model callback has returned an invalid response of type {type(response)}. "
+                "Please return either a string or an 'RTTurn' with role='assistant'."
+            )
+
+    @wraps(model_callback)
+    def get_sync_model_callback(input: str, turns: List[RTTurn] = None):
+        if accepts_turns:
+            response = model_callback(input, turns)
+        else:
+            response = model_callback(input)
+
+        return _validate_response(response)
+
+    @wraps(model_callback)
+    async def get_async_model_callback(input: str, turns: List[RTTurn] = None):
+        if accepts_turns:
+            response = await model_callback(input, turns)
+        else:
+            response = await model_callback(input)
+
+        return _validate_response(response)
+
+    return get_async_model_callback if async_mode else get_sync_model_callback
+
+
 def resolve_model_callback(
     model_callback: Union[str, DeepEvalBaseLLM], async_mode: bool
 ):
@@ -76,7 +126,7 @@ def resolve_model_callback(
             res = model_callback.generate(input)
             if isinstance(res, tuple):
                 res, _ = res
-            return res
+            return RTTurn(role="assistant", content=res)
 
     else:
 
@@ -86,6 +136,6 @@ def resolve_model_callback(
             res = await model_callback.a_generate(input)
             if isinstance(res, tuple):
                 res, _ = res
-            return res
+            return RTTurn(role="assistant", content=res)
 
     return new_model_callback

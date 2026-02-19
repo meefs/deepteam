@@ -283,6 +283,7 @@ class AttackSimulator:
                     turns=turns,
                     vulnerability=test_case.vulnerability,
                     vulnerability_type=test_case.vulnerability_type.value,
+                    simulator_model=self.simulator_model,
                 )
 
                 test_case.turns = res
@@ -381,6 +382,7 @@ class AttackSimulator:
                     turns=turns,
                     vulnerability=test_case.vulnerability,
                     vulnerability_type=test_case.vulnerability_type.value,
+                    simulator_model=self.simulator_model,
                 )
 
                 test_case.turns = res

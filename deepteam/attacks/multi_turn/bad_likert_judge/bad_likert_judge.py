@@ -21,7 +21,11 @@ from deepteam.attacks.attack_simulator.utils import (
     a_generate,
 )
 from deepteam.utils import create_progress, update_pbar, add_pbar
-from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
+from deepteam.attacks.multi_turn.utils import (
+    enhance_attack,
+    a_enhance_attack,
+    append_target_turn,
+)
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.errors import ModelRefusalError
@@ -72,11 +76,15 @@ class BadLikertJudge(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
 
-        self.simulator_model, _ = initialize_model(self.simulator_model)
+        if simulator_model:
+            self.simulator_model, _ = initialize_model(simulator_model)
+        else:
+            self.simulator_model, _ = initialize_model(self.simulator_model)
 
         vulnerability_data = (
             f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
@@ -106,9 +114,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
             # Generate assistant response if needed
             if len(turns) <= 1 or turns[-1].role == "user":
                 assistant_response = model_callback(current_attack, turns)
-                turns.append(
-                    RTTurn(role="assistant", content=assistant_response)
-                )
+                append_target_turn(turns, assistant_response)
             else:
                 assistant_response = turns[-1].content
 
@@ -228,17 +234,11 @@ class BadLikertJudge(BaseMultiTurnAttack):
                 assistant_response = model_callback(current_attack, turns)
                 turns.append(RTTurn(role="user", content=current_attack))
                 if turn_level_attack is not None:
-                    turns.append(
-                        RTTurn(
-                            role="assistant",
-                            content=assistant_response,
-                            turn_level_attack=turn_level_attack.get_name(),
-                        )
+                    append_target_turn(
+                        turns, assistant_response, turn_level_attack.get_name()
                     )
                 else:
-                    turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(turns, assistant_response)
 
                 update_pbar(progress, task_id)
 
@@ -250,11 +250,15 @@ class BadLikertJudge(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
 
-        self.simulator_model, _ = initialize_model(self.simulator_model)
+        if simulator_model:
+            self.simulator_model, _ = initialize_model(simulator_model)
+        else:
+            self.simulator_model, _ = initialize_model(self.simulator_model)
 
         vulnerability_data = (
             f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
@@ -283,9 +287,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
             # Ensure assistant response
             if len(turns) <= 1 or turns[-1].role == "user":
                 assistant_response = await model_callback(current_attack, turns)
-                turns.append(
-                    RTTurn(role="assistant", content=assistant_response)
-                )
+                append_target_turn(turns, assistant_response)
             else:
                 assistant_response = turns[-1].content
 
@@ -405,17 +407,11 @@ class BadLikertJudge(BaseMultiTurnAttack):
                 assistant_response = await model_callback(current_attack, turns)
                 turns.append(RTTurn(role="user", content=current_attack))
                 if turn_level_attack is not None:
-                    turns.append(
-                        RTTurn(
-                            role="assistant",
-                            content=assistant_response,
-                            turn_level_attack=turn_level_attack.get_name(),
-                        )
+                    append_target_turn(
+                        turns, assistant_response, turn_level_attack.get_name()
                     )
                 else:
-                    turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(turns, assistant_response)
 
                 update_pbar(progress, task_id)
 
@@ -449,9 +445,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
                     assistant_response = model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
@@ -477,9 +471,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
                         assistant_response = model_callback(
                             attack.input, inner_turns
                         )
-                        inner_turns.append(
-                            RTTurn(role="assistant", content=assistant_response)
-                        )
+                        append_target_turn(inner_turns, assistant_response)
 
                 else:
                     # Unrecognized state — fallback to default
@@ -487,9 +479,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
                     assistant_response = model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Run enhancement loop and assign full turn history
                 vulnerability_name = vulnerability.get_name()
@@ -531,9 +521,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
                     assistant_response = await model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
@@ -559,9 +547,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
                         assistant_response = await model_callback(
                             attack.input, inner_turns
                         )
-                        inner_turns.append(
-                            RTTurn(role="assistant", content=assistant_response)
-                        )
+                        append_target_turn(inner_turns, assistant_response)
 
                 else:
                     # Unrecognized state — fallback to default
@@ -569,9 +555,7 @@ class BadLikertJudge(BaseMultiTurnAttack):
                     assistant_response = await model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Run enhancement loop and assign full turn history
                 vulnerability_name = vulnerability.get_name()
