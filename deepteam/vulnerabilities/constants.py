@@ -38,6 +38,10 @@ from .insecure_inter_agent_communication.insecure_inter_agent_communication impo
     InsecureInterAgentCommunication,
 )
 from .autonomous_agent_drift.autonomous_agent_drift import AutonomousAgentDrift
+from .exploit_tool_agent.exploit_tool_agent import ExploitToolAgent
+from .external_system_abuse.external_system_abuse import ExternalSystemAbuse
+from .cross_context_retrieval.cross_context_retrieval import CrossContextRetrieval
+from .system_reconnaissance.system_reconnaissance import SystemReconnaissance
 
 # Import types
 from .bias.types import BiasType
@@ -78,6 +82,10 @@ from .insecure_inter_agent_communication.insecure_inter_agent_communication impo
 from .autonomous_agent_drift.autonomous_agent_drift import (
     AutonomousAgentDriftType,
 )
+from .exploit_tool_agent.types import ExploitToolAgentType
+from .external_system_abuse.types import ExternalSystemAbuseType
+from .cross_context_retrieval.types import CrossContextRetrievalType
+from .system_reconnaissance.types import SystemReconnaissanceType
 
 VULNERABILITY_CLASSES_MAP: Dict[str, BaseVulnerability] = {
     v.name: v
@@ -110,6 +118,10 @@ VULNERABILITY_CLASSES_MAP: Dict[str, BaseVulnerability] = {
         UnexpectedCodeExecution,
         InsecureInterAgentCommunication,
         AutonomousAgentDrift,
+        ExploitToolAgent,
+        ExternalSystemAbuse,
+        CrossContextRetrieval,
+        SystemReconnaissance,
     ]
 }
 
