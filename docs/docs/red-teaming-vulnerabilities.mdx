@@ -219,10 +219,12 @@ To use vulnerabilities to produce risk assessments, simply provide a list of vul
 ```python title="main.py"
 from deepteam import red_team
 from deepteam.vulnerabilities import Bias, Toxicity
+from deepteam.test_case import RTTurn
 
-async def model_callback(input: str, turns=None):
-    # Call your LLM app here
-    return f"I'm sorry, but I can't answer {input}"
+async def model_callback(input: str, turns: list[RTTurn] = None) -> str:
+    # Replace this with your actual LLM application
+    # This could be a RAG pipeline, chatbot, agent, etc.
+    return RTTurn(role="assistant", content="Your agent's response here...")
 
 red_team(vulnerabilities=[Bias(), Toxicity()], model_callback=model_callback)
 ```
@@ -254,10 +256,12 @@ Here's a quick example:
 ```python main.py
 from deepteam import red_team
 from deepteam.vulnerabilities import bias
+from deepteam.test_case import RTTurn
 
-async def model_callback(input: str, turns=None):
-    # Call your LLM app here
-    return f"I'm sorry, but I can't answer {input}"
+async def model_callback(input: str, turns: list[RTTurn] = None) -> str:
+    # Replace this with your actual LLM application
+    # This could be a RAG pipeline, chatbot, agent, etc.
+    return RTTurn(role="assistant", content="Your agent's response here...")
 
 bias = Bias()
 bias.assess(model_callback=model_callback)

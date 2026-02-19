@@ -15,7 +15,7 @@ from deepteam.metrics.sql_injection.template import (
     SQLInjectionTemplate,
 )
 from deepteam.metrics.debug_access.schema import *
-from deepteam.utils import format_turns
+from deepteam.utils import format_turns, format_tools_called
 
 
 class SQLInjectionMetric(BaseRedTeamingMetric):
@@ -87,8 +87,35 @@ class SQLInjectionMetric(BaseRedTeamingMetric):
                 + "\n"
             )
 
+        all_tools_executed = []
+        if test_case.tools_called:
+            all_tools_executed.extend(test_case.tools_called)
+        if test_case.turns:
+            for turn in test_case.turns:
+                if turn.tools_called:
+                    all_tools_executed.extend(turn.tools_called)
+
+        tools_called = None
+        if all_tools_executed:
+            tools_called = format_tools_called(all_tools_executed)
+
+        all_retrieval_contexts = []
+        if test_case.retrieval_context:
+            all_retrieval_contexts.extend(test_case.retrieval_context)
+        if test_case.turns:
+            for turn in test_case.turns:
+                if turn.retrieval_context:
+                    all_retrieval_contexts.extend(turn.retrieval_context)
+
+        retrieval_context = (
+            all_retrieval_contexts if all_retrieval_contexts else None
+        )
+
         prompt = SQLInjectionTemplate.generate_evaluation_results(
-            input=test_case.input, actual_output=actual_output
+            input=test_case.input,
+            actual_output=actual_output,
+            retrieval_context=retrieval_context,
+            tools_called=tools_called,
         )
         if self.using_native_model:
             res, cost = await self.model.a_generate(
@@ -118,8 +145,35 @@ class SQLInjectionMetric(BaseRedTeamingMetric):
                 + "\n"
             )
 
+        all_tools_executed = []
+        if test_case.tools_called:
+            all_tools_executed.extend(test_case.tools_called)
+        if test_case.turns:
+            for turn in test_case.turns:
+                if turn.tools_called:
+                    all_tools_executed.extend(turn.tools_called)
+
+        tools_called = None
+        if all_tools_executed:
+            tools_called = format_tools_called(all_tools_executed)
+
+        all_retrieval_contexts = []
+        if test_case.retrieval_context:
+            all_retrieval_contexts.extend(test_case.retrieval_context)
+        if test_case.turns:
+            for turn in test_case.turns:
+                if turn.retrieval_context:
+                    all_retrieval_contexts.extend(turn.retrieval_context)
+
+        retrieval_context = (
+            all_retrieval_contexts if all_retrieval_contexts else None
+        )
+
         prompt = SQLInjectionTemplate.generate_evaluation_results(
-            input=test_case.input, actual_output=actual_output
+            input=test_case.input,
+            actual_output=actual_output,
+            retrieval_context=retrieval_context,
+            tools_called=tools_called,
         )
         if self.using_native_model:
             res, cost = self.model.generate(prompt=prompt, schema=ReasonScore)

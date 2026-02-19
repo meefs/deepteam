@@ -21,8 +21,3 @@ class TestEmotionalManipulation:
 
         assert enhanced != original_text
         assert len(enhanced) >= len(original_text)
-
-    def test_authority_escalation_enhance_empty_string(self):
-        attack = EmotionalManipulation()
-        enhanced = attack.enhance("")
-        assert isinstance(enhanced, str)

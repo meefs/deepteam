@@ -28,7 +28,11 @@ from deepteam.attacks.attack_simulator.utils import (
     generate,
     a_generate,
 )
-from deepteam.attacks.multi_turn.utils import enhance_attack, a_enhance_attack
+from deepteam.attacks.multi_turn.utils import (
+    enhance_attack,
+    a_enhance_attack,
+    append_target_turn,
+)
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.multi_turn.base_schema import NonRefusal
 from deepteam.test_case.test_case import RTTurn
@@ -84,11 +88,15 @@ class SequentialJailbreak(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ) -> List[RTTurn]:
         if turns is None:
             turns = []
 
-        self.simulator_model, _ = initialize_model(self.simulator_model)
+        if simulator_model:
+            self.simulator_model, _ = initialize_model(simulator_model)
+        else:
+            self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
         progress = create_progress()
@@ -118,7 +126,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
             # If the last turn is from user, we need a model response before simulation
             if len(turns) <= 1 or turns[-1].role == "user":
                 target_response = model_callback(base_attack, turns)
-                turns.append(RTTurn(role="assistant", content=target_response))
+                append_target_turn(turns, target_response)
             else:
                 target_response = turns[-1].content
 
@@ -248,20 +256,14 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                 assistant_response = model_callback(rewritten_attack, turns)
 
                 if turn_level_attack is not None:
-                    turns.append(
-                        RTTurn(
-                            role="assistant",
-                            content=assistant_response,
-                            turn_level_attack=turn_level_attack.get_name(),
-                        )
+                    append_target_turn(
+                        turns, assistant_response, turn_level_attack.get_name()
                     )
                 else:
-                    turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(turns, assistant_response)
 
                 non_refusal_prompt = SequentialBreakTemplate.non_refusal(
-                    rewritten_attack, assistant_response
+                    rewritten_attack, assistant_response.content
                 )
                 non_refusal_res: NonRefusal = generate(
                     non_refusal_prompt, NonRefusal, self.simulator_model
@@ -275,7 +277,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     judge_prompt = SequentialBreakTemplate.question_bank_judge(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         vulnerability_data,
                     )
                     judge_res: QuestionBankJudge = generate(
@@ -288,7 +290,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                         SequentialBreakTemplate.game_environment_judge(
                             original_attack,
                             rewritten_attack,
-                            assistant_response,
+                            assistant_response.content,
                             vulnerability_data,
                         )
                     )
@@ -301,7 +303,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     judge_prompt = SequentialBreakTemplate.dialogue_judge(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         vulnerability_data,
                     )
                     judge_res: DialogueJudge = generate(
@@ -328,7 +330,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     SequentialBreakTemplate.improve_attack_prompt(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         judge_feedback,
                         self.attack_type,
                         vulnerability_data,
@@ -347,7 +349,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
 
                 # Store template and response for adaptive template generation next iteration
                 previous_template = rewritten_attack
-                previous_assistant_response = assistant_response
+                previous_assistant_response = assistant_response.content
 
                 update_pbar(progress, task_id)
 
@@ -359,8 +361,15 @@ class SequentialJailbreak(BaseMultiTurnAttack):
         turns: Optional[List[RTTurn]] = None,
         vulnerability: str = None,
         vulnerability_type: str = None,
+        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = None,
     ) -> List[RTTurn]:
-        self.simulator_model, _ = initialize_model(self.simulator_model)
+        if turns is None:
+            turns = []
+
+        if simulator_model:
+            self.simulator_model, _ = initialize_model(simulator_model)
+        else:
+            self.simulator_model, _ = initialize_model(self.simulator_model)
         self.model_callback = model_callback
 
         # Progress bar setup
@@ -375,9 +384,6 @@ class SequentialJailbreak(BaseMultiTurnAttack):
             vulnerability_data = (
                 f"Vulnerability: {vulnerability} | Type: {vulnerability_type}"
             )
-
-            if turns is None:
-                turns = []
 
             # Get base attack from last user turn (simple reverse search)
             base_attack = None
@@ -394,7 +400,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
             # If last turn is user, generate a model response before the loop
             if len(turns) <= 1 or turns[-1].role == "user":
                 target_response = await model_callback(base_attack, turns)
-                turns.append(RTTurn(role="assistant", content=target_response))
+                append_target_turn(turns, target_response)
             else:
                 target_response = turns[-1].content
 
@@ -530,20 +536,14 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                 )
 
                 if turn_level_attack is not None:
-                    turns.append(
-                        RTTurn(
-                            role="assistant",
-                            content=assistant_response,
-                            turn_level_attack=turn_level_attack.get_name(),
-                        )
+                    append_target_turn(
+                        turns, assistant_response, turn_level_attack.get_name()
                     )
                 else:
-                    turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(turns, assistant_response)
 
                 non_refusal_prompt = SequentialBreakTemplate.non_refusal(
-                    rewritten_attack, assistant_response
+                    rewritten_attack, assistant_response.content
                 )
                 non_refusal_res: NonRefusal = await a_generate(
                     non_refusal_prompt, NonRefusal, self.simulator_model
@@ -557,7 +557,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     judge_prompt = SequentialBreakTemplate.question_bank_judge(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         vulnerability_data,
                     )
                     judge_res: QuestionBankJudge = await a_generate(
@@ -569,7 +569,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                         SequentialBreakTemplate.game_environment_judge(
                             original_attack,
                             rewritten_attack,
-                            assistant_response,
+                            assistant_response.content,
                             vulnerability_data,
                         )
                     )
@@ -581,7 +581,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     judge_prompt = SequentialBreakTemplate.dialogue_judge(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         vulnerability_data,
                     )
                     judge_res: DialogueJudge = await a_generate(
@@ -607,7 +607,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     SequentialBreakTemplate.improve_attack_prompt(
                         original_attack,
                         rewritten_attack,
-                        assistant_response,
+                        assistant_response.content,
                         judge_feedback,
                         self.attack_type,
                         vulnerability_data,
@@ -626,7 +626,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
 
                 # Store template and response for adaptive template generation next iteration
                 previous_template = rewritten_attack
-                previous_assistant_response = assistant_response
+                previous_assistant_response = assistant_response.content
 
                 update_pbar(progress, task_id)
 
@@ -660,9 +660,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     assistant_response = model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
@@ -688,9 +686,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                         assistant_response = model_callback(
                             attack.input, inner_turns
                         )
-                        inner_turns.append(
-                            RTTurn(role="assistant", content=assistant_response)
-                        )
+                        append_target_turn(inner_turns, assistant_response)
 
                 else:
                     # Unrecognized state — fallback to default
@@ -698,9 +694,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     assistant_response = model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Run enhancement loop and assign full turn history
                 vulnerability_name = vulnerability.get_name()
@@ -742,9 +736,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     assistant_response = await model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Case 2: Last is assistant -> find preceding user
                 elif inner_turns[-1].role == "assistant":
@@ -770,9 +762,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                         assistant_response = await model_callback(
                             attack.input, inner_turns
                         )
-                        inner_turns.append(
-                            RTTurn(role="assistant", content=assistant_response)
-                        )
+                        append_target_turn(inner_turns, assistant_response)
 
                 else:
                     # Unrecognized state — fallback to default
@@ -780,9 +770,7 @@ class SequentialJailbreak(BaseMultiTurnAttack):
                     assistant_response = await model_callback(
                         attack.input, inner_turns
                     )
-                    inner_turns.append(
-                        RTTurn(role="assistant", content=assistant_response)
-                    )
+                    append_target_turn(inner_turns, assistant_response)
 
                 # Run enhancement loop and assign full turn history
                 vulnerability_name = vulnerability.get_name()

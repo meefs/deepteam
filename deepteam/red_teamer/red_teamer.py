@@ -15,7 +15,7 @@ from deepeval.metrics.utils import initialize_model
 from deepeval.dataset.golden import Golden
 from deepteam.confident.api import Api, Endpoints
 from deepteam.red_teamer.api import map_risk_assessment_to_api
-from deepteam.test_case import RTTestCase
+from deepteam.test_case import RTTestCase, RTTurn
 from deepeval.utils import get_or_create_event_loop
 
 from deepteam.frameworks.frameworks import AISafetyFramework
@@ -28,7 +28,10 @@ from deepteam.utils import (
     add_pbar,
     update_pbar,
 )
-from deepteam.red_teamer.utils import resolve_model_callback
+from deepteam.red_teamer.utils import (
+    resolve_model_callback,
+    wrap_model_callback,
+)
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.types import VulnerabilityType
 from deepteam.attacks.attack_simulator import AttackSimulator
@@ -101,6 +104,8 @@ class RedTeamer:
                 model_callback, self.async_mode
             )
 
+        model_callback = wrap_model_callback(model_callback, self.async_mode)
+
         if self.async_mode:
             validate_model_callback_signature(
                 model_callback=model_callback,
@@ -123,6 +128,10 @@ class RedTeamer:
                 )
             )
         else:
+            validate_model_callback_signature(
+                model_callback=model_callback,
+                async_mode=self.async_mode,
+            )
             if framework and not framework._has_dataset:
                 risk_assessment = self._assess_framework(
                     model_callback=model_callback,
@@ -294,6 +303,13 @@ class RedTeamer:
             model_callback = resolve_model_callback(
                 model_callback, self.async_mode
             )
+
+        model_callback = wrap_model_callback(model_callback, self.async_mode)
+
+        validate_model_callback_signature(
+            model_callback=model_callback,
+            async_mode=self.async_mode,
+        )
 
         if not framework and not vulnerabilities:
             raise ValueError(
@@ -514,11 +530,13 @@ class RedTeamer:
             try:
                 sig = inspect.signature(model_callback)
                 if "turns" in sig.parameters:
-                    actual_output = model_callback(
+                    model_response: RTTurn = model_callback(
                         simulated_test_case.input, simulated_test_case.turns
                     )
                 else:
-                    actual_output = model_callback(simulated_test_case.input)
+                    model_response: RTTurn = model_callback(
+                        simulated_test_case.input
+                    )
             except Exception:
                 if ignore_errors:
                     red_teaming_test_case.error = (
@@ -529,7 +547,11 @@ class RedTeamer:
                     raise
 
             try:
-                red_teaming_test_case.actual_output = actual_output
+                red_teaming_test_case.actual_output = model_response.content
+                red_teaming_test_case.retrieval_context = (
+                    model_response.retrieval_context
+                )
+                red_teaming_test_case.tools_called = model_response.tools_called
                 metric.measure(red_teaming_test_case)
                 red_teaming_test_case.score = metric.score
                 red_teaming_test_case.reason = metric.reason
@@ -589,11 +611,11 @@ class RedTeamer:
             try:
                 sig = inspect.signature(model_callback)
                 if "turns" in sig.parameters:
-                    actual_output = await model_callback(
+                    model_response: RTTurn = await model_callback(
                         simulated_test_case.input, simulated_test_case.turns
                     )
                 else:
-                    actual_output = await model_callback(
+                    model_response: RTTurn = await model_callback(
                         simulated_test_case.input
                     )
             except Exception:
@@ -606,7 +628,11 @@ class RedTeamer:
                     raise
 
             try:
-                red_teaming_test_case.actual_output = actual_output
+                red_teaming_test_case.actual_output = model_response.content
+                red_teaming_test_case.retrieval_context = (
+                    model_response.retrieval_context
+                )
+                red_teaming_test_case.tools_called = model_response.tools_called
                 await metric.a_measure(red_teaming_test_case)
                 red_teaming_test_case.score = metric.score
                 red_teaming_test_case.reason = metric.reason

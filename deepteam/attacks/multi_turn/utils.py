@@ -3,6 +3,15 @@ from deepeval.test_case import Turn
 from deepeval.models import DeepEvalBaseLLM
 from deepteam.attacks import BaseAttack
 import inspect
+from deepteam.test_case import RTTurn
+
+
+def append_target_turn(
+    turns: List[RTTurn], target_response: RTTurn, turn_level_attack: str = None
+):
+    if turn_level_attack:
+        target_response.turn_level_attack = turn_level_attack
+    turns.append(target_response)
 
 
 def update_turn_history(

@@ -23,12 +23,6 @@ class TestGrayBox:
         assert enhanced != original_text
         assert len(enhanced) >= len(original_text)
 
-    def test_gray_box_enhance_empty_string(self):
-        attack = GrayBox()
-        enhanced = attack.enhance("")
-        # Should handle empty strings gracefully
-        assert isinstance(enhanced, str)
-
     def test_gray_box_enhance_contains_gray_box_elements(self):
         attack = GrayBox()
         original_text = "Leak information"

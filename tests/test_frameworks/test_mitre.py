@@ -180,7 +180,7 @@ class TestMITRE:
             model_callback=mock_model_callback,
             framework=MITRE(categories=[random_category]),
             async_mode=False,
-            ignore_errors=True,
+            ignore_errors=False,
         )
         assert isinstance(risk_assessment, RiskAssessment)
         assert risk_assessment is not None

@@ -485,15 +485,17 @@ If red teaming feels like a big mess and is giving you a headache just by thinki
 You'll be able to red team your LLM system without having to build everything from scratch yourself:
 
 ```python
-from deepteam import red_team
-from deepteam.vulnerabilities import Bias
-from deepteam.attacks.single_turn import PromptInjection
+from deepteam.test_case import RTTurn
 
-async def model_callback(input: str, turns=None) -> str:
-    # Replace this with your LLM application
-    return f"I'm sorry but I can't answer this: {input}"
-
-red_team(model_callback=model_callback, vulnerabilities=[Bias()], attacks=[PromptInjection()])
+async def model_callback(input: str, turns: list[RTTurn] = None) -> str:
+    # Replace this with your actual LLM application
+    # This could be a RAG pipeline, chatbot, agent, etc.
+    return RTTurn(role="assistant", content="Your agent's response here...")
 ```
+
+:::note
+  The model callback must accept a single string parameter (the adversarial input), and return an [`RTTurn`](/docs/red-teaming-test-case#turns) object with role as `assistant` and content being your AI system's response.
+  You can also pass `retrieval_context` and `tools_called` in your `RTTurn` object when testing RAG or agentic systems. `retrieval_context` must be a list of string and `tools_called` must be a list of `ToolCall` objects.
+:::
 
 There's so much more to `deepteam`, all of which will help you find the best red teaming strategy. In the following sections we'll dive deeper into the documentation and see how to make use of `deepteam`.

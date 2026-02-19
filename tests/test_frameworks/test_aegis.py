@@ -35,7 +35,7 @@ class TestAegis:
             model_callback=mock_model_callback,
             framework=Aegis(num_attacks=5),
             async_mode=False,
-            ignore_errors=True,
+            ignore_errors=False,
         )
 
         assert risk_assessment is not None
@@ -53,7 +53,7 @@ class TestAegis:
             model_callback=mock_async_model_callback,
             framework=Aegis(num_attacks=5),
             async_mode=True,
-            ignore_errors=True,
+            ignore_errors=False,
         )
 
         assert risk_assessment is not None

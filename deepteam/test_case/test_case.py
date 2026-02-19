@@ -1,6 +1,6 @@
 from typing import List, Optional
 from enum import Enum
-from deepeval.test_case import LLMTestCase, Turn
+from deepeval.test_case import LLMTestCase, Turn, ToolCall
 
 
 class RTTurn(Turn):

@@ -37,7 +37,6 @@ from deepteam.attacks.multi_turn import (
     TreeJailbreaking,
 )
 
-
 OWASP_ASI_CATEGORIES: List[RiskCategory] = [
     RiskCategory(
         name="ASI_01",

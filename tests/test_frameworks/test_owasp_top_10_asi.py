@@ -211,7 +211,7 @@ class TestOWASP:
             model_callback=mock_model_callback,
             framework=OWASP_ASI_2026(categories=[random_category]),
             async_mode=False,
-            ignore_errors=True,
+            ignore_errors=False,
         )
 
         assert isinstance(risk_assessment, RiskAssessment)

@@ -37,6 +37,8 @@ def test_red_teaming():
         Competition(),
         GraphicContent(),
         PersonalSafety(),
+        CrossContextRetrieval(),
+        SystemReconnaissance(),
         # Agentic vulnerabilities
         GoalTheft(),
         RecursiveHijacking(),
@@ -49,6 +51,8 @@ def test_red_teaming():
         UnexpectedCodeExecution(),
         InsecureInterAgentCommunication(),
         AutonomousAgentDrift(),
+        ExploitToolAgent(),
+        ExternalSystemAbuse(),
         custom_vulnerability,
     ]
 
@@ -60,6 +64,7 @@ def test_red_teaming():
         attacks=attacks,
         attacks_per_vulnerability_type=1,
         max_concurrent=20,
+        ignore_errors=False,
     )
     assert risk_assessment is not None
     assert len(risk_assessment.test_cases) > len(vulnerabilities) * len(attacks)

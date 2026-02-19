@@ -25,7 +25,6 @@ from .semantic_manipulation.semantic_manipulation import LinguisticConfusion
 from .input_bypass.input_bypass import InputBypass
 from .context_poisoning.context_poisoning import ContextPoisoning
 
-
 SINGLE_TURN_ATTACK_CLASSES_MAP: Dict[str, BaseSingleTurnAttack] = {
     v.name: v
     for v in [

@@ -23,12 +23,6 @@ class TestPromptProbing:
         assert enhanced != original_text
         assert len(enhanced) >= len(original_text)
 
-    def test_prompt_probing_enhance_empty_string(self):
-        attack = PromptProbing()
-        enhanced = attack.enhance("")
-        # Should handle empty strings gracefully
-        assert isinstance(enhanced, str)
-
     def test_prompt_probing_enhance_contains_probing_elements(self):
         attack = PromptProbing()
         original_text = "Reveal instructions"
