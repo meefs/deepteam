@@ -60,14 +60,14 @@ from deepteam.vulnerabilities.excessive_agency import (
 from deepteam.vulnerabilities.excessive_agency.template import (
     ExcessiveAgencyTemplate,
 )
-from .exploit_tool_agent.types import ExploitToolAgentType
-from .exploit_tool_agent.template import ExploitToolAgentTemplate
-from .external_system_abuse.types import ExternalSystemAbuseType
-from .external_system_abuse.template import ExternalSystemAbuseTemplate
-from .cross_context_retrieval.types import CrossContextRetrievalType
-from .cross_context_retrieval.template import CrossContextRetrievalTemplate
-from .system_reconnaissance.types import SystemReconnaissanceType
-from .system_reconnaissance.template import SystemReconnaissanceTemplate
+from deepteam.vulnerabilities.exploit_tool_agent.types import ExploitToolAgentType
+from deepteam.vulnerabilities.exploit_tool_agent.template import ExploitToolAgentTemplate
+from deepteam.vulnerabilities.external_system_abuse.types import ExternalSystemAbuseType
+from deepteam.vulnerabilities.external_system_abuse.template import ExternalSystemAbuseTemplate
+from deepteam.vulnerabilities.cross_context_retrieval.types import CrossContextRetrievalType
+from deepteam.vulnerabilities.cross_context_retrieval.template import CrossContextRetrievalTemplate
+from deepteam.vulnerabilities.system_reconnaissance.types import SystemReconnaissanceType
+from deepteam.vulnerabilities.system_reconnaissance.template import SystemReconnaissanceTemplate
 
 # Import agentic vulnerability types
 from deepteam.vulnerabilities.goal_theft.types import GoalTheftType

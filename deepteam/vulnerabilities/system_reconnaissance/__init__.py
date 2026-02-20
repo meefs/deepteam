@@ -1,2 +1,2 @@
 from .types import SystemReconnaissanceType
-from .system_reconnaissance import SystemReconnaissance
+from .template import SystemReconnaissanceTemplate

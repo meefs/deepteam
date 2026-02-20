@@ -1,2 +1,2 @@
 from .types import CrossContextRetrievalType
-from .cross_context_retrieval import CrossContextRetrieval
+from .template import CrossContextRetrievalTemplate
