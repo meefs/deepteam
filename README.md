@@ -293,7 +293,7 @@ print(output_result.breached)  # True
 - **Run from your IDE** — use Confident AI's MCP server to run red teams, pull results, and inspect vulnerabilities without leaving Cursor or Claude Code
 
 <p align="center">
-    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/confident-ai-banner.png" alt="Confident AI" width="90%">
+    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/confident-demo.gif" alt="Confident AI" width="90%">
 </p>
 
 &nbsp;
