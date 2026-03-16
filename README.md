@@ -57,8 +57,8 @@ DeepTeam runs **locally on your machine** and uses LLMs for both attack simulati
 
 - 📐 50+ ready-to-use [vulnerabilities](https://www.trydeepteam.com/docs/red-teaming-vulnerabilities) (all with explanations) powered by **ANY** LLM of your choice. Each vulnerability uses LLM-as-a-Judge metrics that run **locally on your machine** to produce binary pass/fail scores with reasoning:
 
-- <details>
-  <summary><b>Data Privacy</b></summary>
+  - <details>
+    <summary><b>Data Privacy</b></summary>
 
 - PII Leakage — direct disclosure, session leak, database access
 - Prompt Leakage — secrets, credentials, system prompt extraction
