@@ -46,7 +46,7 @@ DeepTeam runs **locally on your machine** and uses LLMs for both attack simulati
 > Need a place for your red teaming results to live? Sign up to the [Confident AI](https://app.confident-ai.com?utm_source=GitHub) platform to manage risk assessments, monitor vulnerabilities in production, and share reports with your team.
 
 <p align="center">
-    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/confident-ai.png" alt="Confident AI + DeepTeam" width="100%">
+    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/confident-demo.gif" alt="Confident AI + DeepTeam" width="100%">
 </p>
 
 > Want to talk LLM security, need help picking attacks, or just to say hi? [Come join our discord.](https://discord.com/invite/3SEyvpgu2f)
