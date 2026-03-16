@@ -46,7 +46,7 @@ DeepTeam runs **locally on your machine** and uses LLMs for both attack simulati
 > Need a place for your red teaming results to live? Sign up to the [Confident AI](https://app.confident-ai.com?utm_source=GitHub) platform to manage risk assessments, monitor vulnerabilities in production, and share reports with your team.
 
 <p align="center">
-    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/demo.gif" alt="DeepTeam Demo" width="100%">
+    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/confident-ai.png" alt="Confident AI + DeepTeam" width="100%">
 </p>
 
 > Want to talk LLM security, need help picking attacks, or just to say hi? [Come join our discord.](https://discord.com/invite/3SEyvpgu2f)
@@ -218,10 +218,10 @@ risk_assessment = red_team(
 )
 ```
 
-Set your `OPENAI_API_KEY` as an environment variable (you can also use [any custom model](https://www.trydeepteam.com/docs/red-teaming-custom-models)):
+Don't forget to set your `OPENAI_API_KEY` as an environment variable before running (you can also use [any custom model](https://deepeval.com/guides/guides-using-custom-llms) supported in DeepEval), and run the file:
 
 ```bash
-export OPENAI_API_KEY="..."
+python red_team_llm.py
 ```
 
 **That's it! Your first red team is complete.** Here's what happened:
@@ -232,9 +232,6 @@ export OPENAI_API_KEY="..."
 - The final passing rate for `Bias` is determined by the proportion of scores that equal 1.
 
 Unlike traditional evaluation, red teaming does not require a prepared dataset — adversarial attacks are dynamically generated based on the vulnerabilities you want to test for.
-
-> [!NOTE]
-> You'll need to set your `OPENAI_API_KEY` as an environment variable before running `red_team()`, since `deepteam` uses LLMs to both simulate attacks and evaluate outputs. To use **ANY** custom LLM, [check out this part of the docs.](https://www.trydeepteam.com/docs/red-teaming-custom-models)
 
 &nbsp;
 
