@@ -56,107 +56,125 @@ DeepTeam runs **locally on your machine** and uses LLMs for both attack simulati
 # 🔥 Vulnerabilities, Attacks, and Features
 
 - 📐 50+ ready-to-use [vulnerabilities](https://www.trydeepteam.com/docs/red-teaming-vulnerabilities) (all with explanations) powered by **ANY** LLM of your choice. Each vulnerability uses LLM-as-a-Judge metrics that run **locally on your machine** to produce binary pass/fail scores with reasoning:
-    <details><summary><b>Data Privacy</b></summary>
 
-  - PII Leakage — direct disclosure, session leak, database access
-  - Prompt Leakage — secrets, credentials, system prompt extraction
+<details>
+<summary><b>Data Privacy</b></summary>
 
-    </details>
-    <details><summary><b>Responsible AI</b></summary>
+- PII Leakage — direct disclosure, session leak, database access
+- Prompt Leakage — secrets, credentials, system prompt extraction
 
-  - Bias — gender, race, political, religion
-  - Toxicity — profanity, insults, threats
-  - Child Protection — CSAM, grooming
-  - Ethics — moral violations
-  - Fairness — discriminatory outcomes
+</details>
 
-    </details>
-    <details><summary><b>Security</b></summary>
+<details>
+<summary><b>Responsible AI</b></summary>
 
-  - BFLA — broken function-level authorization
-  - BOLA — broken object-level authorization
-  - RBAC — role-based access control bypass
-  - Debug Access — development endpoint exposure
-  - Shell Injection — command execution attacks
-  - SQL Injection — database query manipulation
-  - SSRF — server-side request forgery
-  - Tool Metadata Poisoning — corrupting tool descriptions
-  - Cross-Context Retrieval — accessing data across boundaries
-  - System Reconnaissance — probing agent architecture
+- Bias — gender, race, political, religion
+- Toxicity — profanity, insults, threats
+- Child Protection — CSAM, grooming
+- Ethics — moral violations
+- Fairness — discriminatory outcomes
 
-    </details>
-    <details><summary><b>Safety</b></summary>
+</details>
 
-  - Illegal Activity — fraud, weapons, drugs
-  - Graphic Content — violence, sexual content
-  - Personal Safety — self-harm, dangerous advice
-  - Unexpected Code Execution — arbitrary code generation
+<details>
+<summary><b>Security</b></summary>
 
-    </details>
-    <details><summary><b>Business</b></summary>
+- BFLA — broken function-level authorization
+- BOLA — broken object-level authorization
+- RBAC — role-based access control bypass
+- Debug Access — development endpoint exposure
+- Shell Injection — command execution attacks
+- SQL Injection — database query manipulation
+- SSRF — server-side request forgery
+- Tool Metadata Poisoning — corrupting tool descriptions
+- Cross-Context Retrieval — accessing data across boundaries
+- System Reconnaissance — probing agent architecture
 
-  - Misinformation — factual errors, unsupported claims
-  - Intellectual Property — copyright violations
-  - Competition — competitor endorsement
+</details>
 
-    </details>
-    <details><summary><b>Agentic</b></summary>
+<details>
+<summary><b>Safety</b></summary>
 
-  - Goal Theft — extracting or redirecting an agent's objectives
-  - Recursive Hijacking — exploiting recursive agent calls
-  - Excessive Agency — agents acting beyond their authority
-  - Robustness — input overreliance, hijacking
-  - Indirect Instruction — hidden instructions in retrieved content
-  - Tool Orchestration Abuse — exploiting tool calling sequences
-  - Agent Identity & Trust Abuse — impersonating agent identity
-  - Inter-Agent Communication Compromise — exploiting multi-agent message passing
-  - Autonomous Agent Drift — agents deviating from intended goals
-  - Exploit Tool Agent — leveraging tools for unintended actions
-  - External System Abuse — using agents to attack external services
+- Illegal Activity — fraud, weapons, drugs
+- Graphic Content — violence, sexual content
+- Personal Safety — self-harm, dangerous advice
+- Unexpected Code Execution — arbitrary code generation
 
-    </details>
-    <details><summary><b>Custom</b></summary>
+</details>
 
-  - Custom Vulnerabilities — define and test your own with custom criteria in a few lines of code
+<details>
+<summary><b>Business</b></summary>
 
-    </details>
+- Misinformation — factual errors, unsupported claims
+- Intellectual Property — copyright violations
+- Competition — competitor endorsement
+
+</details>
+
+<details>
+<summary><b>Agentic</b></summary>
+
+- Goal Theft — extracting or redirecting an agent's objectives
+- Recursive Hijacking — exploiting recursive agent calls
+- Excessive Agency — agents acting beyond their authority
+- Robustness — input overreliance, hijacking
+- Indirect Instruction — hidden instructions in retrieved content
+- Tool Orchestration Abuse — exploiting tool calling sequences
+- Agent Identity & Trust Abuse — impersonating agent identity
+- Inter-Agent Communication Compromise — exploiting multi-agent message passing
+- Autonomous Agent Drift — agents deviating from intended goals
+- Exploit Tool Agent — leveraging tools for unintended actions
+- External System Abuse — using agents to attack external services
+
+</details>
+
+<details>
+<summary><b>Custom</b></summary>
+
+- Custom Vulnerabilities — define and test your own with custom criteria in a few lines of code
+
+</details>
 
 - 💥 20+ research-backed [adversarial attack](https://www.trydeepteam.com/docs/red-teaming-adversarial-attacks) methods for both single-turn and multi-turn (conversational) red teaming. Attacks enhance baseline vulnerability probes using SOTA techniques like jailbreaking, prompt injection, and encoding-based obfuscation:
-    <details><summary><b>Single-Turn</b></summary>
 
-  - Prompt Injection
-  - Roleplay
-  - Leetspeak
-  - ROT13
-  - Base64
-  - Gray Box
-  - Math Problem
-  - Multilingual
-  - Prompt Probing
-  - Adversarial Poetry
-  - System Override
-  - Permission Escalation
-  - Goal Redirection
-  - Linguistic Confusion
-  - Input Bypass
-  - Context Poisoning
-  - Character Stream
-  - Context Flooding
-  - Embedded Instruction JSON
-  - Synthetic Context Injection
-  - Authority Escalation
-  - Emotional Manipulation
+<details>
+<summary><b>Single-Turn</b></summary>
 
-    </details>
-    <details><summary><b>Multi-Turn</b></summary>
+- Prompt Injection
+- Roleplay
+- Leetspeak
+- ROT13
+- Base64
+- Gray Box
+- Math Problem
+- Multilingual
+- Prompt Probing
+- Adversarial Poetry
+- System Override
+- Permission Escalation
+- Goal Redirection
+- Linguistic Confusion
+- Input Bypass
+- Context Poisoning
+- Character Stream
+- Context Flooding
+- Embedded Instruction JSON
+- Synthetic Context Injection
+- Authority Escalation
+- Emotional Manipulation
 
-  - Linear Jailbreaking
-  - Tree Jailbreaking
-  - Crescendo Jailbreaking
-  - Sequential Jailbreak
-  - Bad Likert Judge
+</details>
 
-    </details>
+<details>
+<summary><b>Multi-Turn</b></summary>
+
+- Linear Jailbreaking
+- Tree Jailbreaking
+- Crescendo Jailbreaking
+- Sequential Jailbreak
+- Bad Likert Judge
+
+</details>
 
 - 🏛️ Red team against established [AI safety frameworks](https://www.trydeepteam.com/docs/guidelines-and-frameworks) out-of-the-box. Each framework automatically maps its categories to the right vulnerabilities and attacks:
   - OWASP Top 10 for LLMs 2025
