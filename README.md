@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/Untitled.png" alt="DeepTeam Logo" width="55%">
+    <img src="https://github.com/confident-ai/deepteam/blob/main/assets/deepteam-logo.png" alt="DeepTeam Logo" width="55%">
 </p>
 
 <h1 align="center">The LLM Red Teaming Framework</h1>
