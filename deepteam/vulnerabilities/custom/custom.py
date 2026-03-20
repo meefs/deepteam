@@ -41,6 +41,13 @@ class CustomVulnerability(BaseVulnerability):
             self.types = Enum(
                 f"CustomVulnerabilityType", {t.upper(): t for t in types}
             )
+        else:
+            # Default to a single type derived from the vulnerability name
+            # so iteration over self.types always works
+            self.types = Enum(
+                f"CustomVulnerabilityType",
+                {name.upper().replace(" ", "_"): name},
+            )
 
         self.custom_prompt = custom_prompt
         self.criteria = criteria.strip()
