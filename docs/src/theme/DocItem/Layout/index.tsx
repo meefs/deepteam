@@ -1,0 +1,53 @@
+import React, { type ReactNode, useMemo } from 'react';
+import Layout from '@theme-original/DocItem/Layout';
+import type LayoutType from '@theme/DocItem/Layout';
+import type { WrapperProps } from '@docusaurus/types';
+import { useDoc } from '@docusaurus/plugin-content-docs/client';
+import SchemaInjector from '@site/src/components/SchemaInjector/SchemaInjector';
+import { buildArticleSchema, buildProductSchema, buildBreadcrumbSchema } from '@site/src/utils/schema-helpers';
+
+type Props = WrapperProps<typeof LayoutType>;
+
+export default function LayoutWrapper(props: Props): ReactNode {
+  const { frontMatter, metadata } = useDoc();
+
+  const breadcrumbs = (props as any).route?.context?.breadcrumbs || [];
+  const breadcrumbTrail = breadcrumbs.map((crumb: any) => ({
+    name: crumb.label,
+    url: crumb.href,
+  }));
+  const breadcrumbSchema = useMemo(() => buildBreadcrumbSchema(breadcrumbTrail), [breadcrumbs]);
+
+  const isProduct = 
+    metadata.permalink.includes('adversarial-attacks-') ||
+    metadata.permalink.includes('agentic-attacks-') ||
+    metadata.permalink.includes('vulnerabilities-');
+
+  const mainSchema = useMemo(() => {
+    if (isProduct) {
+      return buildProductSchema({
+        name: metadata.title,
+        description: frontMatter.description as string || metadata.description || `Learn about ${metadata.title} in LLM red teaming.`,
+        url: metadata.permalink,
+        image: frontMatter.image as string | undefined, 
+      });
+    } else {
+      return buildArticleSchema({
+        title: metadata.title,
+        description: frontMatter.description as string || metadata.description,
+        url: metadata.permalink,
+        datePublished: (frontMatter as any).date ? new Date((frontMatter as any).date as string).toISOString() : undefined,
+        authors: (frontMatter as any).authors as string[] | undefined,
+        image: frontMatter.image as string | undefined,
+      });
+    }
+  }, [metadata, frontMatter, isProduct]);
+
+  return (
+    <>
+      <SchemaInjector schema={breadcrumbSchema} />
+      <SchemaInjector schema={mainSchema} />
+      <Layout {...props} />
+    </>
+  );
+}

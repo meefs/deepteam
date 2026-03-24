@@ -4,6 +4,8 @@ import LayoutProvider from "@theme/Layout/Provider";
 import Footer from "@theme/Footer";
 import Navbar from "@theme/Navbar";
 import Link from "@docusaurus/Link";
+import SchemaInjector from "../components/SchemaInjector/SchemaInjector";
+import { buildBlogHomeSchema } from "@site/src/utils/schema-helpers";
 
 interface AuthorData {
   name: string;
@@ -189,8 +191,11 @@ class Index extends React.Component<Record<string, unknown>, IndexState> {
   render(): ReactNode {
     const { blogs, authors, loading, error } = this.state;
 
+    const blogHomeSchema = blogs.length > 0 ? buildBlogHomeSchema(blogs) : null;
+
     return (
       <div className={styles.blogHomeContainer}>
+        {blogHomeSchema && <SchemaInjector schema={blogHomeSchema} />}
         <div className={styles.blogHeroCard}>
           <div className={styles.content}>
             <span className={styles.tag}>Blog</span>
