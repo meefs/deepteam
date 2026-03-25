@@ -55,8 +55,8 @@ const config: Config = {
       innerHTML: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "Confident AI Inc.",
-        "alternateName": "DeepTeam",
+        "name": "DeepTeam by Confident AI",
+        "alternateName": "DeepTeam - The LLM Security and Red Teaming Framework",
         "url": "https://trydeepteam.com",
         "logo": "https://trydeepteam.com/icons/DeepTeam.svg",
         "sameAs": [
