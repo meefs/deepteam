@@ -4,6 +4,9 @@ title: What Is LLM Red Teaming?
 sidebar_label: What Is LLM Red Teaming?
 ---
 
+import BlogImageDisplayer from "@site/src/components/BlogImageDisplayer";
+import { ASSETS } from "@site/src/assets";
+
 Large Language Model (LLM) red teaming refers to the practice of probing and attacking AI models in a controlled manner to uncover vulnerabilities and risky behaviors before malicious actors do. Unlike conventional software testing, which often focuses on code flaws, LLM red teaming specifically targets the model’s outputs and behavior under adversarial conditions.
 
 <div
@@ -98,6 +101,18 @@ In the end, you should be able to aggregate the red teaming results to determine
 Manual testing involves expert researchers probing an LLM with adversarial prompts to uncover edge cases. This approach is primarily used by companies training their own foundational models, such as OpenAI, Anthropic, and DeepMind, to push the limits of their AI systems.
 
 However, manual red teaming is slow, expensive, and difficult to scale. It requires specialized expertize and lacks repeatability, making it unsuitable for most companies deploying pre-trained models. Even industry leaders rely on automation to cover more ground efficiently.
+
+## Red teaming on Confident AI
+
+[Confident AI](https://www.confident-ai.com) allows you to connect your production applications to the platform by creating an AI Connection, which allows the platform to communicate with the application via HTTP requests. This allows you to run risk assessments anytime within the UI itself. 
+
+Deployed models are always prone to vulnerabilities and security risks, which is why it is important to ensure that these applications are secure and compliant. Confident AI allows you to schedule recurring risk assessments on your production applications making it a scalable and repeatable workflow.
+
+<BlogImageDisplayer
+  src={ASSETS.confidentRedTeamingScheduledFramework}
+  alt="Scheduled red teaming automation on Confident AI"
+  caption="Scheduling automated risk assessments on Confident AI."
+/>
 
 ## Model vs System Weakness
 
