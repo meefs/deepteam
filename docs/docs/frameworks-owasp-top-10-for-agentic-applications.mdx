@@ -4,6 +4,10 @@ title: OWASP Top 10 for Agents 2026
 sidebar_label: OWASP Top 10 for Agents 2026
 ---
 
+import BlogImageDisplayer from "@site/src/components/BlogImageDisplayer";
+import VideoDisplayer from "@site/src/components/VideoDisplayer";
+import { ASSETS } from "@site/src/assets";
+
 The **OWASP Top 10 for Agentic Applications (ASI)** identifies the most critical security risks introduced by autonomous and semi-autonomous AI agents. Unlike traditional LLM applications, agentic systems combine reasoning, memory, tools, and multi-step execution, introducing new classes of vulnerabilities that extend beyond prompt-level attacks.
 
 The 2026 edition focuses on failures arising from goal misalignment, tool misuse, delegated trust, inter-agent communication, persistent memory, and emergent autonomous behavior.
@@ -21,6 +25,13 @@ risk_assessment = red_team(
 )
 ```
 
+You can also run this assessment in the Confident AI platform without any code.
+
+<VideoDisplayer
+  src={ASSETS.redTeamingOwaspTop10LlmPlatformVideo}
+  confidentUrl="/docs/red-teaming/framework-policies"
+  label="Learn how to run framework assessments on Confident AI"
+/>
 :::
 
 ## What Makes Agentic AI Different
@@ -399,6 +410,30 @@ critical_assessment = red_team(
     attacks_per_vulnerability_type=10
 )
 ```
+
+## Assessing Your Production Application with OWASP ASI
+
+Red teaming your deployed applications is crucial to ensure your LLM applications are secure and compliant. You can run OWASP Top 10 for Agentic Applications assessments on your production application on Confident AI by directly connecting your application to the platform.
+
+[Confident AI](https://www.confident-ai.com) allows you to directly chat with your deployed application through a postman style connection. This allows you to run OWASP ASI assessments against your production application:
+
+<BlogImageDisplayer
+  src={ASSETS.confidentSettingsProjectAiConnection}
+  alt="AI Connection in Confident AI"
+  caption="AI Connection in Confident AI"
+/>
+
+Confident AI also provides you with the full risk assessment report after running the assessment.
+
+### Risk assessment reports and PDF export
+
+After a run, Confident AI aggregates results into a **risk assessment** with CVSS-style severity, coverage, and per-test-case detail in the UI. You can also generate a **downloadable risk assessment report (PDF)** to share with security, compliance teams when you need a fixed artifact beyond the live dashboard.
+
+<BlogImageDisplayer
+  src={ASSETS.confidentRedTeamingRiskAssessment}
+  alt="Risk assessment overview in Confident AI after a framework-based assessment"
+  caption="Example: consolidated risk assessment in Confident AI after running a framework-based assessment."
+/>
 
 ## Best Practices for Agentic AI Security
 
