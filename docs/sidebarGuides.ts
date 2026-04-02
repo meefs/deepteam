@@ -12,7 +12,7 @@ module.exports = {
     },
     {
       type: "category",
-      label: "Red Teaming Guides",
+      label: "LLM Systems",
       items: [
         "guide-red-teaming-single-turn-rag",
         "guide-red-teaming-chatbots",
