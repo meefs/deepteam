@@ -4,10 +4,24 @@ title: MITRE ATLAS
 sidebar_label: MITRE ATLAS
 ---
 
+import BlogImageDisplayer from "@site/src/components/BlogImageDisplayer";
+import VideoDisplayer from "@site/src/components/VideoDisplayer";
+import { ASSETS } from "@site/src/assets";
+
 The **MITRE ATLAS™ (Adversarial Threat Landscape for Artificial-Intelligence Systems)** framework provides a structured knowledge base of adversarial tactics, techniques, and procedures (TTPs) used against AI and ML systems.
 It extends the principles of [MITRE ATT&CK®](https://attack.mitre.org) to the **AI threat surface**, identifying how adversaries can manipulate, exploit, or misuse AI models throughout their lifecycle.
 
 DeepTeam's **MITRE ATLAS module** implements these adversarial mappings to test your AI or LLM application for security, privacy, and robustness vulnerabilities, across each phase of the AI attack lifecycle.
+
+:::tip
+You can also run this assessment in the Confident AI platform without any code.
+
+<VideoDisplayer
+  src={ASSETS.redTeamingOwaspTop10LlmPlatformVideo}
+  confidentUrl="/docs/red-teaming/no-code-assessments/quickstart"
+  label="Learn how to run framework assessments on Confident AI"
+/>
+:::
 
 ## Overview
 
@@ -309,6 +323,36 @@ red_team(
 ```
 
 This stage ensures your system's final outputs and decisions remain aligned with **intended ethics, safety, and trust boundaries** — even under adversarial manipulation.
+
+## Assessing Your Production Application with MITRE ATLAS
+
+Red teaming your deployed applications is crucial to ensure your LLM applications are secure and compliant. You can run MITRE ATLAS-aligned assessments on your production application on Confident AI by directly connecting your application to the platform.
+
+[Confident AI](https://www.confident-ai.com) allows you to directly chat with your deployed application through a postman style connection. This allows you to run MITRE ATLAS assessments against your production application:
+
+<BlogImageDisplayer
+  src={ASSETS.confidentSettingsProjectAiConnection}
+  alt="AI Connection in Confident AI"
+  caption="AI Connection in Confident AI"
+/>
+
+Confident AI also provides you with the full risk assessment report after running the assessment.
+
+### Risk assessment reports and PDF export
+
+After a run, Confident AI aggregates results into a **risk assessment** with CVSS-style severity, coverage, and per-test-case detail in the UI. You can also generate a **downloadable risk assessment report (PDF)** to share with security, compliance teams when you need a fixed artifact beyond the live dashboard.
+
+<BlogImageDisplayer
+  src={ASSETS.confidentRedTeamingRiskAssessment}
+  alt="Risk assessment overview in Confident AI after a framework-based assessment"
+  caption="Example: consolidated risk assessment in Confident AI after running a framework-based assessment."
+/>
+
+:::info
+Setup [Confident AI](https://app.confident-ai.com) and run your first risk assessment in minutes. **It's free to get started.** _(No credit card required)_
+
+Learn more [here](https://www.confident-ai.com)
+:::
 
 ## Best Practices
 

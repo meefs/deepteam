@@ -6,6 +6,9 @@ sidebar_label: Introduction
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import BlogImageDisplayer from "@site/src/components/BlogImageDisplayer";
+import VideoDisplayer from "@site/src/components/VideoDisplayer";
+import { ASSETS } from "@site/src/assets";
 
 `deepteam` offers a powerful yet simple way for anyone to red team all sorts of LLM applications for safety risks and security vulnerabilities in just a few lines of code. These LLM apps can be anything such as RAG pipelines, agents, chatbots, or even just the LLM itself, while the vulnerabilities include ones such as bias, toxicity, PII leakage, misinformation.
 
@@ -672,4 +675,50 @@ The attacks are fed into the LLM, and the resulting responses are evaluated usin
 
 :::tip
 It's worth noting that using a synthesizer model like GPT-3.5 can prove more effective than GPT-4o, as more **advanced models tend to have stricter filtering mechanisms**, which can limit the successful generation of adversarial attacks.
+:::
+
+`deepteam` is highly recommended to be used in development environments, but for users in production, **Confident AI** is the recommended way to run red teaming on your applications.
+
+## Production Risk Assessments
+
+[**Confident AI**](https://www.confident-ai.com) allows you to run red teaming on your production applications through the UI. You can connect your application to the platform by creating an AI Connection which allows Confident AI to ping your app via a HTTP request to communicate.
+
+:::info
+Production applications are the user facing applications you've deployed to the internet. It is very crucial to ensure that these applications are safe and secure against adversarial attacks and security vulnerabilities. **Confident AI** allows you to easily set up these production applications on the platform to run red teaming on them anytime and anywhere.
+:::
+
+### Connect Your Application
+
+Confident AI has a built-in AI Connection feature that mimics the `model_callback` function in `deepteam` which allows the platform to communicate with your application. You can navigate to the "**AI Connections**" tab in your project settings and create a new AI Connection. There you can now configure the endpoint, payload, and output key path that's specific to your application.
+
+<BlogImageDisplayer
+  src={ASSETS.confidentSettingsProjectAiConnection}
+  alt="AI Connection configuration in Confident AI"
+  caption="A one-time AI Connection setup to enable communication with your application."
+/>
+
+### Select a Security Framework
+
+There are many pre-defined safety frameworks like **OWASP**, **MITRE ATLAS**, **NIST AI RMF**, and more that you can choose from on Confident AI platform. You can also curate your own custom frameworks with different vulnerabilities and attacks to suit your AI's specific needs.
+
+<BlogImageDisplayer
+  src={ASSETS.confidentRedTeamingChooseFramework}
+  alt="Choosing a security framework in Confident AI"
+/>
+
+### View Risk Reports
+
+After creating a framework, you can now run a risk assessment on your application. Confident AI will generate adversarial inputs from your framework and use them against your application through the AI Connection before the entire test case is evaluated and scored.
+
+You can also download a PDF report for each assessment for security reviews, compliance packets, and executive or stakeholder updates.
+
+<BlogImageDisplayer
+  src={ASSETS.confidentRedTeamingRiskAssessment}
+  alt="Risk assessment dashboard in Confident AI"
+/>
+
+:::info
+Setup [Confident AI](https://app.confident-ai.com) and run your first risk assessment in minutes. **It's free to get started.** _(No credit card required)_
+
+Learn more [here](https://www.confident-ai.com)
 :::
