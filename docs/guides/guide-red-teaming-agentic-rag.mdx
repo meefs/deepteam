@@ -15,6 +15,17 @@ This guide walks through the methodology for red teaming agentic RAG and RAG-bas
 For conversational AI agents that maintain chat history across turns, use the [conversational agents guide](/guides/guide-red-teaming-conversational-agents). For AI agents with tool-calling capabilities, use the [AI agents guide](/guides/guide-agentic-ai-red-teaming).
 :::
 
+## What is Agentic RAG Red Teaming?
+
+Agentic RAG red teaming is the practice of adversarially testing AI agents backed by **retrieval-augmented generation (RAG)** — systems where a retriever pulls context from a knowledge base and an agent generates responses grounded in that context. It targets the unique failure modes that emerge when retrieval and generation interact:
+
+- **Retrieval poisoning** — Can adversarial or sensitive documents in the knowledge base override the agent's instructions or leak through its responses?
+- **Access control bypass** — Can a user retrieve documents they shouldn't have access to by crafting the right query?
+- **Grounding failures** — Does the agent fabricate policies, citations, or procedures that aren't supported by any retrieved document?
+- **Instruction override** — Can an attacker break the agent out of its assigned role through prompt injection?
+
+These failures are invisible on the surface — no errors, no stack traces, just a confident response that shouldn't exist. Agentic RAG red teaming is how you find them before users do.
+
 ## Think in Threat Models, Not Checklists
 
 The biggest mistake teams make is picking vulnerabilities from a list without thinking about their system first. A customer-facing FAQ agent and an internal HR agent over sensitive employee records have fundamentally different risk profiles—even though they're both agentic RAG pipelines.

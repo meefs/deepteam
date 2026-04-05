@@ -15,6 +15,16 @@ This guide explains how to red team a conversational AI agent using [DeepTeam](h
 This guide focuses on multi-turn attack techniques for conversational agents. If your AI agent handles requests in a single generation without maintaining conversation state, use the [agentic RAG guide](/guides/guide-red-teaming-agentic-rag) instead. For AI agents with tool-calling capabilities, use the [AI agents guide](/guides/guide-agentic-ai-red-teaming).
 :::
 
+## What is Conversational Agent Red Teaming?
+
+Conversational agent red teaming is the practice of adversarially testing AI agents that **maintain state across multiple turns of dialogue**. Unlike single-turn red teaming, it targets vulnerabilities that only emerge over the course of a conversation:
+
+- **Consistency pressure** — Once an agent commits to a tone or line of reasoning, attackers can gradually steer it into territory it would refuse from a cold start.
+- **Information leakage across turns** — Each response reveals something about the agent's boundaries, giving attackers a map of its defenses.
+- **Context window saturation** — As conversation history grows, safety instructions get pushed out of the model's attention window.
+
+An agent that's perfectly safe on any single message can still fail catastrophically across a five-turn conversation. Conversational red teaming tests the conversation as a unit, not individual turns.
+
 ## Why Multi-Turn Attacks Work
 
 A single-turn attack gives you one shot — the prompt either breaks through or it doesn't. Multi-turn attacks are fundamentally more powerful because they exploit three properties of conversation that don't exist in single-turn interactions.

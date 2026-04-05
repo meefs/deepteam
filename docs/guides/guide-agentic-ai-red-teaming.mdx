@@ -15,6 +15,16 @@ This guide explains agentic AI red teaming with [DeepTeam](https://github.com/co
 This guide focuses on agentic red teaming for tool-calling AI agents. For RAG-based agents, use the [agentic RAG guide](/guides/guide-red-teaming-agentic-rag). For conversational agents, use the [conversational agents guide](/guides/guide-red-teaming-conversational-agents).
 :::
 
+## What is Agentic AI Red Teaming?
+
+Agentic AI red teaming is the practice of adversarially testing AI agents that go beyond generating text — agents that **reason, plan, call tools, delegate to sub-agents, and take real-world actions**. Unlike traditional prompt-level red teaming, agentic red teaming targets the full autonomous pipeline:
+
+- **Reasoning and planning** — Can an attacker redirect the agent's goals or make it "forget" constraints from its system prompt?
+- **Tool calling and actions** — Can the agent be tricked into executing unauthorized commands, chaining tools in dangerous sequences, or passing manipulated parameters?
+- **Inter-agent communication** — In multi-agent systems, can adversarial payloads traverse trust boundaries between agents?
+
+A compromised AI agent won't throw errors. It will delete files, leak credentials, or make unauthorized API calls — all while appearing to function normally. That's what makes agentic red teaming essential.
+
 ## The AI Agent Attack Surface
 
 Traditional LLM applications have one attack surface: the prompt-response interface. AI agents have three, and each one can be compromised independently.
