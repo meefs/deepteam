@@ -3,6 +3,7 @@ module.exports = {
     {
       type: "category",
       label: "AI Agent Security",
+      className: "sidebar-item-guide-agents root-sidebar-item",
       items: [
         "guide-agentic-ai-red-teaming",
         "guide-red-teaming-conversational-agents",
@@ -13,30 +14,44 @@ module.exports = {
     {
       type: "category",
       label: "Model Security",
-      items: ["guide-red-teaming-models"],
+      className: "sidebar-item-guide-model-security root-sidebar-item",
+      items: [
+        "guide-red-teaming-models",
+        "guide-red-teaming-openai",
+        "guide-red-teaming-anthropic",
+        "guide-red-teaming-gemini",
+        "guide-red-teaming-llama",
+        "guide-red-teaming-mistral",
+        "guide-red-teaming-open-weight",
+        "guide-red-teaming-fine-tuned",
+      ],
       collapsed: false,
     },
     {
       type: "category",
       label: "Responsible AI & Ethics",
+      className: "sidebar-item-guide-responsible-ai root-sidebar-item",
       items: ["guide-responsible-ai"],
       collapsed: false,
     },
     {
       type: "category",
       label: "Frameworks & Compliance",
+      className: "sidebar-item-guidelines-frameworks root-sidebar-item",
       items: ["guide-safety-frameworks"],
       collapsed: false,
     },
     {
       type: "category",
       label: "Guardrails",
+      className: "sidebar-item-guardrails root-sidebar-item",
       items: ["guide-deploying-guardrails"],
       collapsed: false,
     },
     {
       type: "category",
       label: "Customizations",
+      className: "sidebar-item-guide-customizations root-sidebar-item",
       items: [
         "guide-custom-vulnerability",
         "guide-custom-attacks",
@@ -47,6 +62,7 @@ module.exports = {
     {
       type: "category",
       label: "Operations",
+      className: "sidebar-item-guide-operations root-sidebar-item",
       items: ["guide-cli-yaml"],
       collapsed: false,
     },

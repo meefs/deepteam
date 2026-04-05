@@ -1,6 +1,6 @@
 ---
 id: guide-red-teaming-models
-title: Red teaming foundational LLMs
+title: Red Teaming Foundational LLMs
 sidebar_label: Foundational Models
 ---
 
@@ -30,10 +30,14 @@ This guide focuses on red teaming models directly. For application-level red tea
 Model red teaming evaluates the model in isolation — no retrieval, no tools, no conversation history. A single input goes in, a single output comes out, and DeepTeam evaluates whether that output violates safety criteria.
 
 ```mermaid
-flowchart LR
-    A["Adversarial\ninput"] --> B["Your Model"]
-    B --> C["Output"]
-    C --> D{"Safe or\nunsafe?"}
+sequenceDiagram
+    participant Input as Adversarial Input
+    participant Model as Your Model
+    participant Eval as Evaluation
+
+    Input->>Model: Adversarial input
+    Model->>Eval: Output
+    Eval->>Eval: Safe or unsafe?
 ```
 
 This simplicity is the point. By stripping away application complexity, you isolate the model's own safety boundaries and answer fundamental questions:
@@ -441,25 +445,18 @@ The workflow: run the full assessment → find the weak spots → use `assess()`
 
 Start with YAML for a quick assessment. Move to a custom callback when you need to test non-OpenAI models. Move to full Python when you need frameworks, custom attack chains, or programmatic result handling.
 
-## Production Risk Assessments
+## Red Teaming on the Cloud
 
-[Confident AI](https://www.confident-ai.com) lets you run model red teaming directly from its platform — no local setup required. Connect your model via an AI Connection, pick a framework, and run assessments on demand or on a schedule.
+Running `red_team()` locally works for development, but model safety is not a one-time check. Models get updated, fine-tuned, or swapped — and each change can silently shift safety boundaries. [Confident AI](https://www.confident-ai.com) lets you schedule recurring red teaming assessments against your model so regressions are caught automatically.
 
-<BlogImageDisplayer
-  src={ASSETS.confidentRedTeamingChooseFramework}
-  alt="Choosing a security framework in Confident AI"
-/>
-
-Schedule assessments to run regularly so you catch regressions when models are updated, fine-tuned, or swapped. Each run produces a risk report with per-test-case analysis and exportable PDFs.
+Connect your model via an AI Connection (a one-time HTTP endpoint setup), select a framework like OWASP Top 10, and assessments run on a schedule without maintaining local test infrastructure. Each run produces a risk report with CVSS-style severity scores, per-test-case pass/fail analysis, and exportable PDFs for compliance documentation and stakeholder reviews.
 
 <BlogImageDisplayer
   src={ASSETS.confidentRedTeamingRiskAssessment}
   alt="Risk assessment dashboard in Confident AI"
 />
 
-:::info
-Set up [Confident AI](https://app.confident-ai.com) and run your first risk assessment in minutes. **The platform offers a free tier to get started.** _(No credit card required)_
-:::
+The comparison view across runs is where the value compounds — when you swap from GPT-4o-mini to GPT-4o, or update a system prompt, you can see exactly which vulnerabilities improved and which regressed, test case by test case.
 
 ## What to Do Next
 

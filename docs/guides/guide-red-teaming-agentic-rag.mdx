@@ -1,6 +1,6 @@
 ---
 id: guide-red-teaming-agentic-rag
-title: Red teaming agentic RAG pipelines
+title: Red Teaming Agentic RAG Pipelines
 sidebar_label: Agentic RAG
 ---
 
@@ -119,14 +119,17 @@ The table below summarizes the attack techniques and where they operate in the R
 | `Leetspeak` / `Base64` / `ROT13` | Input filter layer            | Encodes harmful content to bypass keyword-based filters                           | Medium — tests filter robustness, not agent robustness |
 
 ```mermaid
-flowchart LR
-    U["User query"] --> R["Retriever"]
-    R -->|"Retrieved chunks\n(attack surface)"| A["Agent"]
-    A --> O["Response"]
+sequenceDiagram
+    participant User
+    participant Retriever
+    participant Agent
+    participant Output as Response
 
-    PI["PromptInjection\nRoleplay"] -.->|"Target"| U
-    CF["ContextFlooding\nSyntheticContextInjection"] -.->|"Target"| R
-    ENC["Leetspeak / Base64\nROT13"] -.->|"Target"| U
+    User->>Retriever: User query
+    Note over User: Targets: PromptInjection,<br/>Roleplay, Leetspeak,<br/>Base64, ROT13
+    Retriever->>Agent: Retrieved chunks (attack surface)
+    Note over Retriever: Targets: ContextFlooding,<br/>SyntheticContextInjection
+    Agent->>Output: Response
 ```
 
 :::tip
@@ -236,26 +239,16 @@ result = await cross_context.assess(model_callback=model_callback)
 
 The workflow: run the full assessment, find the weak spots, use `assess()` to measure how consistent the failure is, fix the root cause, then re-run to confirm.
 
-## Production Risk Assessments
+## Bringing Risk Assessments to Your CISO
 
-[Confident AI](https://www.confident-ai.com) lets you red team production agentic RAG pipelines directly from its platform—no local code needed. Connect your RAG-based agent via an AI Connection, pick a framework (OWASP, MITRE, NIST, or custom), and run assessments on demand or on a schedule.
+RAG pipelines break in ways that are hard to catch locally — a retrieval index update surfaces new chunks the agent has never seen, a system prompt tweak opens a context injection path, or a model swap changes which attacks succeed. [Confident AI](https://www.confident-ai.com) lets you schedule recurring red teaming against your production RAG endpoint so these regressions surface before users find them.
 
-<BlogImageDisplayer
-  src={ASSETS.confidentSettingsProjectAiConnection}
-  alt="AI Connection configuration in Confident AI"
-  caption="A one-time setup to connect your RAG-based agent for on-demand red teaming."
-/>
-
-Schedule assessments to run regularly so you catch regressions when prompts, indexes, or models change. Each run produces a risk report with per-test-case analysis. PDF exports are available for security reviews and stakeholders.
+Connect your RAG-based agent via an AI Connection — point it at your HTTP endpoint and map the request/response schema once. Then select a framework (OWASP, MITRE, NIST) and schedule daily or weekly runs. Each assessment produces a risk report with per-test-case pass/fail analysis and CVSS-style severity scores, so you can see exactly which retrieval-context attacks succeeded and which vulnerability categories regressed since the last run.
 
 <BlogImageDisplayer
   src={ASSETS.confidentRedTeamingRiskAssessment}
   alt="Risk assessment dashboard in Confident AI"
 />
-
-:::info
-[Confident AI](https://app.confident-ai.com) has a free tier to get started—no credit card required.
-:::
 
 ## What to Do Next
 

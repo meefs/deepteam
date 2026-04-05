@@ -1,6 +1,6 @@
 ---
 id: guide-red-teaming-conversational-agents
-title: Red teaming conversational AI agents
+title: Red Teaming Conversational AI Agents
 sidebar_label: Conversational Agents
 ---
 
@@ -30,20 +30,19 @@ An agent that's perfectly safe on any single message can still fail catastrophic
 A single-turn attack gives you one shot — the prompt either breaks through or it doesn't. Multi-turn attacks are fundamentally more powerful because they exploit three properties of conversation that don't exist in single-turn interactions.
 
 ```mermaid
-flowchart LR
-    subgraph Turn1["Turn 1"]
-        U1["Benign probe"] --> A1["Agent responds"]
-    end
-    subgraph Turn2["Turn 2"]
-        U2["Build on response"] --> A2["Agent stays consistent"]
-    end
-    subgraph Turn3["Turn 3"]
-        U3["Reframe intent"] --> A3["Agent adapts"]
-    end
-    subgraph TurnN["Turn N"]
-        UN["Escalate to target"] --> AN["Agent compromised"]
-    end
-    Turn1 --> Turn2 --> Turn3 -->|"..."| TurnN
+sequenceDiagram
+    participant Attacker
+    participant Agent as Conversational Agent
+
+    Attacker->>Agent: Turn 1: Benign probe
+    Agent-->>Attacker: Agent responds normally
+    Attacker->>Agent: Turn 2: Build on response
+    Agent-->>Attacker: Agent stays consistent
+    Attacker->>Agent: Turn 3: Reframe intent
+    Agent-->>Attacker: Agent adapts
+    Note over Attacker,Agent: ... continued escalation ...
+    Attacker->>Agent: Turn N: Escalate to target
+    Agent-->>Attacker: Agent compromised
 ```
 
 **Consistency pressure.** Once a conversational agent commits to a tone, framing, or line of reasoning, it tends to maintain that trajectory. An attacker who establishes a benign conversational context in early turns can gradually steer the agent into territory it would refuse to enter from a cold start. The agent's own prior responses become leverage.
@@ -59,12 +58,18 @@ These dynamics mean that a conversational agent can be perfectly safe on any sin
 The red teaming process for a conversational AI agent follows the same structure as any DeepTeam assessment, with one important distinction: multi-turn attacks require a live connection to the target agent. The attack logic reads each assistant response and adapts the next user message based on what it observes. This means testing cannot use pre-recorded outputs—the agent must respond in real time.
 
 ```mermaid
-flowchart LR
-    A["Identify\nfailure modes"] --> B["Select\nvulnerabilities"]
-    B --> C["Choose multi-turn\nattack strategies"]
-    C --> D["Integrate agent\nin model_callback"]
-    D --> E["Run red_team()\n& analyze"]
-    E -->|"Fix & retest"| B
+sequenceDiagram
+    participant You
+    participant DeepTeam
+    participant Agent as Your Conversational Agent
+
+    You->>You: Identify failure modes
+    You->>DeepTeam: Select vulnerabilities & attacks
+    You->>Agent: Integrate agent in model_callback
+    DeepTeam->>Agent: Run red_team()
+    Agent-->>DeepTeam: Agent responses
+    DeepTeam-->>You: Results & analysis
+    You-->>DeepTeam: Fix & retest
 ```
 
 1. **Identify failure modes** — Determine what the conversational agent must never say, do, or facilitate based on its function, user base, and regulatory context.
@@ -401,47 +406,18 @@ result = await prompt_leakage.assess(model_callback=model_callback)
 
 The recommended workflow: run the full assessment → identify the vulnerabilities with the lowest pass rates → use `assess()` to stress-test those areas and measure failure consistency → implement fixes → re-run the full assessment to verify the resolution.
 
-## Production Risk Assessments
+## Bringing Results to Your CISO
 
-[Confident AI](https://www.confident-ai.com) allows teams to run red teaming against production conversational AI agents through its platform, without requiring local code execution. Agents are connected through an AI Connection, which allows Confident AI to communicate with the conversational agent via HTTP requests—eliminating the need to manage test environments separately from production.
+Conversational agents are particularly sensitive to regressions — a system prompt update, a model swap, or a change in conversation history handling can re-open vulnerabilities that previously passed. Running `red_team()` locally catches issues during development, but production conversational agents need continuous monitoring.
 
-:::info
-Confident AI mirrors the `model_callback` contract in code: it sends adversarial inputs to the configured endpoint, receives responses, and evaluates them against the selected vulnerability criteria. The setup is a one-time configuration.
-:::
-
-### Connect Your Agent
-
-1. Navigate to the "**AI Connections**" tab in the project settings.
-2. Create a new AI Connection.
-3. Configure the endpoint URL, request payload shape, and the output key path that maps to the agent's reply.
-
-<BlogImageDisplayer
-  src={ASSETS.confidentSettingsProjectAiConnection}
-  alt="AI Connection configuration in Confident AI"
-  caption="A one-time AI Connection setup to enable communication with your conversational agent."
-/>
-
-### Select a Security Framework
-
-The platform supports OWASP, MITRE ATLAS, NIST AI RMF, and custom frameworks. For a customer support conversational agent, the OWASP Top 10 for LLMs provides a well-scoped starting point that covers the primary risk categories relevant to conversational AI agents.
-
-<BlogImageDisplayer
-  src={ASSETS.confidentRedTeamingChooseFramework}
-  alt="Choosing a security framework in Confident AI"
-/>
-
-### Schedule Assessments and Access Reports
-
-Assessments can be scheduled for daily or weekly execution to detect regressions proactively as the agent's system prompt, model version, or retrieval configuration changes. Each completed run produces a detailed risk report with CVSS-style severity scores and per-test-case analysis. PDF reports can be downloaded for security reviews, compliance documentation, and stakeholder handoffs.
+[Confident AI](https://www.confident-ai.com) lets you schedule automated red teaming against your production conversational agent. Connect it via an AI Connection (a one-time HTTP endpoint configuration), select a framework like OWASP Top 10, and schedule daily or weekly runs. The platform sends multi-turn adversarial inputs to your endpoint, evaluates responses against vulnerability criteria, and produces risk reports with per-test-case analysis and CVSS-style severity scores.
 
 <BlogImageDisplayer
   src={ASSETS.confidentRedTeamingRiskAssessment}
   alt="Risk assessment dashboard in Confident AI"
 />
 
-:::info
-Set up [Confident AI](https://app.confident-ai.com) and run the first risk assessment in minutes. **The platform offers a free tier to get started.** _(No credit card required)_
-:::
+The comparison view across runs is especially valuable for conversational agents — when you update a system prompt or switch models, you can see exactly which multi-turn attack patterns started succeeding that previously failed. PDF exports are available for compliance documentation and stakeholder reviews.
 
 ## What to Do Next
 

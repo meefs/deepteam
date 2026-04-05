@@ -1,15 +1,15 @@
 ---
 id: guide-agentic-ai-red-teaming
-title: Complete Agentic AI red teaming guide
+title: Complete Guide to Agentic AI Red Teaming
 sidebar_label: AI Agents
 ---
 
 import BlogImageDisplayer from "@site/src/components/BlogImageDisplayer";
 import { ASSETS } from "@site/src/assets";
 
-AI agents introduce a fundamentally different attack surface compared to agentic RAG or conversational agent systems. An AI agent does not just generate text—it reasons, plans, calls tools, delegates to sub-agents, and takes actions with real-world consequences. A compromised agent can delete files, make unauthorized API calls, leak credentials through tool descriptions, or drift from its assigned objectives without producing any visible error. Traditional prompt-level red teaming is necessary but insufficient for agentic AI systems that operate autonomously.
+AI agents don't just generate text — they reason, plan, call tools, and take actions with real-world consequences. A compromised agent can delete files, leak credentials, or make unauthorized API calls without producing any visible error.
 
-This guide explains agentic AI red teaming with [DeepTeam](https://github.com/confident-ai/deepteam) — how to systematically red team AI agents that call tools, delegate tasks, and act on real infrastructure. The running example is an **internal DevOps agent** — a system that monitors infrastructure, creates tickets, runs diagnostic commands, and escalates incidents. The same approach applies to any tool-calling AI agent, multi-agent pipeline, or autonomous agentic workflow.
+This guide covers agentic AI red teaming with [DeepTeam](https://github.com/confident-ai/deepteam). The running example is an **internal DevOps agent** that monitors infrastructure, creates tickets, and escalates incidents — but the same approach applies to any tool-calling agent or multi-agent pipeline.
 
 :::note
 This guide focuses on agentic red teaming for tool-calling AI agents. For RAG-based agents, use the [agentic RAG guide](/guides/guide-red-teaming-agentic-rag). For conversational agents, use the [conversational agents guide](/guides/guide-red-teaming-conversational-agents).
@@ -30,28 +30,19 @@ A compromised AI agent won't throw errors. It will delete files, leak credential
 Traditional LLM applications have one attack surface: the prompt-response interface. AI agents have three, and each one can be compromised independently.
 
 ```mermaid
-flowchart TB
-    subgraph Reasoning["Reasoning Layer"]
-        direction LR
-        R1["Planning & goal decomposition"]
-        R2["Tool selection decisions"]
-    end
-    subgraph Action["Action Layer"]
-        direction LR
-        A1["Tool invocation"]
-        A2["Parameter generation"]
-        A3["Output processing"]
-    end
-    subgraph InterAgent["Inter-Agent Communication"]
-        direction LR
-        IA1["Delegation messages"]
-        IA2["Shared context"]
-    end
+sequenceDiagram
+    participant User
+    participant Reasoning as Reasoning Layer
+    participant Action as Action Layer
+    participant InterAgent as Inter-Agent Comm.
 
-    User -->|"Adversarial input"| Reasoning
-    Reasoning -->|"Tool calls"| Action
-    Action -->|"Results"| Reasoning
-    Reasoning <-->|"Messages"| InterAgent
+    User->>Reasoning: Adversarial input
+    Reasoning->>Reasoning: Planning & goal decomposition
+    Reasoning->>Action: Tool calls
+    Action->>Action: Tool invocation & parameter generation
+    Action-->>Reasoning: Results & output processing
+    Reasoning->>InterAgent: Delegation messages
+    InterAgent-->>Reasoning: Shared context
 ```
 
 **The reasoning layer** is where the agent decides _what_ to do. An attacker who compromises reasoning can redirect the agent's goals, cause it to ignore its operational boundaries, or make it "forget" constraints from its system prompt. This is where vulnerabilities like [`GoalTheft`](/docs/red-teaming-vulnerabilities-goal-theft) and [`AutonomousAgentDrift`](/docs/red-teaming-vulnerabilities-autonomous-agent-drift) operate.
@@ -72,12 +63,18 @@ Understanding which layers your agent exposes helps you prioritize the right vul
 The agentic red teaming process follows the same structure as any DeepTeam assessment, with two important additions: the AI agent's tool-calling behavior must be captured for evaluation, and the vulnerability surface extends beyond language output to include actions, permissions, and inter-agent communication.
 
 ```mermaid
-flowchart LR
-    A["Map agent\ncapabilities"] --> B["Select\nvulnerabilities"]
-    B --> C["Choose\nattacks"]
-    C --> D["Integrate agent\nin model_callback"]
-    D --> E["Run red_team()\n& analyze"]
-    E -->|"Fix & retest"| B
+sequenceDiagram
+    participant You
+    participant DeepTeam
+    participant Agent as Your AI Agent
+
+    You->>You: Map agent capabilities
+    You->>DeepTeam: Select vulnerabilities & attacks
+    You->>Agent: Integrate agent in model_callback
+    DeepTeam->>Agent: Run red_team()
+    Agent-->>DeepTeam: Agent responses + tool calls
+    DeepTeam-->>You: Results & analysis
+    You-->>DeepTeam: Fix & retest
 ```
 
 1. **Map the AI agent's capabilities** — Enumerate every tool the agent can call, every external system it can reach, and every delegation path to other agents. This defines the blast radius of a successful attack.

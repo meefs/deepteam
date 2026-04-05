@@ -1,6 +1,6 @@
 ---
 id: guide-safety-frameworks
-title: Red teaming against safety frameworks
+title: Red Teaming Against Safety Frameworks
 sidebar_label: Safety Frameworks
 ---
 
@@ -17,21 +17,21 @@ DeepTeam supports two types of frameworks: **category-based** frameworks that ma
 
 ### Category-Based Frameworks
 
-| Framework | Class | Categories | Focus |
-|-----------|-------|-----------|-------|
-| OWASP Top 10 for LLMs 2025 | `OWASPTop10` | `LLM_01` – `LLM_10` | Broad LLM security risks: prompt injection, data leakage, excessive agency, misinformation |
-| OWASP Top 10 for Agentic Applications 2026 | `OWASP_ASI_2026` | `ASI_01` – `ASI_10` | Agent-specific risks: tool abuse, goal drift, inter-agent communication, autonomous behavior |
-| NIST AI RMF | `NIST` | `measure_1` – `measure_4` | Risk management measurement lanes aligned with the NIST AI Risk Management Framework |
-| MITRE ATLAS | `MITRE` | `reconnaissance`, `resource_development`, `initial_access`, `ml_attack_staging`, `exfiltration`, `impact` | Adversary tactics mapped from the MITRE ATLAS threat matrix |
+| Framework                                  | Class            | Categories                                                                                                | Focus                                                                                        |
+| ------------------------------------------ | ---------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| OWASP Top 10 for LLMs 2025                 | `OWASPTop10`     | `LLM_01` – `LLM_10`                                                                                       | Broad LLM security risks: prompt injection, data leakage, excessive agency, misinformation   |
+| OWASP Top 10 for Agentic Applications 2026 | `OWASP_ASI_2026` | `ASI_01` – `ASI_10`                                                                                       | Agent-specific risks: tool abuse, goal drift, inter-agent communication, autonomous behavior |
+| NIST AI RMF                                | `NIST`           | `measure_1` – `measure_4`                                                                                 | Risk management measurement lanes aligned with the NIST AI Risk Management Framework         |
+| MITRE ATLAS                                | `MITRE`          | `reconnaissance`, `resource_development`, `initial_access`, `ml_attack_staging`, `exfiltration`, `impact` | Adversary tactics mapped from the MITRE ATLAS threat matrix                                  |
 
 Each category within a framework maps to a specific set of vulnerabilities and attack techniques. When you run a framework assessment, DeepTeam executes red teaming for each category independently and aggregates the results.
 
 ### Dataset-Based Frameworks
 
-| Framework | Class | Source | Focus |
-|-----------|-------|--------|-------|
-| BeaverTails | `BeaverTails` | PKU-Alignment/BeaverTails (Hugging Face) | Safety classification on curated unsafe prompts |
-| Aegis | `Aegis` | nvidia/Aegis-AI-Content-Safety-Dataset-1.0 (Hugging Face) | Content safety evaluation on NVIDIA's safety dataset |
+| Framework   | Class         | Source                                                    | Focus                                                |
+| ----------- | ------------- | --------------------------------------------------------- | ---------------------------------------------------- |
+| BeaverTails | `BeaverTails` | PKU-Alignment/BeaverTails (Hugging Face)                  | Safety classification on curated unsafe prompts      |
+| Aegis       | `Aegis`       | nvidia/Aegis-AI-Content-Safety-Dataset-1.0 (Hugging Face) | Content safety evaluation on NVIDIA's safety dataset |
 
 Dataset frameworks load adversarial inputs from their respective datasets, run them through your `model_callback`, and evaluate the responses using DeepTeam's `HarmMetric`. These are useful for benchmarking against established safety datasets without generating synthetic attacks.
 
@@ -78,18 +78,18 @@ red_team(model_callback=model_callback, framework=framework)
 
 The 10 categories are:
 
-| Category | Risk |
-|----------|------|
-| `LLM_01` | Prompt Injection |
+| Category | Risk                             |
+| -------- | -------------------------------- |
+| `LLM_01` | Prompt Injection                 |
 | `LLM_02` | Sensitive Information Disclosure |
-| `LLM_03` | Supply Chain |
-| `LLM_04` | Data and Model Poisoning |
-| `LLM_05` | Improper Output Handling |
-| `LLM_06` | Excessive Agency |
-| `LLM_07` | System Prompt Leakage |
-| `LLM_08` | Vector and Embedding Weaknesses |
-| `LLM_09` | Misinformation |
-| `LLM_10` | Unbounded Consumption |
+| `LLM_03` | Supply Chain                     |
+| `LLM_04` | Data and Model Poisoning         |
+| `LLM_05` | Improper Output Handling         |
+| `LLM_06` | Excessive Agency                 |
+| `LLM_07` | System Prompt Leakage            |
+| `LLM_08` | Vector and Embedding Weaknesses  |
+| `LLM_09` | Misinformation                   |
+| `LLM_10` | Unbounded Consumption            |
 
 ### OWASP Top 10 for Agentic Applications
 
@@ -165,14 +165,14 @@ Dataset frameworks are useful for:
 
 The framework you choose depends on your application type, compliance requirements, and what you need to demonstrate:
 
-| Scenario | Recommended framework |
-|----------|----------------------|
-| General LLM application security audit | `OWASPTop10` |
-| AI agent or tool-calling system | `OWASP_ASI_2026` |
-| US government or NIST compliance | `NIST` |
-| Threat modeling against known adversary tactics | `MITRE` |
-| Benchmarking on established safety datasets | `BeaverTails` or `Aegis` |
-| Internal security review for stakeholders | `OWASPTop10` (widely recognized) |
+| Scenario                                        | Recommended framework            |
+| ----------------------------------------------- | -------------------------------- |
+| General LLM application security audit          | `OWASPTop10`                     |
+| AI agent or tool-calling system                 | `OWASP_ASI_2026`                 |
+| US government or NIST compliance                | `NIST`                           |
+| Threat modeling against known adversary tactics | `MITRE`                          |
+| Benchmarking on established safety datasets     | `BeaverTails` or `Aegis`         |
+| Internal security review for stakeholders       | `OWASPTop10` (widely recognized) |
 
 For most teams, **`OWASPTop10` is the best starting point**. It provides broad coverage, maps to well-understood risk categories, and produces results that security teams and stakeholders are familiar with.
 
@@ -180,12 +180,12 @@ If your system is an AI agent with tool access, run **`OWASP_ASI_2026`** in addi
 
 ## Frameworks vs. Manual Selection
 
-| Use frameworks when... | Use manual selection when... |
-|----------------------|---------------------------|
-| You need standardized, compliance-aligned coverage | You have a specific threat model with known weaknesses |
-| You want to demonstrate adherence to an industry standard | You need to test custom vulnerabilities not covered by frameworks |
-| You're running an initial assessment and need broad coverage | You're isolating and stress-testing a specific vulnerability |
-| You need reproducible results across teams and time periods | You're building custom attack chains or pipelines |
+| Use frameworks when...                                       | Use manual selection when...                                      |
+| ------------------------------------------------------------ | ----------------------------------------------------------------- |
+| You need standardized, compliance-aligned coverage           | You have a specific threat model with known weaknesses            |
+| You want to demonstrate adherence to an industry standard    | You need to test custom vulnerabilities not covered by frameworks |
+| You're running an initial assessment and need broad coverage | You're isolating and stress-testing a specific vulnerability      |
+| You need reproducible results across teams and time periods  | You're building custom attack chains or pipelines                 |
 
 The two approaches are complementary. A common workflow is:
 
@@ -194,20 +194,16 @@ The two approaches are complementary. A common workflow is:
 3. Use manual vulnerability and attack selection to deep-dive into those areas.
 4. Run `assess()` on individual vulnerabilities to measure fix effectiveness.
 
-## Production Risk Assessments
+## Scaling on the Cloud
 
-[Confident AI](https://www.confident-ai.com) supports running framework-based assessments directly from the platform. Connect your application via an AI Connection, select a framework, and run assessments on demand or on a schedule.
+Framework-based red teaming is most valuable when run continuously — compliance requirements don't stop after a single assessment, and model updates can shift pass rates across entire risk categories. [Confident AI](https://www.confident-ai.com) lets you run framework assessments from its platform with scheduled execution, so you maintain ongoing compliance coverage without managing local infrastructure.
+
+Select a framework (OWASP, MITRE, NIST, or custom) from the UI, connect your application via an AI Connection, and schedule recurring runs. Each assessment produces per-category breakdowns with CVSS-style severity scores, so you can track compliance posture across risk categories over time. PDF exports are available for audits, security reviews, and regulatory documentation.
 
 <BlogImageDisplayer
   src={ASSETS.confidentRedTeamingChooseFramework}
   alt="Choosing a security framework in Confident AI"
 />
-
-The platform generates detailed risk reports with per-category breakdowns, CVSS-style severity scores, and exportable PDFs for compliance documentation.
-
-:::info
-Set up [Confident AI](https://app.confident-ai.com) and run your first framework assessment in minutes. **The platform offers a free tier to get started.** *(No credit card required)*
-:::
 
 ## What to Do Next
 
