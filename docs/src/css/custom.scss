@@ -8,13 +8,13 @@
 }
 
 :root {
-  --ifm-color-primary: #ff0062;
-  --ifm-color-primary-dark: #f6174f;
-  --ifm-color-primary-darker: #f50a45;
-  --ifm-color-primary-darkest: #c90839;
-  --ifm-color-primary-light: #f8517b;
-  --ifm-color-primary-lighter: #f95f86;
-  --ifm-color-primary-lightest: #fa8aa6;
+  --ifm-color-primary: #de0064;
+  --ifm-color-primary-dark: #c8005a;
+  --ifm-color-primary-darker: #bd0055;
+  --ifm-color-primary-darkest: #9b0046;
+  --ifm-color-primary-light: #f4006e;
+  --ifm-color-primary-lighter: #ff0073;
+  --ifm-color-primary-lightest: #ff2285;
   --ifm-code-font-size: 85%;
   --ifm-menu-color: #747680 !important;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
@@ -85,13 +85,13 @@
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 html[data-theme="dark"] {
-  --ifm-color-primary: #f3154c;
-  --ifm-color-primary-dark: #f6174f;
-  --ifm-color-primary-darker: #f50a45;
-  --ifm-color-primary-darkest: #ff1c55;
-  --ifm-color-primary-light: #e40545;
-  --ifm-color-primary-lighter: #ff265c;
-  --ifm-color-primary-lightest: #fa8aa6;
+  --ifm-color-primary: #ff0073;
+  --ifm-color-primary-dark: #e60067;
+  --ifm-color-primary-darker: #d90062;
+  --ifm-color-primary-darkest: #b30050;
+  --ifm-color-primary-light: #ff1a81;
+  --ifm-color-primary-lighter: #ff2688;
+  --ifm-color-primary-lightest: #ff4d9d;
   --ifm-background-color: #090b0e;
   --ifm-background-surface-color: #13171e;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
@@ -241,12 +241,12 @@ html[data-theme="light"] .navbar__logo {
 // Announcement bar
 div[role="banner"][class*="announcementBar"] {
   font-weight: 600;
-  background-color: #ff0062 !important;
+  background-color: #de0064 !important;
   color: white !important;
 }
 
 html[data-theme="light"] div[role="banner"][class*="announcementBar"] {
-  background-color: #ff0062 !important;
+  background-color: #de0064 !important;
   color: white !important;
 }
 
@@ -280,26 +280,6 @@ div[class*="announcementBar"] button {
 html[data-theme="dark"] .header-github-link:before {
   background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='white' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E")
     no-repeat;
-}
-
-.footer {
-  background: #0e1015;
-}
-
-.footer__copyright {
-  font-size: 13px;
-}
-
-.footer__link-item {
-  color: #9ca3af;
-}
-
-.footer__link-item:hover {
-  text-decoration: none;
-}
-
-.footer__bottom {
-  margin: 40px auto 10px auto;
 }
 
 .header-discord-link:hover {
@@ -644,5 +624,13 @@ html[data-theme="dark"] .header-confident-link:hover {
 @media (max-width: 1130px) {
   .header-confident-link {
     display: none;
+  }
+}
+
+.pagination-nav__link {
+  border-radius: 0px;
+
+  .pagination-nav__label {
+    font-weight: 600;
   }
 }
