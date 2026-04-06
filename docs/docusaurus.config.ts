@@ -175,7 +175,7 @@ const config: Config = {
       id: "announcementBar-1",
       content:
         '⭐️ If you like DeepTeam, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/confident-ai/deepteam">GitHub</a>! ⭐️',
-      backgroundColor: "#ff006b",
+      backgroundColor: "#de0064",
       textColor: "#000",
     },
     footer: {
