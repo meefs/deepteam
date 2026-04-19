@@ -42,7 +42,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
     # Art. 5 — Prohibited AI practices (unacceptable risk)
     # =========================================================================
     RiskCategory(
-        name="art5_subliminal_manipulation",
+        name="subliminal_manipulation",
         _display_name="Art. 5(1)(a) — Subliminal Manipulation",
         description="Prohibits AI systems that deploy subliminal, manipulative, or deceptive techniques beyond a person's consciousness to materially distort behavior and cause harm.",
         attacks=[
@@ -75,7 +75,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="art5_exploitation_of_vulnerabilities",
+        name="exploitation_of_vulnerabilities",
         _display_name="Art. 5(1)(b) — Exploitation of Vulnerabilities",
         description="Prohibits AI systems that exploit vulnerabilities due to age, disability, or specific social or economic situations to materially distort behavior in a harmful way.",
         attacks=[
@@ -118,7 +118,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="art5_social_scoring",
+        name="social_scoring",
         _display_name="Art. 5(1)(c) — Social Scoring",
         description="Prohibits AI systems used for the social scoring of natural persons leading to detrimental or unfavourable treatment in contexts unrelated to the data's origin or that is unjustified or disproportionate.",
         attacks=[
@@ -162,7 +162,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="art5_biometric_categorisation",
+        name="biometric_categorisation",
         _display_name="Art. 5(1)(g) — Biometric Categorisation",
         description="Prohibits biometric categorisation systems that categorise natural persons based on biometric data to infer sensitive attributes such as race, political opinions, union membership, religion, or sexual orientation.",
         attacks=[
@@ -197,7 +197,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="art5_remote_biometric_id_live",
+        name="remote_biometric_id_live",
         _display_name="Art. 5(1)(h) — Real-time Remote Biometric Identification",
         description="Prohibits the use of real-time remote biometric identification systems in publicly accessible spaces for law enforcement, subject to narrow exceptions.",
         attacks=[
@@ -231,7 +231,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="art5_remote_biometric_id_post",
+        name="remote_biometric_id_post",
         _display_name="Art. 5 — Post Remote Biometric Identification",
         description="Restricts post (retrospective) remote biometric identification systems, requiring strict safeguards on the processing of previously collected biometric data.",
         attacks=[
@@ -268,7 +268,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
     # Annex III — High-risk AI systems (Art. 6(2))
     # =========================================================================
     RiskCategory(
-        name="annex3_biometric_id",
+        name="biometric_id",
         _display_name="Annex III §1 — Biometric Identification",
         description="High-risk AI systems intended for the remote biometric identification and biometric-based categorisation of natural persons, including emotion recognition.",
         attacks=[
@@ -294,7 +294,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="annex3_critical_infrastructure",
+        name="critical_infrastructure",
         _display_name="Annex III §2 — Critical Infrastructure",
         description="High-risk AI systems intended to be used as safety components in the management and operation of critical digital infrastructure, road traffic, and the supply of water, gas, heating, and electricity.",
         attacks=[
@@ -345,7 +345,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="annex3_education",
+        name="education",
         _display_name="Annex III §3 — Education and Vocational Training",
         description="High-risk AI systems used to determine access or admission, to evaluate learning outcomes, to assess the appropriate level of education, or to monitor and detect prohibited behavior during tests.",
         attacks=[
@@ -386,7 +386,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="annex3_employment",
+        name="employment",
         _display_name="Annex III §4 — Employment and Workers Management",
         description="High-risk AI systems used for recruitment, selection, targeted job advertisements, making promotion and termination decisions, task allocation, and monitoring or evaluation of performance.",
         attacks=[
@@ -421,7 +421,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="annex3_essential_services",
+        name="essential_services",
         _display_name="Annex III §5 — Essential Private and Public Services",
         description="High-risk AI systems used to evaluate eligibility for public assistance benefits and services, creditworthiness or credit scoring, and to dispatch or prioritise emergency first response services.",
         attacks=[
@@ -455,7 +455,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="annex3_law_enforcement",
+        name="law_enforcement",
         _display_name="Annex III §6 — Law Enforcement",
         description="High-risk AI systems used by law enforcement authorities for individual risk assessments, polygraph-like tools, evaluating evidence reliability, profiling, and crime analytics.",
         attacks=[
@@ -498,7 +498,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="annex3_migration_border",
+        name="migration_border",
         _display_name="Annex III §7 — Migration, Asylum and Border Control",
         description="High-risk AI systems used in migration, asylum, and border-control management, including verifying travel document authenticity, risk assessments, and assisting decision-making on asylum applications.",
         attacks=[
@@ -539,7 +539,7 @@ EU_AI_ACT_CATEGORIES: List[RiskCategory] = [
         ],
     ),
     RiskCategory(
-        name="annex3_justice_democracy",
+        name="justice_democracy",
         _display_name="Annex III §8 — Administration of Justice and Democratic Processes",
         description="High-risk AI systems intended to assist judicial authorities in researching and interpreting facts and the law and in applying the law to a concrete set of facts, or to influence the outcome of elections and voter behavior.",
         attacks=[
