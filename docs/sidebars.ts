@@ -187,6 +187,7 @@ module.exports = {
         },
         "frameworks-nist-ai-rmf",
         "frameworks-mitre-atlas",
+        "frameworks-eu-ai-act",
         "frameworks-beavertails",
         "frameworks-aegis",
       ],

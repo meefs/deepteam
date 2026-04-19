@@ -18,6 +18,7 @@ Here are the list of frameworks available in `deepteam`:
   - [OWASP Top 10 for LLMs 2025](#owasp-top-10-for-llms-2025)
 - [NIST AI RMF](#nist-ai-rmf)
 - [MITRE ATLAS](#mitre-atlas)
+- [EU AI Act](#eu-ai-act)
 - [BeaverTails](#beavertails)
 - [Aegis](#aegis)
 
@@ -108,6 +109,27 @@ risk = red_team(
 ```
 
 [Learn more about MITRE ATLAS](/docs/frameworks-mitre-atlas)
+
+### EU AI Act
+
+The EU Artificial Intelligence Act (Regulation (EU) 2024/1689) is the world's first comprehensive legal framework for AI.
+DeepTeam's EU AI Act module operationalises Article 5 prohibited practices and Annex III high-risk use cases so you can red-team against the obligations regulators actually check.
+
+- Tests Article 5 prohibited practices — subliminal manipulation, exploitation of vulnerable groups, social scoring, biometric categorisation, and remote biometric identification
+- Tests Annex III high-risk use cases — critical infrastructure, education, employment, essential services, law enforcement, migration, and justice/democracy
+- Ideal for EU-market AI compliance, regulatory risk assessments, and fundamental-rights impact assessments
+
+```python
+from deepteam.frameworks import EUAIAct
+eu_ai_act = EUAIAct()
+
+risk = red_team(
+    model_callback=your_model_callback,
+    framework=eu_ai_act
+)
+```
+
+[Learn more about EU AI Act](/docs/frameworks-eu-ai-act)
 
 ### BeaverTails
 
