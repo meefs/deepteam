@@ -10,6 +10,7 @@ from deepteam.utils import validate_model_callback_signature
 
 from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.metrics import BaseRedTeamingMetric, HarmMetric
+from deepteam.metrics.types import EvaluationExample
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.risks import getRiskCategory
@@ -34,6 +35,8 @@ class CustomVulnerability(BaseVulnerability):
             Union[str, DeepEvalBaseLLM]
         ] = "gpt-3.5-turbo-0125",
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
+        evaluation_examples: Optional[List[EvaluationExample]] = None,
+        evaluation_guidelines: Optional[List[str]] = None,
     ):
         self.name = name
 
@@ -53,6 +56,8 @@ class CustomVulnerability(BaseVulnerability):
         self.criteria = criteria.strip()
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
+        self.evaluation_examples = evaluation_examples
+        self.evaluation_guidelines = evaluation_guidelines
         self.async_mode = async_mode
         self.verbose_mode = verbose_mode
         self.metric = None
@@ -303,6 +308,8 @@ class CustomVulnerability(BaseVulnerability):
                 model=self.evaluation_model,
                 async_mode=self.async_mode,
                 verbose_mode=self.verbose_mode,
+                evaluation_examples=self.evaluation_examples,
+                evaluation_guidelines=self.evaluation_guidelines,
             )
         return self.metric
 

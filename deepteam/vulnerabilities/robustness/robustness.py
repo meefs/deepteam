@@ -15,6 +15,7 @@ from deepteam.metrics import (
     OverrelianceMetric,
     BaseRedTeamingMetric,
 )
+from deepteam.metrics.types import EvaluationExample
 from deepteam.test_case import RTTestCase
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
@@ -40,6 +41,8 @@ class Robustness(BaseVulnerability):
             type.value for type in RobustnessType
         ],
         purpose: Optional[str] = None,
+        evaluation_examples: Optional[List[EvaluationExample]] = None,
+        evaluation_guidelines: Optional[List[str]] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=RobustnessType
@@ -49,6 +52,8 @@ class Robustness(BaseVulnerability):
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
         self.purpose = purpose
+        self.evaluation_examples = evaluation_examples
+        self.evaluation_guidelines = evaluation_guidelines
         super().__init__(types=enum_types)
 
     def assess(
@@ -286,6 +291,8 @@ class Robustness(BaseVulnerability):
                 model=self.evaluation_model,
                 async_mode=self.async_mode,
                 verbose_mode=self.verbose_mode,
+                evaluation_examples=self.evaluation_examples,
+                evaluation_guidelines=self.evaluation_guidelines,
             )
         if type == RobustnessType.INPUT_OVERRELIANCE:
             return OverrelianceMetric(
@@ -293,6 +300,8 @@ class Robustness(BaseVulnerability):
                 model=self.evaluation_model,
                 async_mode=self.async_mode,
                 verbose_mode=self.verbose_mode,
+                evaluation_examples=self.evaluation_examples,
+                evaluation_guidelines=self.evaluation_guidelines,
             )
         raise ValueError(
             "Invalid type passed in the 'get_metric' function. Please pass an enum from 'RobustnessType'"

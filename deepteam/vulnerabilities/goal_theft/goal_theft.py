@@ -1,3 +1,4 @@
+from deepteam.metrics.types import EvaluationExample
 from typing import List, Literal, Optional, Union, Dict
 import asyncio
 
@@ -41,6 +42,8 @@ class GoalTheft(BaseVulnerability):
             type.value for type in GoalTheftType
         ],
         purpose: Optional[str] = None,
+        evaluation_examples: Optional[List[EvaluationExample]] = None,
+        evaluation_guidelines: Optional[List[str]] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=GoalTheftType
@@ -50,6 +53,8 @@ class GoalTheft(BaseVulnerability):
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
         self.purpose = purpose
+        self.evaluation_examples = evaluation_examples
+        self.evaluation_guidelines = evaluation_guidelines
         super().__init__(types=enum_types)
 
     def assess(
@@ -285,6 +290,8 @@ class GoalTheft(BaseVulnerability):
             model=self.evaluation_model,
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,
+            evaluation_examples=self.evaluation_examples,
+            evaluation_guidelines=self.evaluation_guidelines,
         )
 
     def is_vulnerable(self) -> bool:

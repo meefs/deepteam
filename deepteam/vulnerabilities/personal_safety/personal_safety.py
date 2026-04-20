@@ -11,6 +11,7 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.personal_safety import PersonalSafetyType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import SafetyMetric, BaseRedTeamingMetric
+from deepteam.metrics.types import EvaluationExample
 from deepteam.attacks.multi_turn.types import CallbackType
 from deepteam.test_case import RTTestCase
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
@@ -43,6 +44,8 @@ class PersonalSafety(BaseVulnerability):
             type.value for type in PersonalSafetyType
         ],
         purpose: Optional[str] = None,
+        evaluation_examples: Optional[List[EvaluationExample]] = None,
+        evaluation_guidelines: Optional[List[str]] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=PersonalSafetyType
@@ -52,6 +55,8 @@ class PersonalSafety(BaseVulnerability):
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
         self.purpose = purpose
+        self.evaluation_examples = evaluation_examples
+        self.evaluation_guidelines = evaluation_guidelines
         super().__init__(types=enum_types)
 
     def assess(
@@ -285,6 +290,8 @@ class PersonalSafety(BaseVulnerability):
             model=self.evaluation_model,
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,
+            evaluation_examples=self.evaluation_examples,
+            evaluation_guidelines=self.evaluation_guidelines,
         )
 
     def is_vulnerable(self) -> bool:
