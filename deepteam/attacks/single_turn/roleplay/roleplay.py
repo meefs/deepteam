@@ -12,8 +12,11 @@ from deepteam.attacks.single_turn.roleplay.template import (
 from deepteam.utils import create_progress, update_pbar, add_pbar
 from deepteam.attacks.single_turn.roleplay.schema import (
     EnhancedAttack,
-    ComplianceData,
     IsRoleplay,
+)
+from deepteam.attacks.single_turn.compliance import (
+    evaluate_generation_compliance,
+    a_evaluate_generation_compliance,
 )
 from deepteam.attacks.attack_simulator.utils import (
     generate,
@@ -66,11 +69,8 @@ class Roleplay(BaseSingleTurnAttack):
                 )  # Update the progress bar for generation
 
                 # Check for compliance using a compliance template
-                compliance_prompt = RoleplayTemplate.non_compliant(
-                    res.model_dump()
-                )
-                compliance_res: ComplianceData = generate(
-                    compliance_prompt, ComplianceData, self.simulator_model
+                compliance_res = evaluate_generation_compliance(
+                    res.model_dump(), self.simulator_model
                 )
                 update_pbar(
                     progress, task_id
@@ -116,21 +116,21 @@ class Roleplay(BaseSingleTurnAttack):
             try:
                 for _ in range(self.max_retries):
                     # Generate the enhanced attack asynchronously
+                    print(prompt, end="\n\n")
                     res: EnhancedAttack = await a_generate(
                         prompt, EnhancedAttack, self.simulator_model
                     )
                     enhanced_attack = res.input
+                    print(enhanced_attack, end="\n\n")
                     update_pbar(
                         progress, task_id
                     )  # Update the progress bar for generation
 
                     # Check for compliance using a compliance template
-                    compliance_prompt = RoleplayTemplate.non_compliant(
-                        res.model_dump()
+                    compliance_res = await a_evaluate_generation_compliance(
+                        res.model_dump(), self.simulator_model
                     )
-                    compliance_res: ComplianceData = await a_generate(
-                        compliance_prompt, ComplianceData, self.simulator_model
-                    )
+                    print(compliance_res, end="\n\n")
                     update_pbar(
                         progress, task_id
                     )  # Update the progress bar for compliance
@@ -142,6 +142,7 @@ class Roleplay(BaseSingleTurnAttack):
                     is_roleplay_res: IsRoleplay = await a_generate(
                         is_roleplay_prompt, IsRoleplay, self.simulator_model
                     )
+                    print(is_roleplay_res, end="\n\n")
                     update_pbar(progress, task_id)  # Update the progress bar
 
                     if (
