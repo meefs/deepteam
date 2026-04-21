@@ -47,6 +47,8 @@ from .robustness.robustness import Robustness
 from .excessive_agency.excessive_agency import ExcessiveAgency
 from .hallucination.hallucination import Hallucination
 
+from deepteam.metrics import EvaluationExample
+
 __all__ = [
     "BaseVulnerability",
     "Bias",
@@ -86,4 +88,5 @@ __all__ = [
     "Robustness",
     "ExcessiveAgency",
     "Hallucination",
+    "EvaluationExample",
 ]

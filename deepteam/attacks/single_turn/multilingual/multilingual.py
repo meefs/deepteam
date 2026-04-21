@@ -11,8 +11,11 @@ from deepteam.attacks.single_turn.multilingual.template import (
 )
 from deepteam.attacks.single_turn.multilingual.schema import (
     EnhancedAttack,
-    ComplianceData,
     IsTranslation,
+)
+from deepteam.attacks.single_turn.compliance import (
+    evaluate_generation_compliance,
+    a_evaluate_generation_compliance,
 )
 from deepteam.attacks.attack_simulator.utils import (
     generate,
@@ -60,11 +63,8 @@ class Multilingual(BaseSingleTurnAttack):
                 enhanced_attack = res.input + self.get_additional_instructions()
                 update_pbar(progress, task_id)
 
-                compliance_prompt = MultilingualTemplate.non_compliant(
-                    res.model_dump()
-                )
-                compliance_res: ComplianceData = generate(
-                    compliance_prompt, ComplianceData, self.simulator_model
+                compliance_res = evaluate_generation_compliance(
+                    res.model_dump(), self.simulator_model
                 )
                 update_pbar(progress, task_id)
 
@@ -111,11 +111,8 @@ class Multilingual(BaseSingleTurnAttack):
                     )
                     update_pbar(progress, task_id)
 
-                    compliance_prompt = MultilingualTemplate.non_compliant(
-                        res.model_dump()
-                    )
-                    compliance_res: ComplianceData = await a_generate(
-                        compliance_prompt, ComplianceData, self.simulator_model
+                    compliance_res = await a_evaluate_generation_compliance(
+                        res.model_dump(), self.simulator_model
                     )
                     update_pbar(progress, task_id)
 
