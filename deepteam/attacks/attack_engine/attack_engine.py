@@ -17,19 +17,20 @@ class AttackEngine:
         simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-3.5-turbo-0125",
         variations: int = 1,
         generation_guidelines: Optional[List[str]] = None,
-        max_variations: int = 5,
         purpose: Optional[str] = None,
     ):
-        # NOTE: initialize_model is eager here. If AttackEngine ever gets constructed
-        # before the simulator model is resolved, move this into a lazy getter.
         self.simulator_model, _ = initialize_model(simulator_model)
-        self.max_variations = max(1, max_variations)
-        self.variations = min(max(1, variations), self.max_variations)
+        self.variations = max(1, min(variations, 5))
         self.generation_guidelines = generation_guidelines or []
         self.purpose = purpose
 
-    def refine(self, test_cases: List[RTTestCase]) -> List[RTTestCase]:
+    def refine(
+        self,
+        test_cases: List[RTTestCase],
+        purpose: Optional[str] = None,
+    ) -> List[RTTestCase]:
         refined_test_cases: List[RTTestCase] = []
+        effective_purpose = purpose if purpose is not None else self.purpose
 
         for test_case in test_cases:
             base_input = test_case.input or ""
@@ -58,6 +59,7 @@ class AttackEngine:
                     num_variations=self.variations,
                     vulnerability=vulnerability,
                     vulnerability_type=vulnerability_type,
+                    generation_guidelines=self.generation_guidelines,
                 )
                 variations: AttackVariations = generate(
                     variation_prompt, AttackVariations, self.simulator_model
@@ -70,6 +72,7 @@ class AttackEngine:
                 candidates=candidates,
                 vulnerability=vulnerability,
                 vulnerability_type=vulnerability_type,
+                purpose=effective_purpose,
             )
             if not valid_inputs:
                 valid_inputs = [transformed_input]
@@ -83,9 +86,16 @@ class AttackEngine:
 
         return refined_test_cases
 
-    async def a_refine(self, test_cases: List[RTTestCase]) -> List[RTTestCase]:
+    async def a_refine(
+        self,
+        test_cases: List[RTTestCase],
+        purpose: Optional[str] = None,
+    ) -> List[RTTestCase]:
         results = await asyncio.gather(
-            *[self._a_refine_one(test_case) for test_case in test_cases]
+            *[
+                self._a_refine_one(test_case, purpose=purpose)
+                for test_case in test_cases
+            ]
         )
 
         refined_test_cases: List[RTTestCase] = []
@@ -93,7 +103,12 @@ class AttackEngine:
             refined_test_cases.extend(refined)
         return refined_test_cases
 
-    async def _a_refine_one(self, test_case: RTTestCase) -> List[RTTestCase]:
+    async def _a_refine_one(
+        self,
+        test_case: RTTestCase,
+        purpose: Optional[str] = None,
+    ) -> List[RTTestCase]:
+        effective_purpose = purpose if purpose is not None else self.purpose
         base_input = test_case.input or ""
         vulnerability = test_case.vulnerability
         vulnerability_type = self._vulnerability_type_label(
@@ -120,6 +135,7 @@ class AttackEngine:
                 num_variations=self.variations,
                 vulnerability=vulnerability,
                 vulnerability_type=vulnerability_type,
+                generation_guidelines=self.generation_guidelines,
             )
             variations: AttackVariations = await a_generate(
                 variation_prompt, AttackVariations, self.simulator_model
@@ -132,6 +148,7 @@ class AttackEngine:
             candidates=candidates,
             vulnerability=vulnerability,
             vulnerability_type=vulnerability_type,
+            purpose=effective_purpose,
         )
         if not valid_inputs:
             valid_inputs = [transformed_input]
@@ -154,7 +171,9 @@ class AttackEngine:
         candidates: List[str],
         vulnerability: str,
         vulnerability_type: Optional[str],
+        purpose: Optional[str] = None,
     ) -> List[str]:
+        effective_purpose = purpose if purpose is not None else self.purpose
         validated: List[str] = []
         for candidate in candidates[: self.variations]:
             if not candidate or not candidate.strip():
@@ -164,7 +183,7 @@ class AttackEngine:
                 candidate_input=candidate,
                 vulnerability=vulnerability,
                 vulnerability_type=vulnerability_type,
-                purpose=self.purpose,
+                purpose=effective_purpose,
             )
             try:
                 result: ValidationResult = generate(
@@ -182,7 +201,9 @@ class AttackEngine:
         candidates: List[str],
         vulnerability: str,
         vulnerability_type: Optional[str],
+        purpose: Optional[str] = None,
     ) -> List[str]:
+        effective_purpose = purpose if purpose is not None else self.purpose
         trimmed = [c for c in candidates[: self.variations] if c and c.strip()]
         if not trimmed:
             return []
@@ -192,7 +213,7 @@ class AttackEngine:
                 candidate_input=candidate,
                 vulnerability=vulnerability,
                 vulnerability_type=vulnerability_type,
-                purpose=self.purpose,
+                purpose=effective_purpose,
             )
             try:
                 result: ValidationResult = await a_generate(

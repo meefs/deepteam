@@ -4,10 +4,12 @@ from pydantic import BaseModel
 
 
 class TransformedAttack(BaseModel):
+    reason: str
     input: str
 
 
 class AttackVariations(BaseModel):
+    reason: str
     inputs: List[str]
 
 
