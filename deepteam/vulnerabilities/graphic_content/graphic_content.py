@@ -11,7 +11,9 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.vulnerabilities.graphic_content import GraphicContentType
 from deepteam.vulnerabilities.utils import validate_vulnerability_types
 from deepteam.metrics import GraphicMetric, BaseRedTeamingMetric
+from deepteam.metrics.types import EvaluationExample
 from deepteam.attacks.multi_turn.types import CallbackType
+from deepteam.attacks.attack_engine import AttackEngine
 from deepteam.test_case import RTTestCase
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.risks import getRiskCategory
@@ -39,6 +41,9 @@ class GraphicContent(BaseVulnerability):
             type.value for type in GraphicContentType
         ],
         purpose: Optional[str] = None,
+        evaluation_examples: Optional[List[EvaluationExample]] = None,
+        evaluation_guidelines: Optional[List[str]] = None,
+        attack_engine: Optional[AttackEngine] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=GraphicContentType
@@ -48,7 +53,10 @@ class GraphicContent(BaseVulnerability):
         self.simulator_model = simulator_model
         self.evaluation_model = evaluation_model
         self.purpose = purpose
+        self.evaluation_examples = evaluation_examples
+        self.evaluation_guidelines = evaluation_guidelines
         super().__init__(types=enum_types)
+        self.attack_engine = attack_engine
 
     def assess(
         self,
@@ -218,7 +226,7 @@ class GraphicContent(BaseVulnerability):
                 ]
             )
 
-        return simulated_test_cases
+        return self._refine_simulated_attacks(simulated_test_cases, purpose)
 
     async def a_simulate_attacks(
         self,
@@ -274,7 +282,9 @@ class GraphicContent(BaseVulnerability):
                 ]
             )
 
-        return simulated_test_cases
+        return await self._a_refine_simulated_attacks(
+            simulated_test_cases, purpose
+        )
 
     def _get_metric(
         self,
@@ -286,6 +296,8 @@ class GraphicContent(BaseVulnerability):
             model=self.evaluation_model,
             async_mode=self.async_mode,
             verbose_mode=self.verbose_mode,
+            evaluation_examples=self.evaluation_examples,
+            evaluation_guidelines=self.evaluation_guidelines,
         )
 
     def is_vulnerable(self) -> bool:
