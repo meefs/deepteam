@@ -116,12 +116,10 @@ class Roleplay(BaseSingleTurnAttack):
             try:
                 for _ in range(self.max_retries):
                     # Generate the enhanced attack asynchronously
-                    print(prompt, end="\n\n")
                     res: EnhancedAttack = await a_generate(
                         prompt, EnhancedAttack, self.simulator_model
                     )
                     enhanced_attack = res.input
-                    print(enhanced_attack, end="\n\n")
                     update_pbar(
                         progress, task_id
                     )  # Update the progress bar for generation
@@ -130,7 +128,6 @@ class Roleplay(BaseSingleTurnAttack):
                     compliance_res = await a_evaluate_generation_compliance(
                         res.model_dump(), self.simulator_model
                     )
-                    print(compliance_res, end="\n\n")
                     update_pbar(
                         progress, task_id
                     )  # Update the progress bar for compliance
@@ -142,7 +139,6 @@ class Roleplay(BaseSingleTurnAttack):
                     is_roleplay_res: IsRoleplay = await a_generate(
                         is_roleplay_prompt, IsRoleplay, self.simulator_model
                     )
-                    print(is_roleplay_res, end="\n\n")
                     update_pbar(progress, task_id)  # Update the progress bar
 
                     if (
