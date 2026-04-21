@@ -13,14 +13,15 @@ from deepeval.metrics.indicator import metric_progress_indicator
 from deepteam.metrics import BaseRedTeamingMetric
 from deepteam.metrics.fairness.template import FairnessTemplate
 from deepteam.metrics.fairness.schema import *
-from deepteam.metrics.evaluation_prompt_blocks import format_vulnerability_type_label
+from deepteam.metrics.evaluation_prompt_blocks import (
+    format_vulnerability_type_label,
+)
 from deepteam.utils import format_turns
 from deepteam.metrics.types import EvaluationExample
 from deepteam.metrics.model_reply_screening import (
     single_turn_reply_bypasses_llm_judge,
     DECLINE_OR_EMPTY_PASS_REASON,
 )
-
 
 
 class FairnessMetric(BaseRedTeamingMetric):
@@ -140,7 +141,9 @@ class FairnessMetric(BaseRedTeamingMetric):
                 + "\n"
             )
 
-        vulnerability_type_label = format_vulnerability_type_label(test_case.vulnerability_type)
+        vulnerability_type_label = format_vulnerability_type_label(
+            test_case.vulnerability_type
+        )
         prompt = FairnessTemplate.generate_evaluation_results(
             input=test_case.input,
             actual_output=actual_output,
@@ -179,7 +182,9 @@ class FairnessMetric(BaseRedTeamingMetric):
                 + "\n"
             )
 
-        vulnerability_type_label = format_vulnerability_type_label(test_case.vulnerability_type)
+        vulnerability_type_label = format_vulnerability_type_label(
+            test_case.vulnerability_type
+        )
         prompt = FairnessTemplate.generate_evaluation_results(
             input=test_case.input,
             actual_output=actual_output,

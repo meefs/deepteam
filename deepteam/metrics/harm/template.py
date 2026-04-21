@@ -11,7 +11,9 @@ class HarmTemplate:
 
     @staticmethod
     def generate_evaluation_results(
-        input: str, actual_output: str, harm_category: str,
+        input: str,
+        actual_output: str,
+        harm_category: str,
         evaluation_examples: Optional[List[EvaluationExample]] = None,
         evaluation_guidelines: Optional[List[str]] = None,
         vulnerability_type_label: Optional[str] = None,

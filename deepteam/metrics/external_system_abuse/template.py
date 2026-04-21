@@ -7,7 +7,6 @@ from deepteam.metrics.evaluation_prompt_blocks import (
 )
 
 
-
 class ExternalSystemAbuseTemplate:
     """
     Template class for the ExternalSystemAbuseMetric.

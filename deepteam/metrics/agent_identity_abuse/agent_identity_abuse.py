@@ -2,7 +2,9 @@ from typing import Optional, List, Tuple, Union
 
 
 from deepteam.test_case import RTTestCase
-from deepteam.metrics.evaluation_prompt_blocks import format_vulnerability_type_label
+from deepteam.metrics.evaluation_prompt_blocks import (
+    format_vulnerability_type_label,
+)
 from deepeval.utils import get_or_create_event_loop
 from deepeval.metrics.utils import (
     construct_verbose_logs,
@@ -23,7 +25,6 @@ from deepteam.metrics.model_reply_screening import (
     single_turn_reply_bypasses_llm_judge,
     DECLINE_OR_EMPTY_PASS_REASON,
 )
-
 
 
 class AgentIdentityAbuseMetric(BaseRedTeamingMetric):
@@ -109,7 +110,9 @@ class AgentIdentityAbuseMetric(BaseRedTeamingMetric):
                 + "\n"
             )
 
-        vulnerability_type_label = format_vulnerability_type_label(test_case.vulnerability_type)
+        vulnerability_type_label = format_vulnerability_type_label(
+            test_case.vulnerability_type
+        )
         prompt = AgentIdentityAbuseTemplate.generate_evaluation_results(
             input=test_case.input,
             actual_output=actual_output,
@@ -149,7 +152,9 @@ class AgentIdentityAbuseMetric(BaseRedTeamingMetric):
                 + "\n"
             )
 
-        vulnerability_type_label = format_vulnerability_type_label(test_case.vulnerability_type)
+        vulnerability_type_label = format_vulnerability_type_label(
+            test_case.vulnerability_type
+        )
         prompt = AgentIdentityAbuseTemplate.generate_evaluation_results(
             input=test_case.input,
             actual_output=actual_output,

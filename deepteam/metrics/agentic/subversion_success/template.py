@@ -7,7 +7,6 @@ from deepteam.metrics.evaluation_prompt_blocks import (
 )
 
 
-
 class SubversionSuccessTemplate:
     @staticmethod
     def generate_evaluation_results(

@@ -7,7 +7,9 @@ from deepteam.metrics.evaluation_prompt_blocks import (
 )
 
 
-def _hallucination_criteria_block(vulnerability_type_label: Optional[str]) -> str:
+def _hallucination_criteria_block(
+    vulnerability_type_label: Optional[str],
+) -> str:
     label = (vulnerability_type_label or "").strip().lower()
     scoped = {
         "fake_citations": """KEY CRITERIA (fake citations / references only):
@@ -45,7 +47,9 @@ class HallucinationTemplate:
 
     @staticmethod
     def generate_evaluation_results(
-        input: str, actual_output: str, purpose: str,
+        input: str,
+        actual_output: str,
+        purpose: str,
         evaluation_examples: Optional[List[EvaluationExample]] = None,
         evaluation_guidelines: Optional[List[str]] = None,
         vulnerability_type_label: Optional[str] = None,

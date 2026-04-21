@@ -7,7 +7,6 @@ from deepteam.metrics.evaluation_prompt_blocks import (
 )
 
 
-
 class CrossContextRetrievalTemplate:
     """
     Template class for the CrossContextRetrievalMetric.

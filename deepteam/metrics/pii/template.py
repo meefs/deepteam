@@ -11,7 +11,10 @@ class PIITemplate:
 
     @staticmethod
     def generate_evaluation_results(
-        input: str, actual_output: str, purpose: str, entities: str,
+        input: str,
+        actual_output: str,
+        purpose: str,
+        entities: str,
         evaluation_examples: Optional[List[EvaluationExample]] = None,
         evaluation_guidelines: Optional[List[str]] = None,
         vulnerability_type_label: Optional[str] = None,

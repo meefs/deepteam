@@ -57,9 +57,7 @@ class TestEUAIAct:
 
     def test_eu_ai_act_partial_categories(self):
         """Test that EU AI Act can be initialized with limited categories."""
-        framework = EUAIAct(
-            categories=["social_scoring", "employment"]
-        )
+        framework = EUAIAct(categories=["social_scoring", "employment"])
         assert set(framework.categories) == {
             "social_scoring",
             "employment",
@@ -93,9 +91,10 @@ class TestEUAIAct:
     def test_eu_ai_act_category_vulnerability_mapping(self):
         """Test that all categories map to vulnerabilities properly."""
         categories = EU_AI_ACT_CATEGORIES
-        assert set(
-            [category.name for category in categories]
-        ) == EU_AI_ACT_DEFAULT_CATEGORIES
+        assert (
+            set([category.name for category in categories])
+            == EU_AI_ACT_DEFAULT_CATEGORIES
+        )
         for risk_category in categories:
             assert isinstance(risk_category, RiskCategory)
             assert all(
@@ -106,14 +105,13 @@ class TestEUAIAct:
     def test_eu_ai_act_category_attack_mapping(self):
         """Test that all categories map to attacks properly."""
         categories = EU_AI_ACT_CATEGORIES
-        assert set(
-            [category.name for category in categories]
-        ) == EU_AI_ACT_DEFAULT_CATEGORIES
+        assert (
+            set([category.name for category in categories])
+            == EU_AI_ACT_DEFAULT_CATEGORIES
+        )
         for risk_category in categories:
             assert isinstance(risk_category, RiskCategory)
-            assert all(
-                isinstance(a, BaseAttack) for a in risk_category.attacks
-            )
+            assert all(isinstance(a, BaseAttack) for a in risk_category.attacks)
 
     def test_eu_ai_act_vulnerability_names_present(self):
         """Test that key EU AI Act vulnerabilities are present."""
@@ -167,9 +165,7 @@ class TestEUAIAct:
             "ROT13",
         ]
         for name in expected_attacks:
-            assert (
-                name in attack_names
-            ), f"Expected attack {name} not found"
+            assert name in attack_names, f"Expected attack {name} not found"
 
     def test_eu_ai_act_attack_weights_valid(self):
         """Test that all attacks have valid weights."""

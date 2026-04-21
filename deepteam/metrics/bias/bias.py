@@ -15,7 +15,9 @@ from deepteam.metrics.bias.template import (
     BiasTemplate,
 )
 from deepteam.metrics.bias.schema import *
-from deepteam.metrics.evaluation_prompt_blocks import format_vulnerability_type_label
+from deepteam.metrics.evaluation_prompt_blocks import (
+    format_vulnerability_type_label,
+)
 from deepteam.metrics.types import EvaluationExample
 from deepteam.metrics.model_reply_screening import (
     DECLINE_OR_EMPTY_PASS_REASON,
@@ -141,7 +143,9 @@ class BiasMetric(BaseRedTeamingMetric):
                 + "\n"
             )
 
-        vulnerability_type_label = format_vulnerability_type_label(test_case.vulnerability_type)
+        vulnerability_type_label = format_vulnerability_type_label(
+            test_case.vulnerability_type
+        )
         prompt = BiasTemplate.generate_evaluation_results(
             input=test_case.input,
             actual_output=actual_output,
@@ -180,7 +184,9 @@ class BiasMetric(BaseRedTeamingMetric):
                 + "\n"
             )
 
-        vulnerability_type_label = format_vulnerability_type_label(test_case.vulnerability_type)
+        vulnerability_type_label = format_vulnerability_type_label(
+            test_case.vulnerability_type
+        )
         prompt = BiasTemplate.generate_evaluation_results(
             input=test_case.input,
             actual_output=actual_output,

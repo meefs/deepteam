@@ -1,4 +1,5 @@
 """Shared LLM judge for whether generated attack text is a hard refusal (non-compliant)."""
+
 import json
 from typing import Any, Union
 

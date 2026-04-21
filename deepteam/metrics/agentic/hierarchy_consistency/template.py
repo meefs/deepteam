@@ -10,7 +10,9 @@ from deepteam.metrics.evaluation_prompt_blocks import (
 class HierarchyConsistencyTemplate:
     @staticmethod
     def generate_evaluation_results(
-        input: str, actual_output: str, purpose: str,
+        input: str,
+        actual_output: str,
+        purpose: str,
         evaluation_examples: Optional[List[EvaluationExample]] = None,
         evaluation_guidelines: Optional[List[str]] = None,
         vulnerability_type_label: Optional[str] = None,

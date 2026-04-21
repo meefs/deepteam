@@ -281,7 +281,9 @@ class Robustness(BaseVulnerability):
                 ]
             )
 
-        return await self._a_refine_simulated_attacks(simulated_test_cases, purpose)
+        return await self._a_refine_simulated_attacks(
+            simulated_test_cases, purpose
+        )
 
     # TODO: Different metrics for different types. Forces us to use type in the `_get_metric` call.
     def _get_metric(

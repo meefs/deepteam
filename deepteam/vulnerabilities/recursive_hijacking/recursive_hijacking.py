@@ -286,7 +286,9 @@ class RecursiveHijacking(BaseVulnerability):
                 ]
             )
 
-        return await self._a_refine_simulated_attacks(simulated_test_cases, purpose)
+        return await self._a_refine_simulated_attacks(
+            simulated_test_cases, purpose
+        )
 
     def _get_metric(
         self,

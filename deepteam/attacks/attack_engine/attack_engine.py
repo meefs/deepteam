@@ -14,7 +14,9 @@ from .types import TransformedAttack, AttackVariations, ValidationResult
 class AttackEngine:
     def __init__(
         self,
-        simulator_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-3.5-turbo-0125",
+        simulator_model: Optional[
+            Union[str, DeepEvalBaseLLM]
+        ] = "gpt-3.5-turbo-0125",
         variations: int = 1,
         generation_guidelines: Optional[List[str]] = None,
         purpose: Optional[str] = None,
@@ -54,12 +56,14 @@ class AttackEngine:
 
             candidates = [transformed_input]
             if self.variations > 1:
-                variation_prompt = AttackEngineTemplates.generate_variations_template(
-                    transformed_input=transformed_input,
-                    num_variations=self.variations,
-                    vulnerability=vulnerability,
-                    vulnerability_type=vulnerability_type,
-                    generation_guidelines=self.generation_guidelines,
+                variation_prompt = (
+                    AttackEngineTemplates.generate_variations_template(
+                        transformed_input=transformed_input,
+                        num_variations=self.variations,
+                        vulnerability=vulnerability,
+                        vulnerability_type=vulnerability_type,
+                        generation_guidelines=self.generation_guidelines,
+                    )
                 )
                 variations: AttackVariations = generate(
                     variation_prompt, AttackVariations, self.simulator_model
@@ -130,12 +134,14 @@ class AttackEngine:
 
         candidates = [transformed_input]
         if self.variations > 1:
-            variation_prompt = AttackEngineTemplates.generate_variations_template(
-                transformed_input=transformed_input,
-                num_variations=self.variations,
-                vulnerability=vulnerability,
-                vulnerability_type=vulnerability_type,
-                generation_guidelines=self.generation_guidelines,
+            variation_prompt = (
+                AttackEngineTemplates.generate_variations_template(
+                    transformed_input=transformed_input,
+                    num_variations=self.variations,
+                    vulnerability=vulnerability,
+                    vulnerability_type=vulnerability_type,
+                    generation_guidelines=self.generation_guidelines,
+                )
             )
             variations: AttackVariations = await a_generate(
                 variation_prompt, AttackVariations, self.simulator_model
@@ -159,7 +165,9 @@ class AttackEngine:
         ]
 
     @staticmethod
-    def _vulnerability_type_label(vulnerability_type: Optional[Enum]) -> Optional[str]:
+    def _vulnerability_type_label(
+        vulnerability_type: Optional[Enum],
+    ) -> Optional[str]:
         if vulnerability_type is None:
             return None
         if isinstance(vulnerability_type, Enum):
