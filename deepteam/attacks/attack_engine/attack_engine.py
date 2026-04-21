@@ -7,7 +7,7 @@ from deepeval.metrics.utils import initialize_model
 
 from deepteam.test_case import RTTestCase
 from deepteam.attacks.attack_simulator.utils import generate, a_generate
-from .templates import AttackEngineTemplates
+from .template import AttackEngineTemplates
 from .types import TransformedAttack, AttackVariations, ValidationResult
 
 
@@ -124,6 +124,7 @@ class AttackEngine:
         transformed: TransformedAttack = await a_generate(
             transform_prompt, TransformedAttack, self.simulator_model
         )
+        print(transformed)
         transformed_input = transformed.input.strip()
         if not transformed_input:
             transformed_input = base_input
