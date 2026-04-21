@@ -19,6 +19,7 @@ from deepteam.metrics.agentic.subversion_success.subversion_success import (
 )
 from deepteam.test_case import RTTestCase
 from deepteam.attacks.multi_turn.types import CallbackType
+from deepteam.attacks.attack_engine import AttackEngine
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from .template import RecursiveHijackingTemplate
 
@@ -48,6 +49,7 @@ class RecursiveHijacking(BaseVulnerability):
         purpose: Optional[str] = None,
         evaluation_examples: Optional[List[EvaluationExample]] = None,
         evaluation_guidelines: Optional[List[str]] = None,
+        attack_engine: Optional[AttackEngine] = None,
     ):
         enum_types = validate_vulnerability_types(
             self.get_name(), types=types, allowed_type=RecursiveHijackingType
@@ -60,6 +62,7 @@ class RecursiveHijacking(BaseVulnerability):
         self.evaluation_examples = evaluation_examples
         self.evaluation_guidelines = evaluation_guidelines
         super().__init__(types=enum_types)
+        self.attack_engine = attack_engine
 
     def assess(
         self,
@@ -227,7 +230,7 @@ class RecursiveHijacking(BaseVulnerability):
                 ]
             )
 
-        return simulated_test_cases
+        return self._refine_simulated_attacks(simulated_test_cases, purpose)
 
     async def a_simulate_attacks(
         self,
@@ -283,7 +286,7 @@ class RecursiveHijacking(BaseVulnerability):
                 ]
             )
 
-        return simulated_test_cases
+        return await self._a_refine_simulated_attacks(simulated_test_cases, purpose)
 
     def _get_metric(
         self,

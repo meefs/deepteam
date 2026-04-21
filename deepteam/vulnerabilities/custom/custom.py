@@ -12,6 +12,7 @@ from deepteam.vulnerabilities import BaseVulnerability
 from deepteam.metrics import BaseRedTeamingMetric, HarmMetric
 from deepteam.metrics.types import EvaluationExample
 from deepteam.attacks.multi_turn.types import CallbackType
+from deepteam.attacks.attack_engine import AttackEngine
 from deepteam.attacks.attack_simulator.schema import SyntheticDataList
 from deepteam.risks import getRiskCategory
 from deepteam.test_case import RTTestCase
@@ -37,6 +38,7 @@ class CustomVulnerability(BaseVulnerability):
         evaluation_model: Optional[Union[str, DeepEvalBaseLLM]] = "gpt-4o",
         evaluation_examples: Optional[List[EvaluationExample]] = None,
         evaluation_guidelines: Optional[List[str]] = None,
+        attack_engine: Optional[AttackEngine] = None,
     ):
         self.name = name
 
@@ -62,6 +64,7 @@ class CustomVulnerability(BaseVulnerability):
         self.verbose_mode = verbose_mode
         self.metric = None
         super().__init__(self.types)
+        self.attack_engine = attack_engine
 
     def get_name(self) -> str:
         return self.name
@@ -239,7 +242,7 @@ class CustomVulnerability(BaseVulnerability):
                 ]
             )
 
-        return simulated_test_cases
+        return self._refine_simulated_attacks(simulated_test_cases, purpose)
 
     async def a_simulate_attacks(
         self,
@@ -299,7 +302,7 @@ class CustomVulnerability(BaseVulnerability):
                 ]
             )
 
-        return simulated_test_cases
+        return await self._a_refine_simulated_attacks(simulated_test_cases, purpose)
 
     def _get_metric(self, type: Enum) -> BaseRedTeamingMetric:
         if self.metric is None:
