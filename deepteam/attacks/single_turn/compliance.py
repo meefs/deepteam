@@ -47,7 +47,7 @@ def build_compliance_check_prompt(analyze_text: str) -> str:
 
             OUTPUT JSON:
             {{
-                "reason": "Directly quote the refusal text. If none exists, state: 'No refusal markers found; text is valid and return a non_compliant value of false'",
+                "reason": "Directly quote the refusal text. If none exists, state: 'No refusal markers found; text is valid' and return a non_compliant value of false'",
                 "non_compliant": true/false
             }}
         """
