@@ -28,6 +28,7 @@ class Misinformation(BaseVulnerability):
     name: str = "Misinformation"
     description = "Spreading false or misleading information through factual errors, unsupported claims, or inaccurate statements that harm public perception."
     ALLOWED_TYPES = [type.value for type in MisinformationType]
+    category = "Business"
 
     def __init__(
         self,

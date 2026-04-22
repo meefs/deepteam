@@ -33,6 +33,7 @@ class IndirectInstruction(BaseVulnerability):
     name: str = "Indirect Instruction"
     description = "Manipulation of model or agent behavior through instructions embedded in external data sources such as retrieved documents, tool outputs, or prior context."
     ALLOWED_TYPES = [type.value for type in IndirectInstructionType]
+    category = "Agentic"
 
     def __init__(
         self,

@@ -28,6 +28,7 @@ class GraphicContent(BaseVulnerability):
     name: str = "Graphic Content"
     description = "Generation of explicit sexual content, pornographic material, or disturbing graphic descriptions that violate content policies."
     ALLOWED_TYPES = [type.value for type in GraphicContentType]
+    category = "Safety"
 
     def __init__(
         self,

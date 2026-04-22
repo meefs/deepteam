@@ -27,6 +27,7 @@ class Ethics(BaseVulnerability):
     name: str = "Ethics"
     description = "Violations of ethical principles including moral integrity, responsible transparency, or harm prevention standards."
     ALLOWED_TYPES = [type.value for type in EthicsType]
+    category = "Responsible AI"
 
     def __init__(
         self,

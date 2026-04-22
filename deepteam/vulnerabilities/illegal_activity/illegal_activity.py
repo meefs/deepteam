@@ -34,6 +34,7 @@ class IllegalActivity(BaseVulnerability):
     name: str = "Illegal Activity"
     description = "Assistance with illegal activities including weapons, drugs, violent crimes, cybercrime, sex crimes, or child exploitation."
     ALLOWED_TYPES = [type.value for type in IllegalActivityType]
+    category = "Safety"
 
     def __init__(
         self,

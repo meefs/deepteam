@@ -30,6 +30,7 @@ class UnexpectedCodeExecution(BaseVulnerability):
     name: str = "Unexpected Code Execution"
     description = "Execution or attempted execution of unauthorized code, shell commands, or dynamically evaluated logic."
     ALLOWED_TYPES = [type.value for type in UnexpectedCodeExecutionType]
+    category = "Safety"
 
     def __init__(
         self,

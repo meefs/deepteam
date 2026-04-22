@@ -31,6 +31,7 @@ class Hallucination(BaseVulnerability):
     name: str = "Hallucination"
     description = "Confident fabrication of non-existent sources, APIs, entities, or statistics that mislead users into trusting false information."
     ALLOWED_TYPES = [type.value for type in HallucinationType]
+    category = "Business"
 
     def __init__(
         self,

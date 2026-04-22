@@ -29,6 +29,7 @@ class SystemReconnaissance(BaseVulnerability):
     name: str = "System Reconnaissance"
     description = "Unauthorized disclosure of system architecture, data structures, or configuration, such as file metadata, database schemas, or retrieval parameters in RAG applications."
     ALLOWED_TYPES = [type.value for type in SystemReconnaissanceType]
+    category = "Security"
 
     def __init__(
         self,

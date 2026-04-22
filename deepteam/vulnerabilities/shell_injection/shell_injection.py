@@ -30,6 +30,7 @@ class ShellInjection(BaseVulnerability):
     name: str = "Shell Injection"
     description = "Malicious shell command generation enabling command injection, system command execution, or shell escape sequences to compromise system integrity."
     ALLOWED_TYPES = [type.value for type in ShellInjectionType]
+    category = "Security"
 
     def __init__(
         self,

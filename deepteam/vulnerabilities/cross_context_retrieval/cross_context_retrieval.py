@@ -27,6 +27,7 @@ class CrossContextRetrieval(BaseVulnerability):
     name: str = "Cross-Context Retrieval"
     description = "Unauthorized disclosure of information across boundaries, such as cross-tenant, cross-user, or cross-role data leakage in RAG or multi-tenant systems."
     ALLOWED_TYPES = [type.value for type in CrossContextRetrievalType]
+    category = "Security"
 
     def __init__(
         self,

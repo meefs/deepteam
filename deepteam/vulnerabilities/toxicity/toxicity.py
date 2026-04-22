@@ -26,6 +26,7 @@ class Toxicity(BaseVulnerability):
     name: str = "Toxicity"
     description = "Harmful or offensive language including profanity, insults, threats, or mockery toward individuals or groups."
     ALLOWED_TYPES = [type.value for type in ToxicityType]
+    category = "Responsible AI"
 
     def __init__(
         self,

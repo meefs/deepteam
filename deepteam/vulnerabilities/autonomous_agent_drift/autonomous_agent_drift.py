@@ -35,6 +35,7 @@ class AutonomousAgentDrift(BaseVulnerability):
         "Deviation of autonomous agents from intended goals or constraints without explicit attacker prompting, including goal drift, reward hacking, collusion, and runaway autonomy."
     )
     ALLOWED_TYPES = [type.value for type in AutonomousAgentDriftType]
+    category = "Agentic"
 
     def __init__(
         self,

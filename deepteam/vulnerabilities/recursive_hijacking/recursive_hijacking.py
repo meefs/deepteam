@@ -34,6 +34,7 @@ class RecursiveHijacking(BaseVulnerability):
     name: str = "Recursive Hijacking"
     description = "Recursive subversion of the AI's objectives through self-modifying goals, objective chaining, or goal propagation attacks."
     ALLOWED_TYPES = [type.value for type in RecursiveHijackingType]
+    category = "Agentic"
 
     def __init__(
         self,
