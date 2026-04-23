@@ -1,7 +1,7 @@
 from typing import Dict
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from .base_single_turn_attack import BaseSingleTurnAttack
+from .base_single_turn_attack import BaseSingleTurnAttack, AttackParameter
 from .base64 import Base64
 from .gray_box import GrayBox
 from .leetspeak import Leetspeak
@@ -62,6 +62,7 @@ SINGLE_TURN_ATTACK_NAMES = sorted(
 class AttackInfo(BaseModel):
     description: str
     exploitability: str
+    parameters: Dict[str, AttackParameter] = Field(default_factory=dict)
 
 
 # Map attack names to their description and exploitability
@@ -69,6 +70,7 @@ SINGLE_TURN_ATTACK_INFO_MAP: Dict[str, AttackInfo] = {
     name: AttackInfo(
         description=attack_class.description,
         exploitability=attack_class.exploitability.value,
+        parameters=attack_class.parameters,
     )
     for name, attack_class in SINGLE_TURN_ATTACK_CLASSES_MAP.items()
 }
