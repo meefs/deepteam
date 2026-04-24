@@ -33,6 +33,7 @@ class InsecureInterAgentCommunication(BaseVulnerability):
     name: str = "Inter-Agent Communication Compromise"
     description = "Spoofing, injection, replay, or manipulation of messages exchanged between agents, leading to unauthorized actions or trust violations."
     ALLOWED_TYPES = [type.value for type in InsecureInterAgentCommunicationType]
+    category = "Agentic"
 
     def __init__(
         self,

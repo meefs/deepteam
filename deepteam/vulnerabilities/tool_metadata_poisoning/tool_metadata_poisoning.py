@@ -33,6 +33,7 @@ class ToolMetadataPoisoning(BaseVulnerability):
     name: str = "Tool Metadata Poisoning"
     description = "Manipulation of tool or agent metadata such as schemas, descriptions, permissions, or registries to mislead AI systems into unsafe or unauthorized behavior."
     ALLOWED_TYPES = [type.value for type in ToolMetadataPoisoningType]
+    category = "Security"
 
     def __init__(
         self,

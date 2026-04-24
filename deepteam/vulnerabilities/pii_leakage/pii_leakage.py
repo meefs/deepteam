@@ -31,6 +31,7 @@ class PIILeakage(BaseVulnerability):
     name: str = "PII Leakage"
     description = "Disclosure of personally identifiable information through direct disclosure, API/database access, session leaks, or social manipulation."
     ALLOWED_TYPES = [type.value for type in PIILeakageType]
+    category = "Data Privacy"
 
     def __init__(
         self,

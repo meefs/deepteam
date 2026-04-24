@@ -30,6 +30,7 @@ class SQLInjection(BaseVulnerability):
     name: str = "SQL Injection"
     description = "Malicious SQL query generation using blind, union-based, or error-based injection techniques to manipulate database operations."
     ALLOWED_TYPES = [type.value for type in SQLInjectionType]
+    category = "Security"
 
     def __init__(
         self,
