@@ -27,6 +27,7 @@ class ExcessiveAgency(BaseVulnerability):
     name: str = "Excessive Agency"
     description = "AI exhibiting excessive autonomy, overstepping intended functionality, or exceeding granted permissions without proper oversight."
     ALLOWED_TYPES = [type.value for type in ExcessiveAgencyType]
+    category = "Agentic"
 
     def __init__(
         self,

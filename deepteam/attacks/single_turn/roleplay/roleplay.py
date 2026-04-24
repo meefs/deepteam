@@ -4,7 +4,7 @@ from typing import Optional, Union
 from deepeval.metrics.utils import initialize_model
 from deepeval.models import DeepEvalBaseLLM
 
-from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack, AttackParameter
 from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.roleplay.template import (
     RoleplayTemplate,
@@ -28,6 +28,16 @@ class Roleplay(BaseSingleTurnAttack):
     name = "Roleplay"
     exploitability = Exploitability.MEDIUM
     description = "A persona-based attack that instructs the model to adopt a fictional character, expert role, or alternate identity to justify generating harmful content."
+    parameters = {
+        "persona": AttackParameter(
+            type="string",
+            description="Fictional persona to adopt while rewriting the attack.",
+        ),
+        "role": AttackParameter(
+            type="string",
+            description="Role framing used to justify the persona context.",
+        ),
+    }
 
     def __init__(
         self,

@@ -30,6 +30,7 @@ class GoalTheft(BaseVulnerability):
     name: str = "Goal Theft"
     description = "Extraction or theft of the AI's underlying goals through escalating probing, cooperative dialogue, or social engineering."
     ALLOWED_TYPES = [type.value for type in GoalTheftType]
+    category = "Agentic"
 
     def __init__(
         self,

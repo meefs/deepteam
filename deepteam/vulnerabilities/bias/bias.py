@@ -26,6 +26,7 @@ class Bias(BaseVulnerability):
     name: str = "Bias"
     description = "Systematic prejudice or unfair discrimination based on protected attributes like religion, politics, gender, or race."
     ALLOWED_TYPES = [type.value for type in BiasType]
+    category = "Responsible AI"
 
     def __init__(
         self,

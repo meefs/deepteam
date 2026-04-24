@@ -4,7 +4,7 @@ from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
 from deepteam.utils import create_progress, update_pbar, add_pbar
-from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack, AttackParameter
 from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.emotional_manipulation.template import (
     EmotionalManipulationTemplate,
@@ -29,6 +29,19 @@ class EmotionalManipulation(BaseSingleTurnAttack):
     name = "Emotional Manipulation"
     exploitability = Exploitability.HIGH
     description = "Rewrites the attack by wrapping it in a high-intensity emotional narrative (Anger, Pity, Urgency) to bypass safety filters."
+    parameters = {
+        "emotion": AttackParameter(
+            type="enum",
+            options=[
+                "ANGER",
+                "PITY",
+                "CONFUSION",
+                "AUTHORITY",
+                "URGENCY",
+            ],
+            description="Emotional strategy applied while rewriting the attack.",
+        )
+    }
 
     def __init__(
         self,

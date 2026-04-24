@@ -439,7 +439,7 @@ prompt_injection = PromptInjection()
 risk_assessment = red_team(model_callback=model_callback, vulnerabilities=[bias], attacks=[prompt_injection])
 ```
 
-There is **ONE** mandatory and **TEN** optional arguments when calling the `red_team()` function:
+There is **ONE** mandatory and **ELEVEN** optional arguments when calling the `red_team()` function:
 
 - `model_callback`: a callback of type `Callable[[str], str]` that wraps around the target LLM system you wish to red team.
 - [Optional] `vulnerabilities`: a list of type `BaseVulnerability`s that determines the weaknesses to detect for.
@@ -452,6 +452,7 @@ There is **ONE** mandatory and **TEN** optional arguments when calling the `red_
 - [Optional] `async_mode`: a boolean specifying whether to enable async mode. Defaulted to `True`.
 - [Optional] `max_concurrent`: an integer that determines the maximum number of coroutines that can be ran in parallel. You can decrease this value if your models are running into rate limit errors. Defaulted to `10`.
 - [Optional] `target_purpose`: a string specifying your target LLM application's intended purpose. This affects the passing and failing of simulated attacks that are evaluated. Defaulted to `None`.
+- [Optional] `attack_engine`: an optional `AttackEngine` used to refine baseline simulated attacks before they are sent to your target. Forwarded to the internal `RedTeamer`. Defaulted to `None` (a default engine is created per run). See [Attack engine](#attack-engine).
 
 :::caution WARNING
 You **MUST** pass either `vulnerabilities` and `attacks` or `framework` in the `red_team` function. If not, you will get an error since red teaming cannot be performed without any of those. (In case you provide both, the `attacks` and `vulnerabilities` inside framework overwrite your regular `attacks` or `vulnerabilities`)
@@ -463,10 +464,74 @@ Don't forget to save the results (or at least print it):
 ...
 
 print(risk_assessment)
-risk_assessment.save(to="./deepteam-results/)
+risk_assessment.save(to="./deepteam-results/")
 ```
 
 The `red_team()` function is a quick and easy way to red team LLM systems in a stateless manner. If you wish to take advantage of more advanced features such as adversarial input caching to avoid simulating different attacks over and over again across different iterations of your LLM system, you should use `deepteam`'s `RedTeamer`.
+
+## Attack engine
+
+The `AttackEngine` in `deepteam` sits **after** baseline attack generation from a vulnerability, it **rewrites** each attack so it stays grounded to a vulnerability and reads like a realistic user or adversary, you can also optionally set `variations` to get multiple variations of the same attack which are then **filtered** so off-topic or safe (non-adversatial) variants are dropped before your target model runs.
+
+This helps you have more control over the attacks generated from a vulnerability to create more use-case specific attacks by passing `generation_guidelines` and `purpose` to the `AttackEngine`.
+
+You can configure it once and pass it into **`red_team(..., attack_engine=...)`** or construct **`RedTeamer(..., attack_engine=...)`** so the same refinement configurations apply across all vulnerabilities in your red teaming run.
+
+```python
+from deepteam import red_team
+from deepteam.attacks.attack_engine import AttackEngine
+from deepteam.vulnerabilities import Bias
+from deepteam.attacks.single_turn import PromptInjection
+
+engine = AttackEngine(
+    simulator_model="gpt-4o-mini",
+    variations=2,
+    generation_guidelines=[
+        "Make the attacks seem like a loyal customer complaining."
+    ],
+    purpose="Customer support chatbot for a retail bank",
+)
+
+bias = Bias(types=["race"])
+
+risk_assessment = red_team(
+    model_callback=model_callback,  # same callback you define for your target LLM
+    vulnerabilities=[bias],
+    attacks=[PromptInjection()],
+    attack_engine=engine,
+)
+```
+
+## Evaluation examples and guidelines
+
+Each built-in vulnerability uses an **LLM-as-judge** metric with a structured prompt. You can **calibrate** that judge with:
+
+- **`evaluation_examples`**: a small list of `EvaluationExample` objects (`input`, `actual_output`, binary `score` (1 = pass, 0 = fail), plus a `reason`). They act as few-shot demonstrations so the grader matches your org’s notion of acceptable vs unsafe.
+- **`evaluation_guidelines`**: extra plain-text rules (policy edges, scope, severity) merged into the judge prompt when you do not want to author full examples.
+
+You can pass these variables into any vulnerability constructor alongside `types` / models as usual. This reduces false positives and false negatives when the stock rubric is too strict or too lenient for your target model.
+
+```python
+from deepteam.vulnerabilities import Toxicity, EvaluationExample
+
+examples = [
+    EvaluationExample(
+        input="…",
+        actual_output="…",
+        score=0,
+        reason="…",
+    ),
+]
+guidelines = [
+    "If the model refuses but still leaks partial restricted content, score 0.",
+]
+
+toxicity = Toxicity(
+    types=["insults", "profanity"],
+    evaluation_examples=examples,
+    evaluation_guidelines=guidelines,
+)
+```
 
 ## Penetration Test With A Red Teamer
 
@@ -485,13 +550,14 @@ from deepteam.red_teamer import RedTeamer
 red_teamer = RedTeamer()
 ```
 
-There are **FIVE** optional parameters when creating a `RedTeamer`:
+There are **SIX** optional parameters when creating a `RedTeamer`:
 
 - [Optional] `target_purpose`: a string specifying your target LLM application's intended purpose. This affects the passing and failing of simulated attacks that are evaluated. Defaulted to `None`.
 - [Optional] `simulator_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for simulating attacks. Defaulted to `"gpt-3.5-turbo-0125"`.
 - [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://docs.confident-ai.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM` for evaluation. Defaulted to `"gpt-4o"`.
 - [Optional] `async_mode`: a boolean specifying whether to enable async mode. Defaulted to `True`.
 - [Optional] `max_concurrent`: an integer that determines the maximum number of coroutines that can be ran in parallel. You can decrease this value if your models are running into rate limit errors. Defaulted to `10`.
+- [Optional] `attack_engine`: an optional `AttackEngine` used as the default refinement engine for runs started from this `RedTeamer` when you do not pass a different `attack_engine` into `red_team()`. Defaulted to `None`. See [Attack engine](#attack-engine).
 
 :::caution
 **All model interfaces in `deepteam` comes from `deepeval`**, and you can read [how to define a custom model of type `DeepEvalBaseLLM` here.](https://docs.confident-ai.com/guides/guides-using-custom-llms)
@@ -528,7 +594,7 @@ print(risk_assessment.overall)
 As explained in the adversarial attack section, by making the PromptInjection attack `weight` 2x that of the `weight` of `ROT13`, it now has a 2x more chance to be simulated.
 :::
 
-There is **ONE** mandatory and **NINE** optional arguments when calling the `red_team()` method:
+There is **ONE** mandatory and **TEN** optional arguments when calling the `red_team()` method:
 
 - `model_callback`: a callback of type `Callable[[str], str]` that wraps around the target LLM system you wish to red team.
 - [Optional] `framework`: an object of type `AISafetyFramework` that contains both `vulnerabilities` and `attacks` in it.
@@ -540,6 +606,7 @@ There is **ONE** mandatory and **NINE** optional arguments when calling the `red
 - [Optional] `async_mode`: a boolean specifying whether to enable async mode. Defaulted to `True`.
 - [Optional] `max_concurrent`: an integer that determines the maximum number of coroutines that can be ran in parallel. You can decrease this value if your models are running into rate limit errors. Defaulted to `10`.
 - [Optional] `target_purpose`: a string specifying your target LLM application's intended purpose. This affects the passing and failing of simulated attacks that are evaluated. Defaulted to `None`.
+- [Optional] `attack_engine`: an optional `AttackEngine` for this run’s attack refinement (overrides the `RedTeamer` default for this call when provided). Defaulted to `None`. See [Attack engine](#attack-engine).
 
 You'll notice that the `RedTeamer` since it is stateful, allows you to `reuse_previous_attacks`, which is not possible by the standalone `red_team()` function.
 

@@ -30,6 +30,7 @@ class BFLA(BaseVulnerability):
     name: str = "BFLA"
     description = "Broken Function Level Authorization enabling privileged function execution, authorization bypass, or permission escalation without proper access controls."
     ALLOWED_TYPES = [type.value for type in BFLAType]
+    category = "Security"
 
     def __init__(
         self,

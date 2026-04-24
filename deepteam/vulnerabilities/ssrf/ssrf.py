@@ -30,6 +30,7 @@ class SSRF(BaseVulnerability):
     name: str = "SSRF"
     description = "Server-Side Request Forgery enabling unauthorized internal service access, cloud metadata access, or port scanning through crafted requests."
     ALLOWED_TYPES = [type.value for type in SSRFType]
+    category = "Security"
 
     def __init__(
         self,

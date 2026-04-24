@@ -4,7 +4,7 @@ from deepeval.models import DeepEvalBaseLLM
 from deepeval.metrics.utils import initialize_model
 
 from deepteam.utils import create_progress, update_pbar, add_pbar
-from deepteam.attacks.single_turn import BaseSingleTurnAttack
+from deepteam.attacks.single_turn import BaseSingleTurnAttack, AttackParameter
 from deepteam.attacks.base_attack import Exploitability
 from deepteam.attacks.single_turn.authority_escalation.template import (
     AuthorityEscalationTemplate,
@@ -27,6 +27,12 @@ class AuthorityEscalation(BaseSingleTurnAttack):
     name = "Authority Escalation"
     exploitability = Exploitability.HIGH
     description = "Rewrites the attack to mimic a superior, administrator, or compliance officer, using authoritative language to bypass restrictions."
+    parameters = {
+        "role": AttackParameter(
+            type="string",
+            description="Authority role to emulate during rewrite (for example, admin or compliance officer).",
+        )
+    }
 
     def __init__(
         self,

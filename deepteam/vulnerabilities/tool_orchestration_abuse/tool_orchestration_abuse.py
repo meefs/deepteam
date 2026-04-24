@@ -33,6 +33,7 @@ class ToolOrchestrationAbuse(BaseVulnerability):
     name: str = "Tool Orchestration Abuse"
     description = "Exploitation of AI tool execution logic through unsafe sequencing, recursive calls, excessive invocation, or unintended state sharing across tools."
     ALLOWED_TYPES = [type.value for type in ToolOrchestrationAbuseType]
+    category = "Agentic"
 
     def __init__(
         self,

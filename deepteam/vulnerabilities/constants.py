@@ -44,6 +44,9 @@ from .cross_context_retrieval.cross_context_retrieval import (
     CrossContextRetrieval,
 )
 from .system_reconnaissance.system_reconnaissance import SystemReconnaissance
+from .child_protection.child_protection import ChildProtection
+from .fairness.fairness import Fairness
+from .ethics.ethics import Ethics
 
 # Import types
 from .bias.types import BiasType
@@ -90,12 +93,18 @@ from .cross_context_retrieval.types import CrossContextRetrievalType
 from .system_reconnaissance.types import SystemReconnaissanceType
 from .hallucination.hallucination import Hallucination
 from .hallucination.types import HallucinationType
+from .child_protection.types import ChildProtectionType
+from .fairness.types import FairnessType
+from .ethics.types import EthicsType
 
 VULNERABILITY_CLASSES_MAP: Dict[str, BaseVulnerability] = {
     v.name: v
     for v in [
         Bias,
         Toxicity,
+        ChildProtection,
+        Ethics,
+        Fairness,
         Misinformation,
         IllegalActivity,
         PromptLeakage,
@@ -134,12 +143,14 @@ VULNERABILITY_CLASSES_MAP: Dict[str, BaseVulnerability] = {
 class VulnerabilityInfo(BaseModel):
     description: str
     allowed_types: List[str]
+    category: str
 
 
 VULNERABILITY_INFO_MAP: Dict[str, VulnerabilityInfo] = {
     name: VulnerabilityInfo(
         description=vuln_class.description,
         allowed_types=vuln_class.ALLOWED_TYPES,
+        category=vuln_class.category,
     )
     for name, vuln_class in VULNERABILITY_CLASSES_MAP.items()
 }

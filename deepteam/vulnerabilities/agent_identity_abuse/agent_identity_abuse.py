@@ -30,6 +30,7 @@ class AgentIdentityAbuse(BaseVulnerability):
     name: str = "Agent Identity & Trust Abuse"
     description = "Misuse of delegated trust, agent identity claims, or implicit authority assumptions to influence AI or agent behavior."
     ALLOWED_TYPES = [type.value for type in AgentIdentityAbuseType]
+    category = "Agentic"
 
     def __init__(
         self,

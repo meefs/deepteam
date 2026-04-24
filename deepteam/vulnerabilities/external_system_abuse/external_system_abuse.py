@@ -29,6 +29,7 @@ class ExternalSystemAbuse(BaseVulnerability):
     name: str = "External System Abuse"
     description = "Unauthorized misuse of an agent's outbound communication and integration tools to perform data exfiltration, communications spam, or internal spoofing."
     ALLOWED_TYPES = [type.value for type in ExternalSystemAbuseType]
+    category = "Agentic"
 
     def __init__(
         self,
