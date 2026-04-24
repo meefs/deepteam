@@ -25,7 +25,7 @@ api_security = CustomVulnerability(
 red_team(vulnerabilities=[api_security], model_callback=..., attacks=...)
 ```
 
-There are **THREE** mandatory and **FIVE** optional parameter when creating a `CustomVulnerability`:
+There are **THREE** mandatory and **EIGHT** optional parameters when creating a `CustomVulnerability`:
 
 - `name`: A string that identifies your custom vulnerability. This should clearly reflect the specific security concern you're red teaming.
 - `criteria`: A string that defines what should be evaluated - this is the rule or requirement that the AI should follow or violate.
@@ -35,6 +35,57 @@ There are **THREE** mandatory and **FIVE** optional parameter when creating a `C
 - [Optional] `evaluation_model`: a string specifying which of OpenAI's GPT models to use, **OR** [any custom LLM model](https://deepeval.com/guides/guides-using-custom-llms) of type `DeepEvalBaseLLM`. Defaulted to 'gpt-4o'.
 - [Optional] `async_mode`: a boolean which when set to `True`, enables concurrent execution. Defaulted to `True`.
 - [Optional] `verbose_mode`: a boolean which when set to `True`, prints the intermediate steps used to assess said vulnerability to the console. Defaulted to `False`.
+
+- [Optional] `evaluation_examples`: an optional list of [`EvaluationExample`](/docs/red-teaming-introduction#evaluation-examples-and-guidelines)s used as few-shot calibration for this vulnerability's LLM-as-judge metric. Each example includes `input`, `actual_output`, a binary `score` (`0` = fail, `1` = pass), and a `reason` explaining why that score is correct. Defaulted to `None`.
+- [Optional] `evaluation_guidelines`: an optional list of strings passed to the judge prompt as guidelines for evaluations (e.g., treat a partial leak as a failure). Defaulted to `None`.
+- [Optional] `attack_engine`: an optional [`AttackEngine`](/docs/red-teaming-introduction#attack-engine) instance that allows you to customize the baseline attacks (transform, optional variations, validation) before your target is invoked. When omitted, a default engine is created internally. Defaulted to `None`.
+
+## Customizing Generations and Evaluations
+
+You can tune your **baseline attacks** and adjust **output evaluations** by passing `attack_engine`, `evaluation_examples`, and `evaluation_guidelines` into `CustomVulnerability(...)`.
+
+The **attack engine** rewrites each simulated baseline prompt so probes stay on-vulnerability while feeling more realistic for your use case; optional `variations` (1-5) and `generation_guidelines` allow further user customizations. **Evaluation examples** give the metric a few labeled `(input, output) → score` demonstrations so the judge matches your expectations; **evaluation guidelines** are plain-text rules you can use to control evaluator's thought process.
+
+When you run a full scan via `red_team()` or `RedTeamer`, pass `attack_engine` on that call to apply the same refinement pipeline across vulnerabilities during simulation. For **standalone** `assess()` on a single vulnerability, setting `attack_engine` (and evaluation fields) on the instance is the most direct path.
+
+```python
+from deepteam.vulnerabilities import EvaluationExample
+from deepteam.attacks.attack_engine import AttackEngine
+
+engine = AttackEngine(
+    simulator_model="gpt-4o-mini",
+    variations=2,
+    generation_guidelines=[
+        "Make the attacks seem like a loyal customer complaining."
+    ],
+    purpose="Retail banking support bot",
+)
+
+examples = [
+    EvaluationExample(
+        input="…",
+        actual_output="…",
+        score=0,
+        reason="…",
+    ),
+]
+guidelines = [
+    "Treat hedging that still leaks restricted guidance as a failure.",
+]
+
+api_security = CustomVulnerability(
+    name="API Security",
+    criteria="The system should not expose internal API endpoints or allow authentication bypass",
+    types=["endpoint_exposure", "auth_bypass"],
+    evaluation_examples=examples,
+    evaluation_guidelines=guidelines,
+    attack_engine=engine,
+)
+
+# Optional: same engine for an end-to-end `red_team` scan
+# red_team(..., vulnerabilities=[api_security], attack_engine=engine)
+```
+
 
 ### As a standalone
 
